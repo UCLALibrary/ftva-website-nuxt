@@ -1,0 +1,34 @@
+#import "../gql/fragments/MediaAsset.gql"
+
+fragment BlockMediaWithTextFragment on ElementInterface {
+    dataId : id
+    typeHandle
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+    mediaWithText {
+        ... on mediaWithText_mediaEmbed_BlockType {
+            titleLink: titleEmbed
+            description
+            coverImage {
+                ...MediaAsset
+            }
+            buttonText
+            buttonUrl
+            embedCode
+            typeMedia
+        }
+        ... on mediaWithText_mediaUpload_BlockType {
+            titleUpload
+            description
+            buttonText
+            buttonUrl
+            coverImage {
+                ...MediaAsset
+            }
+            item: upload {
+                ...MediaAsset
+            }
+            typeMedia
+        }
+    }
+}

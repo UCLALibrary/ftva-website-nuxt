@@ -1,0 +1,66 @@
+#import "../gql/fragments/Image.gql"
+#import "../gql/fragments/BlockAssociatedTopicCardsFragment.gql"
+#import "../gql/fragments/BlockBannerFeaturedFragment.gql"
+#import "../gql/fragments/BlockCallToActionFragment.gql"
+#import "../gql/fragments/BlockCardWithImageFragment.gql"
+#import "../gql/fragments/BlockFormFragment.gql"
+#import "../gql/fragments/BlockHighlightFragment.gql"
+#import "../gql/fragments/BlockImpactNumbersCarouselFragment.gql"
+#import "../gql/fragments/BlockMediaWithTextFragment.gql"
+#import "../gql/fragments/BlockPullQuoteFragment.gql"
+#import "../gql/fragments/BlockRichTextFragment.gql"
+#import "../gql/fragments/BlockSimpleCardsFragment.gql"
+#import "../gql/fragments/BlockMediaGalleryExtraFieldsFragment.gql"
+#import "../gql/fragments/BlockGridGalleryCardsFragment.gql"
+#import "../gql/fragments/BlockImpactNumberCardsFragment.gql"
+
+fragment ExhibitionsAndCollectionsFpb on ElementInterface {
+    blocks: exhibitionsAndCollectionsFpb {
+        id
+        typeHandle
+
+        ... on exhibitionsAndCollectionsFpb_associatedTopicCards_BlockType {
+            ...BlockAssociatedTopicCardsFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_bannerFeatured_BlockType {
+            ...BlockBannerFeaturedFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_callToAction_BlockType {
+            ...BlockCallToActionFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_cardWithImage_BlockType {
+            ...BlockCardWithImageFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_form_BlockType {
+            ...BlockFormFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_highlight_BlockType {
+            ...BlockHighlightFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_impactNumbersCarousel_BlockType {
+            ...BlockImpactNumbersCarouselFragment
+        }
+
+        ... on exhibitionsAndCollectionsFpb_mediaWithText_BlockType {
+            ...BlockMediaWithTextFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_pullQuote_BlockType {
+            ...BlockPullQuoteFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_richText_BlockType {
+            ...BlockRichTextFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_simpleCards_BlockType {
+            ...BlockSimpleCardsFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_mediaGallery_BlockType {
+            ...BlockMediaGalleryExtraFieldsFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_gridGalleryCards_BlockType {
+            ...BlockGridGalleryCardsFragment
+        }
+        ... on exhibitionsAndCollectionsFpb_impactNumberCards_BlockType {
+            ...BlockImpactNumberCardsFragment
+        }
+    }
+}

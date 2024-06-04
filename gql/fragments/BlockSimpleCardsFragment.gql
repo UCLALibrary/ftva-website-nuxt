@@ -1,0 +1,27 @@
+fragment BlockSimpleCardsFragment on ElementInterface {
+    id
+    typeHandle
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+    cards: simpleCards {
+        ... on simpleCards_internalServiceOrResource_BlockType {
+            id
+            typeHandle
+            contentLink {
+                id
+                uri
+                slug
+                title
+                summary
+                externalResourceUrl
+            }
+        }
+        ... on simpleCards_externalServiceOrResource_BlockType {
+            id
+            typeHandle
+            title: titleGeneral
+            summary
+            externalLink
+        }
+    }
+}

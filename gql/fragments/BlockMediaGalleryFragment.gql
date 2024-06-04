@@ -1,0 +1,37 @@
+#import "../gql/fragments/MediaAsset.gql"
+
+fragment BlockMediaGalleryFragment on ElementInterface {
+    dataId: id
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+    mediaGallery {
+        dataId: id
+        captionTitle: captionHeading
+        captionText: caption
+        altText
+        sortOrder
+        ... on mediaGallery_image_BlockType {
+            item: imageFile {
+                ...MediaAsset
+            }
+        }
+        ... on mediaGallery_audio_BlockType {
+            item: audioFile {
+                ...MediaAsset
+            }
+            embedCode: audioEmbedCode
+            coverImage {
+              ...MediaAsset
+            }
+        }
+        ... on mediaGallery_video_BlockType {
+            item: videoFile {
+                ...MediaAsset
+            }
+            embedCode: embedCode
+            coverImage {
+              ...MediaAsset
+            }
+        }
+    }
+}

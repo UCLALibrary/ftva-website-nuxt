@@ -1,0 +1,5 @@
+fragment BlockRichTextFragment on ElementInterface {
+    richText
+    typeHandle
+    sectionTitle: titleGeneral
+}

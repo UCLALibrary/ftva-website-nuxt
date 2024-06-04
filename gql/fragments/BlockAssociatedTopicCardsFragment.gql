@@ -1,0 +1,19 @@
+fragment BlockAssociatedTopicCardsFragment on ElementInterface {
+    id
+    typeHandle
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+    associatedTopicsFlexiblePageBlock {
+        ... on associatedTopicsFlexiblePageBlock_associatedTopics_BlockType {
+            id
+            topics {
+                title
+                typeHandle
+                externalResourceUrl
+                uri
+                text: summary
+                uri
+            }
+        }
+    }
+}

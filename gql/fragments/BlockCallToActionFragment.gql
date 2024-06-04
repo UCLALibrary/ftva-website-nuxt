@@ -1,0 +1,15 @@
+fragment BlockCallToActionFragment on ElementInterface {
+    id
+    typeHandle
+    callToAction {
+        ... on callToAction_callToAction_BlockType {
+            id
+            titleCta
+            summary
+            icon
+            buttonText
+            buttonUrl: buttonLink
+            backgroundColor
+        }
+    }
+}

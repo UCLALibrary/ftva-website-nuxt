@@ -1,0 +1,41 @@
+#import "../gql/fragments/Image.gql"
+#import "../gql/fragments/BlockCardWithImageFragment.gql"
+#import "../gql/fragments/BlockHighlightFragment.gql"
+#import "../gql/fragments/BlockMediaGalleryFragment.gql"
+#import "../gql/fragments/BlockMediaWithTextFragment.gql"
+#import "../gql/fragments/BlockPullQuoteFragment.gql"
+#import "../gql/fragments/BlockRichTextFragment.gql"
+#import "../gql/fragments/BlockSimpleCardsFragment.gql"
+#import "../gql/fragments/BlockFormFragment.gql"
+
+fragment DefaultFpbWithCardsAndHighlight on ElementInterface {
+    blocks: defaultFpbWithCardsAndHighlight {
+        id
+        typeHandle
+
+        ... on defaultFpbWithCardsAndHighlight_cardWithImage_BlockType {
+            ...BlockCardWithImageFragment
+        }
+        ... on defaultFpbWithCardsAndHighlight_highlight_BlockType {
+            ...BlockHighlightFragment
+        }
+        ... on defaultFpbWithCardsAndHighlight_mediaGallery_BlockType {
+            ...BlockMediaGalleryFragment
+        }
+        ... on defaultFpbWithCardsAndHighlight_mediaWithText_BlockType {
+            ...BlockMediaWithTextFragment
+        }
+        ... on defaultFpbWithCardsAndHighlight_pullQuote_BlockType {
+            ...BlockPullQuoteFragment
+        }
+        ... on defaultFpbWithCardsAndHighlight_richText_BlockType {
+            ...BlockRichTextFragment
+        }
+        ... on defaultFpbWithCardsAndHighlight_simpleCards_BlockType {
+            ...BlockSimpleCardsFragment
+        }
+        ... on defaultFpbWithCardsAndHighlight_form_BlockType {
+            ...BlockFormFragment
+        }
+    }
+}

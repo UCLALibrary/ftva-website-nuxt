@@ -1,0 +1,104 @@
+fragment BlockHighlightFragment on ElementInterface {
+    id
+    typeHandle
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+    highlight {
+        ... on highlight_internalContent_BlockType {
+            id
+            typeHandle
+            contentLink {
+                id
+                # category: typeHandle
+                contentType: sectionHandle
+                to: uri
+                title
+                text: summary
+                eventDescription
+                # prompt: buttonText
+                projectCategory: format
+                # eventCategory: eventType
+                articleCategory: articleCategories {
+                    title
+                }
+                projectByline1: meapProjectTopic {
+                    ... on meapProjectTopics_Category {
+                        id
+                        title
+                    }
+                }
+                articleByline1: staffMember {
+                    id
+                    to: uri
+                    title
+                }
+                articleByline2: postDate
+                ongoing
+                startDateWithTime
+                    @formatDateTime(
+                        format: "Y-m-d\\TH:i"
+                        timezone: "America/Los_Angeles"
+                    )
+                endDateWithTime
+                    @formatDateTime(
+                        format: "Y-m-d\\TH:i"
+                        timezone: "America/Los_Angeles"
+                    )
+                startDate
+                    @formatDateTime(
+                        format: "Y-m-d\\TH:i"
+                        timezone: "America/Los_Angeles"
+                    )
+                endDate
+                    @formatDateTime(
+                        format: "Y-m-d\\TH:i"
+                        timezone: "America/Los_Angeles"
+                    )
+                eventType {
+                    ... on eventType_Category {
+                        id
+                        title
+                    }
+                }
+                associatedLocations {
+                    id
+                    title
+                    to: uri
+                }
+                projectLocations: region {
+                    ... on meapProjectRegion_Category {
+                        id
+                        title
+                    }
+                }
+                heroImage {
+                    ... on heroImage_heroImage_BlockType {
+                        id
+                        image {
+                            ...Image
+                        }
+                        altText
+                    }
+                }
+            }
+        }
+        ... on highlight_externalContent_BlockType {
+            id
+            typeHandle
+            title: titleGeneral
+            image {
+                ...Image
+            }
+            byline1
+            byline2
+            category
+            # location {
+            #     id
+            #     title
+            #     to: uri
+            # }
+            text: summary
+            to: externalLink
+        }
+    }
+}

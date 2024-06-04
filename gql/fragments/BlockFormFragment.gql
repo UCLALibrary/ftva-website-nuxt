@@ -1,0 +1,7 @@
+fragment BlockFormFragment on ElementInterface {
+    id
+    form
+    typeHandle
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+}

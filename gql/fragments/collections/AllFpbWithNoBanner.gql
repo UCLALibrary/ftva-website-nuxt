@@ -1,0 +1,49 @@
+#import "../gql/fragments/Image.gql"
+#import "../gql/fragments/BlockCardWithImageFragment.gql"
+#import "../gql/fragments/BlockHighlightFragment.gql"
+#import "../gql/fragments/BlockImpactNumbersCarouselFragment.gql"
+#import "../gql/fragments/BlockMediaGalleryFragment.gql"
+#import "../gql/fragments/BlockMediaWithTextFragment.gql"
+#import "../gql/fragments/BlockPullQuoteFragment.gql"
+#import "../gql/fragments/BlockRichTextFragment.gql"
+#import "../gql/fragments/BlockSimpleCardsFragment.gql"
+#import "../gql/fragments/BlockCallToActionFragment.gql"
+#import "../gql/fragments/BlockFormFragment.gql"
+
+fragment AllFpbWithNoBanner on ElementInterface {
+    blocks: AllFpbWithNoBanner {
+        id
+        typeHandle
+
+        ... on AllFpbWithNoBanner_cardWithImage_BlockType {
+            ...BlockCardWithImageFragment
+        }
+        ... on AllFpbWithNoBanner_highlight_BlockType {
+            ...BlockHighlightFragment
+        }
+        ... on AllFpbWithNoBanner_impactNumbersCarousel_BlockType {
+            ...BlockImpactNumbersCarouselFragment
+        }
+        ... on AllFpbWithNoBanner_mediaGallery_BlockType {
+            ...BlockMediaGalleryFragment
+        }
+        ... on AllFpbWithNoBanner_mediaWithText_BlockType {
+            ...BlockMediaWithTextFragment
+        }
+        ... on AllFpbWithNoBanner_pullQuote_BlockType {
+            ...BlockPullQuoteFragment
+        }
+        ... on AllFpbWithNoBanner_richText_BlockType {
+            ...BlockRichTextFragment
+        }
+        ... on AllFpbWithNoBanner_simpleCards_BlockType {
+            ...BlockSimpleCardsFragment
+        }
+        ... on AllFpbWithNoBanner_callToAction_BlockType {
+            ...BlockCallToActionFragment
+        }
+        ... on AllFpbWithNoBanner_form_BlockType {
+            ...BlockFormFragment
+        }
+    }
+}
