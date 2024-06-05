@@ -1,7 +1,10 @@
 html {
     box-sizing: border-box;
 }
-*, *:before, *:after {
+
+*,
+*:before,
+*:after {
     box-sizing: inherit;
 }
 
@@ -65,53 +68,61 @@ button {
 
 // Page Structure
 .page {
+    >* {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     .section {
         margin: var(--space-3xl) auto;
         padding-left: $whitespace-m-sides + px;
         padding-right: $whitespace-m-sides + px;
         max-width: $container-xl-banner + px;
+
         @media #{$small} {
             padding-left: $whitespace-s-sides + px;
             padding-right: $whitespace-s-sides + px;
         }
     }
-    .divider-first + .section {
+
+    .divider-first+.section {
         margin-top: 75px;
     }
+
     .divider {
         max-width: $container-l-main + px;
         margin-left: auto;
         margin-right: auto;
+
         @media #{$medium} {
             max-width: 100%;
             padding: 0 $whitespace-m-sides + px;
         }
+
         @media #{$small} {
             padding: 0 $whitespace-s-sides + px;
         }
     }
+
     .about-results {
         margin-bottom: var(--space-l);
         color: var(--color-primary-blue-05);
         @include step-0;
         font-weight: 400;
     }
+
     .results {
         color: var(--color-primary-blue-05);
         @include step-0;
         font-style: italic;
     }
-    .error-text {
-        margin-top: var(--space-m);
-        h2 {
-            color: var(--color-primary-blue-05);
-        }
-    }
 }
+
 
 // Animations
 .underline-hover {
     position: relative;
+
     &::before {
         content: "";
         position: absolute;
@@ -125,6 +136,7 @@ button {
         transition-timing-function: ease-in-out;
         opacity: 0;
     }
+
     &:hover {
         &::before {
             width: 100%;

@@ -1,0 +1,53 @@
+name: Regenerate static site when craft data is updated.
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment(test/prod)'     
+        required: true
+        type: choice
+        options:
+        - test
+        - prod
+        default: 'test'
+
+concurrency:
+  group: deploy-${{ github.event.inputs.environment }}
+  cancel-in-progress: true
+
+jobs:
+  nuxt-deploy:
+    name: Netlify deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      - uses: ./.github/workflows/setup-workspace
+      - name: Cache built static site
+        uses: actions/cache@v3
+        with:
+          path: ./dist
+          key: nuxt-site-${{ github.sha }}
+      - run: npm run generate
+        env:
+          CRAFT_ENDPOINT: "${{ github.event.inputs.environment == 'test' && secrets.CRAFT_ENDPOINT_TEST || secrets.CRAFT_PROD_ENDPOINT }}"
+          S3_BUCKET: "https://static.library.ucla.edu/"
+          SITEMAP_HOST: "${{ github.event.inputs.environment == 'test' && 'https://test-meap.library.ucla.edu' || 'https://meap.library.ucla.edu' }}"
+          ES_URL: ${{ secrets.ES_URL }}
+          ES_READ_KEY: "${{ github.event.inputs.environment == 'test' && secrets.ES_READ_KEY_TEST || secrets.ES_READ_KEY_PROD }}"
+          ES_WRITE_KEY: "${{ github.event.inputs.environment == 'test' && secrets.ES_WRITE_KEY_TEST || secrets.ES_WRITE_KEY_PROD }}"
+          ES_INDEX: "${{ github.event.inputs.environment == 'test' && secrets.ES_INDEX_TEST || secrets.ES_INDEX_PROD }}"
+          ES_INDEX_PREFIX: "${{ github.event.inputs.environment == 'test' && secrets.ES_INDEX_PREFIX_TEST || secrets.ES_INDEX_PREFIX_PROD }}"
+      - name: Deploy to Netlify on release
+        uses: nwtgck/actions-netlify@v2 #
+        with:
+          production-deploy: true
+          deploy-message: https://github.com/UCLALibrary/meap-website-nuxt/commit/${{ github.sha }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          publish-dir: "./dist"
+          fails-without-credentials: true
+          github-deployment-environment: production
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: "${{ github.event.inputs.environment == 'test' && secrets.NETLIFY_SITE_ID_MEAP_TEST || secrets.NETLIFY_PROD_MEAP_SITE_ID }}"

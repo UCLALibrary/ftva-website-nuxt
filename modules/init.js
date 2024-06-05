@@ -8,8 +8,6 @@ export default defineNuxtModule({
     if (!nuxt.options._prepare && process.env.NODE_ENV !== 'development') {
       nuxt.hooks.hook('nitro:init', async (nitro) => {
         console.log('Ready to create library temp index...')
-        const timeElapsed = Date.now()
-        const now = new Date(timeElapsed)
 
         const esLibraryIndexTemp = nuxt.options.runtimeConfig.public.esTempIndex
         console.log('Index named:' + esLibraryIndexTemp)
