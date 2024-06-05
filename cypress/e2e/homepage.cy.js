@@ -16,7 +16,6 @@ describe('Website Homepage', () => {
     cy.get('a.logo-ucla')
       .should('have.attr', 'href', 'https://www.library.ucla.edu')
     // NavPrimary
-    
 
     cy.percySnapshot({ widths: [768, 992, 1200] })
   })
