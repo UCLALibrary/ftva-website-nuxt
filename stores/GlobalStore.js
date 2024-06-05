@@ -6,7 +6,8 @@ export const useGlobalStore = defineStore('GlobalStore', {
     globals: {},
     header: {},
     footerPrimary: {},
-    footerSock: {}
+    footerSock: {},
+    footerSponsor: {}
     /* _token: "",
         _user: {}, */
   }),
@@ -63,7 +64,7 @@ export const useGlobalStore = defineStore('GlobalStore', {
       try {
         const { data } = await useFetch('/api/fetchNitroStorageCraftFooterPrimaryData')
         // console.log('Pinia store FooterPrimary Data object:' + JSON.stringify(data.value))
-        this.footerPrimary = data
+        this.footerPrimary = data.value
       }
       catch (e) {
         throw new Error(`Craft API error, trying to set globals FooterPrimary. ${e}`)
@@ -78,7 +79,22 @@ export const useGlobalStore = defineStore('GlobalStore', {
       catch (e) {
         throw new Error(`Craft API error, trying to set globals FooterSockData. ${e}`)
       }
-    }
+    },
+    async fetchFooterSponsor() {
+      try {
+        const { data } = await useFetch('/api/fetchNitroStorageCraftFooterSponsorData')
+        console.log('Pinia store Footer Sponsor Data object:' + JSON.stringify(data.value))
+        if (data.value) {
+          const craftData = removeEmpties(data.value?.footerSponsor || [])
+          console.log('meap sponsor data', craftData)
+          this.footerSponsor = craftData[0]
+          console.log('Pinia store footerSponsor end:' + JSON.stringify(this.footerSponsor))
+        }
+      }
+      catch (e) {
+        throw new Error(`Craft API error, trying to set globals FooterSponsorData. ${e}`)
+      }
+    },
 
     /* Examples of action methods:
     setToken(token) {

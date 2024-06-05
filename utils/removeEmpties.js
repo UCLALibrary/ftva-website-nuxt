@@ -3,6 +3,8 @@
  * @param {Array} arr
  * @returns {Array}
  */
-export function removeEmpties(arr) {
+function removeEmpties(arr) {
   return arr.filter(value => Object.keys(value).length !== 0)
 }
+
+export default removeEmpties

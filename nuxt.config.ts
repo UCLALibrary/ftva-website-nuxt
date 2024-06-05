@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: ` 
+          additionalData: `
                         @import "ucla-library-design-tokens/scss/fonts.scss";
                         @import "ucla-library-design-tokens/scss/app.scss";
                     `,
@@ -39,15 +39,15 @@ export default defineNuxtConfig({
       // routes: ['/', '/404.html', '/200.html'],
     },
     hooks: {
-      'prerender:generate' (route) {
+      'prerender:generate'(route) {
         // TODO: fix issue with recursive fetches with query string, e.g.
         // `/enterprise/agencies?region=europe&amp;amp;amp;service=ecommerce&amp;amp;service=ecommerce&amp;service=content-marketing`
         /* if (route.route?.includes('&amp;')) {
           route.skip = true
         } */
-        // console.log('prerender:generate', route)
+        console.log('prerender:generate', route)
       },
-      async 'prerender:routes' (routes) {
+      async 'prerender:routes'(routes) {
         const allRoutes = []
 
         const response = await fetch(process.env.CRAFT_ENDPOINT, {
@@ -61,12 +61,7 @@ export default defineNuxtConfig({
         const postPages = await response.json()
         // console.log('All pages', JSON.stringify(postPages.data.entries))
         if (postPages && postPages.data && postPages.data.entries) {
-          const postWithoutPayloadRoutes = postPages.data.entries.filter(item =>
-            !item.sectionHandle.includes('meap') && !item.sectionHandle.includes('ftva')
-            && !item.sectionHandle.includes('organization') && !item.sectionHandle.includes('/__home__')
-            && !item.sectionHandle.includes('visit/spaces') && !item.sectionHandle.includes('null')
-          ).map(entry => '/' + entry.uri)
-
+          const postWithoutPayloadRoutes = postPages.data.entries.filter(item => item.sectionHandle.includes('ftva')).map(entry => '/' + entry.uri.replace(/^ftva\//, ''))
           allRoutes.push(...postWithoutPayloadRoutes)
         }
 
@@ -88,19 +83,14 @@ export default defineNuxtConfig({
     // Public keys that are exposed to the client
     public: {
       craftGraphqlURL: process.env.CRAFT_ENDPOINT || '',
-      s3Bucket: process.env.S3_BUCKET,
       esReadKey: process.env.ES_READ_KEY || '',
-      esIndex: process.env.ES_INDEX || '',
       esAlias: process.env.ES_ALIAS || '',
-      libguidesEsIndex: process.env.LIBGUIDES_ES_INDEX || '',
       esIndexPrefix: process.env.ES_INDEX_PREFIX || '',
       esTempIndex: process.env.ES_INDEX_PREFIX + '-' + new Date().toISOString().toLowerCase().replaceAll(':', '-'),
       esURL: process.env.ES_URL || '',
-      libcalProxy:
-        process.env.LIBCAL_ENDPOINT
-        || 'https://proxy.calendar.library.ucla.edu/',
-      esTempIndexPrefixLibguides: process.env.ES_TEMP_INDEX_PREFIX_LIBGUIDES || '',
-      esTempIndexLibguides: '',
+      gtm: {
+        id: 'GTM-T2SXV2'
+      }
     },
   },
 
@@ -108,7 +98,20 @@ export default defineNuxtConfig({
      ** Required charset and viewport meta tags
      */
   app: {
+    /*
+    ** Page transition
+    */
+    pageTransition: {
+      name: 'fade',
+      mode: 'out-in',
+    },
     head: {
+      titleTemplate: (titleChunk: string) => {
+        // If undefined or blank then we don't need the pipe and space
+        return titleChunk
+          ? `${titleChunk} | Modern Endangered Archives Program`
+          : 'Modern Endangered Archives Program'
+      },
       htmlAttrs: {
         lang: 'en',
       },
@@ -120,7 +123,12 @@ export default defineNuxtConfig({
             'width=device-width, initial-scale=1.0, minimum-scale=1.0',
         },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+      link: [{ rel: 'icon', type: 'image/svg', href: '/icon-ucla-favicon.svg' }],
+    },
+
+    pageTransition: {
+      name: 'fade',
+      mode: 'out-in',
     },
   },
 
@@ -145,7 +153,7 @@ export default defineNuxtConfig({
     {
       autoImports: ['defineStore', 'acceptHMRUpdate'],
     },
-  ], 'nuxt-graphql-request', '@nuxtjs/sitemap'],
+  ], 'nuxt-graphql-request', '@nuxtjs/sitemap', '@zadigetvoltaire/nuxt-gtm'],
 
   build: {
     transpile: ['nuxt-graphql-request'],

@@ -1,27 +1,41 @@
-# Library Website Nuxt Template
+# Nuxt 3 Minimal Starter
 
-This template provides a ready-to-go Nuxt3 setup tailored for building library websites. It includes configured packages like Pinia for state management, GraphQL for data fetching, and Cypress for end-to-end testing, among other essential tools.
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Features
+## Setup
 
-- **Nuxt 3**: Latest version of the intuitive Vue framework.
-- **Pinia**: State management made easy.
-- **GraphQL**: Efficient and powerful data querying.
-- **Cypress**: Reliable end-to-end testing.
-- **Utility Libraries**: Pre-configured utilities for faster development.
-
-## How to Use This Template
-
-To get started with this template, follow these steps:
-
-### 1. Generate Your Project
-
-Click on the "Use this template" button to create a new repository based on this template.
-
-### 2. Clone Your Repository
-
-Once the repository is created, clone it to your local machine:
+Make sure to install the dependencies:
 
 ```bash
-git clone https://github.com/your-username/your-repository-name.git
-cd your-repository-name
+# pnpm
+pnpm install
+```
+
+## Development Server
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+# pnpm
+pnpm dev
+```
+
+## Production
+
+Static Build:
+
+```bash
+# pnpm
+pnpm generate
+```
+
+Locally preview static build:
+
+```bash
+# pnpm
+pnpm start
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+
+Make sure local .env is updated

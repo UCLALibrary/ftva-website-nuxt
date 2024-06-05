@@ -12,10 +12,9 @@ const footerSockQuery = `
         }
       }
     `
-
 export default cachedEventHandler(async () => {
   const endpoint = useRuntimeConfig().public.craftGraphqlURL
-  let footerSockData = await useStorage().getItem('craftData:footerSock')
+  let footerSockData = await useStorage().getItem('ftvaCraftData:footerSock')
   // console.log('Server api Craft Footer sock Data object:' + JSON.stringify(footerSockData))
   if (!footerSockData) {
     const { data } = await $fetch(endpoint, {
@@ -25,7 +24,7 @@ export default cachedEventHandler(async () => {
       },
       body: JSON.stringify({ query: footerSockQuery })
     })
-    await useStorage().setItem('craftData:footerSock', data)
+    await useStorage().setItem('ftvaCraftData:footerSock', data)
     footerSockData = data
     // console.log('Server api Craft Footer sock Data object first set and then get:' + JSON.stringify(footerSockData))
   }
