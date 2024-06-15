@@ -37,7 +37,7 @@ jobs:
                       # Percy Screenshots
 
                       In order to conserve our percy screenshot allowance, percy is not configured to run automatically. Please make sure the PR is ready and all other checks are passing, then start it manually:
-                      1. Visit https://github.com/UCLALibrary/meap-website-nuxt/actions/workflows/percy.yml
+                      1. Visit https://github.com/UCLALibrary/ftva-website-nuxt/actions/workflows/percy.yml
                       2. Click the 'Run workflow' button in the blue bar.
                       3. Select the correct branch for this PR and click 'Run workflow' again to confirm.
 
@@ -56,12 +56,10 @@ jobs:
                   key: nuxt3-site-${{ github.sha }}
             - name: Sets env vars for PR preview
               run: |
-                  echo "ES_INDEX=${{secrets.ES_INDEX_TEST}}-deploy-preview-${{github.event.pull_request.number}}" >> $GITHUB_ENV
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}-deploy-preview-${{github.event.pull_request.number}}" >> $GITHUB_ENV
               if: github.ref_name!='main'
             - name: Sets env vars for main merge
               run: |
-                  echo "ES_INDEX=${{secrets.ES_INDEX_TEST}}" >> $GITHUB_ENV
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}" >> $GITHUB_ENV
               if: github.ref_name=='main'
             - run: pnpm run generate
@@ -69,12 +67,11 @@ jobs:
               env:
                   CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
                   S3_BUCKET: "https://static.library.ucla.edu/"
-                  SITEMAP_HOST: "https://test-meap.library.ucla.edu"
+                  SITEMAP_HOST: "https://test-ftva.library.ucla.edu"
                   ES_URL: ${{ secrets.ES_URL }}
                   ESApiKey: ${{ secrets.ESApiKey }}
                   ES_READ_KEY: ${{ secrets.ES_READ_KEY_TEST }}
                   ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
-                  ES_INDEX: ${{ env.ES_INDEX }}
                   ES_ALIAS: ${{ env.ES_ALIAS }}
                   ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
             - name: Deploy to Netlify (preview)
@@ -82,7 +79,7 @@ jobs:
               uses: nwtgck/actions-netlify@v3.0 #
               with:
                   production-deploy: false
-                  deploy-message: https://github.com/UCLALibrary/meap-website-nuxt/pull/${{ github.event.pull_request.number }}
+                  deploy-message: https://github.com/UCLALibrary/ftva-website-nuxt/pull/${{ github.event.pull_request.number }}
                   alias: deploy-preview-${{ github.event.pull_request.number }}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   overwrites-pull-request-comment: true
@@ -91,7 +88,7 @@ jobs:
                   github-deployment-environment: ${{ github.event_name }}-${{ github.event.number }}
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_MEAP_TEST_NUXT3X }}
+                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
             - uses: cypress-io/github-action@v3
               with:
                   start: pnpm dlx serve .output/public
@@ -101,24 +98,23 @@ jobs:
               env:
                   CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
                   S3_BUCKET: "https://static.library.ucla.edu/"
-                  SITEMAP_HOST: "https://test-meap.library.ucla.edu"
+                  SITEMAP_HOST: "https://test-ftva.library.ucla.edu"
                   ES_URL: ${{ secrets.ES_URL }}
                   ESApiKey: ${{ secrets.ESApiKey }}
                   ES_READ_KEY: ${{ secrets.ES_READ_KEY_TEST }}
                   ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
-                  ES_INDEX: ${{ env.ES_INDEX }}
-                  ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST_NUXT3X}}
+                  ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
             - name: Deploy to Netlify (test)
               if: github.ref_name=='main'
               uses: nwtgck/actions-netlify@v2 #
               with:
                   production-deploy: true
-                  deploy-message: https://github.com/UCLALibrary/meap-website-nuxt/commit/${{ github.sha }}
+                  deploy-message: https://github.com/UCLALibrary/ftva-website-nuxt/commit/${{ github.sha }}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   publish-dir: .output/public
                   fails-without-credentials: true
                   github-deployment-environment: production
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID_MEAP_TEST_NUXT3X }}
+                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
             

@@ -41,32 +41,33 @@ jobs:
         if: ${{ github.event_name == 'release' }}
       - uses: ./.github/workflows/setup-workspace
 
-      - name: Cache built static site
-        uses: actions/cache@v3
-        with:
-          path: ./dist
-          key: nuxt-site-${{ github.sha }}
+       - name: Cache built static site
+          id: cache-nuxt3
+          uses: actions/cache@v3
+          with:
+            path: .output/public
+            key: nuxt3-site-${{ github.sha }}
 
-      - run: npm run generate
+      - run: pnpm run generate
         env:
           CRAFT_ENDPOINT: ${{ secrets.CRAFT_PROD_ENDPOINT }}
           S3_BUCKET: "https://static.library.ucla.edu/"
-          SITEMAP_HOST: "https://meap.library.ucla.edu"
+          SITEMAP_HOST: "https://ftva.library.ucla.edu"
           ES_URL: ${{ secrets.ES_URL }}
           ES_READ_KEY: ${{ secrets.ES_READ_KEY_PROD }}
           ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_PROD }}
-          ES_INDEX: ${{ secrets.ES_INDEX_PROD }}
+          ES_ALIAS: ${{ secrets.ES_ALIAS_PROD }}
           ES_INDEX_PREFIX: ${{ secrets.ES_INDEX_PREFIX_PROD }}
 
       - name: Deploy to Netlify on release
         uses: nwtgck/actions-netlify@v2
         with:
           production-deploy: true
-          deploy-message: "https://github.com/UCLALibrary/meap-website-nuxt/commit/${{ github.sha }}"
+          deploy-message: "https://github.com/UCLALibrary/ftva-website-nuxt/commit/${{ github.sha }}"
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          publish-dir: './dist'
+          publish-dir: .output/public
           fails-without-credentials: true
           github-deployment-environment: production
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_PROD_MEAP_SITE_ID }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_PROD_FTVA_SITE_ID }}
