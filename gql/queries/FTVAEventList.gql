@@ -1,0 +1,8 @@
+query FTVAEventList {
+    entries(section: ["ftvaEvent"], orderBy: "postDate") {
+        id
+        title: eventTitle
+        to: uri
+        typeHandle
+    }
+}

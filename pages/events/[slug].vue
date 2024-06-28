@@ -1,9 +1,11 @@
 <script setup>
+// COMPONENTS
+import { NavBreadcrumb } from 'ucla-library-website-components'
 // HELPERS
 import _get from 'lodash/get'
 
 // GQL
-import EVENT_DETAIL from '../gql/queries/EventDetail.gql'
+import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 
 const { $graphql } = useNuxtApp()
 
@@ -11,21 +13,26 @@ const route = useRoute()
 
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
-
-  console.log('PUPPY')
-
-  try {
-    const data = await $graphql.default.request(EVENT_DETAIL, { slug: route.params.slug })
-  } catch (error) {
-    console.error(error)
-  }
-
-  console.log('test:', data)
-
+  const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
   return data
 })
 
-console.log('DATA.VALUE', data.value)
+if (error.value) {
+  throw createError({
+    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+  })
+}
+
+if (!data.value.entry) {
+  // console.log('no data')
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+    fatal: true
+  })
+}
+
+
 
 // const page = ref(data.value)
 // watch(data, (newVal, oldVal) => {
@@ -40,6 +47,15 @@ console.log('DATA.VALUE', data.value)
     id="main"
     class="page page-event-detail"
   >
+    <NavBreadcrumb
+      v-if="data.entry"
+      :title="data.title"
+      class="breadcrumb"
+      to="/events"
+      parent-title="All Events"
+    />
+    <br />
+    <br />
     <h2>PAGE{{ data }}</h2>
     <div>Breadcrumb</div>
     <div>BannerHeaderText</div>

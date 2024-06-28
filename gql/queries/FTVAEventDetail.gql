@@ -1,0 +1,62 @@
+#import "../gql/fragments/Image.gql"
+query FTVAEventDetail($slug: [String!]) {
+  entry(section: "ftvaEvent", slug: $slug) {
+    id
+    typeHandle
+    title:eventTitle
+    ftvaEventIntroduction
+    eventDescription
+    richText
+    startDateWithTime
+    uri
+    slug
+    imageCarousel {
+      ...on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+    location {
+      title
+      campusMapId
+      publicUrl
+      address
+    }
+    guestSpeaker
+    ftvaEventFilters {
+      title
+    }
+    ftvaTicketInformation {
+      title
+    }
+    ftvaEventRegistration {
+      ...on ftvaEventRegistration_eventRegistration_BlockType {
+        registrationText
+        registrationUrlLink
+      }
+    }
+    ftvaEventScreeningDetails {
+      ...on ftvaEventScreeningDetails_screeningDetails_BlockType {
+        screeningTitle
+        alternateTitle
+        languageTranslated
+        year
+        country
+        languageInfo
+        runtime
+        screeningTags {
+          title
+        }
+        descriptionOfScreening
+        trailer
+        image {
+          ...on mediaAndDocuments_Asset {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+}
