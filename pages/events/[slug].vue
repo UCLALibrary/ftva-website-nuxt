@@ -1,6 +1,7 @@
 <script setup>
 // COMPONENTS
 import { NavBreadcrumb } from 'ucla-library-website-components'
+
 // HELPERS
 import _get from 'lodash/get'
 
@@ -16,6 +17,24 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
   return data
 })
+
+// const breadcrumbs = page.title
+// const page = ref(_get(data.value.single, 'entry', {}))
+const page = data.value.entry
+
+
+// Banner Header
+const imageCarousel = page.imageCarousel
+const eventTitle = page.title
+const cardMetaTags = page.ftvaEventFilters
+const cardMetaIntro = page.ftvaEventIntroduction
+const cardMetaText = page.eventDescription
+// const series = data.value.series
+
+
+const blockInfo = page.ftvaTicketInformation
+const eventDetailDateTime = page.startDateWithTime
+const eventDetailLocation = page.location
 
 if (error.value) {
   throw createError({
@@ -47,21 +66,41 @@ if (!data.value.entry) {
     id="main"
     class="page page-event-detail"
   >
-    <NavBreadcrumb
-      v-if="data.entry"
-      :title="data.title"
-      class="breadcrumb"
-      to="/events"
-      parent-title="All Events"
-    />
-    <br />
-    <br />
-    <h2>PAGE{{ data }}</h2>
-    <div>Breadcrumb</div>
-    <div>BannerHeaderText</div>
-    <div>ResponsiveImage</div>
-    <div>ImageCarousel</div>
-    <div>CardMeta</div>
+
+
+    <!-- <h5>PAGE {{ page }}</h5> -->
+
+    <divider-way-finder />
+
+    <h2>NavBreadcrumb</h2>
+    <h3>eventTitle: {{ eventTitle }}</h3>
+
+    <divider-way-finder />
+
+    <h2>BannerImage(s)</h2>
+
+    <h3>ImageCarousel</h3>
+    <p>{{ imageCarousel }}</p>
+
+    <divider-general />
+
+    <h3>CardMeta</h3>
+    <p>EventTitle: {{ eventTitle }}</p>
+    <p>Tags: {{ cardMetaTags }}</p>
+    <p>Intro: {{ cardMetaIntro }}</p>
+    <p>Text: {{ cardMetaText }}</p>
+
+    <divider-way-finder />
+
+    <h3>Resgistration Info?</h3>
+
+    <divider-way-finder />
+
+    <h3>Screening Info?</h3>
+
+    <divider-way-finder />
+
+    <h3>Associated Films ? / Screening Details</h3>
     <!--
         const mockEventSeries = {
           event:{
@@ -78,17 +117,21 @@ if (!data.value.entry) {
         }
          -->
 
-    <divider-way-finder color="visit" />
+    <divider-way-finder />
 
-    <div>EventDetails</div>
+    <h2>SideBar</h2>
+    <h3>BlockEventDetailDateTime</h3>
+    <h4>eventDetailDateTime: {{ eventDetailDateTime }}</h4>
+    <h4>eventDetailLocation: {{ eventDetailLocation }}</h4>
 
-    <div>SideBar</div>
-    <div>
-      <div>Date</div>
-      <div>Time</div>
-      <div>Location</div>
-    </div>
-    <div>InfoBlock</div>
+    <divider-general />
+
+    <h3>InfoBlock</h3>
+    <h4>blockInfo: {{ blockInfo }}</h4>
+
+    <divider-way-finder />
+
+
     <!--
         ftvaTicketInformation: [
           {title: "Admission is free"},

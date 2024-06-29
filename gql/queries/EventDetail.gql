@@ -1,0 +1,99 @@
+#import "../gql/fragments/Image.gql"
+#import "../gql/fragments/collections/DefaultFpbWithCardsAndHighlight.gql"
+#import "../gql/fragments/collections/ExhibitionsAndCollectionsFpb.gql"
+
+query FTVADetail($slug: [String!]) {
+  entry(section: "ftvaEvent", slug: $slug) {
+    id
+    typeHandle
+    sectionHandle
+    uri
+    eventTitle
+    ... on ftvaEvent_ftvaEvent_Entry {
+      id
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          id
+          image {
+            ...Image
+          }
+          creditText
+        }
+      }
+
+
+      ftvaEventFilters {
+        title
+      }
+      ftvaEventIntroduction
+      eventDescription
+
+      # BlockEventDetail
+      startDateWithTime
+      location {
+        title
+        uri
+      }
+
+      # BlockInfo
+      ftvaTicketInformation
+
+
+
+      acknowledements: richText
+
+
+      guestSpeaker
+      ftvaEventFilters {
+        title
+        uri
+      }
+      ftvaEventScreeningDetails {
+        ... on ftvaEventScreeningDetails_screeningDetails_BlockType {
+          id
+          title
+          alternateTitle
+          year
+          country
+          languageTranslated
+          language
+          languageInfo
+          runtime
+          screeningTitle
+          screeningTags {
+            title
+          }
+          descriptionOfScreening
+          trailer
+          typeHandle
+        }
+      }
+    }
+    ... on ftvaEvent_ftvaEvent_Entry {
+      id
+      ftvaTicketInformation {
+        title
+      }
+      ftvaEventRegistration {
+        ... on ftvaEventRegistration_eventRegistration_BlockType {
+          registrationText
+          registrationUrlLink
+        }
+      }
+    }
+
+  }
+  categorySeries: entry(section: "ftvaEventSeries" relatedToEntries: { section: "ftvaEvent", slug: $slug}){
+    title
+  }
+}
+
+fragment Image on AssetInterface {
+  id
+  src: url(transform: "fullscreen")
+  height(transform: "fullscreen")
+  width(transform: "fullscreen")
+  srcset(sizes: ["375", "960", "1280", "1920", "2560"])
+  alt: altText
+  focalPoint
+}
