@@ -26,11 +26,12 @@ const page = data.value.entry
 // Banner Header
 const imageCarousel = page.imageCarousel
 const eventTitle = page.title
+// CardMeta
 const cardMetaTags = page.ftvaEventFilters
 const cardMetaIntro = page.ftvaEventIntroduction
 const cardMetaText = page.eventDescription
-// const series = data.value.series
-
+const series = data.value.categorySeries
+const screeningDetails = page.ftvaEventScreeningDetails
 
 const blockInfo = page.ftvaTicketInformation
 const eventDetailDateTime = page.startDateWithTime
@@ -51,8 +52,6 @@ if (!data.value.entry) {
   })
 }
 
-
-
 // const page = ref(data.value)
 // watch(data, (newVal, oldVal) => {
 //   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -67,110 +66,102 @@ if (!data.value.entry) {
     class="page page-event-detail"
   >
 
+    <!-- SERIES {{ data }} -->
 
     <!-- <h5>PAGE {{ page }}</h5> -->
 
-    <divider-way-finder />
+    <!--section-->
 
     <h2>NavBreadcrumb</h2>
+    <!--
+    <nav-breadcrumb
+      v-if="page"
+      :title="page.title"
+      class="breadcrumb"
+      :to="parseParentPageURL"
+      :parent-title="parseParentTitle"
+    />
+     -->
     <h3>eventTitle: {{ eventTitle }}</h3>
 
-    <divider-way-finder />
+    <!-- ********** -->
 
-    <h2>BannerImage(s)</h2>
 
-    <h3>ImageCarousel</h3>
+
+    <h2>ResponsiveImage</h2>
+    <!-- if {{ imageCarousel.length == 1}} -->
+    <!--
+    <responsive-image
+      v-if=""
+      :media=""
+      :aspect-ratio=""
+      class=""
+      alt=""
+    />
+    -->
+    <p><strong>Image:</strong> </p>
+    {{ imageCarousel[0].image }}
+    <p><strong>Credit:</strong> {{ imageCarousel[0].creditText }}</p>
+    <!-- if {{ imageCarousel.length > 1}} -->
+    <h2>ImageCarousel</h2>
     <p>{{ imageCarousel }}</p>
 
-    <divider-general />
+    <!-- ********** -->
 
-    <h3>CardMeta</h3>
+    <h2>CardMeta</h2>
+    <p>EventSeries {{ series }}</p>
     <p>EventTitle: {{ eventTitle }}</p>
     <p>Tags: {{ cardMetaTags }}</p>
     <p>Intro: {{ cardMetaIntro }}</p>
-    <p>Text: {{ cardMetaText }}</p>
+    <p>EventDescription/Text: {{ cardMetaText }}</p>
+
+    <rich-text>GUEST SPEAKER: {{ page.guestSpeaker }}</rich-text><!-- not part of the cardMeta-->
+
+    <rich-text>ACKNOWLEDEMENTS: {{ page.richText }}</rich-text><!-- not part of the cardMeta-->
 
     <divider-way-finder />
 
-    <h3>Resgistration Info?</h3>
+    <!-- screeningDetails is an Array
+      One event can have ONE screening OR multiple Screenings -->
 
-    <divider-way-finder />
+    <h4>screeningDetails{{ screeningDetails }}</h4>
+    <p><strong>Title: </strong> {{ screeningDetails[0].screeningTitle }}</p>
+    <p><strong>AlternativeTitle: </strong> {{ screeningDetails[0].alternateTitle }}</p>
 
-    <h3>Screening Info?</h3>
+    <p><strong>Inline value of lang atribute for alternateTitle: </strong> {{ screeningDetails[0].languageTranslated }}
+    </p>
 
-    <divider-way-finder />
+    <p><strong>Year: </strong> {{ screeningDetails[0].year }}</p>
 
-    <h3>Associated Films ? / Screening Details</h3>
-    <!--
-        const mockEventSeries = {
-          event:{
-            eventTitle: 'Origin of a Meal',
-            ftvaEventIntroduction: 'In-person: chef and restaurateur Alice Waters.',
-            ftvaEventFilters: [
-              { title: 'Guest speaker' }, { title: '35mm' }
-            ],
-            text: '<p>From a meal composed of eggs, canned tuna and bananas, Luc Moullet goes up the chain that led these foods to his plate: supermarket managers, wholesalers, importers, manufacturers, workers, etc. are interviewed to help us understand how it all works.</p>',
-          }
-          series: {
-            title: "TEST Series: The Step Up Movie Series"
-          }
-        }
-         -->
+    <p><strong>Country: </strong> {{ screeningDetails[0].country }}</p>
+    <p><strong>Language: </strong> {{ screeningDetails[0].languageInfo }}</p>
+    <p><strong>Runtime: </strong> {{ screeningDetails[0].runtime }}</p>
 
-    <divider-way-finder />
+    <p><strong>ScreeningTags: </strong> {{ screeningDetails[0].screeningTags[0].title }}</p> Array
+    <p><strong>descriptionOfScreening: </strong> {{ screeningDetails[0].descriptionOfScreening }}</p>
+
 
     <h2>SideBar</h2>
     <h3>BlockEventDetailDateTime</h3>
-    <h4>eventDetailDateTime: {{ eventDetailDateTime }}</h4>
-    <h4>eventDetailLocation: {{ eventDetailLocation }}</h4>
+    <h4>Date: {{ startDate }}</h4>
+    <h4>Time: {{ startTime }}</h4>
 
-    <divider-general />
+    <h3>eventDetailLocation: {{ eventDetailLocation }}</h3>// title/uri
+    <h4>eventDetailLocation Title: {{ eventDetailLocation[0].title }}</h4>
+    <h4>eventDetail Uri: {{ eventDetailLocation[0].uri }}</h4>
 
+    <!------>
     <h3>InfoBlock</h3>
-    <h4>blockInfo: {{ blockInfo }}</h4>
+    <h4>blockInfo: {{ ftvaTicketInformation }}</h4>Arrray
 
-    <divider-way-finder />
+    <!------>
 
-
-    <!--
-        ftvaTicketInformation: [
-          {title: "Admission is free"},
-          {title: "Seats are assigned on a first come, first served basis"},
-          {title: "The box office opens one hour before the event"}
-        ],
-        ftvaEventRegistration: [
-          {registrationText: "UCLA Box Office", registrationUrlLink: "https://tickets.ucla.edu/"}
-        ]
-        -->
-
-    <!--
-        query FTVADetail($slug: [String!]) {
-          entry(section: "ftvaEvent", slug: $slug) {
-            id
-            typeHandle
-            title
-            uri
-            slug
-            ... on ftvaEvent_ftvaEvent_Entry {
-              id
-              ftvaTicketInformation {
-                title
-              }
-              ftvaEventRegistration {
-                ... on ftvaEventRegistration_eventRegistration_BlockType {
-                  registrationText
-                  registrationUrlLink
-                }
-              }
-            }
-          }
-        }
-        -->
-
+    If this event is part of an EventSeries display other events in the same series.
+    {{ series }}
     <div>More in this series
       <div>CardWithImage</div>
       <div>
-        image
+        <!-- {{ series }} Array -->
         title
         date | time
       </div>
@@ -178,3 +169,19 @@ if (!data.value.entry) {
 
   </main>
 </template>
+
+<!-- "ftvaEventScreeningDetails": [
+        {
+          "id": "3155837",
+          "screeningTitle": "Step Up: High Water / Season 1 - Duets",
+          "alternateTitle": null,
+          "year": "2018",
+          "country": "USA",
+          "languageTranslated": "fr",
+          "languageInfo": "English",
+          "runtime": null,
+          "screeningTags": [],
+          "descriptionOfScreening": null,
+          "trailer": null,
+          "typeHandle": "screeningDetails"
+        }, -->
