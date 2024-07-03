@@ -11,7 +11,6 @@ const { data, error } = await useAsyncData('event-list', async () => {
   return data
 })
 
-
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
@@ -27,7 +26,6 @@ if (!data.value.entries) {
   })
 }
 
-
 </script>
 <template>
   <div
@@ -40,10 +38,10 @@ if (!data.value.entries) {
       v-for="event in data.entries"
       :key="event.id"
     >
-      <NuxtLink :to="event.to">{{ event.title }}</NuxtLink> <br />
+      <NuxtLink :to="event.to">
+        {{ event.title }}
+      </NuxtLink> <br>
     </div>
-
-
   </div>
 </template>
 <style scoped>

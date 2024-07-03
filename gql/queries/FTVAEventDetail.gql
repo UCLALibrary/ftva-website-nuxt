@@ -1,6 +1,6 @@
 #import "../gql/fragments/Image.gql"
 query FTVAEventDetail($slug: [String!]) {
-  entry(section: "ftvaEvent", slug: $slug) {
+  ftvaEvent: entry(section: "ftvaEvent", slug: $slug) {
     id
     typeHandle
     title:eventTitle
@@ -53,6 +53,28 @@ query FTVAEventDetail($slug: [String!]) {
         trailer
         image {
           ...on mediaAndDocuments_Asset {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+  ftvaEventSeries: entries(
+    section: "ftvaEventSeries"
+    relatedToEntries: {section: "ftvaEvent", slug: $slug}) {
+    ... on ftvaEventSeries_eventSeries_Entry {
+      id
+      slug
+      typeHandle
+      title
+      ftvaEvent {
+        ... on ftvaEvent_ftvaEvent_Entry {
+        id
+        title
+        startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+        startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+
+          ftvaImage {
             ...Image
           }
         }

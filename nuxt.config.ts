@@ -47,29 +47,9 @@ export default defineNuxtConfig({
         } */
         console.log('prerender:generate', route)
       },
-      async 'prerender:routes'(routes) {
-        const allRoutes = []
+      'prerender:routes'(routes) {
+        // const allRoutes = []
 
-        const response = await fetch(process.env.CRAFT_ENDPOINT, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          method: 'POST',
-          body: JSON.stringify({ query: 'query AllPages { entries { uri, sectionHandle } }' })
-        })
-
-        const postPages = await response.json()
-        // console.log('All pages', JSON.stringify(postPages.data.entries))
-        if (postPages && postPages.data && postPages.data.entries) {
-          const postWithoutPayloadRoutes = postPages.data.entries.filter(item => item.sectionHandle.includes('ftva')).map(entry => '/' + entry.uri.replace(/^ftva\//, ''))
-          allRoutes.push(...postWithoutPayloadRoutes)
-        }
-
-        if (allRoutes.length) {
-          for (const route of allRoutes) {
-            routes.add(route)
-          }
-        }
         console.log('prerender:routes ctx.routes', routes)
       }
     },
