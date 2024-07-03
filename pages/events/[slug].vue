@@ -74,6 +74,8 @@ watch(data, (newVal, oldVal) => {
     class="page page-event-detail"
   >
 
+    <!--THE COMPONENTS ON THIS PAGE ARE JUST REFERENCES AND NEED TO BE UPDATED WITH THE CORRECT DATA AND IF STATEMENTS-->
+
     <h2>NavBreadcrumb</h2>
 
     <NavBreadcrumb
@@ -97,8 +99,6 @@ watch(data, (newVal, oldVal) => {
     <h2>ImageCarousel</h2>
     <p>{{ imageCarousel }}</p>
 
-    <!--THE COMPONENTS ON THIS PAGE ARE JUST REFERENCES NAD NEED TO BE UPDATED WITH THE CORRECT DATA AND IF STATEMENTS-->
-
     <!-- <responsive-image
       v-if='imageCarousel.length == 1'
       :media="imageCarousel[0].image"
@@ -108,23 +108,26 @@ watch(data, (newVal, oldVal) => {
       </template></responsive-image> -->
 
     <!-- ********** -->
+
     <hr>
     <h2>CardMeta</h2>
-    <h3>eventTitle: {{ eventTitle }}</h3>
-    <p>Category: {{ cardMetaCategory }}</p>
-    <p>Title: {{ eventTitle }}</p>
-    <p>TagLabels: {{ cardMetaTags }}</p>
-    <p>Introduction: {{ cardMetaIntro }}</p>
-    <p>EventDescription/Text: {{ cardMetaText }}</p>
-    <hr>
-    <card-meta
-      v-if="eventTitle"
-      :category="series[0].title"
-      :title="eventTitle"
-      :tagLabels="cardMetaTags"
-      :introduction="cardMetaIntro"
-      :text="cardMetaText"
-    />
+    <h3 v-if="eventTitle">eventTitle: {{ eventTitle }}</h3>
+    <p v-if="cardMetaCategory">Category: {{ cardMetaCategory }}</p>
+    <p v-if="eventTitle">Title: {{ eventTitle }}</p>
+    <p v-if="cardMetaTags">TagLabels: {{ cardMetaTags }}</p>
+    <p v-if="cardMetaIntro">Introduction: {{ cardMetaIntro }}</p>
+    <p v-if="cardMetaText">EventDescription/Text: {{ cardMetaText }}</p>
+
+    <!--
+      <card-meta
+        v-if="eventTitle"
+        :category="series[0].title"
+        :title="eventTitle"
+        :tagLabels="cardMetaTags"
+        :introduction="cardMetaIntro"
+        :text="cardMetaText"
+      />
+    -->
     <hr>
 
     <h2>GUEST SPEAKER:</h2><!-- not part of the cardMeta-->
@@ -147,7 +150,7 @@ watch(data, (newVal, oldVal) => {
       ONE screening
       OR multiple Screenings
     -->
-    <h2>BlockScreening</h2>
+    <h2>SectionScreening</h2>
     <div v-if="screeningDetails && screeningDetails.length > 0">
       <p>
         <strong>Title: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
@@ -173,16 +176,15 @@ watch(data, (newVal, oldVal) => {
       <p><strong>Language: </strong> {{ screeningDetails[0].languageInfo }}</p>
       <p><strong>Runtime: </strong> {{ screeningDetails[0].runtime }}</p>
 
-      <p>
-        <strong>ScreeningTags: </strong>
+      <strong>ScreeningTags: </strong>
       <p v-if="screeningDetails[0].screeningTags && screeningDetails[0].screeningTags.length > 0">
-        {{ screeningDetails[0].screeningTags[0].title }}
-      </p>
-      </p> Array
-      <p><strong>descriptionOfScreening: </strong> {{ screeningDetails[0].descriptionOfScreening }}</p>
+        {{ screeningDetails[0].screeningTags }}</p>
     </div>
+    <br>
+    <h3>screeningDetails:</h3>
+    <code>{{ screeningDetails }}</code>
 
-    <!------>
+    <!-- ********** -->
 
     <hr>
     <h2>SIDEBAR</h2>
@@ -193,32 +195,38 @@ watch(data, (newVal, oldVal) => {
       <h4>Location: {{ eventDetailLocation }}</h4>
     </div>
 
-    <!-- <BlockEventDetail
-      :startDate="eventDetailDate"
-      :time="eventDetailTime"
-      :locations="eventDetailLocation"
-    /> -->
+    <!--
+      <BlockEventDetail
+        :startDate="eventDetailDate"
+        :time="eventDetailTime"
+        :locations="eventDetailLocation"
+      />
+  -->
 
-    <!------>
+    <!-- ********** -->
 
     <hr>
     <h3>InfoBlock</h3>
-    <h4>blockInfo: {{ blockInfo }}</h4>
+    <h4>blockInfo:</h4>
+    <code>{{ blockInfo }}</code>
     <!--
       <block-info :ftvaTicketInformation='blockInfo' />
     -->
 
-    <!------>
+    <!-- ********** -->
 
     <hr>
     <!-- If this event is part of an EventSeries display other events in the same series. -->
     <!-- WRITE A COMPUTED PROPORTY TO EXCLUDE THE EVENT THAT THIS PAGE DETAILS -->
 
     <h2>More in this series</h2>
-    <h3>CardWithImage (ftvaEventSeries)</h3>
-    <code> {{ series }} </code>
-    <!-- THIS COMPONENT IS NOT DONE YET -->
-    <!-- <section-teaser-card :items="series.ftvaEvent" /> -->
-
+    <div v-if="series && series.length > 0">
+      <h3>CardWithImage (ftvaEventSeries)</h3>
+      <code> {{ series }} </code>
+      <!-- THIS COMPONENT IS NOT DONE YET -->
+      <!--
+        <section-teaser-card :items="series.ftvaEvent" />
+      -->
+    </div>
   </main>
 </template>
