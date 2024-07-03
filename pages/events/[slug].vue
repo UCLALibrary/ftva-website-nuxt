@@ -8,6 +8,8 @@ import _get from 'lodash/get'
 // GQL
 import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 
+import FTVAEventDetailSeries from '../gql/queries/FTVAEventDetailSeries.gql'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -15,13 +17,15 @@ const route = useRoute()
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
+
+  // const ftvaEventSeries = await $graphql.default.request(FTVAEventDetailSeries, { slug: route.params.slug })
+  // return { data, ftvaEventSeries }
   return data
 })
 
 // const breadcrumbs = page.title
 // const page = ref(_get(data.value.single, 'entry', {}))
 const page = data.value.entry
-
 
 // Banner Header
 const imageCarousel = page.imageCarousel
@@ -65,7 +69,7 @@ if (!data.value.entry) {
     id="main"
     class="page page-event-detail"
   >
-
+    <h3>ftvaEventSeries:::{{ ftvaEventSeries }}</h3>
     <!-- SERIES {{ data }} -->
 
     <!-- <h5>PAGE {{ page }}</h5> -->
@@ -85,8 +89,6 @@ if (!data.value.entry) {
     <h3>eventTitle: {{ eventTitle }}</h3>
 
     <!-- ********** -->
-
-
 
     <h2>ResponsiveImage</h2>
     <!-- if {{ imageCarousel.length == 1}} -->
@@ -152,12 +154,12 @@ if (!data.value.entry) {
 
     <!------>
     <h3>InfoBlock</h3>
-    <h4>blockInfo: {{ ftvaTicketInformation }}</h4>Arrray
+    <h4>blockInfo: {{ blockInfo }}</h4>Arrray
 
     <!------>
 
     If this event is part of an EventSeries display other events in the same series.
-    {{ series }}
+    <!-- {{ series }} -->
     <div>More in this series
       <div>CardWithImage</div>
       <div>
@@ -166,22 +168,22 @@ if (!data.value.entry) {
         date | time
       </div>
     </div>
+    <!-- "ftvaEventScreeningDetails": [
+      {
+        "id": "3155837",
+        "screeningTitle": "Step Up: High Water / Season 1 - Duets",
+        "alternateTitle": null,
+        "year": "2018",
+        "country": "USA",
+        "languageTranslated": "fr",
+        "languageInfo": "English",
+        "runtime": null,
+        "screeningTags": [],
+        "descriptionOfScreening": null,
+        "trailer": null,
+        "typeHandle": "screeningDetails"
+      }
+    -->
 
   </main>
 </template>
-
-<!-- "ftvaEventScreeningDetails": [
-        {
-          "id": "3155837",
-          "screeningTitle": "Step Up: High Water / Season 1 - Duets",
-          "alternateTitle": null,
-          "year": "2018",
-          "country": "USA",
-          "languageTranslated": "fr",
-          "languageInfo": "English",
-          "runtime": null,
-          "screeningTags": [],
-          "descriptionOfScreening": null,
-          "trailer": null,
-          "typeHandle": "screeningDetails"
-        }, -->

@@ -1,0 +1,33 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVADetailSeries($slug: [String!]) {
+  entry(
+    section: "ftvaEventSeries"
+    relatedToEntries: {section: "ftvaEvent", slug: $slug}) {
+    ... on ftvaEventSeries_eventSeries_Entry {
+      id
+      ftvaEvent {
+        ... on ftvaEvent_ftvaEvent_Entry {
+        id
+        title
+        startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+        startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+
+          ftvaImage {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+}
+
+fragment Image on AssetInterface {
+  id
+  src: url(transform: "fullscreen")
+  height(transform: "fullscreen")
+  width(transform: "fullscreen")
+  srcset(sizes: ["375", "960", "1280", "1920", "2560"])
+  alt: altText
+  focalPoint
+}
