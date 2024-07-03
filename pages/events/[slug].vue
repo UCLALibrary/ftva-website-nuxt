@@ -66,6 +66,7 @@ watch(data, (newVal, oldVal) => {
     id="main"
     class="page page-event-detail"
   >
+
     <h2>NavBreadcrumb</h2>
 
     <NavBreadcrumb
@@ -79,15 +80,6 @@ watch(data, (newVal, oldVal) => {
     <!-- ********** -->
 
     <h2>ResponsiveImage</h2>
-    <!-- if {{ imageCarousel.length == 1}}
-      <responsive-image
-            :media="imageCarousel[0].image"
-        >
-        <template v-slot:credit>
-               {{imageCarousel[0]?.creditText}}
-        </template>
-</responsive-image>
--->
     <p><strong>Image:</strong> </p>
     {{ imageCarousel && imageCarousel.length > 0 ? imageCarousel[0]?.image : "No Image" }}
     <p>
@@ -98,6 +90,16 @@ watch(data, (newVal, oldVal) => {
     <h2>ImageCarousel</h2>
     <p>{{ imageCarousel }}</p>
 
+    <!--THE COMPONENTS ON THIS PAGE ARE JUST REFERENCES NAD NEED TO BE UPDATED WITH THE CORRECT DATA AND IF STATEMENTS-->
+
+    <!-- <responsive-image
+      v-if='imageCarousel.length == 1'
+      :media="imageCarousel[0].image"
+    >
+      <template v-slot:credit>
+        {{ imageCarousel[0].creditText }}
+      </template></responsive-image> -->
+
     <!-- ********** -->
 
     <h2>CardMeta</h2>
@@ -107,17 +109,16 @@ watch(data, (newVal, oldVal) => {
     <p>TagLabels: {{ cardMetaTags }}</p>
     <p>Introduction: {{ cardMetaIntro }}</p>
     <p>EventDescription/Text: {{ cardMetaText }}</p>
-    <!--
-      add to the if statement
-    -->
+    <hr>
     <card-meta
       v-if="eventTitle"
       :category="series[0].title"
       :title="eventTitle"
-      :tag-labels="cardMetaTags"
+      :tagLabels="cardMetaTags"
       :introduction="cardMetaIntro"
       :text="cardMetaText"
     />
+    <hr>
 
     <h2>GUEST SPEAKER:</h2><!-- not part of the cardMeta-->
     <rich-text
@@ -137,25 +138,26 @@ watch(data, (newVal, oldVal) => {
       ScreeningDetails / BlockScreening is an Array
       One event can have
       ONE screening
-      OR multiple Screenings -->
+      OR multiple Screenings
+    -->
     <h4>BlockScreening</h4>
     <div v-if="screeningDetails && screeningDetails.length > 0">
       <p>
         <strong>Title: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
-          screeningDetails[0].screeningTitle
-          :
-          "No screening title" }}
+        screeningDetails[0].screeningTitle
+        :
+        "No screening title" }}
       </p>
       <p>
         <strong>AlternativeTitle: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
-          screeningDetails[0].alternateTitle : "No screening details" }}
+        screeningDetails[0].alternateTitle : "No screening details" }}
       </p>
 
       <p>
         <!-- use  a v-for for avoinding undefined errors-->
         <strong>Inline value of lang atribute for alternateTitle: </strong> {{ screeningDetails &&
-          screeningDetails.length
-          > 0 ? screeningDetails[0].languageTranslated : "No screening detail for this event" }}
+        screeningDetails.length
+        > 0 ? screeningDetails[0].languageTranslated : "No screening detail for this event" }}
       </p>
 
       <p><strong>Year: </strong> {{ screeningDetails[0].year }}</p>
@@ -166,7 +168,7 @@ watch(data, (newVal, oldVal) => {
 
       <p>
         <strong>ScreeningTags: </strong>
-      </p><p v-if="screeningDetails[0].screeningTags && screeningDetails[0].screeningTags.length > 0">
+      <p v-if="screeningDetails[0].screeningTags && screeningDetails[0].screeningTags.length > 0">
         {{ screeningDetails[0].screeningTags[0].title }}
       </p>
       </p> Array
@@ -184,13 +186,11 @@ watch(data, (newVal, oldVal) => {
     </div>
     <!------>
     <h3>InfoBlock</h3>
-    <h4>blockInfo: {{ blockInfo }}</h4>
-    <block-info :ftva-ticket-information="blockInfo" />
-    <hr>
+    <h4>blockInfo: {{ blockInfo }}</h4>Arrray
+
     <!------>
 
-    <!-- If this event is part of an EventSeries;
-       display other events in the same series. -->
+    <!-- If this event is part of an EventSeries display other events in the same series. -->
     <!-- {{ series }} -->
     <div>
       More in this series
