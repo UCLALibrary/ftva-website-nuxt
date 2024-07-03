@@ -34,24 +34,31 @@ if (!data.value.ftvaEvent) {
   })
 }
 
-// const breadcrumbs = page.title
 // const page = ref(_get(data.value.single, 'entry', {}))
 const page = data.value.ftvaEvent
-
+// Breadcrumbs
+const breadcrumbs = page.title
 // Banner Header
 const imageCarousel = page.imageCarousel
 const eventTitle = page.title
 // CardMeta
+const cardMetaCategory = data.value.ftvaEventSeries[0].title
 const cardMetaTags = page.ftvaEventFilters
 const cardMetaIntro = page.ftvaEventIntroduction
 const cardMetaText = page.eventDescription
-const series = data.value.ftvaEventSeries
 // BlockScreening
 const screeningDetails = page.ftvaEventScreeningDetails
-// Sidebar
+// SIDEBAR
+// BlockInfo
 const blockInfo = page.ftvaTicketInformation
-const eventDetailDateTime = page.startDateWithTime
+
+// BlockEventDetail
+const eventDetailDate = page.startDate
+const eventDetailTime = page.startTime
 const eventDetailLocation = page.location
+
+// CardWithImage
+const series = data.value.ftvaEventSeries
 
 // const page = ref(data.value)
 watch(data, (newVal, oldVal) => {
@@ -101,10 +108,10 @@ watch(data, (newVal, oldVal) => {
       </template></responsive-image> -->
 
     <!-- ********** -->
-
+    <hr>
     <h2>CardMeta</h2>
     <h3>eventTitle: {{ eventTitle }}</h3>
-    <p>Category: {{ series[0].title }}</p>
+    <p>Category: {{ cardMetaCategory }}</p>
     <p>Title: {{ eventTitle }}</p>
     <p>TagLabels: {{ cardMetaTags }}</p>
     <p>Introduction: {{ cardMetaIntro }}</p>
@@ -140,7 +147,7 @@ watch(data, (newVal, oldVal) => {
       ONE screening
       OR multiple Screenings
     -->
-    <h4>BlockScreening</h4>
+    <h2>BlockScreening</h2>
     <div v-if="screeningDetails && screeningDetails.length > 0">
       <p>
         <strong>Title: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
@@ -174,51 +181,44 @@ watch(data, (newVal, oldVal) => {
       </p> Array
       <p><strong>descriptionOfScreening: </strong> {{ screeningDetails[0].descriptionOfScreening }}</p>
     </div>
-    <h2>SideBar</h2>
-    <h3>BlockEventDetailDateTime</h3>
+
+    <!------>
+
+    <hr>
+    <h2>SIDEBAR</h2>
+    <h3>BlockEventDetail</h3>
     <div v-if="eventDetailLocation && eventDetailLocation.length > 0">
-      <h4>Date: {{ startDate }}</h4>
-      <h4>Time: {{ startTime }}</h4>
-
-      <h3>eventDetailLocation: {{ eventDetailLocation }}</h3>// title/uri
-      <h4>eventDetailLocation Title: {{ eventDetailLocation[0].title }}</h4>
-      <h4>eventDetail Uri: {{ eventDetailLocation[0].uri }}</h4>
+      <h4>Date: {{ eventDetailDate }}</h4>
+      <h4>Time: {{ eventDetailTime }}</h4>
+      <h4>Location: {{ eventDetailLocation }}</h4>
     </div>
+
+    <!-- <BlockEventDetail
+      :startDate="eventDetailDate"
+      :time="eventDetailTime"
+      :locations="eventDetailLocation"
+    /> -->
+
     <!------>
+
+    <hr>
     <h3>InfoBlock</h3>
-    <h4>blockInfo: {{ blockInfo }}</h4>Arrray
-
-    <!------>
-
-    <!-- If this event is part of an EventSeries display other events in the same series. -->
-    <!-- {{ series }} -->
-    <div>
-      More in this series
-      <div>CardWithImage</div>
-      <div>
-        <!-- {{ series }} Array -->
-        title
-        date | time
-      </div>
-    </div>
-    <!-- "ftvaEventScreeningDetails": [
-      {
-        "id": "3155837",
-        "screeningTitle": "Step Up: High Water / Season 1 - Duets",
-        "alternateTitle": null,
-        "year": "2018",
-        "country": "USA",
-        "languageTranslated": "fr",
-        "languageInfo": "English",
-        "runtime": null,
-        "screeningTags": [],
-        "descriptionOfScreening": null,
-        "trailer": null,
-        "typeHandle": "screeningDetails"
-      }
+    <h4>blockInfo: {{ blockInfo }}</h4>
+    <!--
+      <block-info :ftvaTicketInformation='blockInfo' />
     -->
 
-    <h3>ftvaEventSeries</h3>
-    <code> {{ data.ftvaEventSeries }} </code>
+    <!------>
+
+    <hr>
+    <!-- If this event is part of an EventSeries display other events in the same series. -->
+    <!-- WRITE A COMPUTED PROPORTY TO EXCLUDE THE EVENT THAT THIS PAGE DETAILS -->
+
+    <h2>More in this series</h2>
+    <h3>CardWithImage (ftvaEventSeries)</h3>
+    <code> {{ series }} </code>
+    <!-- THIS COMPONENT IS NOT DONE YET -->
+    <!-- <section-teaser-card :items="series.ftvaEvent" /> -->
+
   </main>
 </template>
