@@ -1,15 +1,11 @@
 #import "../gql/fragments/Image.gql"
+
 query FTVAEventDetail($slug: [String!]) {
   ftvaEvent: entry(section: "ftvaEvent", slug: $slug) {
     id
     typeHandle
-    title:eventTitle
-    ftvaEventIntroduction
-    eventDescription
-    richText
-    startDateWithTime
-    uri
     slug
+    uri
     imageCarousel {
       ...on imageCarousel_imageCarousel_BlockType {
         image {
@@ -18,18 +14,30 @@ query FTVAEventDetail($slug: [String!]) {
         creditText
       }
     }
+    title: eventTitle
+    ftvaEventIntroduction
+    eventDescription
+    guestSpeaker
+    acknowledements: richText
+    startDateWithTime
+    startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+    startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
     location {
       title
       campusMapId
       publicUrl
       address
     }
-    guestSpeaker
+    # BlockInfo
+    ftvaTicketInformation {
+      id
+      title
+      uri
+    }
+    # Ticket Info
     ftvaEventFilters {
       title
-    }
-    ftvaTicketInformation {
-      title
+      uri
     }
     ftvaEventRegistration {
       ...on ftvaEventRegistration_eventRegistration_BlockType {
@@ -37,6 +45,7 @@ query FTVAEventDetail($slug: [String!]) {
         registrationUrlLink
       }
     }
+
     ftvaEventScreeningDetails {
       ...on ftvaEventScreeningDetails_screeningDetails_BlockType {
         screeningTitle
@@ -59,6 +68,7 @@ query FTVAEventDetail($slug: [String!]) {
       }
     }
   }
+
   ftvaEventSeries: entries(
     section: "ftvaEventSeries"
     relatedToEntries: {section: "ftvaEvent", slug: $slug}) {

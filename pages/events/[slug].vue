@@ -45,9 +45,10 @@ const eventTitle = page.title
 const cardMetaTags = page.ftvaEventFilters
 const cardMetaIntro = page.ftvaEventIntroduction
 const cardMetaText = page.eventDescription
-const series = data.value.categorySeries
+const series = data.value.ftvaEventSeries
+// BlockScreening
 const screeningDetails = page.ftvaEventScreeningDetails
-
+// Sidebar
 const blockInfo = page.ftvaTicketInformation
 const eventDetailDateTime = page.startDateWithTime
 const eventDetailLocation = page.location
@@ -65,12 +66,6 @@ watch(data, (newVal, oldVal) => {
     id="main"
     class="page page-event-detail"
   >
-    <h3>ftvaEventSeries</h3>
-    <code> {{ data.ftvaEventSeries }} </code>
-
-    <!-- <h5>PAGE {{ page }}</h5> -->
-
-    <!--section-->
 
     <h2>NavBreadcrumb</h2>
 
@@ -82,21 +77,18 @@ watch(data, (newVal, oldVal) => {
       parent-title="All Events"
     />
 
-    <h3>eventTitle: {{ eventTitle }}</h3>
-
     <!-- ********** -->
 
     <h2>ResponsiveImage</h2>
-    <!-- if {{ imageCarousel.length == 1}} -->
-    <!--
-    <responsive-image
-      v-if=""
-      :media=""
-      :aspect-ratio=""
-      class=""
-      alt=""
-    />
-    -->
+    <!-- if {{ imageCarousel.length == 1}}
+      <responsive-image
+            :media="imageCarousel[0].image"
+        >
+        <template v-slot:credit>
+               {{imageCarousel[0]?.creditText}}
+        </template>
+</responsive-image>
+-->
     <p><strong>Image:</strong> </p>
     {{ imageCarousel && imageCarousel.length > 0 ? imageCarousel[0]?.image : "No Image" }}
     <p>
@@ -110,38 +102,62 @@ watch(data, (newVal, oldVal) => {
     <!-- ********** -->
 
     <h2>CardMeta</h2>
-    <p>EventSeries {{ series }}</p>
-    <p>EventTitle: {{ eventTitle }}</p>
-    <p>Tags: {{ cardMetaTags }}</p>
-    <p>Intro: {{ cardMetaIntro }}</p>
+    <h3>eventTitle: {{ eventTitle }}</h3>
+    <p>Category: {{ series[0].title }}</p>
+    <p>Title: {{ eventTitle }}</p>
+    <p>TagLabels: {{ cardMetaTags }}</p>
+    <p>Introduction: {{ cardMetaIntro }}</p>
     <p>EventDescription/Text: {{ cardMetaText }}</p>
+    <!--
+      add to the if statement
+    -->
+    <card-meta
+      v-if="eventTitle"
+      :category="series[0].title"
+      :title="eventTitle"
+      :tagLabels="cardMetaTags"
+      :introduction="cardMetaIntro"
+      :text="cardMetaText"
+    />
 
-    <rich-text>GUEST SPEAKER: {{ page.guestSpeaker }}</rich-text><!-- not part of the cardMeta-->
 
-    <rich-text>ACKNOWLEDEMENTS: {{ page.richText }}</rich-text><!-- not part of the cardMeta-->
+    <h2>GUEST SPEAKER:</h2><!-- not part of the cardMeta-->
+    <rich-text
+      v-if="page.guestSpeaker"
+      :rich-text-content="page.guestSpeaker"
+    />
+
+    <h2>ACKNOWLEDEMENTS:</h2><!-- not part of the cardMeta-->
+    <rich-text
+      v-if="page.acknowledements"
+      :rich-text-content="page.acknowledements"
+    />
 
     <divider-way-finder />
 
-    <!-- screeningDetails is an Array
-      One event can have ONE screening OR multiple Screenings -->
-    <h4>screeningDetails</h4>
+    <!--
+      ScreeningDetails / BlockScreening is an Array
+      One event can have
+      ONE screening
+      OR multiple Screenings -->
+    <h4>BlockScreening</h4>
     <div v-if="screeningDetails && screeningDetails.length > 0">
       <p>
         <strong>Title: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
-          screeningDetails[0].screeningTitle
-          :
-          "No screening title" }}
+        screeningDetails[0].screeningTitle
+        :
+        "No screening title" }}
       </p>
       <p>
         <strong>AlternativeTitle: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
-          screeningDetails[0].alternateTitle : "No screening details" }}
+        screeningDetails[0].alternateTitle : "No screening details" }}
       </p>
 
       <p>
         <!-- use  a v-for for avoinding undefined errors-->
         <strong>Inline value of lang atribute for alternateTitle: </strong> {{ screeningDetails &&
-          screeningDetails.length
-          > 0 ? screeningDetails[0].languageTranslated : "No screening detail for this event" }}
+        screeningDetails.length
+        > 0 ? screeningDetails[0].languageTranslated : "No screening detail for this event" }}
       </p>
 
       <p><strong>Year: </strong> {{ screeningDetails[0].year }}</p>
@@ -170,11 +186,13 @@ watch(data, (newVal, oldVal) => {
     </div>
     <!------>
     <h3>InfoBlock</h3>
-    <h4>blockInfo: {{ blockInfo }}</h4>Arrray
-
+    <h4>blockInfo: {{ blockInfo }}</h4>
+    <block-info :ftvaTicketInformation='blockInfo' />
+    <hr>
     <!------>
 
-    If this event is part of an EventSeries display other events in the same series.
+    <!-- If this event is part of an EventSeries;
+       display other events in the same series. -->
     <!-- {{ series }} -->
     <div>
       More in this series
@@ -201,5 +219,8 @@ watch(data, (newVal, oldVal) => {
         "typeHandle": "screeningDetails"
       }
     -->
+
+    <h3>ftvaEventSeries</h3>
+    <code> {{ data.ftvaEventSeries }} </code>
   </main>
 </template>
