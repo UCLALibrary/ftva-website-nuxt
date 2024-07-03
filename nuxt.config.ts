@@ -156,7 +156,7 @@ export default defineNuxtConfig({
   ], 'nuxt-graphql-request', '@nuxtjs/sitemap', '@zadigetvoltaire/nuxt-gtm'],
 
   build: {
-    transpile: ['nuxt-graphql-request'],
+    transpile: ['nuxt-graphql-request', 'ucla-library-website-components'],
   },
 
   site: {
