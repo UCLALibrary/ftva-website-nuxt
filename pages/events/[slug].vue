@@ -133,7 +133,7 @@ watch(data, (newVal, oldVal) => {
     -->
     </section-wrapper>
 
-    <section-wrapper sectionTitle="SIDEBAR">
+    <section-wrapper>
       <h2>GUEST SPEAKER:</h2><!-- not part of the cardMeta-->
       <rich-text
         v-if="page.guestSpeaker"
