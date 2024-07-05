@@ -86,7 +86,7 @@ watch(data, (newVal, oldVal) => {
 
     <!-- ********** -->
 
-    <section-wrapper sectionTitle="CardMeta">
+    <section-wrapper sectionTitle="ResponsiveImage or ImageCarousel">
       <h2>ResponsiveImage</h2>
       <p><strong>Image:</strong></p>
       <code>{{ imageCarousel && imageCarousel.length > 0 ? imageCarousel[0]?.image : "No Image" }}</code>
