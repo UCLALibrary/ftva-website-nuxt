@@ -76,8 +76,6 @@ watch(data, (newVal, oldVal) => {
 
     <!--THE COMPONENTS ON THIS PAGE ARE JUST REFERENCES AND NEED TO BE UPDATED WITH THE CORRECT DATA AND IF STATEMENTS-->
 
-    <h2>NavBreadcrumb</h2>
-
     <NavBreadcrumb
       v-if="page"
       :title="page.title"
@@ -88,37 +86,42 @@ watch(data, (newVal, oldVal) => {
 
     <!-- ********** -->
 
-    <h2>ResponsiveImage</h2>
-    <p><strong>Image:</strong> </p>
-    {{ imageCarousel && imageCarousel.length > 0 ? imageCarousel[0]?.image : "No Image" }}
-    <p>
-      <strong>Credit:</strong> {{ imageCarousel && imageCarousel.length > 0 ? imageCarousel[0]?.creditText : "No Image"
-      }}
-    </p>
-    <!-- if {{ imageCarousel?.length > 1}} -->
-    <h2>ImageCarousel</h2>
-    <p>{{ imageCarousel }}</p>
+    <section-wrapper sectionTitle="CardMeta">
+      <h2>ResponsiveImage</h2>
+      <p><strong>Image:</strong></p>
+      <code>{{ imageCarousel && imageCarousel.length > 0 ? imageCarousel[0]?.image : "No Image" }}</code>
 
-    <!-- <responsive-image
-      v-if='imageCarousel.length == 1'
-      :media="imageCarousel[0].image"
-    >
-      <template v-slot:credit>
-        {{ imageCarousel[0].creditText }}
-      </template></responsive-image> -->
+      <p><strong>Credit:</strong></p>
+      <p>{{ imageCarousel && imageCarousel.length > 0 ? imageCarousel[0]?.creditText : "No Image" }}</p>
+      <h2>ImageCarousel</h2>
+      <p>{{ imageCarousel }}</p>
+      <!-- v-if= "imageCarousel.length == 1 && imageCarousel.length == 1" -->
+      <responsive-image :media="imageCarousel[0].image[0]">
+        <template v-slot:credit>
+          {{ imageCarousel[0].image[0].creditText }}
+        </template>
+      </responsive-image>
+
+      <responsive-image
+        v-if="page.portrait && page.portrait.length > 0"
+        :media="page.portrait[0]"
+        :aspect-ratio="60"
+        class="portrait-Ginny"
+        alt="Sketch of Ginny Steel wearing glasses and a grey blazer, with a yellow background"
+      />
+    </section-wrapper>
 
     <!-- ********** -->
 
-    <hr>
-    <h2>CardMeta</h2>
-    <h3 v-if="eventTitle">eventTitle: {{ eventTitle }}</h3>
-    <p v-if="cardMetaCategory">Category: {{ cardMetaCategory }}</p>
-    <p v-if="eventTitle">Title: {{ eventTitle }}</p>
-    <p v-if="cardMetaTags">TagLabels: {{ cardMetaTags }}</p>
-    <p v-if="cardMetaIntro">Introduction: {{ cardMetaIntro }}</p>
-    <p v-if="cardMetaText">EventDescription/Text: {{ cardMetaText }}</p>
+    <section-wrapper sectionTitle="CardMeta">
+      <h3 v-if="eventTitle">eventTitle: {{ eventTitle }}</h3>
+      <p v-if="cardMetaCategory">Category: {{ cardMetaCategory }}</p>
+      <p v-if="eventTitle">Title: {{ eventTitle }}</p>
+      <p v-if="cardMetaTags">TagLabels: {{ cardMetaTags }}</p>
+      <p v-if="cardMetaIntro">Introduction: {{ cardMetaIntro }}</p>
+      <p v-if="cardMetaText">EventDescription/Text: {{ cardMetaText }}</p>
 
-    <!--
+      <!--
       <card-meta
         v-if="eventTitle"
         :category="series[0].title"
@@ -128,74 +131,80 @@ watch(data, (newVal, oldVal) => {
         :text="cardMetaText"
       />
     -->
-    <hr>
+    </section-wrapper>
 
-    <h2>GUEST SPEAKER:</h2><!-- not part of the cardMeta-->
-    <rich-text
-      v-if="page.guestSpeaker"
-      :rich-text-content="page.guestSpeaker"
-    />
+    <section-wrapper sectionTitle="SIDEBAR">
+      <h2>GUEST SPEAKER:</h2><!-- not part of the cardMeta-->
+      <rich-text
+        v-if="page.guestSpeaker"
+        :rich-text-content="page.guestSpeaker"
+      />
 
-    <h2>ACKNOWLEDEMENTS:</h2><!-- not part of the cardMeta-->
-    <rich-text
-      v-if="page.acknowledements"
-      :rich-text-content="page.acknowledements"
-    />
+      <h2>ACKNOWLEDEMENTS:</h2><!-- not part of the cardMeta-->
+      <rich-text
+        v-if="page.acknowledements"
+        :rich-text-content="page.acknowledements"
+      />
+    </section-wrapper>
 
-    <divider-way-finder />
+    <section-wrapper>
+      <divider-way-finder />
+    </section-wrapper>
 
-    <!--
+    <section-wrapper sectionTitle="SectionScreening">
+      <!--
       ScreeningDetails / BlockScreening is an Array
       One event can have
       ONE screening
       OR multiple Screenings
     -->
-    <h2>SectionScreening</h2>
-    <div v-if="screeningDetails && screeningDetails.length > 0">
-      <p>
-        <strong>Title: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
+
+      <div v-if="screeningDetails && screeningDetails.length > 0">
+        <p>
+          <strong>Title: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
         screeningDetails[0].screeningTitle
         :
         "No screening title" }}
-      </p>
-      <p>
-        <strong>AlternativeTitle: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
+        </p>
+        <p>
+          <strong>AlternativeTitle: </strong> {{ screeningDetails && screeningDetails.length > 0 ?
         screeningDetails[0].alternateTitle : "No screening details" }}
-      </p>
+        </p>
 
-      <p>
-        <!-- use  a v-for for avoinding undefined errors-->
-        <strong>Inline value of lang atribute for alternateTitle: </strong> {{ screeningDetails &&
+        <p>
+          <!-- use  a v-for for avoinding undefined errors-->
+          <strong>Inline value of lang atribute for alternateTitle: </strong> {{ screeningDetails &&
         screeningDetails.length
         > 0 ? screeningDetails[0].languageTranslated : "No screening detail for this event" }}
-      </p>
+        </p>
 
-      <p><strong>Year: </strong> {{ screeningDetails[0].year }}</p>
+        <p><strong>Year: </strong> {{ screeningDetails[0].year }}</p>
 
-      <p><strong>Country: </strong> {{ screeningDetails[0].country }}</p>
-      <p><strong>Language: </strong> {{ screeningDetails[0].languageInfo }}</p>
-      <p><strong>Runtime: </strong> {{ screeningDetails[0].runtime }}</p>
+        <p><strong>Country: </strong> {{ screeningDetails[0].country }}</p>
+        <p><strong>Language: </strong> {{ screeningDetails[0].languageInfo }}</p>
+        <p><strong>Runtime: </strong> {{ screeningDetails[0].runtime }}</p>
 
-      <strong>ScreeningTags: </strong>
-      <p v-if="screeningDetails[0].screeningTags && screeningDetails[0].screeningTags.length > 0">
-        {{ screeningDetails[0].screeningTags }}</p>
-    </div>
-    <br>
-    <h3>screeningDetails:</h3>
-    <code>{{ screeningDetails }}</code>
+        <strong>ScreeningTags: </strong>
+        <p v-if="screeningDetails[0].screeningTags && screeningDetails[0].screeningTags.length > 0">
+          {{ screeningDetails[0].screeningTags }}</p>
+      </div>
+      <br>
+      <h3>screeningDetails:</h3>
+      <code>{{ screeningDetails }}</code>
+    </section-wrapper>
 
     <!-- ********** -->
 
-    <hr>
-    <h2>SIDEBAR</h2>
-    <h3>BlockEventDetail</h3>
-    <div v-if="eventDetailLocation && eventDetailLocation.length > 0">
-      <h4>Date: {{ eventDetailDate }}</h4>
-      <h4>Time: {{ eventDetailTime }}</h4>
-      <h4>Location: {{ eventDetailLocation }}</h4>
-    </div>
+    <section-wrapper sectionTitle="SIDEBAR">
 
-    <!--
+      <h3>BlockEventDetail</h3>
+      <div v-if="eventDetailLocation && eventDetailLocation.length > 0">
+        <h4>Date: {{ eventDetailDate }}</h4>
+        <h4>Time: {{ eventDetailTime }}</h4>
+        <h4>Location: {{ eventDetailLocation }}</h4>
+      </div>
+
+      <!--
       <BlockEventDetail
         :startDate="eventDetailDate"
         :time="eventDetailTime"
@@ -203,15 +212,16 @@ watch(data, (newVal, oldVal) => {
       />
   -->
 
-    <!-- ********** -->
+      <!-- ********** -->
 
-    <hr>
-    <h3>InfoBlock</h3>
-    <h4>blockInfo:</h4>
-    <code>{{ blockInfo }}</code>
-    <!--
+      <hr>
+      <h3>InfoBlock</h3>
+      <h4>blockInfo:</h4>
+      <code>{{ blockInfo }}</code>
+      <!--
       <block-info :ftvaTicketInformation='blockInfo' />
     -->
+    </section-wrapper>
 
     <!-- ********** -->
 
@@ -219,14 +229,20 @@ watch(data, (newVal, oldVal) => {
     <!-- If this event is part of an EventSeries display other events in the same series. -->
     <!-- WRITE A COMPUTED PROPORTY TO EXCLUDE THE EVENT THAT THIS PAGE DETAILS -->
 
-    <h2>More in this series</h2>
-    <div v-if="series && series.length > 0">
-      <h3>CardWithImage (ftvaEventSeries)</h3>
-      <code> {{ series }} </code>
-      <!-- THIS COMPONENT IS NOT DONE YET -->
-      <!--
+    <section-wrapper
+      sectionTitle="More in this series"
+      :sectionSummary="sectionSummary"
+    >
+
+      <div v-if="series && series.length > 0">
+        <h3>CardWithImage (ftvaEventSeries)</h3>
+        <code> {{ series }} </code>
+        <!-- THIS COMPONENT IS NOT DONE YET -->
+        <!--
         <section-teaser-card :items="series.ftvaEvent" />
       -->
-    </div>
+      </div>
+
+    </section-wrapper>
   </main>
 </template>

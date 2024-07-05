@@ -26,46 +26,59 @@ if (!data.value.entries) {
   })
 }
 
+const page = data.value.entries[0]
 </script>
 <template>
   <div
     class="page page-events"
     style="padding: 25px 100px;"
   >
-    <h3>This is Sample Event listing page</h3>
-    <DividerWayFinder />
-    <div
-      v-for="event in data.entries"
-      :key="event.id"
-    >
-      <NuxtLink :to="event.to">
-        {{ event.title }}
-      </NuxtLink> <br>
-    </div>
+    <section-wrapper sectionTitle="Upcoming Events">
+
+      <h2>SEACHBAR</h2>
+
+      <div
+        v-for="event in data.entries"
+        :key="event.id"
+      >
+        <NuxtLink :to="event.to">
+          {{ event.title }}
+        </NuxtLink> <br>
+        <h4>startDate: <code>{{ page.startDate }}</code></h4>
+        <h4>startTime: <code>{{ page.startTime }}</code></h4>
+        <h4>ftvaEventFilters: <code>{{ page.ftvaEventFilters }}</code></h4>
+        <h4>image: <code>{{ page.image }}</code></h4>
+        <divider-general />
+      </div>
+
+      <code><strong>PAGE:</strong> {{ page }}</code>
+    </section-wrapper>
   </div>
 </template>
+
 <style scoped>
 .page-events {
   a {
     outline-color: transparent;
+    font-size: 24px;
   }
 
   a:link {
-    color: #6900ff;
+    color: #ca05ca;
   }
 
   a:visited {
-    color: #a5c300;
+    color: #eb087a;
   }
 
   a:focus {
     text-decoration: none;
-    background: #bae498;
+    background: #03c2dc;
   }
 
   a:hover {
     text-decoration: none;
-    background: #cdfeaa;
+    background: #07eef6;
   }
 
   a:active {

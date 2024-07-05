@@ -1,8 +1,20 @@
+#import "../gql/fragments/Image.gql"
+
 query FTVAEventList {
-    entries(section: ["ftvaEvent"], orderBy: "postDate") {
-        id
-        title: eventTitle
-        to: uri
-        typeHandle
+  entries(section: ["ftvaEvent"], orderBy: "postDate") {
+    typeHandle
+    id
+    title: eventTitle
+    to: uri
+    image: ftvaImage {
+      ...Image
     }
+    startDateWithTime
+    startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+    startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+    ftvaEventFilters {
+      title
+      uri
+    }
+  }
 }
