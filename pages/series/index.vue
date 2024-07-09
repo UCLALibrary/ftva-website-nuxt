@@ -2,12 +2,12 @@
 // COMPONENTS
 import { DividerWayFinder } from 'ucla-library-website-components'
 // GQL
-import FTVAEventList from '../gql/queries/FTVAEventList.gql'
+import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('event-list', async () => {
-  const data = await $graphql.default.request(FTVAEventList)
+  const data = await $graphql.default.request(FTVAEventSeriesList)
   return data
 })
 

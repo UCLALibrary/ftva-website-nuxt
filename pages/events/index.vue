@@ -44,14 +44,14 @@ const page = data.value.entries[0]
         <NuxtLink :to="event.to">
           {{ event.title }}
         </NuxtLink> <br>
-        <h4>startDate: <code>{{ page.startDate }}</code></h4>
-        <h4>startTime: <code>{{ page.startTime }}</code></h4>
-        <h4>ftvaEventFilters: <code>{{ page.ftvaEventFilters }}</code></h4>
-        <h4>image: <code>{{ page.image }}</code></h4>
+        <h4>startDate: <code>{{ event.startDate }}</code></h4>
+        <h4>startTime: <code>{{ event.startTime }}</code></h4>
+        <h4>ftvaEventFilters: <code>{{ event.ftvaEventFilters }}</code></h4>
+        <h4>image: <code>{{ event.image }}</code></h4>
         <divider-general />
       </div>
 
-      <code><strong>PAGE:</strong> {{ page }}</code>
+      <code><strong>PAGE</strong> {{ page }}</code>
     </section-wrapper>
   </div>
 </template>
