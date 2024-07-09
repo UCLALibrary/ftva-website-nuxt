@@ -26,7 +26,9 @@ if (!data.value.entries) {
   })
 }
 
+const page = data.value.entries[0]
 </script>
+
 <template>
   <div
     class="page page-events"
@@ -50,9 +52,20 @@ if (!data.value.entries) {
       <NuxtLink :to="event.to">
         {{ event.title }}
       </NuxtLink> <br>
+      <h4>image: <code>{{ event.image }}</code></h4>
+      <h4>startdate: <code>{{ event.startDate }}</code></h4>
+      <h4>enddate: <code>{{ event.endDate }}</code></h4>
+      <h4>eventDescription: <code>{{ event.eventDescription }}</code></h4>
+      <divider-general />
     </div>
+
+    <h3>ALL ENTRY DATA</h3>
+    <code>data.entries: {{ data.entries }}</code>
+
+    <!-- PAGINATION -->
   </div>
 </template>
+
 <style scoped>
 .page-events {
   .header {

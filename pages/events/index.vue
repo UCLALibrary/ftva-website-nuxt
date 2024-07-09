@@ -28,6 +28,7 @@ if (!data.value.entries) {
 
 const page = data.value.entries[0]
 </script>
+
 <template>
   <div
     class="page page-events"
