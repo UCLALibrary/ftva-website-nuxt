@@ -30,7 +30,7 @@ if (!data.value.entries) {
   })
 }
 
-const page2 = ref(_get(data.value, 'entries[0]', {}))
+const page = ref(_get(data.value, 'entries[0]', {}))
 </script>
 
 <template>

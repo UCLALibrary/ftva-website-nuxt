@@ -76,7 +76,7 @@ query FTVAEventDetail($slug: [String!]) {
   }
 
   ftvaEventSeries: entries(
-    section: "ftvaEventSeries"
+    section: "ftvaEventSeries",  orderBy: "postDate",
     relatedToEntries: {section: "ftvaEvent", slug: $slug}) {
     ... on ftvaEventSeries_eventSeries_Entry {
       id

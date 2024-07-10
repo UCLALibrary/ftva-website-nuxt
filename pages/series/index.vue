@@ -30,7 +30,7 @@ if (!data.value.entries) {
   })
 }
 
-const page2 = ref(_get(data.value, 'entries[0]', {}))
+const page = ref(_get(data.value, 'entries', {}))
 </script>
 
 <template>
@@ -51,7 +51,7 @@ const page2 = ref(_get(data.value, 'entries[0]', {}))
     <DividerWayFinder />
 
     <div
-      v-for="event in data.entries"
+      v-for="event in page"
       :key="event.id"
       class="events"
     >
@@ -66,7 +66,7 @@ const page2 = ref(_get(data.value, 'entries[0]', {}))
     </div>
 
     <h3>ALL ENTRY DATA</h3>
-    <code>data.entries: {{ data.entries }}</code>
+    <code>PAGE: {{ page }}</code>
 
     <!-- PAGINATION -->
   </div>
