@@ -1,6 +1,10 @@
 <script setup>
 // COMPONENTS
 import { DividerWayFinder } from 'ucla-library-website-components'
+
+// HELPERS
+import _get from 'lodash/get'
+
 // GQL
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
@@ -26,7 +30,7 @@ if (!data.value.entries) {
   })
 }
 
-const page = data.value.entries[0]
+const page2 = ref(_get(data.value, 'entries[0]', {}))
 </script>
 
 <template>
@@ -35,7 +39,6 @@ const page = data.value.entries[0]
     style="padding: 25px 100px;"
   >
     <section-wrapper sectionTitle="Upcoming Events">
-
       <h2>SEACHBAR</h2>
 
       <div
