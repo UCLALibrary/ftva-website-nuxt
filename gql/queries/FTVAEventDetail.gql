@@ -1,0 +1,100 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVAEventDetail($slug: [String!]) {
+  ftvaEvent: entry(section: "ftvaEvent", slug: $slug) {
+    id
+    typeHandle
+    slug
+    uri
+    imageCarousel {
+      ...on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+
+    # CardMeta
+    title: eventTitle
+    ftvaEventIntroduction
+    eventDescription
+    ftvaEventFilters {
+      title
+      uri
+    }
+
+    guestSpeaker
+    acknowledements: richText
+
+    # SIDEBAR
+    # BlockEventDetail
+    startDateWithTime
+    startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+    startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+    location {
+      title
+      campusMapId
+      publicUrl
+      address
+    }
+    # BlockInfo / Ticket Info
+    ftvaTicketInformation {
+      id
+      title
+      uri
+    }
+
+    ftvaEventRegistration {
+      ...on ftvaEventRegistration_eventRegistration_BlockType {
+        registrationText
+        registrationUrlLink
+      }
+    }
+
+    ftvaEventScreeningDetails {
+      ...on ftvaEventScreeningDetails_screeningDetails_BlockType {
+        screeningTitle
+        alternateTitle
+        languageTranslated
+        year
+        country
+        languageInfo
+        runtime
+        screeningTags {
+          title
+        }
+        descriptionOfScreening
+        trailer
+        image {
+          ...on mediaAndDocuments_Asset {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+
+  ftvaEventSeries: entries(
+    section: "ftvaEventSeries",  orderBy: "postDate",
+    relatedToEntries: {section: "ftvaEvent", slug: $slug}) {
+    ... on ftvaEventSeries_eventSeries_Entry {
+      id
+      slug
+      typeHandle
+      title
+      ftvaEvent {
+        ... on ftvaEvent_ftvaEvent_Entry {
+        id
+        title
+        startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+        startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+
+          ftvaImage {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+}
