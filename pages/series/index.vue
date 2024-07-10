@@ -40,18 +40,20 @@ const page2 = ref(_get(data.value, 'entries[0]', {}))
   >
     <div class="header">
       <h2>Screening Series</h2>
-      <p class="text">Discover the magic of our Upcoming Series, where we curate an immersive experience that transcends
+      <p class="text">
+        Discover the magic of our Upcoming Series, where we curate an immersive experience that transcends
         time and
         genre. From classic masterpieces to cutting-edge contemporary works, our series showcase the diverse voices and
-        visions that have shaped the evolution of visual storytelling.</p>
+        visions that have shaped the evolution of visual storytelling.
+      </p>
     </div>
 
     <DividerWayFinder />
 
     <div
-      class="events"
       v-for="event in data.entries"
       :key="event.id"
+      class="events"
     >
       <NuxtLink :to="event.to">
         {{ event.title }}

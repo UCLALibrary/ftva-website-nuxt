@@ -48,7 +48,6 @@ watch(data, (newVal, oldVal) => {
     id="main"
     class="page page-event-detail"
   >
-
     <!--THE COMPONENTS ON THIS PAGE ARE JUST REFERENCES AND NEED TO BE UPDATED WITH THE CORRECT DATA AND IF STATEMENTS-->
 
     <NavBreadcrumb
@@ -63,8 +62,7 @@ watch(data, (newVal, oldVal) => {
     <!-- ImageCarousel -->
 
     <!-- <h4>{{ page }}</h4> -->
-    <section-wrapper sectionTitle="ResponsiveImage or ImageCarousel">
-
+    <section-wrapper section-title="ResponsiveImage or ImageCarousel">
       <p v-if="page.imageCarousel">
         <strong>IMAGE CAROUSEL:</strong>
         {{ page.imageCarousel && page.imageCarousel.length > 0 ? page.imageCarousel[0] : "No Image" }}
@@ -77,7 +75,7 @@ watch(data, (newVal, oldVal) => {
         class="image-carousel"
         alt="imageCarousel"
       >
-        <template v-slot:credit>
+        <template #credit>
           {{ page.imageCarousel[0].creditText }}
         </template>
       </responsive-image>
@@ -86,13 +84,17 @@ watch(data, (newVal, oldVal) => {
     <!-- ********** -->
     <!-- CardMeta -->
 
-    <section-wrapper sectionTitle="CardMeta">
-      <h3 v-if="page.title"><strong>TITLE:</strong> {{ page.title }}</h3>
+    <section-wrapper section-title="CardMeta">
+      <h3 v-if="page.title">
+        <strong>TITLE:</strong> {{ page.title }}
+      </h3>
 
-      <p v-if="series
-        &&
-        series.length
-        > 0 && series[0].title">
+      <p
+        v-if="series
+          &&
+          series.length
+          > 0 && series[0].title"
+      >
         <strong>CATEGORY:</strong> {{ series[0].title }}
       </p>
 
@@ -140,11 +142,10 @@ watch(data, (newVal, oldVal) => {
       <divider-way-finder />
     </section-wrapper>
 
-
     <!-- ********** -->
     <!-- BlockScreening -->
 
-    <section-wrapper sectionTitle="SectionScreening">
+    <section-wrapper section-title="SectionScreening">
       <!--
       ScreeningDetails / BlockScreening is an Array
       One event can have
@@ -156,24 +157,24 @@ watch(data, (newVal, oldVal) => {
         <p>
           <strong>TITLE: </strong>
           {{ page.ftvaEventScreeningDetails && page.ftvaEventScreeningDetails.length > 0 ?
-        page.ftvaEventScreeningDetails[0].screeningTitle
-        :
-        "No screening title" }}
+            page.ftvaEventScreeningDetails[0].screeningTitle
+            :
+            "No screening title" }}
         </p>
 
         <p>
           <strong>AlternativeTitle: </strong> {{ page.ftvaEventScreeningDetails && page.ftvaEventScreeningDetails.length
-        > 0
-        ?
-        page.ftvaEventScreeningDetails[0].alternateTitle
-        : "No screening details" }}
+            > 0
+            ?
+              page.ftvaEventScreeningDetails[0].alternateTitle
+            : "No screening details" }}
         </p>
 
         <p>
           <!-- use  a v-for for avoinding undefined errors-->
           <strong>Inline value of lang atribute for alternateTitle: </strong> {{ page.ftvaEventScreeningDetails &&
-        page.ftvaEventScreeningDetails.length
-        > 0 ? page.ftvaEventScreeningDetails[0].languageTranslated : "No screening detail for this event" }}
+            page.ftvaEventScreeningDetails.length
+            > 0 ? page.ftvaEventScreeningDetails[0].languageTranslated : "No screening detail for this event" }}
         </p>
 
         <p><strong>Year: </strong> {{ page.ftvaEventScreeningDetails[0].year }}</p>
@@ -184,8 +185,10 @@ watch(data, (newVal, oldVal) => {
 
         <strong>ScreeningTags: </strong>
         <p
-          v-if="page.ftvaEventScreeningDetails[0].screeningTags && page.ftvaEventScreeningDetails[0].screeningTags.length > 0">
-          {{ page.ftvaEventScreeningDetails[0].screeningTags }}</p>
+          v-if="page.ftvaEventScreeningDetails[0].screeningTags && page.ftvaEventScreeningDetails[0].screeningTags.length > 0"
+        >
+          {{ page.ftvaEventScreeningDetails[0].screeningTags }}
+        </p>
       </div>
       <br>
       <h3>page.ftvaEventScreeningDetails:</h3>
@@ -196,13 +199,18 @@ watch(data, (newVal, oldVal) => {
     <!-- SIDEBAR-->
 
     <!-- BlockEventDetail -->
-    <section-wrapper sectionTitle="SIDEBAR">
-
+    <section-wrapper section-title="SIDEBAR">
       <h3>BLOCK EVENT DETAIL</h3>
       <div>
-        <h4 v-if="page.startDate">Date: {{ page.startDate }}</h4>
-        <h4 v-if="page.startTime">Time: {{ page.startTime }}</h4>
-        <h4 v-if="page.location">Location: {{ page.location }}</h4>
+        <h4 v-if="page.startDate">
+          Date: {{ page.startDate }}
+        </h4>
+        <h4 v-if="page.startTime">
+          Time: {{ page.startTime }}
+        </h4>
+        <h4 v-if="page.location">
+          Location: {{ page.location }}
+        </h4>
       </div>
 
       <!--
@@ -233,9 +241,8 @@ watch(data, (newVal, oldVal) => {
 
     <section-wrapper
       v-if="series && series.length > 0"
-      sectionTitle="Explore upcoming events in this series"
+      section-title="Explore upcoming events in this series"
     >
-
       <div v-if="series && series.length > 0">
         <h3>CardWithImage</h3>
         <code v-if="series"> {{ series }} </code>
@@ -244,7 +251,6 @@ watch(data, (newVal, oldVal) => {
         <section-card-with-image :items="series.ftvaEvent" />
       -->
       </div>
-
     </section-wrapper>
   </main>
 </template>

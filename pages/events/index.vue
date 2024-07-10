@@ -38,7 +38,7 @@ const page2 = ref(_get(data.value, 'entries[0]', {}))
     class="page page-events"
     style="padding: 25px 100px;"
   >
-    <section-wrapper sectionTitle="Upcoming Events">
+    <section-wrapper section-title="Upcoming Events">
       <h2>SEACHBAR</h2>
 
       <div
