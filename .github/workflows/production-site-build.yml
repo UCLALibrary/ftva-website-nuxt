@@ -6,8 +6,8 @@ on:
     types: [published]
   workflow_dispatch:
     inputs: {}
-  schedule:
-    - cron:  '00 7 * * *' # 7am UTC = midnight PDT, 11pm PST
+  # schedule:
+    # - cron:  '00 7 * * *' # 7am UTC = midnight PDT, 11pm PST # If enabled add a different time for FTVA
 
 jobs:
   nuxt-prod:
