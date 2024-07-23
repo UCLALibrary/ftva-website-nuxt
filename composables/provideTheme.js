@@ -1,3 +1,3 @@
 export function provideTheme() {
-  provide('theme', 'ftva')
+  provide('theme', computed(() => 'ftva'))
 }

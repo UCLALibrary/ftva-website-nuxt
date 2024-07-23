@@ -183,7 +183,7 @@ watch(data, (newVal, oldVal) => {
     <!-- BlockEventDetail -->
     <section-wrapper section-title="SIDEBAR">
       <h3>BLOCK EVENT DETAIL</h3>
-      <div>
+      <!-- <div>
         <h4 v-if="page.startDate">
           Date: {{ page.startDate }}
         </h4>
@@ -193,14 +193,14 @@ watch(data, (newVal, oldVal) => {
         <h4 v-if="page.location">
           Location: {{ page.location }}
         </h4>
-      </div>
+      </div> -->
 
       <h2>Block Event Detail Component below...</h2>
-      <BlockEventDetail
+      <!-- <BlockEventDetail
         :startDate="page.startDate"
         :time="page.startTime"
         :locations="page.location"
-      />
+      /> -->
 
 
       <!-- ********** -->
