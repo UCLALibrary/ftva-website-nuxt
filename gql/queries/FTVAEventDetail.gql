@@ -40,7 +40,6 @@ query FTVAEventDetail($slug: [String!]) {
     }
     # BlockInfo / Ticket Info
     ftvaTicketInformation {
-      id
       title
       uri
     }
