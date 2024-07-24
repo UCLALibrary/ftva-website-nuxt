@@ -42,9 +42,18 @@ watch(data, (newVal, oldVal) => {
   page.value = newVal
 })
 
-// const parsedImage = computed(() => {
-//   return page.image
-// })
+const parsedImage = computed(() => {
+  return page.value.imageCarousel
+})
+
+const parsedStartDate = computed(() => {
+  return page.value.startDate
+})
+
+const parsedStartTime = computed(() => {
+  return page.value.startTime
+})
+
 
 // const parsedCardWithImage = computed(( => {
 
@@ -95,22 +104,23 @@ watch(data, (newVal, oldVal) => {
       parent-title="All Events"
     />
 
-    <h4>{{ page.imageCarousel.length > 1 }}</h4>
-    <h4>{{ page.imageCarousel }}</h4>
-    <!-- <h4>{{ page }}</h4>
-    <hr>
-    <h4>SERIES.FTVAEVENT:: {{ series[0].ftvaEvent }}</h4> -->
-    <hr>
-    <h3>page.imageCarousel[0]JEN::: {{ page.imageCarousel }}</h3>
-    <hr>
-    <h3>imageCarousel responsiveImage{{ page.imageCarousel[0].image[0] }}</h3>
-    <h3>HELLO</h3>
+    <h4>{{ parsedImage }}</h4>
+    <h3>ResponsiveImage 1</h3>
     <ResponsiveImage
-      :media="page.imageCarousel[0].image[0]"
+      :media="parsedImage[0].media[0]"
       class="responsive-image"
     />
 
-    <FlexibleMediaGalleryNewLightbox :items="page.imageCarousel" />
+
+    <h3>ResponsiveImage 2</h3>
+    <responsive-image :media="parsedImage[0].media[0]">
+      <template v-slot:credit>
+        Photo by John Doe
+      </template>
+    </responsive-image>
+    <hr>
+
+    <FlexibleMediaGalleryNewLightbox :items="parsedImage" />
 
     <SectionWrapper>
       <CardMeta
@@ -134,7 +144,7 @@ watch(data, (newVal, oldVal) => {
     <SectionWrapper>
       <DividerWayFinder />
     </SectionWrapper>
-    <h3>{{ page.ftvaEventScreeningDetails }}</h3>
+
     <SectionWrapper>
       <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
     </SectionWrapper>
@@ -153,24 +163,11 @@ watch(data, (newVal, oldVal) => {
     </SectionWrapper>
 
     <SectionWrapper section-title="SIDEBAR">
-      <h3>BLOCK EVENT DETAIL</h3>
-      <!-- <div>
-        <h4 v-if="page.startDate">
-          Date: {{ page.startDate }}
-        </h4>
-        <h4 v-if="page.startTime">
-          Time: {{ page.startTime }}
-        </h4>
-        <h4 v-if="page.location">
-          Location: {{ page.location }}
-        </h4>
-      </div> -->
-      <!--
       <BlockEventDetail
-        :startDate="page.startDate"
-        :time="page.startTime"
+        :startDate="page.startDateWithTime"
+        :time="page.startDateWithTime"
         :locations="page.location"
-      /> -->
+      />
 
       <BlockInfo :ftva-ticket-information="page.ftvaTicketInformation" />
     </SectionWrapper>
