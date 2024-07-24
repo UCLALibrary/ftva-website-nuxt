@@ -89,7 +89,7 @@ query FTVAEventDetail($slug: [String!]) {
         startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
         startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
 
-          ftvaImage {
+          image: ftvaImage {
             ...Image
           }
         }
