@@ -48,8 +48,7 @@ watch(data, (newVal, oldVal) => {
 
 // const parsedCardWithImage = computed(( => {
 
-//}))
-
+// }))
 
 // const parsedImageCarousel = computed(() => {
 //   if (page.value.endowment) {
@@ -88,7 +87,6 @@ watch(data, (newVal, oldVal) => {
     id="main"
     class="page page-event-detail"
   >
-
     <NavBreadcrumb
       v-if="page.title"
       :title="page.title"
@@ -118,7 +116,7 @@ watch(data, (newVal, oldVal) => {
       <CardMeta
         :category="series[0].title"
         :title="page.title"
-        :tagLabels="page.ftvaEventFilters"
+        :tag-labels="page.ftvaEventFilters"
         :introduction="page.ftvaEventIntroduction"
         :text="page.eventDescription"
       />
@@ -141,12 +139,10 @@ watch(data, (newVal, oldVal) => {
       <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
     </SectionWrapper>
 
-
     <SectionWrapper
       v-if="series && series.length > 0"
       section-title="Explore upcoming events in this series"
     >
-
       <h3>CardWithImage</h3>
       <code v-if="series[0].ftvaEvent"> series.ftvaEvent:: {{ series[0].ftvaEvent }} </code>
 
@@ -154,9 +150,7 @@ watch(data, (newVal, oldVal) => {
         v-if="series && series.length > 0"
         :items="series[0].ftvaEvent"
       />
-
     </SectionWrapper>
-
 
     <SectionWrapper section-title="SIDEBAR">
       <h3>BLOCK EVENT DETAIL</h3>
@@ -178,9 +172,7 @@ watch(data, (newVal, oldVal) => {
         :locations="page.location"
       /> -->
 
-      <BlockInfo :ftvaTicketInformation="page.ftvaTicketInformation" />
-
+      <BlockInfo :ftva-ticket-information="page.ftvaTicketInformation" />
     </SectionWrapper>
-
   </main>
 </template>
