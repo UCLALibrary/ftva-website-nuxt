@@ -1,6 +1,4 @@
 <script setup>
-// COMPONENTS
-// import { SectionWrapper, DividerWayFinder, NavBreadcrumb, ResponsiveImage, FlexibleMediaGalleryNewLightbox, CardMeta, RichText, BlockInfo, SectionScreeningDetails, SectionCardWithImage } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -104,22 +102,15 @@ const parsedStartTime = computed(() => {
       parent-title="All Events"
     />
 
-    <h4>{{ parsedImage }}</h4>
-    <h3>ResponsiveImage 1</h3>
-    <ResponsiveImage
-      :media="parsedImage[0].media[0]"
-      class="responsive-image"
-    />
-
-
-    <h3>ResponsiveImage 2</h3>
-    <responsive-image :media="parsedImage[0].media[0]">
+    <responsive-image :media="parsedImage[0].image[0]">
       <template v-slot:credit>
         Photo by John Doe
       </template>
     </responsive-image>
     <hr>
 
+    <h3>FlexibleMediaGalleryNewLightbox </h3>
+    <h4>parsedImage-- {{ parsedImage }}</h4>
     <FlexibleMediaGalleryNewLightbox :items="parsedImage" />
 
     <SectionWrapper>
@@ -149,17 +140,17 @@ const parsedStartTime = computed(() => {
       <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
     </SectionWrapper>
 
+    <h3>series[0].ftvaEvent--{{ series[0].ftvaEvent }}</h3>
     <SectionWrapper
       v-if="series && series.length > 0"
       section-title="Explore upcoming events in this series"
     >
-      <h3>CardWithImage</h3>
-      <code v-if="series[0].ftvaEvent"> series.ftvaEvent:: {{ series[0].ftvaEvent }} </code>
 
-      <SectionCardWithImage
+      <SectionTeaserCard
         v-if="series && series.length > 0"
         :items="series[0].ftvaEvent"
       />
+
     </SectionWrapper>
 
     <SectionWrapper section-title="SIDEBAR">
