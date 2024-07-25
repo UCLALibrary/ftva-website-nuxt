@@ -15,6 +15,7 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
 
   // return { data, ftvaEventSeries }
+  console.log('data', data)
   return data
 })
 if (error.value) {
@@ -40,8 +41,21 @@ watch(data, (newVal, oldVal) => {
   page.value = newVal
 })
 
+// Get data for Image or Carousel at top of page
 const parsedImage = computed(() => {
   return page.value.imageCarousel
+})
+// Transform data for Carousel
+const parsedCarouselData = computed(() => {
+  // map image to item, map creditText to credit
+  return parsedImage.value.map((rawItem) => {
+    return {
+      item: { ...rawItem.image[0], kind: 'image', title: 'title', type: 'image/jpeg' }, //TODO does FTVA carousel need to support video?
+      credit: rawItem.creditText,
+      captionTitle: 'dfdsfs', // TODO
+      captionText: 'dfsdfsd'
+    }
+  })
 })
 
 const pageId = computed(() => {
@@ -112,73 +126,134 @@ const parsedFtvaEventSeries = computed(() => {
     id="main"
     class="page page-event-detail"
   >
-    <NavBreadcrumb
-      v-if="page.title"
-      :title="page.title"
-      class="breadcrumb"
-      to="/events"
-      parent-title="All Events"
-    />
-    <!-- <h4>pageId {{ pageId }}</h4>
-    <h4>parsedFtvaEventSeries {{ parsedFtvaEventSeries }}</h4> -->
+    <NavBreadcrumb class="breadcrumb" />
+    <div class="one-column">
+      <responsive-image
+        v-if="parsedImage.length === 1"
+        :media="parsedImage[0].image[0]"
+      >
+        <template #credit>
+          {{ parsedImage[0].creditText }}
+        </template>
+      </responsive-image>
+      <FlexibleMediaGalleryNewLightbox
+        v-else
+        :items="parsedCarouselData"
+      >
+        <template v-slot="slotProps">
+          <BlockTag :label="parsedCarouselData[slotProps.selectionIndex].creditText" />
+        </template>
+      </FlexibleMediaGalleryNewLightbox>
+    </div>
+    <div class="two-column">
+      <div class="primary-column">
+        <SectionWrapper>
+          <CardMeta
+            :category="series[0].title"
+            :title="page.title"
+            :tag-labels="page.ftvaEventFilters"
+            :introduction="page.ftvaEventIntroduction"
+            :text="page.eventDescription"
+          />
+          <RichText
+            v-if="page.guestSpeaker"
+            :rich-text-content="page.guestSpeaker"
+          />
 
-    <responsive-image :media="parsedImage[0].image[0]">
-      <template #credit>
-        Photo by John Doe
-      </template>
-    </responsive-image>
-    <hr>
+          <RichText
+            v-if="page.acknowledements"
+            :rich-text-content="page.acknowledements"
+          />
+        </SectionWrapper>
 
-    <h3>FlexibleMediaGalleryNewLightbox </h3>
-    <h4>parsedImage-- {{ parsedImage }}</h4>
-    <FlexibleMediaGalleryNewLightbox :items="parsedImage" />
+        <SectionWrapper>
+          <DividerWayFinder />
+        </SectionWrapper>
 
-    <SectionWrapper>
-      <CardMeta
-        :category="series[0].title"
-        :title="page.title"
-        :tag-labels="page.ftvaEventFilters"
-        :introduction="page.ftvaEventIntroduction"
-        :text="page.eventDescription"
-      />
-      <RichText
-        v-if="page.guestSpeaker"
-        :rich-text-content="page.guestSpeaker"
-      />
+        <SectionWrapper>
+          <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
+        </SectionWrapper>
+      </div>
+      <div class="sidebar-column">
+        <BlockEventDetail
+          :start-date="page.startDateWithTime"
+          :time="page.startDateWithTime"
+          :locations="page.location"
+        />
 
-      <RichText
-        v-if="page.acknowledements"
-        :rich-text-content="page.acknowledements"
-      />
-    </SectionWrapper>
-
-    <SectionWrapper>
-      <DividerWayFinder />
-    </SectionWrapper>
-
-    <SectionWrapper>
-      <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
-    </SectionWrapper>
-
-    <!-- <h3>parsedFtvaEventSeries--{{ parsedFtvaEventSeries }}</h3> -->
-    <SectionWrapper
-      v-if="series && series.length > 0"
-      section-title="Explore upcoming events in this series"
-    >
-      <SectionTeaserCard
+        <BlockInfo :ftva-ticket-information="page.ftvaTicketInformation" />
+      </div>
+    </div>
+    <div class="full-width">
+      <SectionWrapper
         v-if="series && series.length > 0"
-        :items="parsedFtvaEventSeries"
-      />
-    </SectionWrapper>
-
-    <SectionWrapper section-title="SIDEBAR">
-      <BlockEventDetail
-        :start-date="page.startDateWithTime"
-        :time="page.startDateWithTime"
-        :locations="page.location"
-      />
-
-      <BlockInfo :ftva-ticket-information="page.ftvaTicketInformation" />
-    </SectionWrapper>
+        section-title="Explore upcoming events in this series"
+        theme="paleblue"
+      >
+        <SectionTeaserCard
+          v-if="series && series.length > 0"
+          :items="parsedFtvaEventSeries"
+        />
+      </SectionWrapper>
+    </div>
   </main>
 </template>
+<style lang="scss" scoped>
+// VARS - TO DO move to global? reference tokens?
+
+// WIDTH, HEIGHT, SPACING
+$max-width: 928px;
+$banner-height: 520px;
+// COLORS
+$pale-blue: #E7EDF2;
+
+// 2 col class
+.page-event-detail {
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    background-color: $pale-blue;
+    height: $banner-height;
+    width: 100%;
+    z-index: -1;
+  }
+
+  .one-column {
+    width: 100%;
+    max-width: $max-width;
+    margin: 0 auto;
+  }
+
+  .two-column {
+    position: relative; // todo test without, might not be needed
+    width: 100%;
+    max-width: $max-width;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    justify-content: space-between;
+
+    // .primary-column {
+    // }
+
+    .sidebar-column {
+      grid-column: 2;
+      position: sticky;
+      align-self: start;
+      top: 0;
+      will-change: top;
+    }
+  }
+
+  .full-width {
+    width: 100%;
+    background-color: $pale-blue;
+    margin: 0 auto;
+
+    .section-wrapper.theme-paleblue {
+      background-color: $pale-blue;
+    }
+  }
+}
+</style>

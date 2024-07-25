@@ -1,5 +1,5 @@
 {
-	"name": "meap-website-nuxt",
+	"name": "ftva-website-nuxt",
 	"type": "module",
 	"scripts": {
 		"build": "nuxt build",
