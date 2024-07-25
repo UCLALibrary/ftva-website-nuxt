@@ -40,7 +40,6 @@ watch(data, (newVal, oldVal) => {
   page.value = newVal
 })
 
-
 const parsedImage = computed(() => {
   return page.value.imageCarousel
 })
@@ -48,7 +47,6 @@ const parsedImage = computed(() => {
 const pageId = computed(() => {
   return page.value.id
 })
-
 
 // const parsedFtvaEventSeries = computed(() => {
 //   const events = series.value[0].ftvaEvent.slice(1)
@@ -59,7 +57,7 @@ const pageId = computed(() => {
 // https://www.geeksforgeeks.org/remove-array-element-based-on-object-property-in-javascript/
 const parsedFtvaEventSeries = computed(() => {
   const pageId = page.value.id
-  const events = series.value[0].ftvaEvent.map(item => {
+  const events = series.value[0].ftvaEvent.map((item) => {
     // return item.id !== pageId ? item : {}; this works  but adds an empty object
     if (item.id !== pageId && item != null) {
       return item
@@ -67,8 +65,8 @@ const parsedFtvaEventSeries = computed(() => {
   })
 
   const filtered = events.filter(function (el) {
-    return el != null;
-  });
+    return el != null
+  })
   // return events.slice(0, 3)
   return filtered.slice(0, 3)
 })
@@ -125,7 +123,7 @@ const parsedFtvaEventSeries = computed(() => {
     <h4>parsedFtvaEventSeries {{ parsedFtvaEventSeries }}</h4> -->
 
     <responsive-image :media="parsedImage[0].image[0]">
-      <template v-slot:credit>
+      <template #credit>
         Photo by John Doe
       </template>
     </responsive-image>
@@ -167,17 +165,15 @@ const parsedFtvaEventSeries = computed(() => {
       v-if="series && series.length > 0"
       section-title="Explore upcoming events in this series"
     >
-
       <SectionTeaserCard
         v-if="series && series.length > 0"
         :items="parsedFtvaEventSeries"
       />
-
     </SectionWrapper>
 
     <SectionWrapper section-title="SIDEBAR">
       <BlockEventDetail
-        :startDate="page.startDateWithTime"
+        :start-date="page.startDateWithTime"
         :time="page.startDateWithTime"
         :locations="page.location"
       />
