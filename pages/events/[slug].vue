@@ -40,18 +40,38 @@ watch(data, (newVal, oldVal) => {
   page.value = newVal
 })
 
+
 const parsedImage = computed(() => {
   return page.value.imageCarousel
 })
 
-const parsedStartDate = computed(() => {
-  return page.value.startDate
+const pageId = computed(() => {
+  return page.value.id
 })
 
-const parsedStartTime = computed(() => {
-  return page.value.startTime
-})
 
+// const parsedFtvaEventSeries = computed(() => {
+//   const events = series.value[0].ftvaEvent.slice(1)
+//   return events.slice(0, 3)
+//   // return series.value[0].ftvaEvent.filter(el => el.name !== "pageId")
+// })
+
+// https://www.geeksforgeeks.org/remove-array-element-based-on-object-property-in-javascript/
+const parsedFtvaEventSeries = computed(() => {
+  const pageId = page.value.id
+  const events = series.value[0].ftvaEvent.map(item => {
+    // return item.id !== pageId ? item : {}; this works  but adds an empty object
+    if (item.id !== pageId && item != null) {
+      return item
+    }
+  })
+
+  const filtered = events.filter(function (el) {
+    return el != null;
+  });
+  // return events.slice(0, 3)
+  return filtered.slice(0, 3)
+})
 
 // const parsedCardWithImage = computed(( => {
 
@@ -101,6 +121,8 @@ const parsedStartTime = computed(() => {
       to="/events"
       parent-title="All Events"
     />
+    <!-- <h4>pageId {{ pageId }}</h4>
+    <h4>parsedFtvaEventSeries {{ parsedFtvaEventSeries }}</h4> -->
 
     <responsive-image :media="parsedImage[0].image[0]">
       <template v-slot:credit>
@@ -140,7 +162,7 @@ const parsedStartTime = computed(() => {
       <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
     </SectionWrapper>
 
-    <h3>series[0].ftvaEvent--{{ series[0].ftvaEvent }}</h3>
+    <!-- <h3>parsedFtvaEventSeries--{{ parsedFtvaEventSeries }}</h3> -->
     <SectionWrapper
       v-if="series && series.length > 0"
       section-title="Explore upcoming events in this series"
@@ -148,7 +170,7 @@ const parsedStartTime = computed(() => {
 
       <SectionTeaserCard
         v-if="series && series.length > 0"
-        :items="series[0].ftvaEvent"
+        :items="parsedFtvaEventSeries"
       />
 
     </SectionWrapper>
