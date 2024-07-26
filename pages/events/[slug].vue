@@ -62,49 +62,14 @@ const pageId = computed(() => {
   return page.value.id
 })
 
-// const parsedFtvaEventSeries = computed(() => {
-//   const events = series.value[0].ftvaEvent.slice(1)
-//   return events.slice(0, 3)
-//   // return series.value[0].ftvaEvent.filter(el => el.name !== "pageId")
-// })
-
-// https://www.geeksforgeeks.org/remove-array-element-based-on-object-property-in-javascript/
 const parsedFtvaEventSeries = computed(() => {
   const pageId = page.value.id
-  const events = series.value[0].ftvaEvent.map((item) => {
-    // return item.id !== pageId ? item : {}; this works  but adds an empty object
-    if (item.id !== pageId && item != null) {
-      return item
-    } else { return [] }
+  const events = series.value[0].ftvaEvent.filter((item) => {
+    return item.id !== pageId // remove this page's event from the series list to avoid duplicate info
   })
-
-  const filtered = events.filter(function (el) {
-    return el != null
-  })
-  // return events.slice(0, 3)
-  return filtered.slice(0, 3)
+  // return first 3 events
+  return events.slice(0, 3)
 })
-
-// const parsedCardWithImage = computed(( => {
-
-// }))
-
-// const parsedImageCarousel = computed(() => {
-//   if (page.value.endowment) {
-//     return page.value.endowment.map((obj, index) => {
-//       return {
-//         to: `/${obj.to}`,
-//         image: _get(obj, 'image[0].image[0]', null),
-//         title: _get(obj, 'title', ''),
-//         description: _get(obj, 'description', ''),
-//         category:
-//           obj.donors.length > 0 ? parsedDonors(obj) : '',
-//       }
-//     })
-//   } else {
-//     return ''
-//   }
-// })
 
 // const parsedServicesAndResources = computed(() => {
 //   const services = page.value.resourceServiceWorkshop
@@ -187,7 +152,6 @@ const parsedFtvaEventSeries = computed(() => {
           <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
         </SectionWrapper>
       </div>
-      <!-- side was here -->
     </div>
     <div class="full-width">
       <SectionWrapper
