@@ -39,14 +39,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
         if: ${{ github.event_name == 'release' }}
+      
+      # Corrected indentation here
       - uses: ./.github/workflows/setup-workspace
 
-       - name: Cache built static site
-          id: cache-nuxt3
-          uses: actions/cache@v3
-          with:
-            path: .output/public
-            key: nuxt3-site-${{ github.sha }}
+      - name: Cache built static site
+        id: cache-nuxt3
+        uses: actions/cache@v3
+        with:
+          path: .output/public
+          key: nuxt3-site-${{ github.sha }}
 
       - run: pnpm run generate
         env:
