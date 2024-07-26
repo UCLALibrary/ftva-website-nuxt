@@ -1,4 +1,8 @@
 <script setup>
+// COMPONENT RE-IMPORTS
+// TODO: remove when we have implemented component library as a module
+// https://nuxt.com/docs/guide/directory-structure/components#library-authors
+import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
