@@ -17,8 +17,6 @@ const route = useRoute()
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
-
-  // return { data, ftvaEventSeries }
   console.log('data', data)
   return data
 })
@@ -75,19 +73,14 @@ const parsedFtvaEventSeries = computed(() => {
   return events.slice(0, 3)
 })
 
-// const parsedServicesAndResources = computed(() => {
-//   const services = page.value.resourceServiceWorkshop
-//   return services.map((obj) => {
-//     return {
-//       ...obj,
-//       to: obj.externalResourceUrl
-//         ? obj.externalResourceUrl
-//         : `/${obj.to}`,
-//       title: _get(obj, 'title', ''),
-//       text: _get(obj, 'text', ''),
-//     }
-//   })
-// })
+const parsedFTVAEventScreeningDetails = computed(() => {
+  return page.value.ftvaEventScreeningDetails.map((obj) => {
+    return {
+      ...obj,
+      image: obj.image[0] // craft data has an array, but component expects a single object for image
+    }
+  })
+})
 </script>
 
 <template>
@@ -153,7 +146,7 @@ const parsedFtvaEventSeries = computed(() => {
         </SectionWrapper>
 
         <SectionWrapper>
-          <SectionScreeningDetails :items="page.ftvaEventScreeningDetails" />
+          <SectionScreeningDetails :items="parsedFTVAEventScreeningDetails" />
         </SectionWrapper>
       </div>
     </div>
