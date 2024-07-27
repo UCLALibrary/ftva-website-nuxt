@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerWayFinder } from 'ucla-library-website-components'
+import { DividerGeneral, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -45,7 +45,7 @@ const page = ref(_get(data.value, 'entries[0]', {}))
         v-for="event in data.entries"
         :key="event.id"
       >
-        <NuxtLink :to="event.to">
+        <NuxtLink :to="`/${event.to}`">
           {{ event.title }}
         </NuxtLink> <br>
         <h4>startDate: <code>{{ event.startDate }}</code></h4>
