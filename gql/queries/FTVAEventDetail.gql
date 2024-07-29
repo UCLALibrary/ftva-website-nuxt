@@ -6,6 +6,7 @@ query FTVAEventDetail($slug: [String!]) {
     typeHandle
     slug
     uri
+
     imageCarousel {
       ...on imageCarousel_imageCarousel_BlockType {
         image {
@@ -26,31 +27,6 @@ query FTVAEventDetail($slug: [String!]) {
 
     guestSpeaker
     acknowledements: richText
-
-    # SIDEBAR
-    # BlockEventDetail
-    startDateWithTime
-    startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-    startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
-    location {
-      title
-      campusMapId
-      publicUrl
-      address
-    }
-    # BlockInfo / Ticket Info
-    ftvaTicketInformation {
-      id
-      title
-      uri
-    }
-
-    ftvaEventRegistration {
-      ...on ftvaEventRegistration_eventRegistration_BlockType {
-        registrationText
-        registrationUrlLink
-      }
-    }
 
     ftvaEventScreeningDetails {
       ...on ftvaEventScreeningDetails_screeningDetails_BlockType {
@@ -73,8 +49,33 @@ query FTVAEventDetail($slug: [String!]) {
         }
       }
     }
+
+    # SIDEBAR
+    # BlockEventDetail
+    startDateWithTime
+    startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+    startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+    location {
+      title
+      campusMapId
+      publicUrl
+      address
+    }
+
+    # BlockInfo / Ticket Info
+    ftvaTicketInformation {
+      title
+      uri
+    }
+    ftvaEventRegistration {
+      ...on ftvaEventRegistration_eventRegistration_BlockType {
+        registrationText
+        registrationUrlLink
+      }
+    }
   }
 
+  # SectionTeaserCard
   ftvaEventSeries: entries(
     section: "ftvaEventSeries",  orderBy: "postDate",
     relatedToEntries: {section: "ftvaEvent", slug: $slug}) {
@@ -85,12 +86,11 @@ query FTVAEventDetail($slug: [String!]) {
       title
       ftvaEvent {
         ... on ftvaEvent_ftvaEvent_Entry {
-        id
-        title
-        startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-        startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
-
-          ftvaImage {
+          id
+          title
+          startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+          startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+          media: ftvaImage {
             ...Image
           }
         }

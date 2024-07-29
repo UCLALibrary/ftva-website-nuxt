@@ -24,7 +24,7 @@ const classes = computed(() => {
 </script>
 <template lang="html">
   <div :class="classes">
-    <header
+    <!--header
       v-show="!isMobile"
       class="header-main"
     >
@@ -49,17 +49,17 @@ const classes = computed(() => {
         title="Film And Telivision Archive"
         acronym="FTVA"
       />
-    </header>
+    </header-->
 
     <slot />
 
-    <footer>
+    <!--footer>
       <footer-primary
         v-if="globalStore.footerPrimary"
         :form="false"
       />
       <footer-sock v-if="globalStore.footerSock" />
-    </footer>
+    </footer-->
   </div>
 </template>
 <style lang="scss" scoped>
