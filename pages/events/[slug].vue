@@ -40,7 +40,9 @@ const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = newVal
+  page.value = ref(_get(data.value, 'ftvaEvent', {}))
+  series.value = ref(_get(data.value, 'ftvaEventSeries', {}))
+  // page.value = newVal
 })
 
 // Get data for Image or Carousel at top of page
@@ -74,7 +76,7 @@ const parsedFtvaEventSeries = computed(() => {
 })
 
 const parsedFTVAEventScreeningDetails = computed(() => {
-  return page.value.ftvaEventScreeningDetails.map((obj) => {
+  return page?.value.ftvaEventScreeningDetails.map((obj) => {
     return {
       ...obj,
       image: obj.image[0] // craft data has an array, but component expects a single object for image
@@ -146,7 +148,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </SectionWrapper>
 
         <SectionWrapper>
-          <SectionScreeningDetails :items="parsedFTVAEventScreeningDetails" />
+          <SectionScreeningDetails
+            v-if="parsedFTVAEventScreeningDetails"
+            :items="parsedFTVAEventScreeningDetails"
+          />
         </SectionWrapper>
       </div>
     </div>
