@@ -54,7 +54,7 @@ const parsedCarouselData = computed(() => {
   return parsedImage.value.map((rawItem, index) => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
-      credit: rawItem.creditText,
+      credit: rawItem?.creditText,
       captionTitle: 'dfdsfs', // TODO do we need these? test without
       captionText: 'dfsdfsd',
     }
@@ -96,7 +96,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         :media="parsedImage[0].image[0]"
       >
         <template #credit>
-          {{ parsedImage[0].creditText }}
+          {{ parsedImage[0]?.creditText }}
         </template>
       </responsive-image>
       <div
@@ -105,7 +105,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       >
         <FlexibleMediaGalleryNewLightbox :items="parsedCarouselData">
           <template #default="slotProps">
-            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex].creditText" />
+            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
@@ -114,8 +114,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       <div class="primary-column top">
         <SectionWrapper>
           <CardMeta
-            :category="series[0].title"
-            :title="page.title"
+            :category="series[0]?.title"
+            :title="page?.title"
             :tag-labels="page.ftvaEventFilters"
             :introduction="page.ftvaEventIntroduction"
             :text="page.eventDescription"
