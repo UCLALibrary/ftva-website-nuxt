@@ -142,7 +142,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </SectionWrapper>
       </div>
 
-      <!-- SIDEBAR slots in here on mobile -->
+      <!-- sidebar slots in here on mobile -->
       <div class="sidebar-column">
         <BlockEventDetail
           :start-date="page.startDateWithTime"
