@@ -75,7 +75,7 @@ query FTVAEventDetail($slug: [String!]) {
     }
   }
 
-  # SectionTeaserCard
+  # Explore upcoming events in this series
   ftvaEventSeries: entries(
     section: "ftvaEventSeries",  orderBy: "postDate",
     relatedToEntries: {section: "ftvaEvent", slug: $slug}) {

@@ -65,15 +65,6 @@ const pageId = computed(() => {
   return page.value.id
 })
 
-const parsedFtvaEventSeries = computed(() => {
-  const pageId = page.value.id
-  const events = series.value[0].ftvaEvent.filter((item) => {
-    return item.id !== pageId // remove this page's event from the series list to avoid duplicate info
-  })
-  // return first 3 events
-  return events.slice(0, 3)
-})
-
 const parsedFTVAEventScreeningDetails = computed(() => {
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
@@ -81,6 +72,23 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       image: obj.image[0] // craft data has an array, but component expects a single object for image
     }
   })
+})
+
+const parsedFtvaEventSeries = computed(() => {
+  // const series = parsedFtvaEventSeries
+  const seriesEvents = series.value[0].ftvaEvent.map((obj) => {
+    return {
+      ...obj,
+      image: obj.image[0]
+    }
+  })
+
+  const pageId = page.value.id
+  const events = seriesEvents.filter((item) => {
+    return item.id !== pageId // remove this page's event from the series list to avoid duplicate info
+  })
+  // return first 3 events
+  return events.slice(0, 3)
 })
 </script>
 
@@ -91,6 +99,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   >
     <div class="one-column">
       <NavBreadcrumb class="breadcrumb" />
+
       <responsive-image
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
@@ -110,6 +119,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </FlexibleMediaGalleryNewLightbox>
       </div>
     </div>
+
     <div class="two-column">
       <div class="primary-column top">
         <SectionWrapper>
@@ -159,6 +169,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </SectionWrapper>
       </div>
     </div>
+
     <div class="full-width">
       <SectionWrapper
         v-if="series && series.length > 0"
@@ -173,7 +184,11 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     </div>
   </main>
 </template>
-<style lang="scss" scoped>
+
+<style
+  lang="scss"
+  scoped
+>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 928px;
