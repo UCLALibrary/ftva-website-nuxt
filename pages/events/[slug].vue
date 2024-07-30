@@ -179,6 +179,7 @@ const parsedFtvaEventSeries = computed(() => {
         <SectionTeaserCard
           v-if="series && series.length > 0"
           :items="parsedFtvaEventSeries"
+          class="section-teaser-card"
         />
       </SectionWrapper>
     </div>
@@ -271,6 +272,11 @@ $pale-blue: #E7EDF2;
     .section-wrapper.theme-paleblue {
       background-color: $pale-blue;
     }
+  }
+
+  /* makes all EventSeries same height */
+  li.block-highlight.is-vertical.ftva.card {
+    min-height: 350px;
   }
 
   @media #{$small} {
