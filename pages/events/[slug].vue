@@ -131,7 +131,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           />
         </SectionWrapper>
       </div>
-      <!-- sidebar slots in here on mobile -->
+
+      <!-- SIDEBAR slots in here on mobile -->
       <div class="sidebar-column">
         <BlockEventDetail
           :start-date="page.startDateWithTime"
@@ -139,8 +140,12 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           :locations="page.location"
         />
 
-        <BlockInfo :ftva-ticket-information="page.ftvaTicketInformation" />
+        <BlockInfo
+          v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+          :ftva-ticket-information="page.ftvaTicketInformation"
+        />
       </div>
+
       <div class="primary-column bottom">
         <SectionWrapper>
           <DividerWayFinder />
