@@ -169,8 +169,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </SectionWrapper>
       </div>
     </div>
-
-    <div class="full-width">
+    <div class="full-width bottom">
       <SectionWrapper
         v-if="series && series.length > 0"
         section-title="Explore upcoming events in this series"
@@ -185,10 +184,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 928px;
@@ -253,7 +249,7 @@ $pale-blue: #E7EDF2;
 
     .sidebar-column {
       grid-column: 2;
-      max-height: 25px; // when sidebar is to the side, shrink so that it does not create space in primary column
+      height: 50px; // when sidebar is to the side, shrink so that it does not create space in primary column
       position: sticky;
       align-self: start;
       top: 0;
@@ -270,6 +266,11 @@ $pale-blue: #E7EDF2;
 
     .section-wrapper.theme-paleblue {
       background-color: $pale-blue;
+    }
+
+    &.bottom {
+      position: relative;
+      z-index: 5; // ensure sticky sidebar scrolls behind this section
     }
   }
 
@@ -297,7 +298,7 @@ $pale-blue: #E7EDF2;
         grid-column: 1;
         margin: auto var(--unit-gutter);
         padding-top: 0px;
-        max-height: auto; // when sidebar is in the flow of content, content determines height
+        height: auto; // let content determine height on mobile
       }
     }
   }
