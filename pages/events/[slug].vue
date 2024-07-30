@@ -179,7 +179,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         <SectionTeaserCard
           v-if="series && series.length > 0"
           :items="parsedFtvaEventSeries"
-          class="section-teaser-card"
         />
       </SectionWrapper>
     </div>
