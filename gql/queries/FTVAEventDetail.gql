@@ -30,17 +30,17 @@ query FTVAEventDetail($slug: [String!]) {
 
     ftvaEventScreeningDetails {
       ...on ftvaEventScreeningDetails_screeningDetails_BlockType {
-        title: screeningTitle
+        screeningTitle
         alternateTitle
-        language: languageTranslated
+        languageTranslated
         year
         country
         languageInfo
         runtime
-        tagLabels: screeningTags {
+        screeningTags {
           title
         }
-        text: descriptionOfScreening
+        descriptionOfScreening
         trailer
         image {
           ...on mediaAndDocuments_Asset {
@@ -80,7 +80,10 @@ query FTVAEventDetail($slug: [String!]) {
     section: "ftvaEventSeries",  orderBy: "postDate",
     relatedToEntries: {section: "ftvaEvent", slug: $slug}) {
     ... on ftvaEventSeries_eventSeries_Entry {
+      id
+      slug
       typeHandle
+      title
       ftvaEvent {
         ... on ftvaEvent_ftvaEvent_Entry {
           id

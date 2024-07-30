@@ -65,15 +65,6 @@ const pageId = computed(() => {
   return page.value.id
 })
 
-const parsedFTVAEventScreeningDetails = computed(() => {
-  return page?.value.ftvaEventScreeningDetails?.map((obj) => {
-    return {
-      ...obj,
-      image: obj.image[0] // craft data has an array, but component expects a single object for image
-    }
-  })
-})
-
 const parsedFtvaEventSeries = computed(() => {
   // const series = parsedFtvaEventSeries
   const seriesEvents = series.value[0].ftvaEvent.map((obj) => {
@@ -90,6 +81,15 @@ const parsedFtvaEventSeries = computed(() => {
   // return first 3 events
   return events.slice(0, 3)
 })
+
+const parsedFTVAEventScreeningDetails = computed(() => {
+  return page?.value.ftvaEventScreeningDetails?.map((obj) => {
+    return {
+      ...obj,
+      image: obj.image[0] // craft data has an array, but component expects a single object for image
+    }
+  })
+})
 </script>
 
 <template>
@@ -100,14 +100,14 @@ const parsedFtvaEventSeries = computed(() => {
     <div class="one-column">
       <NavBreadcrumb class="breadcrumb" />
 
-      <responsive-image
+      <ResponsiveImage
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
       >
         <template #credit>
           {{ parsedImage[0]?.creditText }}
         </template>
-      </responsive-image>
+      </ResponsiveImage>
       <div
         v-else
         class="lightbox-container"
