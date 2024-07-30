@@ -66,8 +66,16 @@ const pageId = computed(() => {
 })
 
 const parsedFtvaEventSeries = computed(() => {
+  // const series = parsedFtvaEventSeries
+  const seriesEvents = series.value[0].ftvaEvent.map((obj) => {
+    return {
+      ...obj,
+      image: obj.image[0]
+    }
+  })
+
   const pageId = page.value.id
-  const events = series.value[0].ftvaEvent.filter((item) => {
+  const events = seriesEvents.filter((item) => {
     return item.id !== pageId // remove this page's event from the series list to avoid duplicate info
   })
   // return first 3 events
@@ -91,14 +99,15 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   >
     <div class="one-column">
       <NavBreadcrumb class="breadcrumb" />
-      <responsive-image
+
+      <ResponsiveImage
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
       >
         <template #credit>
           {{ parsedImage[0]?.creditText }}
         </template>
-      </responsive-image>
+      </ResponsiveImage>
       <div
         v-else
         class="lightbox-container"
@@ -110,6 +119,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </FlexibleMediaGalleryNewLightbox>
       </div>
     </div>
+
     <div class="two-column">
       <div class="primary-column top">
         <SectionWrapper>
@@ -131,6 +141,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           />
         </SectionWrapper>
       </div>
+
       <!-- sidebar slots in here on mobile -->
       <div class="sidebar-column">
         <BlockEventDetail
@@ -139,8 +150,12 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           :locations="page.location"
         />
 
-        <BlockInfo :ftva-ticket-information="page.ftvaTicketInformation" />
+        <BlockInfo
+          v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+          :ftva-ticket-information="page.ftvaTicketInformation"
+        />
       </div>
+
       <div class="primary-column bottom">
         <SectionWrapper>
           <DividerWayFinder />
@@ -154,6 +169,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </SectionWrapper>
       </div>
     </div>
+
     <div class="full-width">
       <SectionWrapper
         v-if="series && series.length > 0"
@@ -168,7 +184,11 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     </div>
   </main>
 </template>
-<style lang="scss" scoped>
+
+<style
+  lang="scss"
+  scoped
+>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 928px;
@@ -251,6 +271,11 @@ $pale-blue: #E7EDF2;
     .section-wrapper.theme-paleblue {
       background-color: $pale-blue;
     }
+  }
+
+  /* makes all EventSeries same height */
+  :deep(.card) {
+    min-height: 350px;
   }
 
   @media #{$small} {
