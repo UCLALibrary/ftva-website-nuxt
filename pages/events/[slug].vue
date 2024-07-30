@@ -205,7 +205,6 @@ $pale-blue: #E7EDF2;
     max-width: $max-width;
     display: grid;
     grid-template-columns: 3fr 1fr;
-    // justify-content: space-between;
 
     .primary-column {
       grid-column: 1;
@@ -234,6 +233,7 @@ $pale-blue: #E7EDF2;
 
     .sidebar-column {
       grid-column: 2;
+      max-height: 25px; // when sidebar is to the side, shrink so that it does not create space in primary column
       position: sticky;
       align-self: start;
       top: 0;
@@ -272,6 +272,7 @@ $pale-blue: #E7EDF2;
         grid-column: 1;
         margin: auto var(--unit-gutter);
         padding-top: 0px;
+        max-height: auto; // when sidebar is in the flow of content, content determines height
       }
     }
   }
