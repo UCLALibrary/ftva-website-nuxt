@@ -275,7 +275,7 @@ $pale-blue: #E7EDF2;
   }
 
   /* makes all EventSeries same height */
-  li.block-highlight.is-vertical.ftva.card {
+  :deep(.card) {
     min-height: 350px;
   }
 
