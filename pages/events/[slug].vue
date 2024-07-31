@@ -145,16 +145,18 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       <!-- sidebar slots in here on mobile -->
       <!-- on desktop sidebar is stickied to the side with css -->
       <div class="sidebar-column">
-        <BlockEventDetail
-          :start-date="page.startDateWithTime"
-          :time="page.startDateWithTime"
-          :locations="page.location"
-        />
+        <div class="sidebar-content-wrapper">
+          <BlockEventDetail
+            :start-date="page.startDateWithTime"
+            :time="page.startDateWithTime"
+            :locations="page.location"
+          />
 
-        <BlockInfo
-          v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
-          :ftva-ticket-information="page.ftvaTicketInformation"
-        />
+          <BlockInfo
+            v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+            :ftva-ticket-information="page.ftvaTicketInformation"
+          />
+        </div>
       </div>
 
       <div class="primary-column bottom">
@@ -257,13 +259,18 @@ $pale-blue: #E7EDF2;
     .sidebar-column {
       min-width: 280px;
       width: 30%;
-      position: sticky;
-      align-self: start;
-      margin-left: auto;
+      position: absolute;
+      height: 100%;
       top: 0;
-      will-change: top;
+      right: 0;
       padding-top: var(--space-2xl);
       padding-bottom: 20px;
+
+      .sidebar-content-wrapper {
+        position: sticky;
+        top: 0;
+        will-change: top;
+      }
     }
   }
 
