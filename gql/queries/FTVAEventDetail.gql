@@ -88,7 +88,7 @@ query FTVAEventDetail($slug: [String!]) {
         ... on ftvaEvent_ftvaEvent_Entry {
           id
           to: uri
-          title
+          title: eventTitle
           startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
           startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
           image: ftvaImage {
