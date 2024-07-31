@@ -91,20 +91,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     }
   })
 })
-
-// LAYOUT FUNCTIONS
-// determine if mobile
-const isMobile = computed(() => {
-  return globalStore.winWidth <= 750 // 750px is the breakpoint for {$small}
-})
-// get the height of the sidebar content
-// & set padding to match mobile or desktop layout
-const sidebar = ref(0)
-const sidebarStyles = computed(() => {
-  return {
-    paddingBottom: isMobile.value ? '0px' : `calc(${sidebar.value?.clientHeight}px + 30px)`
-  }
-})
 </script>
 
 <template>
@@ -159,25 +145,17 @@ const sidebarStyles = computed(() => {
 
       <!-- sidebar slots in here on mobile -->
       <!-- on desktop sidebar is stickied to the side with css -->
-      <div
-        class="sidebar-column"
-        :style="sidebarStyles"
-      >
-        <div
-          ref="sidebar"
-          class="sidebar-content-wrapper"
-        >
-          <BlockEventDetail
-            :start-date="page.startDateWithTime"
-            :time="page.startDateWithTime"
-            :locations="page.location"
-          />
+      <div class="sidebar-column">
+        <BlockEventDetail
+          :start-date="page.startDateWithTime"
+          :time="page.startDateWithTime"
+          :locations="page.location"
+        />
 
-          <BlockInfo
-            v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
-            :ftva-ticket-information="page.ftvaTicketInformation"
-          />
-        </div>
+        <BlockInfo
+          v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+          :ftva-ticket-information="page.ftvaTicketInformation"
+        />
       </div>
 
       <div class="primary-column bottom">
@@ -244,12 +222,13 @@ $pale-blue: #E7EDF2;
     position: relative;
     width: 100%;
     max-width: $max-width;
-    display: grid;
-    grid-template-columns: 3fr 1fr;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     .primary-column {
-      grid-column: 1;
       margin-bottom: 0px;
+      width: 67%;
 
       .section-wrapper {
         padding-left: 0px;
@@ -277,11 +256,11 @@ $pale-blue: #E7EDF2;
     }
 
     .sidebar-column {
-      grid-column: 2;
       min-width: 280px;
-      height: 50px; // when sidebar is to the side, shrink so that it does not create space in primary column
+      width: 30%;
       position: sticky;
       align-self: start;
+      margin-left: auto;
       top: 0;
       will-change: top;
       padding-top: var(--space-2xl);
@@ -304,11 +283,21 @@ $pale-blue: #E7EDF2;
     min-height: 350px;
   }
 
+  @media #{$medium} {
+    .two-column>.primary-column {
+      width: 62%;
+    }
+  }
+
   @media #{$small} {
     .two-column {
+      display: grid;
       grid-template-columns: 1fr;
 
       .primary-column {
+        width: auto;
+        grid-column: 1;
+
         .section-wrapper {
           padding-left: var(--unit-gutter);
         }
@@ -319,6 +308,7 @@ $pale-blue: #E7EDF2;
       }
 
       .sidebar-column {
+        width: auto;
         position: relative;
         grid-column: 1;
         margin: auto var(--unit-gutter);
