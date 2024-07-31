@@ -13,6 +13,7 @@ import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
+const globalStore = useGlobalStore()
 
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
@@ -90,6 +91,20 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     }
   })
 })
+
+// LAYOUT FUNCTIONS
+// determine if mobile
+const isMobile = computed(() => {
+  return globalStore.winWidth <= 750 // 750px is the breakpoint for {$small}
+})
+// get the height of the sidebar content
+// & set padding to match mobile or desktop layout
+const sidebar = ref(0)
+const sidebarStyles = computed(() => {
+  return {
+    paddingBottom: isMobile.value ? '0px' : `calc(${sidebar.value?.clientHeight}px + 30px)`
+  }
+})
 </script>
 
 <template>
@@ -143,17 +158,26 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       </div>
 
       <!-- sidebar slots in here on mobile -->
-      <div class="sidebar-column">
-        <BlockEventDetail
-          :start-date="page.startDateWithTime"
-          :time="page.startDateWithTime"
-          :locations="page.location"
-        />
+      <!-- on desktop sidebar is stickied to the side with css -->
+      <div
+        class="sidebar-column"
+        :style="sidebarStyles"
+      >
+        <div
+          ref="sidebar"
+          class="sidebar-content-wrapper"
+        >
+          <BlockEventDetail
+            :start-date="page.startDateWithTime"
+            :time="page.startDateWithTime"
+            :locations="page.location"
+          />
 
-        <BlockInfo
-          v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
-          :ftva-ticket-information="page.ftvaTicketInformation"
-        />
+          <BlockInfo
+            v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+            :ftva-ticket-information="page.ftvaTicketInformation"
+          />
+        </div>
       </div>
 
       <div class="primary-column bottom">
