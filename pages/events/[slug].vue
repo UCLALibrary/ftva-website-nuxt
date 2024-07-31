@@ -239,6 +239,7 @@ $pale-blue: #E7EDF2;
     }
   }
 
+  /* .page-event-detail .two-column .sidebar-column */
   .two-column {
     position: relative;
     width: 100%;
@@ -259,6 +260,10 @@ $pale-blue: #E7EDF2;
       }
     }
 
+    .ftva.block-info {
+      margin-top: 48px;
+    }
+
     // SECTION SCREENING DETAILS
     // TODO when component is patched, remove styles?
     :deep(figure.responsive-video:not(:has(.video-embed))) {
@@ -273,6 +278,7 @@ $pale-blue: #E7EDF2;
 
     .sidebar-column {
       grid-column: 2;
+      min-width: 280px;
       height: 50px; // when sidebar is to the side, shrink so that it does not create space in primary column
       position: sticky;
       align-self: start;
