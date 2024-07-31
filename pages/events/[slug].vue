@@ -193,7 +193,7 @@ const sidebarStyles = computed(() => {
         </SectionWrapper>
       </div>
     </div>
-    <div class="full-width bottom">
+    <div class="full-width">
       <SectionWrapper
         v-if="series && series.length > 0"
         section-title="Explore upcoming events in this series"
@@ -296,11 +296,6 @@ $pale-blue: #E7EDF2;
 
     .section-wrapper.theme-paleblue {
       background-color: $pale-blue;
-    }
-
-    &.bottom {
-      position: relative;
-      z-index: 5; // ensure sticky sidebar scrolls behind this section
     }
   }
 
