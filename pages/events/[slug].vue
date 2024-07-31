@@ -219,13 +219,17 @@ $pale-blue: #E7EDF2;
     }
   }
 
+  /* .page-event-detail .two-column .sidebar-column */
   .two-column {
     position: relative;
     width: 100%;
     max-width: $max-width;
     display: grid;
     grid-template-columns: 3fr 1fr;
-    // justify-content: space-between;
+
+    .sidebar-column {
+      min-width: 280px;
+    }
 
     .primary-column {
       grid-column: 1;
@@ -238,6 +242,10 @@ $pale-blue: #E7EDF2;
       &.bottom {
         margin-top: -30px;
       }
+    }
+
+    .ftva.block-info {
+      margin-top: 48px;
     }
 
     // SECTION SCREENING DETAILS
