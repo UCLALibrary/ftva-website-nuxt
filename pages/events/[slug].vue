@@ -13,7 +13,6 @@ import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-const globalStore = useGlobalStore()
 
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
