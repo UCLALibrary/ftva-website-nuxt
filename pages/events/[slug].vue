@@ -143,17 +143,20 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       </div>
 
       <!-- sidebar slots in here on mobile -->
+      <!-- on desktop sidebar is stickied to the side with css -->
       <div class="sidebar-column">
-        <BlockEventDetail
-          :start-date="page.startDateWithTime"
-          :time="page.startDateWithTime"
-          :locations="page.location"
-        />
+        <div class="sidebar-content-wrapper">
+          <BlockEventDetail
+            :start-date="page.startDateWithTime"
+            :time="page.startDateWithTime"
+            :locations="page.location"
+          />
 
-        <BlockInfo
-          v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
-          :ftva-ticket-information="page.ftvaTicketInformation"
-        />
+          <BlockInfo
+            v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+            :ftva-ticket-information="page.ftvaTicketInformation"
+          />
+        </div>
       </div>
 
       <div class="primary-column bottom">
@@ -169,7 +172,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </SectionWrapper>
       </div>
     </div>
-
     <div class="full-width">
       <SectionWrapper
         v-if="series && series.length > 0"
@@ -185,10 +187,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 928px;
@@ -224,16 +223,13 @@ $pale-blue: #E7EDF2;
     position: relative;
     width: 100%;
     max-width: $max-width;
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-
-    .sidebar-column {
-      min-width: 280px;
-    }
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 
     .primary-column {
-      grid-column: 1;
       margin-bottom: 0px;
+      width: 67%;
 
       .section-wrapper {
         padding-left: 0px;
@@ -261,13 +257,20 @@ $pale-blue: #E7EDF2;
     }
 
     .sidebar-column {
-      grid-column: 2;
-      position: sticky;
-      align-self: start;
+      min-width: 280px;
+      width: 30%;
+      position: absolute;
+      height: 100%;
       top: 0;
-      will-change: top;
+      right: 0;
       padding-top: var(--space-2xl);
       padding-bottom: 20px;
+
+      .sidebar-content-wrapper {
+        position: sticky;
+        top: 0;
+        will-change: top;
+      }
     }
   }
 
@@ -286,11 +289,21 @@ $pale-blue: #E7EDF2;
     min-height: 350px;
   }
 
+  @media #{$medium} {
+    .two-column>.primary-column {
+      width: 62%;
+    }
+  }
+
   @media #{$small} {
     .two-column {
+      display: grid;
       grid-template-columns: 1fr;
 
       .primary-column {
+        width: auto;
+        grid-column: 1;
+
         .section-wrapper {
           padding-left: var(--unit-gutter);
         }
@@ -301,10 +314,12 @@ $pale-blue: #E7EDF2;
       }
 
       .sidebar-column {
+        width: auto;
         position: relative;
         grid-column: 1;
         margin: auto var(--unit-gutter);
         padding-top: 0px;
+        height: auto; // let content determine height on mobile
       }
     }
   }
