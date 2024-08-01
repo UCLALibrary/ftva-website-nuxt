@@ -13,7 +13,7 @@ jobs:
   nuxt-prod:
     name: Netlify deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     steps:
       # Initial checkout to fetch repository content and tags
       - uses: actions/checkout@v3
