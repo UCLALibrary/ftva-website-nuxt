@@ -190,7 +190,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 <style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
-$max-width: 928px;
+$max-width: 1160px;
 $banner-height: 520px;
 // COLORS
 $pale-blue: #E7EDF2;
