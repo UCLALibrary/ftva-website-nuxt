@@ -187,7 +187,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
@@ -257,7 +260,7 @@ $pale-blue: #E7EDF2;
     }
 
     .sidebar-column {
-      min-width: 280px;
+      min-width: 314px;
       width: 30%;
       position: absolute;
       height: 100%;
@@ -289,7 +292,18 @@ $pale-blue: #E7EDF2;
     min-height: 350px;
   }
 
-  @media #{$medium} {
+  @media (max-width: 1200px) {
+
+    .one-column,
+    .two-column {
+      padding-left: var(--unit-gutter);
+      padding-right: var(--unit-gutter);
+    }
+
+    .sidebar-column {
+      padding-right: var(--unit-gutter);
+    }
+
     .two-column>.primary-column {
       width: 62%;
     }

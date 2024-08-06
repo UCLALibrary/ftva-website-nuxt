@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment(test/prod)'     
+        description: 'Environment(test/prod)'
         required: true
         type: choice
         options:
@@ -20,7 +20,7 @@ jobs:
   nuxt-deploy:
     name: Netlify deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # timeout-minutes: 40
     steps:
       - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
       - uses: ./.github/workflows/setup-workspace
