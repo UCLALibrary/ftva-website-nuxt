@@ -175,7 +175,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     <div class="full-width">
       <SectionWrapper
         v-if="series && series.length > 0"
-        section-title="Explore upcoming events in this series"
+        section-title="Upcoming events in this series"
         theme="paleblue"
       >
         <SectionTeaserCard
