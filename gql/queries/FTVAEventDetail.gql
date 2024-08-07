@@ -19,13 +19,13 @@ query FTVAEventDetail($slug: [String!]) {
     # CardMeta
     title: eventTitle
     ftvaEventIntroduction
-    eventDescription
+    guestSpeaker
     ftvaEventFilters {
       title
       uri
     }
 
-    guestSpeaker
+    eventDescription
     acknowledements: richText
 
     ftvaEventScreeningDetails {
