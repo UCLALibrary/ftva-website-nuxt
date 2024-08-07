@@ -20,7 +20,7 @@ query FTVAEventDetail($slug: [String!]) {
     title: eventTitle
     ftvaEventIntroduction
     guestSpeaker
-    ftvaEventFilters {
+    tagLabels: ftvaEventFilters {
       title
       uri
     }
