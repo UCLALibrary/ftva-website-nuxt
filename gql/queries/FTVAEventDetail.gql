@@ -30,17 +30,17 @@ query FTVAEventDetail($slug: [String!]) {
 
     ftvaEventScreeningDetails {
       ...on ftvaEventScreeningDetails_screeningDetails_BlockType {
-        screeningTitle
+        title: screeningTitle
         alternateTitle
-        languageTranslated
+        language: languageTranslated
         year
         country
         languageInfo
         runtime
-        screeningTags {
+        tagLabels: screeningTags {
           title
         }
-        descriptionOfScreening
+        text: descriptionOfScreening
         trailer
         image {
           ...on mediaAndDocuments_Asset {
