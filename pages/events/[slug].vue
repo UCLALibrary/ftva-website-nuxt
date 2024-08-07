@@ -128,11 +128,11 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :title="page?.title"
             :tag-labels="page.ftvaEventFilters"
             :introduction="page.ftvaEventIntroduction"
-            :text="page.eventDescription"
+            :guestSpeaker="page.guestSpeaker"
           />
           <RichText
-            v-if="page.guestSpeaker"
-            :rich-text-content="page.guestSpeaker"
+            v-if="page.eventDescription"
+            :rich-text-content="page.eventDescription"
           />
 
           <RichText
