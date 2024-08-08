@@ -68,8 +68,8 @@ devDependencies:
     specifier: ^5.20.0
     version: 5.20.0
   ucla-library-website-components:
-    specifier: 3.5.7
-    version: 3.5.7(typescript@5.4.5)(vue@3.4.31)
+    specifier: 3.6.3
+    version: 3.6.3(typescript@5.4.5)(vue@3.4.31)
 
 packages:
 
@@ -3839,12 +3839,35 @@ packages:
       - vue
     dev: true
 
+  /@vueuse/components@10.11.1(vue@3.4.31):
+    resolution: {integrity: sha512-ThcreQCX/eq61sLkLKjigD4PQvs3Wy4zglICvQH9tP6xl87y5KsQEoizn6OI+R3hrOgwQHLJe7Y0wLLh3fBKcg==}
+    dependencies:
+      '@vueuse/core': 10.11.1(vue@3.4.31)
+      '@vueuse/shared': 10.11.1(vue@3.4.31)
+      vue-demi: 0.14.8(vue@3.4.31)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
+
   /@vueuse/core@10.10.0(vue@3.4.31):
     resolution: {integrity: sha512-vexJ/YXYs2S42B783rI95lMt3GzEwkxzC8Hb0Ndpd8rD+p+Lk/Za4bd797Ym7yq4jXqdSyj3JLChunF/vyYjUw==}
     dependencies:
       '@types/web-bluetooth': 0.0.20
       '@vueuse/metadata': 10.10.0
       '@vueuse/shared': 10.10.0(vue@3.4.31)
+      vue-demi: 0.14.8(vue@3.4.31)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
+
+  /@vueuse/core@10.11.1(vue@3.4.31):
+    resolution: {integrity: sha512-guoy26JQktXPcz+0n3GukWIy/JDNKti9v6VEMu6kV2sYBsWuGiTU8OWdg+ADfUbHg3/3DlqySDe7JmdHrktiww==}
+    dependencies:
+      '@types/web-bluetooth': 0.0.20
+      '@vueuse/metadata': 10.11.1
+      '@vueuse/shared': 10.11.1(vue@3.4.31)
       vue-demi: 0.14.8(vue@3.4.31)
     transitivePeerDependencies:
       - '@vue/composition-api'
@@ -3905,6 +3928,10 @@ packages:
     resolution: {integrity: sha512-UNAo2sTCAW5ge6OErPEHb5z7NEAg3XcO9Cj7OK45aZXfLLH1QkexDcZD77HBi5zvEiLOm1An+p/4b5K3Worpug==}
     dev: true
 
+  /@vueuse/metadata@10.11.1:
+    resolution: {integrity: sha512-IGa5FXd003Ug1qAZmyE8wF3sJ81xGLSqTqtQ6jaVfkeZ4i5kS2mwQF61yhVqojRnenVew5PldLyRgvdl4YYuSw==}
+    dev: true
+
   /@vueuse/nuxt@10.10.0(nuxt@3.12.3)(vue@3.4.31):
     resolution: {integrity: sha512-l8uFNuFASmcjPEaKAbigUrQZDtVQ9wRTfbuIBEpr3oAGnYtXGwBoQqYGnZopUR1Kdh8qiurpKuwvzVQnrzDjyw==}
     peerDependencies:
@@ -3925,6 +3952,15 @@ packages:
 
   /@vueuse/shared@10.10.0(vue@3.4.31):
     resolution: {integrity: sha512-2aW33Ac0Uk0U+9yo3Ypg9s5KcR42cuehRWl7vnUHadQyFvCktseyxxEPBi1Eiq4D2yBGACOnqLZpx1eMc7g5Og==}
+    dependencies:
+      vue-demi: 0.14.8(vue@3.4.31)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
+
+  /@vueuse/shared@10.11.1(vue@3.4.31):
+    resolution: {integrity: sha512-LHpC8711VFZlDaYUXEBbFBCQ7GS3dVU9mjOhhMhXP6txTV4EhYQg/KGnQuvt/sPAtoUKq7VVUnL6mVtFoL42sA==}
     dependencies:
       vue-demi: 0.14.8(vue@3.4.31)
     transitivePeerDependencies:
@@ -4107,6 +4143,13 @@ packages:
     resolution: {integrity: sha512-RTvkC4w+KNXrM39/lWCUaG0IbRkWdCv7W/IOW9oU6SawyxulvkQy5HQPVTKxEjczcUvapcrw3cFx/60VN/NRNw==}
     engines: {node: '>=0.4.0'}
     hasBin: true
+
+  /add-to-calendar-button@2.6.18:
+    resolution: {integrity: sha512-GFQma8kcmE50fGXh1P5yv1MyILa8MJj/Wvr8w9y9JsDqVXPUAYjOP0c3AvENzKOSV2HgxtKxwSUfub8odklKhQ==}
+    engines: {node: '>=18.17.0', npm: '>=9.6.7'}
+    dependencies:
+      timezones-ical-library: 1.8.3
+    dev: true
 
   /agent-base@6.0.2:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
@@ -9791,6 +9834,11 @@ packages:
     resolution: {integrity: sha512-w89qg7PI8wAdvX60bMDP+bFoD5Dvhm9oLheFp5O4a2QF0cSBGsBX4qZmadPMvVqlLJBBci+WqGGOAPvcDeNSVg==}
     dev: true
 
+  /timezones-ical-library@1.8.3:
+    resolution: {integrity: sha512-aXpr/l5Vxfrpf2s9OUoS8Qoj+DG9ykq1YWMzWk4tG1TwxKLnrFWiAgOKrQbBtPEynVtkU1aB1TftTX/SkvSzdQ==}
+    engines: {node: '>=18.17.0', npm: '>=9.6.7'}
+    dev: true
+
   /tiny-invariant@1.3.3:
     resolution: {integrity: sha512-+FbBPE1o9QAYvviau/qC5SE3caw21q3xkvWKBtja5vgqOWIHHJ3ioaq1VPfn/Szqctz2bU/oYeKd9/z5BL+PVg==}
 
@@ -9954,13 +10002,15 @@ packages:
     resolution: {integrity: sha512-dQv1OVx8RBSep08AvCI3Tu6F73iuPk98bYrjYnmJh22dOTj9zpF4b7e/iuPLr7413egZjGJ5jzLb9WbR8DjZOw==}
     dev: true
 
-  /ucla-library-website-components@3.5.7(typescript@5.4.5)(vue@3.4.31):
-    resolution: {integrity: sha512-I77MvmHqio/fZij0SHMkNMCxdXn3JPM/syXxXISPCWLyrZzOvw4J42xDJ5By+s/ILUxFIQoddnShvvbfxEKezg==}
+  /ucla-library-website-components@3.6.3(typescript@5.4.5)(vue@3.4.31):
+    resolution: {integrity: sha512-kcV/XSZX4bkSGAkrTKAASrEL21UXvLYNd/UseANU7cAzEqJXWPqZ/6yz6Lp991ZlFSJ89Bk6oK341aTJ8ixH9Q==}
     peerDependencies:
       vue: ^3.4.29
     dependencies:
       '@vuepic/vue-datepicker': 8.7.0(vue@3.4.31)
-      '@vueuse/core': 10.10.0(vue@3.4.31)
+      '@vueuse/components': 10.11.1(vue@3.4.31)
+      '@vueuse/core': 10.11.1(vue@3.4.31)
+      add-to-calendar-button: 2.6.18
       date-fns: 2.30.0
       lodash: 4.17.21
       pinia: 2.1.7(typescript@5.4.5)(vue@3.4.31)
