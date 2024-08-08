@@ -187,10 +187,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
@@ -251,12 +248,6 @@ $pale-blue: #E7EDF2;
     // TODO when component is patched, remove styles?
     :deep(figure.responsive-video:not(:has(.video-embed))) {
       display: none;
-    }
-
-    :deep(figure.responsive-video) {
-      .sizer {
-        height: 568px; // TODO ask UX if FTVA videos on this page have fixed height or not
-      }
     }
 
     .sidebar-column {
