@@ -98,8 +98,11 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     class="page page-event-detail"
   >
     <div class="one-column">
-      <NavBreadcrumb class="breadcrumb" />
-
+      <NavBreadcrumb
+        class="breadcrumb"
+        :title="page.title"
+      />
+      <h3>BREADCRUMB{{ page.title }}</h3>
       <ResponsiveImage
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
@@ -187,7 +190,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
