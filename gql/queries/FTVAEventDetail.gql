@@ -84,10 +84,10 @@ query FTVAEventDetail($slug: [String!]) {
       slug
       typeHandle
       title
-      ftvaEvent {
+      ftvaEvent(startDateWithTime: ">= now") {
         ... on ftvaEvent_ftvaEvent_Entry {
           id
-          to: uri
+          to: slug
           title: eventTitle
           startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
           startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
