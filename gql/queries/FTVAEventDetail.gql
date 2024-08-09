@@ -23,7 +23,7 @@ query FTVAEventDetail($slug: [String!]) {
       title
       uri
     }
-    introduction
+    introduction: ftvaEventIntroduction
 
     eventDescription
     acknowledements: richText
