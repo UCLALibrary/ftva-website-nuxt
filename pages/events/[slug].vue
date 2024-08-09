@@ -210,9 +210,13 @@ $pale-blue: #E7EDF2;
     content: '';
     position: absolute;
     background-color: $pale-blue;
-    height: $banner-height;
+    aspect-ratio: 2.31 / 1;
     width: 100%;
     z-index: -1;
+  }
+
+  .lightbox-container {
+    aspect-ratio: 2.31 / 1;
   }
 
   .one-column {
