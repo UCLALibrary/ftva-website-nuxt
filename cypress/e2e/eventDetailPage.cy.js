@@ -4,6 +4,6 @@ describe('Event Detail page', () => {
 
     cy.get('h3.title-no-link').should('contain', 'TEST - La Région Centrale')
 
-    cy.percySnapshot({ widths: [768, 992, 1200] })
+    cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
   })
 })

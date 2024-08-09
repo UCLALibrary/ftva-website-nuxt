@@ -124,8 +124,12 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       <ResponsiveImage
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
+        :aspect-ratio="43.103"
       >
-        <template #credit>
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
@@ -147,13 +151,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           <CardMeta
             :category="series[0]?.title"
             :title="page?.title"
-            :tag-labels="page.ftvaEventFilters"
-            :introduction="page.ftvaEventIntroduction"
-            :text="page.eventDescription"
+            :guest-speaker="page.guestSpeaker"
+            :tag-labels="page.tagLabels"
+            :introduction="page.introduction"
           />
           <RichText
-            v-if="page.guestSpeaker"
-            :rich-text-content="page.guestSpeaker"
+            v-if="page.eventDescription"
+            :rich-text-content="page.eventDescription"
           />
 
           <RichText
@@ -231,7 +235,7 @@ $pale-blue: #E7EDF2;
     content: '';
     position: absolute;
     background-color: $pale-blue;
-    height: $banner-height;
+    aspect-ratio: 1440 / 520;
     width: 100%;
     z-index: -1;
   }
