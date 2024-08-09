@@ -109,7 +109,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         :aspect-ratio="43.103"
       >
         <template
-          v-if="parsedImage.creditText"
+          v-if="parsedImage[0].creditText"
           #credit
         >
           {{ parsedImage[0]?.creditText }}
