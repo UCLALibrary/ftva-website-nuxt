@@ -84,7 +84,7 @@ query FTVAEventDetail($slug: [String!]) {
       slug
       typeHandle
       title
-      ftvaEvent {
+      ftvaEvent(startDateWithTime: ">= now") {
         ... on ftvaEvent_ftvaEvent_Entry {
           id
           to: slug
