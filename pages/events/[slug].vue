@@ -17,7 +17,6 @@ const route = useRoute()
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
-  console.log('data', data)
   return data
 })
 if (error.value) {
@@ -27,7 +26,6 @@ if (error.value) {
 }
 
 if (!data.value.ftvaEvent) {
-  // console.log('no data')
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -48,6 +46,7 @@ watch(data, (newVal, oldVal) => {
 const parsedImage = computed(() => {
   return page.value.imageCarousel
 })
+
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
@@ -61,25 +60,33 @@ const parsedCarouselData = computed(() => {
   })
 })
 
-const pageId = computed(() => {
-  return page.value.id
-})
-
 const parsedFtvaEventSeries = computed(() => {
-  // const series = parsedFtvaEventSeries
-  const seriesEvents = series.value[0].ftvaEvent.map((obj) => {
-    return {
-      ...obj,
-      image: obj.image[0]
-    }
-  })
+  /* Early Returns: If series.value is falsy or empty, or
+    if firstSeries.ftvaEvent is falsy or empty, return
+    an empty array immediately. */
+  if (!series.value || series.value.length === 0) {
+    return []
+  }
+
+  const [firstSeries] = series.value
+
+  if (!firstSeries.ftvaEvent || firstSeries.ftvaEvent.length === 0) {
+    return []
+  }
+
+  // Destructure each series item object and its image object
+  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
+    ...rest,
+    image: image && image.length > 0 ? image[0] : null,
+  }))
 
   const pageId = page.value.id
-  const events = seriesEvents.filter((item) => {
-    return item.id !== pageId // remove this page's event from the series list to avoid duplicate info
-  })
-  // return first 3 events
-  return events.slice(0, 3)
+
+  // Return series without the page's featured event
+  const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
+
+  // Return first 3 events
+  return filteredEvents.slice(0, 3)
 })
 
 const parsedFTVAEventScreeningDetails = computed(() => {
@@ -177,12 +184,12 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     </div>
     <div class="full-width">
       <SectionWrapper
-        v-if="series && series.length > 0"
+        v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
         section-title="Upcoming events in this series"
         theme="paleblue"
       >
         <SectionTeaserCard
-          v-if="series && series.length > 0"
+          v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
           :items="parsedFtvaEventSeries"
         />
       </SectionWrapper>
@@ -190,10 +197,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
