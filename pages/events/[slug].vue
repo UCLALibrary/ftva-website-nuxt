@@ -108,7 +108,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
       >
-        <template #credit>
+        <template
+          v-if="parsedImage.creditText"
+          #credit
+        >
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
@@ -191,10 +194,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
@@ -210,13 +210,9 @@ $pale-blue: #E7EDF2;
     content: '';
     position: absolute;
     background-color: $pale-blue;
-    aspect-ratio: 2.31 / 1;
+    aspect-ratio: 1440 / 520;
     width: 100%;
     z-index: -1;
-  }
-
-  .lightbox-container {
-    aspect-ratio: 2.31 / 1;
   }
 
   .one-column {
