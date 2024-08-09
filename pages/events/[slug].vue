@@ -126,8 +126,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           <CardMeta
             :category="series[0]?.title"
             :title="page?.title"
-            :guestSpeaker="page.guestSpeaker"
-            :tagLabels="page.tagLabels"
+            :guest-speaker="page.guestSpeaker"
+            :tag-labels="page.tagLabels"
             :introduction="page.introduction"
           />
           <RichText

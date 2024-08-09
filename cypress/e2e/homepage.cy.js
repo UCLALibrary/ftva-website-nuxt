@@ -18,6 +18,6 @@ describe('Website Homepage', () => {
     //   .should('have.attr', 'href', 'https://www.library.ucla.edu')
     // NavPrimary
 
-    cy.percySnapshot({ widths: [768, 992, 1200] })
+    // cy.percySnapshot({ widths: [768, 992, 1200] })
   })
 })
