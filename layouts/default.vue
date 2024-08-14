@@ -77,9 +77,6 @@ const classes = computed(() => {
     <!-- THen check FooterMin -->
     <!-- Copy from Storybook use global store to pass data -->
 
-
-
-
     <!-- <footer>
       <footer-main />
     </footer> -->
