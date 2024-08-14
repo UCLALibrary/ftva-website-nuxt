@@ -7,21 +7,8 @@ export const useGlobalStore = defineStore('GlobalStore', {
     header: {},
     footerPrimary: {},
     footerSock: {},
-    footerSponsor: {}
-    /* _token: "",
-        _user: {}, */
+    footerLinks: {}
   }),
-  getters: {
-
-    /*
-      Examples of getter methods:
-    user() {
-            return this._user
-        },
-        isAuthed() {
-            return Object.keys(this._user).length > 0
-        }, */
-  },
   actions: {
     setWindowDimension(width, height) {
       this.winHeight = height
@@ -80,19 +67,30 @@ export const useGlobalStore = defineStore('GlobalStore', {
         throw new Error(`Craft API error, trying to set globals FooterSockData. ${e}`)
       }
     },
-    async fetchFooterSponsor() {
+    async fetchFooterLinks() {
       try {
-        const { data } = await useFetch('/api/fetchNitroStorageCraftFooterSponsorData')
-        console.log('Pinia store Footer Sponsor Data object:' + JSON.stringify(data.value))
-        if (data.value) {
-          const craftData = removeEmpties(data.value?.footerSponsor || [])
-          console.log('meap sponsor data', craftData)
-          this.footerSponsor = craftData[0]
-          console.log('Pinia store footerSponsor end:' + JSON.stringify(this.footerSponsor))
+        const json = await $fetch('/api/fetchNitroStorageCraftFooterLinksData')
+        console.log('JSONNNN' + JSON.stringify(json))
+
+        if (json) {
+          const craftData = removeEmpties(json.nodes || [])
+          console.log('links data', craftData)
+          this.footerLinks = craftData
+          console.log('Pinia store footerLinks end:' + JSON.stringify(this.footerLinks))
         }
+
+        /* const { data, error } = await useFetch('/api/fetchNitroStorageCraftFooterLinksData')
+        console.log('error', error.value)
+        console.log('Pinia store Footer Links Data object:' + JSON.stringify(data.value))
+        if (data.value) {
+          const craftData = removeEmpties(data.value?.footerLinks || [])
+          console.log('links data', craftData)
+          this.footerLinks = craftData[0]
+          console.log('Pinia store footerLinks end:' + JSON.stringify(this.footerLinks))
+        } */
       }
       catch (e) {
-        throw new Error(`Craft API error, trying to set globals FooterSponsorData. ${e}`)
+        throw new Error(`Craft API error, trying to set globals FooterLinksData. ${e}`)
       }
     },
 

@@ -3,17 +3,17 @@ const MenuItem = `
             name: title
             to: url
             classes
-            target: newWindow  
+            target: newWindow
     `
 const footerPrimaryQuery = `
-    query FooterPrimaryItems {
-        nodes(navHandle: "footerPrimary", level: 1) {
-            ${MenuItem}
-            children {
-                ${MenuItem}
-            }
+  query FooterPrimaryItems {
+    nodes(navHandle: "ftvaPrimaryMenu", level: 1) {
+      ...MenuItem
+        children {
+            ...MenuItem
         }
-    }
+  }
+}
 `
 export default cachedEventHandler(async () => {
   const endpoint = useRuntimeConfig().public.craftGraphqlURL

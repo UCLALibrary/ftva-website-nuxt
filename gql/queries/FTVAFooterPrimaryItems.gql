@@ -1,7 +1,7 @@
 #import "~/gql/fragments/MenuItem.gql"
 
-query FooterPrimaryItems {
-    nodes(navHandle: "footerPrimary", level: 1) {
+query FTVAFooterPrimaryItems {
+    nodes(navHandle: "ftvaPrimaryMenu", level: 1) {
         ...MenuItem
         children {
             ...MenuItem

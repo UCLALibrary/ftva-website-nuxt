@@ -1,4 +1,6 @@
 <script setup>
+import { provideTheme } from '@/composables/provideTheme'
+provideTheme()
 
 const globalStore = useGlobalStore()
 
@@ -7,6 +9,9 @@ const primaryMenuItems = computed(() => {
 })
 const secondaryMenuItems = computed(() => {
   return globalStore.header.secondary
+})
+const footerLinks = computed(() => {
+  return globalStore.footerLinks.nodes
 })
 const isMobile = computed(() => {
   return globalStore.winWidth <= 1024
@@ -52,14 +57,32 @@ const classes = computed(() => {
     </header-->
 
     <slot />
+    <pre>PRIMARY-- {{ globalStore.footerPrimary }}</pre>
+    <pre>PRIMARY 2--- {{ globalStore.footerPrimary.nodes }}</pre>
+    <hr>
+    <pre>FOOTER LINKS{{ globalStore.footerLinks }}</pre>
+    <pre>FOOTER LINKS{{ globalStore.footerLinks.nodes }}</pre>
+    <hr>
+    <pre>SOCKS---{{ globalStore.footerSock }}</pre>
 
-    <footer>
-      <footer-primary
-        v-if="globalStore.footerPrimary"
-        :form="false"
-      />
-      <footer-sock v-if="globalStore.footerSock" />
-    </footer>
+    <!-- JEN Create a new Footer add 3 components-->
+    <!-- 1. FooterPrimary is theme showing up-->
+    <footer-primary :form="true" />
+
+    <!-- 2. FooterLinks is theme showing up-->
+    <footer-links :item="footerLinks" />
+
+    <!-- 3.FooterSock is theme showing up-->
+    <footer-sock />
+    <!-- THen check FooterMin -->
+    <!-- Copy from Storybook use global store to pass data -->
+
+
+
+
+    <!-- <footer>
+      <footer-main />
+    </footer> -->
   </div>
 </template>
 <style
