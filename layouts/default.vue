@@ -53,16 +53,19 @@ const classes = computed(() => {
 
     <slot />
 
-    <!--footer>
+    <footer>
       <footer-primary
         v-if="globalStore.footerPrimary"
         :form="false"
       />
       <footer-sock v-if="globalStore.footerSock" />
-    </footer-->
+    </footer>
   </div>
 </template>
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 .layout-default {
   min-height: 100vh;
 
