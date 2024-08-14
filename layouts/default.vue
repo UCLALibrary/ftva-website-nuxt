@@ -70,7 +70,7 @@ const classes = computed(() => {
     <footer-primary :form="true" />
 
     <!-- 2. FooterLinks is theme showing up-->
-    <footer-links :item="footerLinks" />
+    <!-- <footer-links :item="footerLinks" /> -->
 
     <!-- 3.FooterSock is theme showing up-->
     <footer-sock />
