@@ -4,54 +4,53 @@ describe('Event Detail page', () => {
 
     cy.get('h3.title-no-link').should('contain', 'TEST - La Région Centrale')
 
-// NavBreadcrumb
-  // page.title
+    // NavBreadcrumb
+    // page.title
 
-// ResponsiveImage
+    // ResponsiveImage
 
-// CarouselImages
+    // CarouselImages
 
-// CardMeta
-  // :category="series[0]?.title"
-  // :title="page?.title"
-  // :guest-speaker="page.guestSpeaker"
-  // :tag-labels="page.tagLabels"
-  // :introduction="page.introduction"
+    // CardMeta
+    // :category="series[0]?.title"
+    // :title="page?.title"
+    // :guest-speaker="page.guestSpeaker"
+    // :tag-labels="page.tagLabels"
+    // :introduction="page.introduction"
 
-// RichText - EventDescription
-  // page.eventDescription
+    // RichText - EventDescription
+    // page.eventDescription
 
-// RichText - Acknowledgements
-  // page.acknowledements
+    // RichText - Acknowledgements
+    // page.acknowledements
 
-// BlockEventDetail
-  // :start-date="page.startDateWithTime"
-  // :time="page.startDateWithTime"
-  // :locations="page.location"
+    // BlockEventDetail
+    // :start-date="page.startDateWithTime"
+    // :time="page.startDateWithTime"
+    // :locations="page.location"
 
-// BlockInfo
-  // :ftva-ticket-information="page.ftvaTicketInformation"
+    // BlockInfo
+    // :ftva-ticket-information="page.ftvaTicketInformation"
 
-// SectionScreeningDetails
-  // arsedFTVAEventScreeningDetails
+    // SectionScreeningDetails
+    // arsedFTVAEventScreeningDetails
 
-// SectionTeaserCard
-  // parsedFtvaEventSeries
+    // SectionTeaserCard
+    // parsedFtvaEventSeries
 
-// UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
+    // UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
 
-// Verify that data is displayed correctly, especially dynamic data fetched from APIs
+    // Verify that data is displayed correctly, especially dynamic data fetched from APIs
 
-// Event Information Display: Ensure that all event details (title, description, date, time, location) are displayed correctly
+    // Event Information Display: Ensure that all event details (title, description, date, time, location) are displayed correctly
 
-// Add to Calendar: Verify that the "Add to Calendar" button works as expected
+    // Add to Calendar: Verify that the "Add to Calendar" button works as expected
 
-// Responsive Design: Check that the page renders correctly on different screen sizes
+    // Responsive Design: Check that the page renders correctly on different screen sizes
 
-// Navigation: Ensure that navigation to and from the event detail page works smoothly
+    // Navigation: Ensure that navigation to and from the event detail page works smoothly
 
-
-// named screen shot
+    // named screen shot
     cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
   })
 })
