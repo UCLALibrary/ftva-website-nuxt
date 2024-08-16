@@ -2,8 +2,11 @@
 
 query FTVAFooterLinks {
   nodes(navHandle: "ftvaFooterNav", level: 1) {
-    category: title
-    children {
+   category: title
+    children(level: 2) {
+      # category: parent {
+      #   title
+      # }
       ...MenuItem
     }
   }

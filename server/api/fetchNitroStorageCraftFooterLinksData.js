@@ -5,16 +5,18 @@ const MenuItem = `
             classes
             target: newWindow
     `
-const footerLinksQuery = `
-  query FTVAFooterLinks {
-    nodes(navHandle: "ftvaFooterNav", level: 1) {
-      category: title
-      children {
-        ...MenuItem
+query FTVAFooterLinks {
+  nodes(navHandle: "ftvaFooterNav", level: 1) {
+
+    children(level: 2) {
+      category: parent {
+        title
       }
+      ...MenuItem
     }
   }
-    `
+}
+`
 export default cachedEventHandler(async () => {
   const endpoint = useRuntimeConfig().public.craftGraphqlURL
   let footerLinksData = await useStorage().getItem('ftvaCraftData:footerLinks')
