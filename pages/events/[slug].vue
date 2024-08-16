@@ -145,14 +145,14 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :introduction="page.introduction"
           />
           <RichText
-            class="eventDescription"
             v-if="page.eventDescription"
+            class="eventDescription"
             :rich-text-content="page.eventDescription"
           />
 
           <RichText
-            class="acknowledgements"
             v-if="page.acknowledements"
+            class="acknowledgements"
             :rich-text-content="page.acknowledements"
           />
         </SectionWrapper>

@@ -9,7 +9,6 @@ describe('Event Detail page', () => {
 
     // ResponsiveImage
 
-
     // CarouselImages
     cy.get('span.carousel').should('contain', 'Movie Database')
 
