@@ -5,13 +5,17 @@ describe('Event Detail page', () => {
     cy.get('h3.title-no-link').should('contain', 'TEST - La Région Centrale')
 
     // NavBreadcrumb
-    // page.title
+    cy.get('span.current-page-title').should('contain', 'TEST - The Films of Michael Snow')
 
     // ResponsiveImage
 
+
     // CarouselImages
+    cy.get('span.carousel').should('contain', 'Movie Database')
 
     // CardMeta
+    cy.get('div.guestSpeaker').should('contain', 'Guest Speaker Graeme Ferguson')
+
     // :category="series[0]?.title"
     // :title="page?.title"
     // :guest-speaker="page.guestSpeaker"
@@ -19,21 +23,29 @@ describe('Event Detail page', () => {
     // :introduction="page.introduction"
 
     // RichText - EventDescription
+    cy.get('div.eventDescription').should('contain', 'Event Description')
     // page.eventDescription
 
     // RichText - Acknowledgements
+    cy.get('div.acknowledgements').should('contain', 'Acknowledgements/Funders')
     // page.acknowledements
 
     // BlockEventDetail
+    cy.get('div.block-event-detail').should('contain', 'March 8, 2024')
+    cy.get('div.block-event-detail').should('contain', '7:30 pm')
+    cy.get('div.block-event-detail').should('contain', 'Billy Wilder Theater')
     // :start-date="page.startDateWithTime"
     // :time="page.startDateWithTime"
     // :locations="page.location"
 
     // BlockInfo
+    cy.get('div.block-info').should('contain', 'Admission is free')
     // :ftva-ticket-information="page.ftvaTicketInformation"
+    // button Plan Your Visit
 
     // SectionScreeningDetails
-    // arsedFTVAEventScreeningDetails
+    cy.get('div.section-screening-details').should('contain', 'Trailer with Cover image - The Central Regions')
+    // parsedFTVAEventScreeningDetails
 
     // SectionTeaserCard
     // parsedFtvaEventSeries

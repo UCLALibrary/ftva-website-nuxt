@@ -145,11 +145,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :introduction="page.introduction"
           />
           <RichText
+            class="eventDescription"
             v-if="page.eventDescription"
             :rich-text-content="page.eventDescription"
           />
 
           <RichText
+            class="acknowledgements"
             v-if="page.acknowledements"
             :rich-text-content="page.acknowledements"
           />
@@ -201,7 +203,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
