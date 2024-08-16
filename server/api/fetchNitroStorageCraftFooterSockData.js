@@ -3,7 +3,7 @@ const MenuItem = `
             name: title
             to: url
             classes
-            target: newWindow  
+            target: newWindow
     `
 const footerSockQuery = `
     query FooterSockItems {

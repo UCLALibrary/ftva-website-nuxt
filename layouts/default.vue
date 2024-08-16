@@ -57,20 +57,21 @@ const classes = computed(() => {
     </header-->
 
     <slot />
-    <pre>PRIMARY-- {{ globalStore.footerPrimary }}</pre>
-    <pre>PRIMARY 2--- {{ globalStore.footerPrimary.nodes }}</pre>
+    <!-- <pre>PRIMARY-- {{ globalStore.footerPrimary }}</pre>
+    <pre>PRIMARY 2--- {{ globalStore.footerPrimary.nodes }}</pre> -->
     <hr>
     <pre>FOOTER LINKS{{ globalStore.footerLinks }}</pre>
-    <pre>FOOTER LINKS{{ globalStore.footerLinks.nodes }}</pre>
     <hr>
-    <pre>SOCKS---{{ globalStore.footerSock }}</pre>
+    <pre>FOOTER LINKS.NODES{{ globalStore.footerLinks.nodes }}</pre>
+    <hr>
+    <!-- <pre>SOCKS---{{ globalStore.footerSock }}</pre> -->
 
     <!-- JEN Create a new Footer add 3 components-->
     <!-- 1. FooterPrimary is theme showing up-->
     <footer-primary :form="true" />
 
     <!-- 2. FooterLinks is theme showing up-->
-    <!-- <footer-links :item="footerLinks" /> -->
+    <footer-links />
 
     <!-- 3.FooterSock is theme showing up-->
     <footer-sock />
