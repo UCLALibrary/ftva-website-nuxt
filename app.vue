@@ -8,7 +8,7 @@ const { enabled, state } = usePreviewMode()
   <div>
     <NuxtLoadingIndicator
       color="#ffe800"
-      height="3"
+      :height="3"
     />
     <VueSkipTo
       to="#main"

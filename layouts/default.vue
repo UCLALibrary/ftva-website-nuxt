@@ -3,6 +3,8 @@ import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 
 const globalStore = useGlobalStore()
+const classes = ref(['layout',
+  'layout-default',])
 
 const primaryMenuItems = computed(() => {
   return globalStore.header.primary
@@ -10,20 +12,14 @@ const primaryMenuItems = computed(() => {
 const secondaryMenuItems = computed(() => {
   return globalStore.header.secondary
 })
-const footerLinks = computed(() => {
-  return globalStore.footerLinks
-})
+
 const isMobile = computed(() => {
   return globalStore.winWidth <= 1024
 })
 
-const classes = computed(() => {
-  return [
-    'layout',
-    'layout-default',
-    { 'has-scrolled': globalStore.sTop },
-    { 'has-scrolled-past-header': globalStore.sTop >= 150 },
-  ]
+onMounted(() => {
+  classes.value.push({ 'has-scrolled': globalStore.sTop })
+  classes.value.push({ 'has-scrolled-past-header': globalStore.sTop >= 150 })
 })
 
 </script>
@@ -83,10 +79,7 @@ const classes = computed(() => {
     </footer> -->
   </div>
 </template>
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 .layout-default {
   min-height: 100vh;
 

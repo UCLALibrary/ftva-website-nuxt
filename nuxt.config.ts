@@ -11,6 +11,7 @@ export default defineNuxtConfig({
       alias: {
         'cross-fetch': 'cross-fetch/dist/browser-ponyfill.js',
         '~ucla-library-design-tokens': 'ucla-library-design-tokens',
+        vue: 'vue/dist/vue.esm-bundler.js', // Use the full build
       },
     },
     server: {

@@ -5,12 +5,12 @@ const MenuItem = `
             classes
             target: newWindow
     `
-const footerLinks = `
+const footerLinksQuery = `
 query FTVAFooterLinks {
   nodes(navHandle: "ftvaFooterNav", level: 1) {
    category: title
     children(level: 2) {
-      ...MenuItem
+      ${MenuItem}
     }
   }
 }
@@ -29,7 +29,7 @@ export default cachedEventHandler(async () => {
     })
     await useStorage().setItem('ftvaCraftData:footerLinks', data)
     footerLinksData = data
-    // console.log('Server api Craft Footer Links Data object first set and then get:' + JSON.stringify(footerLinksData))
+    console.log('Server api Craft Footer Links Data object first set and then get:' + JSON.stringify(footerLinksData))
   }
   return footerLinksData
 })

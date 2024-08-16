@@ -73,9 +73,7 @@ export const useGlobalStore = defineStore('GlobalStore', {
         console.log('FOOOTER LIIINKS' + JSON.stringify(json))
 
         if (json) {
-          const craftData = removeEmpties(json.nodes || [])
-          console.log('links data', craftData)
-          this.footerLinks = craftData
+          this.footerLinks = json
           console.log('Pinia store footerLinks end:' + JSON.stringify(this.footerLinks))
         }
 
