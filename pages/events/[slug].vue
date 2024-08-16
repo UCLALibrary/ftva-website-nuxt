@@ -218,7 +218,8 @@ $pale-blue: #E7EDF2;
     position: absolute;
     background-color: $pale-blue;
     aspect-ratio: 1440 / 520;
-    max-height: 518px;
+    max-height: 518px; //prevent overflow on large screens
+    min-height: 225px; //prevent too much shrinking on small screens
     width: 100%;
     z-index: -1;
   }
