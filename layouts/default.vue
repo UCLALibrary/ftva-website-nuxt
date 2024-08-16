@@ -59,11 +59,11 @@ const classes = computed(() => {
     <slot />
     <!-- <pre>PRIMARY-- {{ globalStore.footerPrimary }}</pre>
     <pre>PRIMARY 2--- {{ globalStore.footerPrimary.nodes }}</pre> -->
-    <hr>
+    <!-- <hr>
     <pre>FOOTER LINKS{{ globalStore.footerLinks }}</pre>
     <hr>
     <pre>FOOTER LINKS.NODES{{ globalStore.footerLinks.nodes }}</pre>
-    <hr>
+    <hr> -->
     <!-- <pre>SOCKS---{{ globalStore.footerSock }}</pre> -->
 
     <!-- JEN Create a new Footer add 3 components-->
