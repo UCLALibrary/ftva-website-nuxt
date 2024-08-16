@@ -5,6 +5,7 @@ const MenuItem = `
             classes
             target: newWindow
     `
+const footerLink = `
 query FTVAFooterLinks {
   nodes(navHandle: "ftvaFooterNav", level: 1) {
    category: title
@@ -13,7 +14,6 @@ query FTVAFooterLinks {
     }
   }
 }
-
 `
 export default cachedEventHandler(async () => {
   const endpoint = useRuntimeConfig().public.craftGraphqlURL
