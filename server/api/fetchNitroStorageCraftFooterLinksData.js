@@ -5,7 +5,7 @@ const MenuItem = `
             classes
             target: newWindow
     `
-const footerLink = `
+const footerLinks = `
 query FTVAFooterLinks {
   nodes(navHandle: "ftvaFooterNav", level: 1) {
    category: title

@@ -70,7 +70,7 @@ export const useGlobalStore = defineStore('GlobalStore', {
     async fetchFooterLinks() {
       try {
         const json = await $fetch('/api/fetchNitroStorageCraftFooterLinksData')
-        console.log('JSONNNN' + JSON.stringify(json))
+        console.log('FOOOTER LIIINKS' + JSON.stringify(json))
 
         if (json) {
           const craftData = removeEmpties(json.nodes || [])
