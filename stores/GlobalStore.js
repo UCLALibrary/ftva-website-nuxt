@@ -70,11 +70,11 @@ export const useGlobalStore = defineStore('GlobalStore', {
     async fetchFooterLinks() {
       try {
         const json = await $fetch('/api/fetchNitroStorageCraftFooterLinksData')
-        console.log('FOOOTER LIIINKS' + JSON.stringify(json))
+        // console.log('FOOOTER LIIINKS' + JSON.stringify(json))
 
         if (json) {
           this.footerLinks = json
-          console.log('Pinia store footerLinks end:' + JSON.stringify(this.footerLinks))
+          // console.log('Pinia store footerLinks end:' + JSON.stringify(this.footerLinks))
         }
 
         /* const { data, error } = await useFetch('/api/fetchNitroStorageCraftFooterLinksData')
