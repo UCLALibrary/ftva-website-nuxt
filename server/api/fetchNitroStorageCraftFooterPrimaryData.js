@@ -7,10 +7,10 @@ const MenuItem = `
     `
 const footerPrimaryQuery = `
   query FooterPrimaryItems {
-    nodes(navHandle: "ftvaPrimaryMenu", level: 1) {
-      ...MenuItem
+    nodes(navHandle: "footerPrimary", level: 1) {
+      ${MenuItem}
         children {
-            ...MenuItem
+            ${MenuItem}
         }
   }
 }

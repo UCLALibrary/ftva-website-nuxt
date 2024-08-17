@@ -55,11 +55,17 @@ onMounted(() => {
     <slot />
     <!-- <pre>PRIMARY-- {{ globalStore.footerPrimary }}</pre>
     <pre>PRIMARY 2--- {{ globalStore.footerPrimary.nodes }}</pre> -->
-    <hr>
-    <pre>FOOTER LINKS{{ globalStore.footerLinks }}</pre>
-    <hr>
-    <pre>FOOTER LINKS.NODES{{ globalStore.footerLinks.nodes }}</pre>
-    <hr>
+    <div
+      v-if="$route.path === '/'"
+      style="padding: 50px 250px"
+    >
+      <hr>
+      <pre>FOOTER Primary {{ globalStore.footerPrimary }}</pre>
+      <hr>
+      <pre>FOOTER LINKS{{ globalStore.footerLinks }}</pre>
+      <hr>
+    </div>
+
     <!-- <pre>SOCKS---{{ globalStore.footerSock }}</pre> -->
 
     <!-- JEN Create a new Footer add 3 components-->
