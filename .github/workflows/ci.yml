@@ -62,7 +62,7 @@ jobs:
               run: |
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}" >> $GITHUB_ENV
               if: github.ref_name=='main'
-            - run: pnpm run generate
+            - run: pnpm run prerender
               if: steps.cache-nuxt3.outputs.cache-hit != 'true'
               env:
                   CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
