@@ -68,8 +68,8 @@ devDependencies:
     specifier: ^5.20.0
     version: 5.20.0
   ucla-library-website-components:
-    specifier: 3.6.4
-    version: 3.6.4(typescript@5.4.5)(vue@3.4.31)
+    specifier: 3.9.0
+    version: 3.9.0(typescript@5.4.5)(vue@3.4.31)
 
 packages:
 
@@ -3761,8 +3761,8 @@ packages:
     dependencies:
       '@unocss/reset': 0.60.4
       '@vue/devtools-shared': 7.2.1
-      '@vueuse/components': 10.10.0(vue@3.4.31)
-      '@vueuse/core': 10.10.0(vue@3.4.31)
+      '@vueuse/components': 10.11.1(vue@3.4.31)
+      '@vueuse/core': 10.11.1(vue@3.4.31)
       '@vueuse/integrations': 10.10.0(focus-trap@7.5.4)(vue@3.4.31)
       colord: 2.9.3
       floating-vue: 5.2.2(@nuxt/kit@3.11.2)(vue@3.4.31)
@@ -3826,17 +3826,6 @@ packages:
     dependencies:
       date-fns: 3.6.0
       vue: 3.4.31(typescript@5.4.5)
-    dev: true
-
-  /@vueuse/components@10.10.0(vue@3.4.31):
-    resolution: {integrity: sha512-HiA10NQ9HJAGnju+8ZK4TyA8LIc0a6BnJmVWDa/k+TRhaYCVacSDU04k0BQ2otV+gghUDdwu98upf6TDRXpoeg==}
-    dependencies:
-      '@vueuse/core': 10.10.0(vue@3.4.31)
-      '@vueuse/shared': 10.10.0(vue@3.4.31)
-      vue-demi: 0.14.8(vue@3.4.31)
-    transitivePeerDependencies:
-      - '@vue/composition-api'
-      - vue
     dev: true
 
   /@vueuse/components@10.11.1(vue@3.4.31):
@@ -10002,8 +9991,8 @@ packages:
     resolution: {integrity: sha512-dQv1OVx8RBSep08AvCI3Tu6F73iuPk98bYrjYnmJh22dOTj9zpF4b7e/iuPLr7413egZjGJ5jzLb9WbR8DjZOw==}
     dev: true
 
-  /ucla-library-website-components@3.6.4(typescript@5.4.5)(vue@3.4.31):
-    resolution: {integrity: sha512-RkAJl3XLDK6e226B69ozVvyBicXGoNbVMGTEWpqhL7xazxyyho/eHwCp/rpeE9Bi/Ldh43O7c9JIcbPloXOY1w==}
+  /ucla-library-website-components@3.9.0(typescript@5.4.5)(vue@3.4.31):
+    resolution: {integrity: sha512-e2lzjOIP2LTMNAXRT4tVM9UR2JmFC32PJc/0KknO4nC3h6WQKEk79tmw+hbE2uhRbw7Wwk2LH+jsF9juxNMijw==}
     peerDependencies:
       vue: ^3.4.29
     dependencies:
