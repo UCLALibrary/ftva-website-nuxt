@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -58,6 +58,17 @@ const parsedCarouselData = computed(() => {
       captionText: 'dfsdfsd',
     }
   })
+})
+
+// Data for Calendar Dropdown
+const parsedCalendarData = computed(() => {
+  const event = page.value
+  return {
+    title: event.title,
+    eventDescription: event.eventDescription,
+    startDateWithTime: event.startDateWithTime,
+    location: event.location
+  }
 })
 
 const parsedFtvaEventSeries = computed(() => {
@@ -165,7 +176,14 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :time="page.startDateWithTime"
             :locations="page.location"
           />
-
+          <ButtonDropdown
+            :title="parsedCalendarData.title"
+            :event-description="parsedCalendarData.eventDescription"
+            :start-date-with-time="parsedCalendarData.startDateWithTime"
+            :location="parsedCalendarData.location"
+            :is-event="true"
+            :debug-mode-enabled="false"
+          />
           <BlockInfo
             v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
             :ftva-ticket-information="page.ftvaTicketInformation"
@@ -254,6 +272,10 @@ $pale-blue: #E7EDF2;
       &.bottom {
         margin-top: -30px;
       }
+    }
+
+    .ftva.button-dropdown {
+      margin-top: 30px;
     }
 
     .ftva.block-info {
