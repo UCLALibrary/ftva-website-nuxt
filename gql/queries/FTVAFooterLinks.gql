@@ -1,0 +1,10 @@
+#import "~/gql/fragments/MenuItem.gql"
+
+query FTVAFooterLinks {
+  nodes(navHandle: "ftvaFooterNav", level: 1) {
+   category: title
+    children(level: 2) {
+      ...MenuItem
+    }
+  }
+}

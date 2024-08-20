@@ -1,6 +1,10 @@
 <script setup>
+import { provideTheme } from '@/composables/provideTheme'
+provideTheme()
 
 const globalStore = useGlobalStore()
+const classes = ref(['layout',
+  'layout-default',])
 
 const primaryMenuItems = computed(() => {
   return globalStore.header.primary
@@ -8,17 +12,14 @@ const primaryMenuItems = computed(() => {
 const secondaryMenuItems = computed(() => {
   return globalStore.header.secondary
 })
+
 const isMobile = computed(() => {
   return globalStore.winWidth <= 1024
 })
 
-const classes = computed(() => {
-  return [
-    'layout',
-    'layout-default',
-    { 'has-scrolled': globalStore.sTop },
-    { 'has-scrolled-past-header': globalStore.sTop >= 150 },
-  ]
+onMounted(() => {
+  classes.value.push({ 'has-scrolled': globalStore.sTop })
+  classes.value.push({ 'has-scrolled-past-header': globalStore.sTop >= 150 })
 })
 
 </script>
@@ -52,14 +53,22 @@ const classes = computed(() => {
     </header-->
 
     <slot />
+    <!-- <pre>PRIMARY-- {{ globalStore.footerPrimary }}</pre>
+    <pre>PRIMARY 2--- {{ globalStore.footerPrimary.nodes }}</pre> -->
+    <div
+      v-if="$route.path === '/'"
+      style="padding: 50px 250px"
+    >
+      <hr>
+      <pre>FOOTER Primary {{ globalStore.footerPrimary }}</pre>
+      <hr>
+      <pre>FOOTER LINKS{{ globalStore.footerLinks }}</pre>
+      <hr>
+    </div>
 
-    <!--footer>
-      <footer-primary
-        v-if="globalStore.footerPrimary"
-        :form="false"
-      />
-      <footer-sock v-if="globalStore.footerSock" />
-    </footer-->
+    <footer>
+      <footer-main />
+    </footer>
   </div>
 </template>
 <style lang="scss" scoped>
