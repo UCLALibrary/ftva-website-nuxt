@@ -66,23 +66,9 @@ onMounted(() => {
       <hr>
     </div>
 
-    <!-- <pre>SOCKS---{{ globalStore.footerSock }}</pre> -->
-
-    <!-- JEN Create a new Footer add 3 components-->
-    <!-- 1. FooterPrimary is theme showing up-->
-    <footer-primary :form="true" />
-
-    <!-- 2. FooterLinks is theme showing up-->
-    <footer-links />
-
-    <!-- 3.FooterSock is theme showing up-->
-    <footer-sock />
-    <!-- THen check FooterMin -->
-    <!-- Copy from Storybook use global store to pass data -->
-
-    <!-- <footer>
+    <footer>
       <footer-main />
-    </footer> -->
+    </footer>
   </div>
 </template>
 <style lang="scss" scoped>
