@@ -57,14 +57,42 @@ const parsedCarouselData = computed(() => {
     }
   })
 })
+
+const parsedFtvaEventSeries = computed(() => {
+  /* Early Returns: If series.value is falsy or empty, or
+    if firstSeries.ftvaEvent is falsy or empty, return
+    an empty array immediately. */
+  if (!series.value || series.value.length === 0) {
+    return []
+  }
+
+  const [firstSeries] = series.value
+
+  if (!firstSeries.ftvaEvent || firstSeries.ftvaEvent.length === 0) {
+    return []
+  }
+
+  // Destructure each series item object and its image object
+  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
+    ...rest,
+    image: image && image.length > 0 ? image[0] : null,
+  }))
+
+  const pageId = page.value.id
+
+  // Return series without the page's featured event
+  const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
+
+  // Return first 3 events
+  return filteredEvents.slice(0, 3)
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-ftva-event-series-detail"
+    class="page page-event-series-detail"
   >
-
     <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"
@@ -107,17 +135,19 @@ const parsedCarouselData = computed(() => {
         </SectionWrapper>
       </div>
     </div>
-
-    <!-- <div
-        v-else
-        class="lightbox-container"
+    <h3>otherSeriesOngoing--- {{ page.otherSeriesOngoing }}</h3>
+    <h3>otherSeriesUpcoming-- {{ page.otherSeriesUpcoming }}</h3>
+    <!-- <div class="full-width">
+      <SectionWrapper
+        v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
+        section-title="Upcoming events in this series"
+        theme="paleblue"
       >
-        <FlexibleMediaGalleryNewLightbox :items="parsedCarouselData">
-          <template #default="slotProps">
-            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
-          </template>
-        </FlexibleMediaGalleryNewLightbox>
-      </div>
+        <SectionTeaserCard
+          v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
+          :items="parsedFtvaEventSeries"
+        />
+      </SectionWrapper>
     </div> -->
 
 
@@ -128,4 +158,148 @@ const parsedCarouselData = computed(() => {
 <style
   lang="scss"
   scoped
-></style>
+>
+// VARS - TO DO move to global? reference tokens?
+// WIDTH, HEIGHT, SPACING
+$max-width: 1160px;
+$banner-height: 520px;
+// COLORS
+$pale-blue: #E7EDF2;
+
+// PAGE STYLES
+.page-event-series-detail {
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    background-color: $pale-blue;
+    aspect-ratio: 1440 / 520;
+    max-height: 518px; //prevent overflow on large screens
+    min-height: 225px; //prevent too much shrinking on small screens
+    width: 100%;
+    z-index: -1;
+  }
+
+  .one-column {
+    width: 100%;
+    max-width: $max-width;
+    margin: 0 auto;
+
+    :deep(.nav-breadcrumb) {
+      padding: 0px;
+    }
+  }
+
+  /* .page-event-detail .two-column .sidebar-column */
+  .two-column {
+    position: relative;
+    width: 100%;
+    max-width: $max-width;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .primary-column {
+      margin-bottom: 0px;
+      width: 67%;
+
+      .section-wrapper {
+        padding-left: 0px;
+      }
+
+      &.bottom {
+        margin-top: -30px;
+      }
+    }
+
+    .ftva.block-info {
+      margin-top: 48px;
+    }
+
+    // SECTION SCREENING DETAILS
+    // TODO when component is patched, remove styles?
+    :deep(figure.responsive-video:not(:has(.video-embed))) {
+      display: none;
+    }
+
+    .sidebar-column {
+      min-width: 314px;
+      width: 30%;
+      position: absolute;
+      height: 100%;
+      top: 0;
+      right: 0;
+      padding-top: var(--space-2xl);
+      padding-bottom: 20px;
+
+      .sidebar-content-wrapper {
+        position: sticky;
+        top: 0;
+        will-change: top;
+      }
+    }
+  }
+
+  .full-width {
+    width: 100%;
+    background-color: $pale-blue;
+    margin: 0 auto;
+
+    .section-wrapper.theme-paleblue {
+      background-color: $pale-blue;
+    }
+  }
+
+  /* makes all EventSeries same height */
+  :deep(.card) {
+    min-height: 350px;
+  }
+
+  @media (max-width: 1200px) {
+
+    .one-column,
+    .two-column {
+      padding-left: var(--unit-gutter);
+      padding-right: var(--unit-gutter);
+    }
+
+    .sidebar-column {
+      padding-right: var(--unit-gutter);
+    }
+
+    .two-column>.primary-column {
+      width: 62%;
+    }
+  }
+
+  @media #{$small} {
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      .primary-column {
+        width: auto;
+        grid-column: 1;
+
+        .section-wrapper {
+          padding-left: var(--unit-gutter);
+        }
+
+        &.bottom {
+          margin-top: auto;
+        }
+      }
+
+      .sidebar-column {
+        width: auto;
+        position: relative;
+        grid-column: 1;
+        margin: auto var(--unit-gutter);
+        padding-top: 0px;
+        height: auto; // let content determine height on mobile
+      }
+    }
+  }
+}
+</style>
