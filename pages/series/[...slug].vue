@@ -2,6 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
+import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -38,6 +39,24 @@ watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(data.value, 'ftvaEventSeries', {})
 })
+
+// Get data for Image or Carousel at top of page
+const parsedImage = computed(() => {
+  return page.value.imageCarousel
+})
+
+// Transform data for Carousel
+const parsedCarouselData = computed(() => {
+  // map image to item, map creditText to credit
+  return parsedImage.value.map((rawItem, index) => {
+    return {
+      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
+      credit: rawItem?.creditText,
+      captionTitle: 'dfdsfs', // TODO do we need these? test without
+      captionText: 'dfsdfsd',
+    }
+  })
+})
 </script>
 
 <template>
@@ -45,9 +64,65 @@ watch(data, (newVal, oldVal) => {
     id="main"
     class="page page-ftva-event-series-detail"
   >
-    HELLO ISABEL
 
-    <h3>{{ page }}</h3>
+    <div class="one-column">
+      <NavBreadcrumb
+        class="breadcrumb"
+        :title="page.title"
+      />
+
+      <ResponsiveImage
+        v-if="parsedImage.length === 1"
+        :media="parsedImage[0].image[0]"
+        :aspect-ratio="43.103"
+      >
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
+          {{ parsedImage[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
+
+      <div
+        v-else
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox :items="parsedCarouselData">
+          <template #default="slotProps">
+            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
+    </div>
+
+    <!-- <div class="two-column">
+        <div class="primary-column top">
+          <SectionWrapper>
+            <CardMeta
+              :category="series[0]?.title"
+              :title="page?.title"
+              :eventDescription="page?.eventDescription"
+              :introduction="page.introduction"
+            />
+          </SectionWrapper>
+        </div>
+      </div> -->
+
+    <!-- <div
+        v-else
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox :items="parsedCarouselData">
+          <template #default="slotProps">
+            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
+    </div> -->
+
+
+    <pre>{{ page }}</pre>
   </main>
 </template>
 
