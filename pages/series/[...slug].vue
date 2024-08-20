@@ -96,18 +96,17 @@ const parsedCarouselData = computed(() => {
       </div>
     </div>
 
-    <!-- <div class="two-column">
-        <div class="primary-column top">
-          <SectionWrapper>
-            <CardMeta
-              :category="series[0]?.title"
-              :title="page?.title"
-              :eventDescription="page?.eventDescription"
-              :introduction="page.introduction"
-            />
-          </SectionWrapper>
-        </div>
-      </div> -->
+    <div class="two-column">
+      <div class="primary-column top">
+        <SectionWrapper>
+          <CardMeta
+            category="Series"
+            :title="page?.title"
+            :text="page.eventDescription"
+          />
+        </SectionWrapper>
+      </div>
+    </div>
 
     <!-- <div
         v-else
