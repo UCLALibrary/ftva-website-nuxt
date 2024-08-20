@@ -5,7 +5,7 @@
 		"build": "nuxt build",
 		"dev": "nuxt dev",
 		"generate": "node --max-old-space-size=8096 node_modules/nuxi/bin/nuxi.mjs generate",
-		"prerender": "nuxt build --prerender --log-level verbose",
+		"prerender": "node --max-old-space-size=8096 node_modules/nuxi/bin/nuxi.mjs build --prerender --log-level verbose",
 		"start": "pnpm dlx serve .output/public",
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
@@ -39,6 +39,6 @@
 		"nuxt-graphql-request": "^7.0.5",
 		"sass": "^1.66.1",
 		"ucla-library-design-tokens": "^5.20.0",
-		"ucla-library-website-components": "3.8.0"
+		"ucla-library-website-components": "3.9.0"
 	}
 }
