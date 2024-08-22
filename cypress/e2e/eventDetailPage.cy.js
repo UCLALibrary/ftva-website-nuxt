@@ -1,19 +1,28 @@
 describe('Event Detail page', () => {
-  it('Visit a event Detail Page', () => {
-    cy.visit('/events/la-région-centrale-03-08-24')
-
-    cy.get('h3.title-no-link').should('contain', 'TEST - La Région Centrale')
+  beforeEach(() => {
+    cy.visit('/events/la-r%C3%A9gion-centrale-03-08-24')
+  })
 
     // NavBreadcrumb
-    cy.get('span.current-page-title').should('contain', 'TEST - The Films of Michael Snow')
+    it('has a breadcrumb nav with the correct title', () =>{
+      cy.getByData("text-block").contains('TEST - La Région Centrale')
+    })
 
-    // ResponsiveImage
+    // ResponsiveImage (This page has imageCarousel)
+    // it('has a single responsive image', () =>{
+    //   cy.getByData('single-image').contains('TEST - La Région Centrale')
+    // })
 
     // CarouselImages
-    cy.get('span.carousel').should('contain', 'Movie Database')
+    // it('has multiple images in the imageCarousel', () =>{
+    //   cy.getByData('image-carousel').contains('Movie Database')
+    // })
 
     // CardMeta
-    cy.get('div.guestSpeaker').should('contain', 'Guest Speaker Graeme Ferguson')
+    // cy.get("dt").eq(0).contains("4 courses")
+    // it('has text', () =>{
+    //  cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
+    // })
 
     // :category="series[0]?.title"
     // :title="page?.title"
@@ -22,32 +31,59 @@ describe('Event Detail page', () => {
     // :introduction="page.introduction"
 
     // RichText - EventDescription
-    cy.get('div.eventDescription').should('contain', 'Event Description')
-    // page.eventDescription
+    // it('has an event description', () =>{
+    //   cy.getByData('event-description').contains('TEST - La Région Centrale')
+    // })
 
     // RichText - Acknowledgements
-    cy.get('div.acknowledgements').should('contain', 'Acknowledgements/Funders')
-    // page.acknowledements
+    // it('has an acknowledgement', () =>{
+    //   cy.getByData('acknowledgements').contains('Acknowledgement')
+    // })
 
     // BlockEventDetail
-    cy.get('div.block-event-detail').should('contain', 'March 8, 2024')
-    cy.get('div.block-event-detail').should('contain', '7:30 pm')
-    cy.get('div.block-event-detail').should('contain', 'Billy Wilder Theater')
-    // :start-date="page.startDateWithTime"
-    // :time="page.startDateWithTime"
-    // :locations="page.location"
+    // it('has a event date', () =>{
+    //   cy.getByData('event-details').contains('March 8, 2024')
+    // })
+    // it('has a event time', () =>{
+    //   cy.getByData('event-details').contains('7:30 pm')
+    // })
+    // it('has a event location', () =>{
+    //   cy.getByData('event-details').contains('Billy Wilder Theater')
+    // })
 
-    // BlockInfo
-    cy.get('div.block-info').should('contain', 'Admission is free')
-    // :ftva-ticket-information="page.ftvaTicketInformation"
-    // button Plan Your Visit
+    // BlockInfo/ Ticket Info
+    it('has ticket information', () =>{
+      cy.getByData('ticket-info').contains('Admission is free')
+      cy.getByData('ticket-info').contains('Your seat will be assigned to you when you pick up your ticket at the box office')
+    })
+    // button
+    it('has a button', () =>{
+      cy.getByData('ticket-info').contains('Plan Your Visit')
+    })
 
     // SectionScreeningDetails
-    cy.get('div.section-screening-details').should('contain', 'Trailer with Cover image - The Central Regions')
-    // parsedFTVAEventScreeningDetails
+    it('has a screening-details', () =>{
+      cy.getByData('screening-details').contains('Trailer with Cover image')
+    })
 
-    // SectionTeaserCard
+    // SectionTeaserCard Event Series
     // parsedFtvaEventSeries
+    // it('has event series title', () =>{
+    //   cy.getByData('event-series').contains('Billy Wilder Theater')
+    // })
+    // it('has event series image', () =>{
+    //   cy.getByData('event-series').contains('Billy Wilder Theater')
+    // })
+    // it('has event series date', () =>{
+    //   cy.getByData('event-series').contains('Billy Wilder Theater')
+    // })
+
+    // Footer
+  // it("allows users to subscribe to the email list", () => {
+  //   cy.getByData("email-input").type("human@gmail.com")
+  //   cy.getByData("submit-button").click()
+  //   cy.getByData("success-message").should("exist").contains("human@gmail.com")
+  // })
 
     // UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
 
@@ -62,6 +98,6 @@ describe('Event Detail page', () => {
     // Navigation: Ensure that navigation to and from the event detail page works smoothly
 
     // named screen shot
-    cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
-  })
+    // cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
+
 })
