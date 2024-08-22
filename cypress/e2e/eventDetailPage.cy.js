@@ -3,6 +3,7 @@ describe('Event Detail page', () => {
     cy.visit('/events/la-r%C3%A9gion-centrale-03-08-24')
   })
 
+  context("breadcrumb-banner", () => {
     // NavBreadcrumb
     it('has a breadcrumb nav with the correct title', () =>{
       cy.getByData("text-block").contains('TEST - La Région Centrale')
@@ -17,7 +18,9 @@ describe('Event Detail page', () => {
     // it('has multiple images in the imageCarousel', () =>{
     //   cy.getByData('image-carousel').contains('Movie Database')
     // })
+  })
 
+  context("metablock", () => {
     // CardMeta
     // cy.get("dt").eq(0).contains("4 courses")
     // it('has text', () =>{
@@ -40,6 +43,13 @@ describe('Event Detail page', () => {
     //   cy.getByData('acknowledgements').contains('Acknowledgement')
     // })
 
+    // SectionScreeningDetails
+    it('has a screening-details', () =>{
+      cy.getByData('screening-details').contains('Trailer with Cover image')
+    })
+  })
+
+  context("sidebar-details", () => {
     // BlockEventDetail
     // it('has a event date', () =>{
     //   cy.getByData('event-details').contains('March 8, 2024')
@@ -60,12 +70,9 @@ describe('Event Detail page', () => {
     it('has a button', () =>{
       cy.getByData('ticket-info').contains('Plan Your Visit')
     })
+  })
 
-    // SectionScreeningDetails
-    it('has a screening-details', () =>{
-      cy.getByData('screening-details').contains('Trailer with Cover image')
-    })
-
+  context("related-event-series", () => {
     // SectionTeaserCard Event Series
     // parsedFtvaEventSeries
     // it('has event series title', () =>{
@@ -77,7 +84,9 @@ describe('Event Detail page', () => {
     // it('has event series date', () =>{
     //   cy.getByData('event-series').contains('Billy Wilder Theater')
     // })
+  })
 
+  context("related-event-series", () => {
     // Footer
   // it("allows users to subscribe to the email list", () => {
   //   cy.getByData("email-input").type("human@gmail.com")
@@ -99,5 +108,5 @@ describe('Event Detail page', () => {
 
     // named screen shot
     // cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
-
+  })
 })
