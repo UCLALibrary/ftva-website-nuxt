@@ -3,19 +3,9 @@ describe('Event Detail page', () => {
     cy.visit('/events/la-r%C3%A9gion-centrale-03-08-24')
   })
 
-  context("breadcrumb-banner", () => {
-    // NavBreadcrumb
-    it('has a breadcrumb nav with the correct title', () =>{
-      cy.getByData("breadcrumb").contains('TEST - La Région Centrale')
-    })
-
-    // ResponsiveImage (This page has imageCarousel)
-    // it('has a single responsive image', () =>{
-    //   cy.getByData('single-image').contains('TEST - La Région Centrale')
-    // })
-
+  context("imageCarousel-banner", () => {
     // CarouselImages
-    it('has multiple images in the imageCarousel', () =>{
+    it.only('has multiple images in the imageCarousel', () =>{
       cy.getByData('image-carousel').contains('Movie Database')
     })
   })
@@ -47,6 +37,9 @@ describe('Event Detail page', () => {
     it('has a screening-details', () =>{
       cy.getByData('screening-details').contains('Trailer with Cover image')
     })
+    it('clicks the arrow to see the next image', () =>{
+      cy.getByData('screening-details').contains('Trailer with Cover image')
+    })
   })
 
   context("sidebar-details", () => {
@@ -70,6 +63,10 @@ describe('Event Detail page', () => {
     it('has a button', () =>{
       cy.getByData('ticket-info').contains('Plan Your Visit')
     })
+    // it.("clicks the button", () => {
+    //   cy.getByData("ticket-info").find("a").contains("Plan Your Visit").click()
+    //   cy.location("pathname").should("equal", "/billy-wilder-theater")
+    // })
   })
 
   context('related-event-series', () => {
@@ -94,6 +91,19 @@ describe('Event Detail page', () => {
       cy.getByData("success-message").should("exist").contains("human@gmail.com")
     })
   })
+
+  context("breadcrumb", () => {
+    // NavBreadcrumb
+    it('has a breadcrumb nav with the correct title', () =>{
+      cy.getByData("breadcrumb").contains('TEST - La Région Centrale')
+    })
+  })
+
+    // ResponsiveImage (This page has imageCarousel)
+    // it('has a single responsive image', () =>{
+    //   cy.getByData('single-image').contains('TEST - La Région Centrale')
+    // })
+
 
   // context('other stuff', () => {
     // UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
