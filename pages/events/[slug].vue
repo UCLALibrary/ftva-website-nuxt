@@ -118,13 +118,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"
-        data-test='breadcrumb'
+        data-test="breadcrumb"
         :title="page.title"
       />
 
       <ResponsiveImage
-        data-test='single-image'
         v-if="parsedImage.length === 1"
+        data-test="single-image"
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
       >
@@ -140,12 +140,12 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         class="lightbox-container"
       >
         <FlexibleMediaGalleryNewLightbox
-          data-test='image-carousel'
+          data-test="image-carousel"
           :items="parsedCarouselData"
         >
           <template #default="slotProps">
             <BlockTag
-              data-test='credit-text'
+              data-test="credit-text"
               :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
             />
           </template>
@@ -154,13 +154,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     </div>
 
     <div
-      data-test='second-column'
+      data-test="second-column"
       class="two-column"
     >
       <div class="primary-column top">
         <SectionWrapper>
           <CardMeta
-            data-test='text-block'
+            data-test="text-block"
             :category="series[0]?.title"
             :title="page?.title"
             :guest-speaker="page.guestSpeaker"
@@ -168,15 +168,15 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :introduction="page.introduction"
           />
           <RichText
-            data-test='event-description'
             v-if="page.eventDescription"
+            data-test="event-description"
             class="eventDescription"
             :rich-text-content="page.eventDescription"
           />
 
           <RichText
-            data-test='acknowledgements'
             v-if="page.acknowledements"
+            data-test="acknowledgements"
             class="acknowledgements"
             :rich-text-content="page.acknowledements"
           />
@@ -188,7 +188,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       <div class="sidebar-column">
         <div class="sidebar-content-wrapper">
           <BlockEventDetail
-            data-test='event-details'
+            data-test="event-details"
             :start-date="page.startDateWithTime"
             :time="page.startDateWithTime"
             :locations="page.location"
@@ -202,8 +202,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :debug-mode-enabled="false"
           />
           <BlockInfo
-            data-test='ticket-info'
             v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+            data-test="ticket-info"
             :ftva-ticket-information="page.ftvaTicketInformation"
           />
         </div>
@@ -216,8 +216,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 
         <SectionWrapper>
           <SectionScreeningDetails
-            data-test='screening-details'
             v-if="parsedFTVAEventScreeningDetails"
+            data-test="screening-details"
             :items="parsedFTVAEventScreeningDetails"
           />
         </SectionWrapper>
@@ -231,8 +231,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         theme="paleblue"
       >
         <SectionTeaserCard
-          data-test='event-series'
           v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
+          data-test="event-series"
           :items="parsedFtvaEventSeries"
         />
       </SectionWrapper>

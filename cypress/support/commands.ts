@@ -6,7 +6,7 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add("getByData", (selector) => {
+Cypress.Commands.add('getByData', (selector) => {
   return cy.get(`[data-test=${selector}]`)
 })
 
