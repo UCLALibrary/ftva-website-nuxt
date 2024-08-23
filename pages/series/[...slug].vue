@@ -150,7 +150,6 @@ const parsedFtvaEventSeries = computed(() => {
       </SectionWrapper>
     </div> -->
 
-
     <pre>{{ page }}</pre>
   </main>
 </template>
