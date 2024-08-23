@@ -120,4 +120,20 @@ describe('Event Detail page', () => {
   // named screen shot
   // cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
   // })
+
+
+// ---------
+
+// UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
+
+// Verify that data is displayed correctly, especially dynamic data fetched from APIs
+
+// Event Information Display: Ensure that all event details (title, description, date, time, location) are displayed correctly
+
+// Add to Calendar: Verify that the "Add to Calendar" button works as expected
+
+// Responsive Design: Check that the page renders correctly on different screen sizes
+
+// Navigation: Ensure that navigation to and from the event detail page works smoothly
+
 })
