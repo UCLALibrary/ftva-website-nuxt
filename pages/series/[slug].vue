@@ -145,10 +145,6 @@ const parsedFtvaEventSeries = computed(() => {
       </div>
     </div>
 
-    <h3>upcomingEvents--- {{ upcomingEvents }}</h3>
-    <h3>pastEvents-- {{ pastEvents }}</h3>
-    <h3>otherSeriesOngoing--- {{ otherSeriesOngoing }}</h3>
-    <h3>otherSeriesUpcoming-- {{ otherSeriesUpcoming }}</h3>
     <!-- <div class="full-width">
       <SectionWrapper
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
@@ -162,7 +158,22 @@ const parsedFtvaEventSeries = computed(() => {
       </SectionWrapper>
     </div> -->
 
-    <pre>{{ page }}</pre>
+    <SectionWrapper>
+      <h2>UpcomingEvents</h2>
+      <pre>{{ upcomingEvents }}</pre>
+      <hr>
+      <h2>Past Events</h2>
+      <pre>{{ pastEvents }}</pre>
+      <hr>
+      <h2>Other Series Ongoing</h2>
+      <pre>{{ otherSeriesOngoing }}</pre>
+      <hr>
+      <h2>Other Series Upcoming</h2>
+      <pre>{{ otherSeriesUpcoming }}</pre>
+      <hr>
+      <h2>ALL PAGE DATA</h2>
+      <pre>{{ page }}</pre>
+    </SectionWrapper>
   </main>
 </template>
 
