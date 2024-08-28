@@ -42,6 +42,10 @@ const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(data.value, 'ftvaEventSeries', {})
+  upcomingEvents.value = ref(_get(data.value, 'upcomingEvents', {}))
+  pastEvents.value = ref(_get(data.value, 'pastEvents', {}))
+  otherSeriesOngoing.value = ref(_get(data.value, 'otherSeriesOngoing', {}))
+  otherSeriesUpcoming.value = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 })
 
 // Get data for Image or Carousel at top of page
