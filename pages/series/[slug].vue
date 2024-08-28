@@ -34,6 +34,10 @@ if (!data.value.ftvaEventSeries) {
 }
 
 const page = ref(_get(data.value, 'ftvaEventSeries', {}))
+const upcomingEvents = ref(_get(data.value, 'upcomingEvents', {}))
+const pastEvents = ref(_get(data.value, 'pastEvents', {}))
+const otherSeriesOngoing = ref(_get(data.value, 'otherSeriesOngoing', {}))
+const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -137,10 +141,10 @@ const parsedFtvaEventSeries = computed(() => {
       </div>
     </div>
 
-    <h3>upcomingEvents--- {{ page.upcomingEvents }}</h3>
-    <h3>pastEvents-- {{ page.pastEvents }}</h3>
-    <h3>otherSeriesOngoing--- {{ page.otherSeriesOngoing }}</h3>
-    <h3>otherSeriesUpcoming-- {{ page.otherSeriesUpcoming }}</h3>
+    <h3>upcomingEvents--- {{ upcomingEvents }}</h3>
+    <h3>pastEvents-- {{ pastEvents }}</h3>
+    <h3>otherSeriesOngoing--- {{ otherSeriesOngoing }}</h3>
+    <h3>otherSeriesUpcoming-- {{ otherSeriesUpcoming }}</h3>
     <!-- <div class="full-width">
       <SectionWrapper
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
