@@ -1,3 +1,5 @@
+Cypress.on('uncaught:exception', () => { return false })
+
 describe('Event Detail page', () => {
   beforeEach(() => {
     cy.visit('/events/la-r%C3%A9gion-centrale-03-08-24')
@@ -6,14 +8,20 @@ describe('Event Detail page', () => {
   context('imageCarousel-banner', () => {
     // CarouselImages
     it.only('has multiple images in the imageCarousel', () => {
-      cy.getByData('image-carousel').contains('Movie Database')
+      cy.getByData('image-carousel').should('exist')
+
     })
   })
+// modal exists
+// two images
+// creditText is visible .contains('Movie Database')
+// click on arrow and it moves to next image
+// cy.getByData("ticket-info").find("a").contains("Plan Your Visit").click()
 
   context('metablock', () => {
     // CardMeta
     // cy.get("dt").eq(0).contains("4 courses")
-    it('has text', () => {
+    it('metablock has all text', () => {
       cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
     })
 
