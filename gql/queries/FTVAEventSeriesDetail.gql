@@ -68,7 +68,7 @@ query FTVAEventSeries ($slug: [String!]) {
       title
     }
   }
-  otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true) {
+  otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true, orderBy: "startDateWithTime ASC") {
     uri
     title
     startDate

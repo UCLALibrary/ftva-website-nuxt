@@ -21,14 +21,14 @@ const { data, error } = await useAsyncData(`ftva-event-series-detail-${route.par
 })
 if (error.value) {
   throw createError({
-    ...error.value, statusMessage: 'Page not found WEIRDO.' + error.value, fatal: true
+    ...error.value, statusMessage: 'Page not found .' + error.value, fatal: true
   })
 }
 
 if (!data.value.ftvaEventSeries) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'Page Not Found JEN JEN',
+    statusMessage: 'Page Not Found for ftvaEventSeries',
     fatal: true
   })
 }
@@ -97,6 +97,7 @@ const parsedFtvaEventSeries = computed(() => {
       <NavBreadcrumb
         class="breadcrumb"
         :title="page.title"
+        parent-title="Screening Series"
       />
 
       <ResponsiveImage
@@ -135,6 +136,9 @@ const parsedFtvaEventSeries = computed(() => {
         </SectionWrapper>
       </div>
     </div>
+
+    <h3>upcomingEvents--- {{ page.upcomingEvents }}</h3>
+    <h3>pastEvents-- {{ page.pastEvents }}</h3>
     <h3>otherSeriesOngoing--- {{ page.otherSeriesOngoing }}</h3>
     <h3>otherSeriesUpcoming-- {{ page.otherSeriesUpcoming }}</h3>
     <!-- <div class="full-width">
