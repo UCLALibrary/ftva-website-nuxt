@@ -105,7 +105,8 @@ const parsedFtvaEventSeries = computed(() => {
       <NavBreadcrumb
         class="breadcrumb"
         :title="page.title"
-        parent-title="Screening Series"
+        to='/series'
+        parentTitle="Screening Series"
       />
 
       <ResponsiveImage
@@ -159,6 +160,9 @@ const parsedFtvaEventSeries = computed(() => {
     </div> -->
 
     <SectionWrapper>
+      <h2>PAGE</h2>
+      <pre>{{ page }}</pre>
+      <hr>
       <h2>UpcomingEvents</h2>
       <pre>{{ upcomingEvents }}</pre>
       <hr>
@@ -171,8 +175,6 @@ const parsedFtvaEventSeries = computed(() => {
       <h2>Other Series Upcoming</h2>
       <pre>{{ otherSeriesUpcoming }}</pre>
       <hr>
-      <h2>ALL PAGE DATA</h2>
-      <pre>{{ page }}</pre>
     </SectionWrapper>
   </main>
 </template>
