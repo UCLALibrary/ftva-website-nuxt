@@ -56,7 +56,7 @@ const page = ref(_get(data.value, 'entries', {}))
       class="events"
     >
       <NuxtLink :to="`/${event.to}`">
-        {{ event.title }}
+        <h3>{{ event.title }}</h3>
       </NuxtLink> <br>
       <h4>image: <code>{{ event.image }}</code></h4>
       <h4>startdate: <code>{{ event.startDate }}</code></h4>
