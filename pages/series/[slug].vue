@@ -83,10 +83,7 @@ const parsedCarouselData = computed(() => {
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
       >
-        <template
-          v-if="parsedImage[0]?.creditText"
-          #credit
-        >
+        <template>
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
