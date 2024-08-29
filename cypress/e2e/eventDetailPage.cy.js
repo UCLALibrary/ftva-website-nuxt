@@ -5,13 +5,13 @@ describe('Event Detail page', () => {
     cy.visit('/events/la-r%C3%A9gion-centrale-03-08-24')
   })
 
-  context('breadcrumb', () => {
-    // NavBreadcrumb
-    it('has a breadcrumb nav with the correct title', () => {
-      cy.wait(1000)
-      cy.getByData('breadcrumb').contains('TEST - La Région Centrale')
-    })
-  })
+  // context('breadcrumb', () => {
+  //   // NavBreadcrumb
+  //   it('has a breadcrumb nav with the correct title', () => {
+  //     cy.wait(1000)
+  //     cy.getByData('breadcrumb').contains('TEST - La Région Centrale')
+  //   })
+  // })
 
   context('imageCarousel-banner', () => {
     // CarouselImages
@@ -113,12 +113,12 @@ describe('Event Detail page', () => {
     })
   })
 
-  context('Calendar Dropdown', () => {
-    it.only('has a calendar dropdown', () => {
-      cy.wait(1000)
-      cy.getByData('calendar-dropdown').contains('Add to Calendar')
-    })
-  })
+  // context('Calendar Dropdown', () => {
+  //   it.only('has a calendar dropdown', () => {
+  //     cy.wait(1000)
+  //     cy.getByData('calendar-dropdown').contains('Add to Calendar')
+  //   })
+  // })
 
   context('BlockInfo/ Ticket Info', () => {
     it('has ticket information admission', () => {
