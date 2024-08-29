@@ -181,8 +181,6 @@ describe('Event Detail page', () => {
 
 // Navigation: Ensure that navigation to and from the event detail page works smoothly
 
-
-
 // ---------
 
 // UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
