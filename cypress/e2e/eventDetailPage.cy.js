@@ -158,10 +158,15 @@ describe('Event Detail page', () => {
     })
   })
 
-  // named screen shot
-  cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
+  // Named Snapshot
+  context('Snapshot', () => {
+    it('takes a snapshot named eventdetailpage', () => {
+      cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
+      })
+  })
 })
 
+// Potential TODOs and test ideas
 // https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test
 // it.only('allows users to subscribe to the email list', () => {
 //   cy.getByData('email-input').type('human@gmail.com')
