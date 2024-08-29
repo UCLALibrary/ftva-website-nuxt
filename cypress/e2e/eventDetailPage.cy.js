@@ -157,6 +157,9 @@ describe('Event Detail page', () => {
       cy.getByData('footer').contains('© 2024 Regents of the University of California')
     })
   })
+
+  // named screen shot
+  cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
 })
 
 // https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test
@@ -178,9 +181,7 @@ describe('Event Detail page', () => {
 
 // Navigation: Ensure that navigation to and from the event detail page works smoothly
 
-// named screen shot
-// cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
-// })
+
 
 // ---------
 
