@@ -32,23 +32,23 @@ describe('Event Detail page', () => {
     // CardMeta
     // cy.get("dt").eq(0).contains("4 courses")
     it('has a Category', () => {
-      cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
+      cy.getByData('text-block').contains('TEST - The Films of Michael Snow')
     })
 
     it('has a Title', () => {
-      cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
+      cy.getByData('text-block').contains('TEST - La Région Centrale Screening')
     })
 
     it('has a Guest Speaker', () => {
-      cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
+      cy.getByData('text-block').contains('He was named a member of the Order of Canada')
     })
 
     it('has TagLabels', () => {
-      cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
+      cy.getByData('text-block').contains('Guest Speaker')
     })
 
     it('has an Introduction', () => {
-      cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
+      cy.getByData('text-block').contains('He was named a member of the Order of Canada')
     })
   })
 
