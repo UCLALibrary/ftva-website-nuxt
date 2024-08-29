@@ -83,7 +83,7 @@ const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
 
 // Return first 3 events
 return filteredEvents.slice(0, 3)
-})
+
 </script>
 
 <template>
