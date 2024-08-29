@@ -43,15 +43,15 @@ const page = ref(_get(data.value, 'entries[0]', {}))
 
       <div
         v-for="event in data.entries"
-        :key="event.id"
+        :key="event?.id"
       >
-        <NuxtLink :to="`/${event.to}`">
-          {{ event.title }}
+        <NuxtLink :to="`/${event?.to}`">
+          {{ event?.title }}
         </NuxtLink> <br>
-        <h4>startDate: <code>{{ event.startDate }}</code></h4>
-        <h4>startTime: <code>{{ event.startTime }}</code></h4>
-        <h4>ftvaEventFilters: <code>{{ event.ftvaEventFilters }}</code></h4>
-        <h4>image: <code>{{ event.image }}</code></h4>
+        <h4>startDate: <code>{{ event?.startDate }}</code></h4>
+        <h4>startTime: <code>{{ event?.startTime }}</code></h4>
+        <h4>ftvaEventFilters: <code>{{ event?.ftvaEventFilters }}</code></h4>
+        <h4>image: <code>{{ event?.image }}</code></h4>
         <divider-general />
       </div>
 

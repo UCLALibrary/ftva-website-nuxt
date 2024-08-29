@@ -48,6 +48,9 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - uses: ./.github/workflows/setup-workspace
+            - name: Set deployment date
+              id: set-deploy-date
+              run: echo "DEPLOY_DATE=$(date '+%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
             - name: Cache built static site
               uses: actions/cache@v3
               id: cache-nuxt3
@@ -79,7 +82,10 @@ jobs:
               uses: nwtgck/actions-netlify@v3.0 #
               with:
                   production-deploy: false
-                  deploy-message: https://github.com/UCLALibrary/ftva-website-nuxt/pull/${{ github.event.pull_request.number }}
+                  deploy-message: |
+                    Deploy preview for PR #${{ github.event.pull_request.number }}: Date: ${{ env.DEPLOY_DATE }}
+                    Commit ${{ github.event.pull_request.head.sha }} - https://github.com/UCLALibrary/library-website-nuxt/commit/${{ github.event.pull_request.head.sha }}
+                    Pull Request: https://github.com/UCLALibrary/library-website-nuxt/pull/${{ github.event.pull_request.number }}
                   alias: deploy-preview-${{ github.event.pull_request.number }}
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   overwrites-pull-request-comment: true
@@ -109,11 +115,11 @@ jobs:
               uses: nwtgck/actions-netlify@v2 #
               with:
                   production-deploy: true
-                  deploy-message: https://github.com/UCLALibrary/ftva-website-nuxt/commit/${{ github.sha }}
+                  deploy-message: "Deploy to test on merge to main Date: ${{ env.DEPLOY_DATE }} for commit ${{ github.sha }}: https://github.com/UCLALibrary/library-website-nuxt/commit/${{ github.sha }}"
                   github-token: ${{ secrets.GITHUB_TOKEN }}
                   publish-dir: .output/public
                   fails-without-credentials: true
-                  github-deployment-environment: production
+                  github-deployment-environment: testing
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}

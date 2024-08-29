@@ -104,7 +104,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
       ...obj,
-      image: obj.image[0] // craft data has an array, but component expects a single object for image
+      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
     }
   })
 })
@@ -119,13 +119,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       <NavBreadcrumb
         class="breadcrumb"
         data-test="breadcrumb"
-        :title="page.title"
+        :title="page?.title"
       />
 
       <ResponsiveImage
-        v-if="parsedImage.length === 1"
+        v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
         data-test="single-image"
-        :media="parsedImage[0].image[0]"
+        :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
       >
         <template
@@ -163,22 +163,22 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             data-test="text-block"
             :category="series[0]?.title"
             :title="page?.title"
-            :guest-speaker="page.guestSpeaker"
-            :tag-labels="page.tagLabels"
-            :introduction="page.introduction"
+            :guest-speaker="page?.guestSpeaker"
+            :tag-labels="page?.tagLabels"
+            :introduction="page?.introduction"
           />
           <RichText
-            v-if="page.eventDescription"
+            v-if="page?.eventDescription"
             data-test="event-description"
             class="eventDescription"
-            :rich-text-content="page.eventDescription"
+            :rich-text-content="page?.eventDescription"
           />
 
           <RichText
-            v-if="page.acknowledements"
+            v-if="page?.acknowledements"
             data-test="acknowledgements"
             class="acknowledgements"
-            :rich-text-content="page.acknowledements"
+            :rich-text-content="page?.acknowledements"
           />
         </SectionWrapper>
       </div>
@@ -189,23 +189,23 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         <div class="sidebar-content-wrapper">
           <BlockEventDetail
             data-test="event-details"
-            :start-date="page.startDateWithTime"
-            :time="page.startDateWithTime"
-            :locations="page.location"
+            :start-date="page?.startDateWithTime"
+            :time="page?.startDateWithTime"
+            :locations="page?.location"
           />
           <ButtonDropdown
             data-test="calendar-dropdown"
-            :title="parsedCalendarData.title"
-            :event-description="parsedCalendarData.eventDescription"
-            :start-date-with-time="parsedCalendarData.startDateWithTime"
-            :location="parsedCalendarData.location"
+            :title="parsedCalendarData?.title"
+            :event-description="parsedCalendarData?.eventDescription"
+            :start-date-with-time="parsedCalendarData?.startDateWithTime"
+            :location="parsedCalendarData?.location"
             :is-event="true"
             :debug-mode-enabled="false"
           />
           <BlockInfo
-            v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
+            v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
             data-test="ticket-info"
-            :ftva-ticket-information="page.ftvaTicketInformation"
+            :ftva-ticket-information="page?.ftvaTicketInformation"
           />
         </div>
       </div>
@@ -241,10 +241,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
