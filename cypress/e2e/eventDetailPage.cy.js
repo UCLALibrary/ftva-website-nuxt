@@ -115,8 +115,7 @@ describe('Event Detail page', () => {
 
   context('Calendar Dropdown', () => {
     it('has a calendar dropdown', () => {
-      cy.wait(1000)
-      cy.getByData('calendar-dropdown').should('exist');
+      cy.getByData('calendar-dropdown').should('exist')
     })
   })
 
