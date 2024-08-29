@@ -159,39 +159,39 @@ describe('Event Detail page', () => {
   })
 })
 
-    // https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test
-    // it.only('allows users to subscribe to the email list', () => {
-    //   cy.getByData('email-input').type('human@gmail.com')
-    //   cy.getByData('submit-button').click()
-    //   cy.getByData('success-message').should('exist').contains('human@gmail.com')
-    // })
+// https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test
+// it.only('allows users to subscribe to the email list', () => {
+//   cy.getByData('email-input').type('human@gmail.com')
+//   cy.getByData('submit-button').click()
+//   cy.getByData('success-message').should('exist').contains('human@gmail.com')
+// })
 
-  // UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
+// UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
 
-  // Verify that data is displayed correctly, especially dynamic data fetched from APIs
+// Verify that data is displayed correctly, especially dynamic data fetched from APIs
 
-  // Event Information Display: Ensure that all event details (title, description, date, time, location) are displayed correctly
+// Event Information Display: Ensure that all event details (title, description, date, time, location) are displayed correctly
 
-  // Add to Calendar: Verify that the "Add to Calendar" button works as expected
+// Add to Calendar: Verify that the "Add to Calendar" button works as expected
 
-  // Responsive Design: Check that the page renders correctly on different screen sizes
+// Responsive Design: Check that the page renders correctly on different screen sizes
 
-  // Navigation: Ensure that navigation to and from the event detail page works smoothly
+// Navigation: Ensure that navigation to and from the event detail page works smoothly
 
-  // named screen shot
-  // cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
-  // })
+// named screen shot
+// cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
+// })
 
-  // ---------
+// ---------
 
-  // UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
+// UI Elements: Test visibility and functionality of important UI elements (e.g., buttons, links, modals)
 
-  // Verify that data is displayed correctly, especially dynamic data fetched from APIs
+// Verify that data is displayed correctly, especially dynamic data fetched from APIs
 
-  // Event Information Display: Ensure that all event details (title, description, date, time, location) are displayed correctly
+// Event Information Display: Ensure that all event details (title, description, date, time, location) are displayed correctly
 
-  // Add to Calendar: Verify that the "Add to Calendar" button works as expected
+// Add to Calendar: Verify that the "Add to Calendar" button works as expected
 
-  // Responsive Design: Check that the page renders correctly on different screen sizes
+// Responsive Design: Check that the page renders correctly on different screen sizes
 
-  // Navigation: Ensure that navigation to and from the event detail page works smoothly
+// Navigation: Ensure that navigation to and from the event detail page works smoothly
