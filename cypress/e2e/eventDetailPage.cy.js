@@ -162,7 +162,7 @@ describe('Event Detail page', () => {
   context('Snapshot', () => {
     it('takes a snapshot named eventdetailpage', () => {
       cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
-      })
+    })
   })
 })
 
