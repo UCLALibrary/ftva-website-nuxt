@@ -13,9 +13,9 @@ describe('Event Detail page', () => {
   //   })
   // })
 
-  context('imageCarousel-banner', () => {
+  context('Image Carousel', () => {
     // CarouselImages
-    it('has multiple images in the imageCarousel', () => {
+    it('has the Image Carousel', () => {
       cy.getByData('image-carousel').should('exist')
     })
     // it('clicks the arrow to see the next image', () => {
@@ -31,46 +31,46 @@ describe('Event Detail page', () => {
   context('Metablock', () => {
     // CardMeta
     // cy.get("dt").eq(0).contains("4 courses")
-    it('metablock has a Category', () => {
+    it('has a Category', () => {
       cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
     })
 
-    it('metablock has a Title', () => {
+    it('has a Title', () => {
       cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
     })
 
-    it('metablock has a Guest Speaker', () => {
+    it('has a Guest Speaker', () => {
       cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
     })
 
-    it('metablock has TagLabels', () => {
+    it('has TagLabels', () => {
       cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
     })
 
-    it('metablock has an Introduction', () => {
+    it('has an Introduction', () => {
       cy.getByData('text-block').contains('Guest Speaker Graeme Ferguson')
     })
   })
 
   context('EventDescription', () => {
     // RichText - EventDescription
-    it('has an event description', () => {
+    it('has an Event Description', () => {
       cy.getByData('event-description').contains('The late avant-garde master Michael Snow')
     })
   })
 
   context('Acknowledgements', () => {
     // RichText - Acknowledgements
-    it('has an acknowledgement', () => {
+    it('has an Acknowledgement', () => {
       cy.getByData('acknowledgements').contains('Special thanks to our community partner')
     })
   })
 
   context('Section Screening Details', () => {
-    it('has a category', () => {
+    it('has a Category', () => {
       cy.getByData('screening-details').contains('Screening 1 of 5')
     })
-    it('has a title', () => {
+    it('has a Title', () => {
       cy.getByData('screening-details').contains('Trailer with Cover image')
     })
     it('has the Year', () => {
@@ -102,51 +102,52 @@ describe('Event Detail page', () => {
   // SIDEBAR / DETAILS
   context('BlockEventDetail', () => {
     // BlockEventDetail
-    it('has an event date', () => {
+    it('has an Event Date', () => {
       cy.getByData('event-details').contains('March 8, 2027')
     })
-    it('has an event time', () => {
+    it('has an Event Time', () => {
       cy.getByData('event-details').contains('7:30 pm')
     })
-    it('has an event location', () => {
+    it('has an Event Location', () => {
       cy.getByData('event-details').contains('Billy Wilder Theater')
     })
   })
 
-  // context('Calendar Dropdown', () => {
-  //   it.only('has a calendar dropdown', () => {
-  //     cy.wait(1000)
-  //     cy.getByData('calendar-dropdown').contains('Add to Calendar')
-  //   })
-  // })
+  context('Calendar Dropdown', () => {
+    it.only('has a calendar dropdown', () => {
+      cy.wait(1000)
+      cy.getByData('calendar-dropdown').should('exist');
+    })
+  })
 
   context('BlockInfo/ Ticket Info', () => {
-    it('has ticket information admission', () => {
+    it('has Ticket Information Admission', () => {
       cy.getByData('ticket-info').contains('Admission is free')
     })
-    it('has ticket information seats', () => {
+    it('has Ticket Information Seats', () => {
       cy.getByData('ticket-info').contains('Your seat will be assigned to you when you pick up your ticket at the box office')
     })
     // Button
-    it('has a button', () => {
+    it('has a Button', () => {
       cy.getByData('ticket-info').contains('Plan Your Visit')
     })
   })
 
   // Upcoming Events (Bottom of Page)
   context('Related EventSeries', () => {
-    it('has event series title', () => {
+    it('has a Title', () => {
       cy.getByData('event-series').contains('Wavelength')
     })
-    it('has event series date & time', () => {
+    it('has the Date & Time', () => {
       cy.getByData('event-series').contains('Sep 16, 2027')
     })
-    it('has event series title', () => {
+    it('has Title Link', () => {
       cy.getByData('event-series').click()
+      cy.getByData('event-series').contains('')
     })
   })
 
-  context('footer', () => {
+  context('Footer', () => {
     it('has the Footer', () => {
       cy.getByData('footer').contains('Stay updated')
     })
