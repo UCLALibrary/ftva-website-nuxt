@@ -194,6 +194,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :locations="page.location"
           />
           <ButtonDropdown
+            data-test="calendar-dropdown"
             :title="parsedCalendarData.title"
             :event-description="parsedCalendarData.eventDescription"
             :start-date-with-time="parsedCalendarData.startDateWithTime"

@@ -66,12 +66,16 @@ onMounted(() => {
       <hr>
     </div>
 
-    <footer>
+    <footer data-test="footer">
       <footer-main />
     </footer>
   </div>
 </template>
-<style lang="scss" scoped>
+
+<style
+  lang="scss"
+  scoped
+>
 .layout-default {
   min-height: 100vh;
 
