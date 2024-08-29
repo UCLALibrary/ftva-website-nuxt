@@ -42,10 +42,10 @@ const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(data.value, 'ftvaEventSeries', {})
-  upcomingEvents.value = ref(_get(data.value, 'upcomingEvents', {}))
-  pastEvents.value = ref(_get(data.value, 'pastEvents', {}))
-  otherSeriesOngoing.value = ref(_get(data.value, 'otherSeriesOngoing', {}))
-  otherSeriesUpcoming.value = ref(_get(data.value, 'otherSeriesUpcoming', {}))
+  upcomingEvents.value = _get(newVal, 'upcomingEvents', {})
+  pastEvents.value = _get(newVal, 'pastEvents', {})
+  otherSeriesOngoing.value = _get(newVal, 'otherSeriesOngoing', {})
+  otherSeriesUpcoming.value = _get(newVal, 'otherSeriesUpcoming', {})
 })
 
 // Get data for Image or Carousel at top of page
@@ -60,39 +60,29 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
-      captionTitle: 'dfdsfs', // TODO do we need these? test without
-      captionText: 'dfsdfsd',
     }
   })
 })
 
-const parsedFtvaEventSeries = computed(() => {
-  /* Early Returns: If series.value is falsy or empty, or
-    if firstSeries.ftvaEvent is falsy or empty, return
-    an empty array immediately. */
-  if (!series.value || series.value.length === 0) {
-    return []
-  }
+const [firstSeries] = series.value
 
-  const [firstSeries] = series.value
+if (!firstSeries.ftvaEvent || firstSeries.ftvaEvent.length === 0) {
+  return []
+}
 
-  if (!firstSeries.ftvaEvent || firstSeries.ftvaEvent.length === 0) {
-    return []
-  }
+// Destructure each series item object and its image object
+const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
+  ...rest,
+  image: image && image.length > 0 ? image[0] : null,
+}))
 
-  // Destructure each series item object and its image object
-  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
-    ...rest,
-    image: image && image.length > 0 ? image[0] : null,
-  }))
+const pageId = page.value.id
 
-  const pageId = page.value.id
+// Return series without the page's featured event
+const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
 
-  // Return series without the page's featured event
-  const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
-
-  // Return first 3 events
-  return filteredEvents.slice(0, 3)
+// Return first 3 events
+return filteredEvents.slice(0, 3)
 })
 </script>
 

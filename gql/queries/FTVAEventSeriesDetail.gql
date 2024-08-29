@@ -1,6 +1,6 @@
 #import "../gql/fragments/Image.gql"
 
-query FTVAEventSeries ($slug: [String!]) {
+query FTVAEventSeriesDetail ($slug: [String!]) {
   ftvaEventSeries: entry(section: "ftvaEventSeries", slug: $slug) {
     imageCarousel {
       ... on imageCarousel_imageCarousel_BlockType {
@@ -46,7 +46,7 @@ query FTVAEventSeries ($slug: [String!]) {
       }
     }
   }
-  upcomingEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: ">= now") {
+  upcomingEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: ">= now", orderBy: "startDateWithTime ASC") {
       uri
       eventTitle
       startDateWithTime
@@ -68,7 +68,7 @@ query FTVAEventSeries ($slug: [String!]) {
       title
     }
   }
-  otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true, orderBy: "startDateWithTime ASC") {
+  otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true) {
     uri
     title
     startDate
@@ -78,7 +78,7 @@ query FTVAEventSeries ($slug: [String!]) {
       ...Image
     }
   }
-  otherSeriesUpcoming: entries(section: "ftvaEventSeries", limit: 3, endDate: ">=now") {
+  otherSeriesUpcoming: entries(section: "ftvaEventSeries", limit: 3, endDate: ">=now", orderBy: "startDate ASC") {
     uri
     title
     startDate

@@ -38,8 +38,8 @@ const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = _get(data.value, 'ftvaEvent', {})
-  series.value = _get(data.value, 'ftvaEventSeries', {})
+  page.value = _get(newVal, 'ftvaEvent', {})
+  series.value = _get(newVal, 'ftvaEventSeries', {})
 })
 
 // Get data for Image or Carousel at top of page
