@@ -2,7 +2,7 @@ Cypress.on('uncaught:exception', () => { return false })
 
 describe('Event Detail page', () => {
   beforeEach(() => {
-    cy.visit('/events/la-r%C3%A9gion-centrale-03-08-24')
+    cy.visit('/events/la-région-centrale-03-08-24')
   })
 
   // context('breadcrumb', () => {
