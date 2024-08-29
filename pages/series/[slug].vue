@@ -63,27 +63,6 @@ const parsedCarouselData = computed(() => {
     }
   })
 })
-
-const [firstSeries] = series.value
-
-if (!firstSeries.ftvaEvent || firstSeries.ftvaEvent.length === 0) {
-  return []
-}
-
-// Destructure each series item object and its image object
-const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
-  ...rest,
-  image: image && image.length > 0 ? image[0] : null,
-}))
-
-const pageId = page.value.id
-
-// Return series without the page's featured event
-const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
-
-// Return first 3 events
-return filteredEvents.slice(0, 3)
-
 </script>
 
 <template>
