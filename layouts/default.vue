@@ -7,7 +7,8 @@ const classes = ref(['layout',
   'layout-default',])
 
 const primaryMenuItems = computed(() => {
-  // convert file to typescript if we want to avoid this
+  // convert file to typescript if we want to use '?' operator to avoid this
+  // ex: return globalStore?.header?.primary
   return globalStore && (globalStore.header && globalStore.header.primary) ? globalStore.header.primary : null
 })
 
