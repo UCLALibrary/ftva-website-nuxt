@@ -1,0 +1,91 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVAEventSeriesDetail ($slug: [String!]) {
+  ftvaEventSeries: entry(section: "ftvaEventSeries", slug: $slug) {
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+    title
+    guestSpeaker
+    ftvaEventIntroduction
+    eventDescription
+    richText
+    startDate
+    endDate
+    ongoing
+    location {
+      title
+      campusMapId
+      publicUrl
+      address {
+        addressLine1
+        addressLine2
+        addressCity
+        addressState
+        addressZipCode
+        addressCountry
+      }
+    }
+    ftvaTicketInformation {
+      title
+    }
+    ftvaEvent {
+      uri
+      eventTitle
+      startDateWithTime
+      ftvaImage {
+        ...Image
+      }
+      ftvaEventFilters {
+        title
+      }
+    }
+  }
+  upcomingEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: ">= now", orderBy: "startDateWithTime ASC") {
+      uri
+      eventTitle
+      startDateWithTime
+      ftvaImage {
+        ...Image
+      }
+      ftvaEventFilters {
+        title
+      }
+  }
+  pastEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime ASC") {
+    uri
+    eventTitle
+    startDateWithTime
+    ftvaImage {
+      ...Image
+    }
+    ftvaEventFilters {
+      title
+    }
+  }
+  otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true) {
+    uri
+    title
+    startDate
+    endDate
+    ongoing
+    ftvaImage {
+      ...Image
+    }
+  }
+  otherSeriesUpcoming: entries(section: "ftvaEventSeries", limit: 3, endDate: ">=now", orderBy: "startDate ASC") {
+    uri
+    title
+    startDate
+    endDate
+    ongoing
+    ftvaImage {
+      ...Image
+    }
+  }
+}

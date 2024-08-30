@@ -38,8 +38,8 @@ const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = _get(data.value, 'ftvaEvent', {})
-  series.value = _get(data.value, 'ftvaEventSeries', {})
+  page.value = _get(newVal, 'ftvaEvent', {})
+  series.value = _get(newVal, 'ftvaEventSeries', {})
 })
 
 // Get data for Image or Carousel at top of page
@@ -104,7 +104,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
       ...obj,
-      image: obj.image[0] // craft data has an array, but component expects a single object for image
+      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
     }
   })
 })
@@ -118,12 +118,14 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"
-        :title="page.title"
+        data-test="breadcrumb"
+        :title="page?.title"
       />
 
       <ResponsiveImage
-        v-if="parsedImage.length === 1"
-        :media="parsedImage[0].image[0]"
+        v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
+        data-test="single-image"
+        :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
       >
         <template
@@ -137,32 +139,46 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         v-else
         class="lightbox-container"
       >
-        <FlexibleMediaGalleryNewLightbox :items="parsedCarouselData">
+        <FlexibleMediaGalleryNewLightbox
+          data-test="image-carousel"
+          :items="parsedCarouselData"
+        >
           <template #default="slotProps">
-            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
+            <BlockTag
+              data-test="credit-text"
+              :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
+            />
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
     </div>
 
-    <div class="two-column">
+    <div
+      data-test="second-column"
+      class="two-column"
+    >
       <div class="primary-column top">
         <SectionWrapper>
           <CardMeta
+            data-test="text-block"
             :category="series[0]?.title"
             :title="page?.title"
-            :guest-speaker="page.guestSpeaker"
-            :tag-labels="page.tagLabels"
-            :introduction="page.introduction"
+            :guest-speaker="page?.guestSpeaker"
+            :tag-labels="page?.tagLabels"
+            :introduction="page?.introduction"
           />
           <RichText
-            v-if="page.eventDescription"
-            :rich-text-content="page.eventDescription"
+            v-if="page?.eventDescription"
+            data-test="event-description"
+            class="eventDescription"
+            :rich-text-content="page?.eventDescription"
           />
 
           <RichText
-            v-if="page.acknowledements"
-            :rich-text-content="page.acknowledements"
+            v-if="page?.acknowledements"
+            data-test="acknowledgements"
+            class="acknowledgements"
+            :rich-text-content="page?.acknowledements"
           />
         </SectionWrapper>
       </div>
@@ -172,21 +188,24 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       <div class="sidebar-column">
         <div class="sidebar-content-wrapper">
           <BlockEventDetail
-            :start-date="page.startDateWithTime"
-            :time="page.startDateWithTime"
-            :locations="page.location"
+            data-test="event-details"
+            :start-date="page?.startDateWithTime"
+            :time="page?.startDateWithTime"
+            :locations="page?.location"
           />
           <ButtonDropdown
-            :title="parsedCalendarData.title"
-            :event-description="parsedCalendarData.eventDescription"
-            :start-date-with-time="parsedCalendarData.startDateWithTime"
-            :location="parsedCalendarData.location"
+            data-test="calendar-dropdown"
+            :title="parsedCalendarData?.title"
+            :event-description="parsedCalendarData?.eventDescription"
+            :start-date-with-time="parsedCalendarData?.startDateWithTime"
+            :location="parsedCalendarData?.location"
             :is-event="true"
             :debug-mode-enabled="false"
           />
           <BlockInfo
-            v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
-            :ftva-ticket-information="page.ftvaTicketInformation"
+            v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+            data-test="ticket-info"
+            :ftva-ticket-information="page?.ftvaTicketInformation"
           />
         </div>
       </div>
@@ -199,11 +218,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         <SectionWrapper>
           <SectionScreeningDetails
             v-if="parsedFTVAEventScreeningDetails"
+            data-test="screening-details"
             :items="parsedFTVAEventScreeningDetails"
           />
         </SectionWrapper>
       </div>
     </div>
+
     <div class="full-width">
       <SectionWrapper
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
@@ -212,6 +233,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       >
         <SectionTeaserCard
           v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
+          data-test="event-series"
           :items="parsedFtvaEventSeries"
         />
       </SectionWrapper>
@@ -219,7 +241,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
