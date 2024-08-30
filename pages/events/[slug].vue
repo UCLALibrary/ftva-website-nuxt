@@ -241,10 +241,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // VARS - TO DO move to global? reference tokens?
 // WIDTH, HEIGHT, SPACING
 $max-width: 1160px;
@@ -325,7 +322,7 @@ $pale-blue: #E7EDF2;
 
       .sidebar-content-wrapper {
         position: sticky;
-        top: 0;
+        top: 85px;
         will-change: top;
       }
     }
