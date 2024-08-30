@@ -74,8 +74,8 @@ const parsedCarouselData = computed(() => {
       <NavBreadcrumb
         class="breadcrumb"
         :title="page.title"
-        to='/series'
-        parentTitle="Screening Series"
+        to="/series"
+        parent-title="Screening Series"
       />
 
       <ResponsiveImage
