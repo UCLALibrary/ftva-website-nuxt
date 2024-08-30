@@ -7,7 +7,8 @@ const classes = ref(['layout',
   'layout-default',])
 
 const primaryMenuItems = computed(() => {
-  return globalStore.header.primary // TODO this needs a fallback when header.primary does not exist
+  // convert file to typescript if we want to avoid this
+  return globalStore && (globalStore.header && globalStore.header.primary) ? globalStore.header.primary : null
 })
 
 const isMobile = computed(() => {
@@ -25,6 +26,7 @@ onMounted(() => {
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar class="brand-bar" />
     <header-sticky
+      v-if="primaryMenuItems"
       class="primary"
       :primary-items="primaryMenuItems"
     />
