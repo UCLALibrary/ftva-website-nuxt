@@ -13,13 +13,12 @@ const secondaryMenuItems = computed(() => {
   return globalStore.header.secondary
 })
 
-const isMobile = computed(() => {
-  return globalStore.winWidth <= 1024
-})
+const isMobile = ref(false)
 
 onMounted(() => {
   classes.value.push({ 'has-scrolled': globalStore.sTop })
   classes.value.push({ 'has-scrolled-past-header': globalStore.sTop >= 150 })
+  isMobile.value = globalStore.winWidth <= 1024
 })
 
 </script>
@@ -66,11 +65,12 @@ onMounted(() => {
       <hr>
     </div>
 
-    <footer>
+    <footer data-test="footer">
       <footer-main />
     </footer>
   </div>
 </template>
+
 <style lang="scss" scoped>
 .layout-default {
   min-height: 100vh;

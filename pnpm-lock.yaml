@@ -9993,6 +9993,7 @@ packages:
 
   /ucla-library-website-components@3.10.0(typescript@5.4.5)(vue@3.4.31):
     resolution: {integrity: sha512-JW2ZjtBNOw5Wjrp3qNgvt+hD6iGZ4Ad2JNa8vsTfVCXe+QieY4NW6KT3vdD4+Wl5Ub+5KsMHXC5tBO31CUP/Dg==}
+
     peerDependencies:
       vue: ^3.4.29
     dependencies:
