@@ -7,10 +7,7 @@ const classes = ref(['layout',
   'layout-default',])
 
 const primaryMenuItems = computed(() => {
-  return globalStore.header.primary
-})
-const secondaryMenuItems = computed(() => {
-  return globalStore.header.secondary
+  return globalStore.header.primary // TODO this needs a fallback when header.primary does not exist
 })
 
 const isMobile = computed(() => {
@@ -25,36 +22,14 @@ onMounted(() => {
 </script>
 <template lang="html">
   <div :class="classes">
-    <!--header
-      v-show="!isMobile"
-      class="header-main"
-    >
-      <site-brand-bar class="brand-bar" />
-      <nav-secondary
-        :items="secondaryMenuItems"
-        :is-microsite="true"
-      />
-      <nav-primary
-        class="primary"
-        :items="primaryMenuItems"
-        title="Film And Telivision Archive"
-        acronym="FTVA"
-      />
-    </header>
-    <header v-show="isMobile">
-      <site-brand-bar class="brand-bar" />
-      <header-main-responsive
-        :primary-nav="primaryMenuItems"
-        :secondary-nav="secondaryMenuItems"
-        current-path="/about/foo/bar"
-        title="Film And Telivision Archive"
-        acronym="FTVA"
-      />
-    </header-->
+    <!-- site brand bar only shows on desktop -->
+    <site-brand-bar class="brand-bar" />
+    <header-sticky
+      class="primary"
+      :primary-items="primaryMenuItems"
+    />
 
     <slot />
-    <!-- <pre>PRIMARY-- {{ globalStore.footerPrimary }}</pre>
-    <pre>PRIMARY 2--- {{ globalStore.footerPrimary.nodes }}</pre> -->
     <div
       v-if="$route.path === '/'"
       style="padding: 50px 250px"
@@ -88,29 +63,24 @@ onMounted(() => {
 
   flex: 1 1 auto;
 
+  .brand-bar {
+    width: 100%;
+    z-index: 100;
+  }
+
+  .primary {
+    position: sticky;
+    will-change: top;
+  }
+
+  @media #{$small} {
+    .brand-bar {
+      display: none;
+    }
+  }
 }
 
 .vue-skip-to {
   z-index: 300;
-}
-
-.header-main {
-  z-index: 200;
-
-  position: relative;
-  height: 168px;
-
-  .primary {
-    position: absolute;
-  }
-
-  // TODO nav on smaller viewports
-}
-
-@media #{$medium} {
-  .brand-bar {
-    position: absolute;
-    width: 100%;
-  }
 }
 </style>
