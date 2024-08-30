@@ -132,7 +132,10 @@ onMounted(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 .page-general-content {
   .section-banner {
     margin-top: 0;

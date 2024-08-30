@@ -65,11 +65,11 @@ devDependencies:
     specifier: ^1.66.1
     version: 1.77.4
   ucla-library-design-tokens:
-    specifier: ^5.20.0
-    version: 5.20.0
+    specifier: ^5.22.0
+    version: 5.22.0
   ucla-library-website-components:
-    specifier: 3.9.0
-    version: 3.9.0(typescript@5.4.5)(vue@3.4.31)
+    specifier: 3.10.0
+    version: 3.10.0(typescript@5.4.5)(vue@3.4.31)
 
 packages:
 
@@ -9987,12 +9987,12 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /ucla-library-design-tokens@5.20.0:
-    resolution: {integrity: sha512-dQv1OVx8RBSep08AvCI3Tu6F73iuPk98bYrjYnmJh22dOTj9zpF4b7e/iuPLr7413egZjGJ5jzLb9WbR8DjZOw==}
+  /ucla-library-design-tokens@5.22.0:
+    resolution: {integrity: sha512-HudkrR/TMd5FTV1VGqOrYLg4bsDgb8kgml6rtDF3NgS9vf0hfQyVipxjbEHlfvuPHtQ7RZcn6ftdJHi92JqfSw==}
     dev: true
 
-  /ucla-library-website-components@3.9.0(typescript@5.4.5)(vue@3.4.31):
-    resolution: {integrity: sha512-e2lzjOIP2LTMNAXRT4tVM9UR2JmFC32PJc/0KknO4nC3h6WQKEk79tmw+hbE2uhRbw7Wwk2LH+jsF9juxNMijw==}
+  /ucla-library-website-components@3.10.0(typescript@5.4.5)(vue@3.4.31):
+    resolution: {integrity: sha512-JW2ZjtBNOw5Wjrp3qNgvt+hD6iGZ4Ad2JNa8vsTfVCXe+QieY4NW6KT3vdD4+Wl5Ub+5KsMHXC5tBO31CUP/Dg==}
     peerDependencies:
       vue: ^3.4.29
     dependencies:

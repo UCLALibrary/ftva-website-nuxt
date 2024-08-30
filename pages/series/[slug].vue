@@ -2,44 +2,50 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
 
 // GQL
-import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
+import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
 
 // DATA
-const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
-  const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
+const { data, error } = await useAsyncData(`ftva-event-series-detail-${route.params.slug}`, async () => {
+  const data = await $graphql.default.request(FTVAEventSeriesDetail, { slug: route.params.slug })
   return data
 })
 if (error.value) {
   throw createError({
-    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+    ...error.value, statusMessage: 'Page not found .' + error.value, fatal: true
   })
 }
 
-if (!data.value.ftvaEvent) {
+if (!data.value.ftvaEventSeries) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'Page Not Found',
+    statusMessage: 'Page Not Found for ftvaEventSeries',
     fatal: true
   })
 }
 
-const page = ref(_get(data.value, 'ftvaEvent', {}))
-const series = ref(_get(data.value, 'ftvaEventSeries', {}))
+const page = ref(_get(data.value, 'ftvaEventSeries', {}))
+const upcomingEvents = ref(_get(data.value, 'upcomingEvents', {}))
+const pastEvents = ref(_get(data.value, 'pastEvents', {}))
+const otherSeriesOngoing = ref(_get(data.value, 'otherSeriesOngoing', {}))
+const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = _get(newVal, 'ftvaEvent', {})
-  series.value = _get(newVal, 'ftvaEventSeries', {})
+  page.value = _get(newVal, 'ftvaEventSeries', {})
+  upcomingEvents.value = _get(newVal, 'upcomingEvents', {})
+  pastEvents.value = _get(newVal, 'pastEvents', {})
+  otherSeriesOngoing.value = _get(newVal, 'otherSeriesOngoing', {})
+  otherSeriesUpcoming.value = _get(newVal, 'otherSeriesUpcoming', {})
 })
 
 // Get data for Image or Carousel at top of page
@@ -54,57 +60,6 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
-      captionTitle: 'dfdsfs', // TODO do we need these? test without
-      captionText: 'dfsdfsd',
-    }
-  })
-})
-
-// Data for Calendar Dropdown
-const parsedCalendarData = computed(() => {
-  const event = page.value
-  return {
-    title: event.title,
-    eventDescription: event.eventDescription,
-    startDateWithTime: event.startDateWithTime,
-    location: event.location
-  }
-})
-
-const parsedFtvaEventSeries = computed(() => {
-  /* Early Returns: If series.value is falsy or empty, or
-    if firstSeries.ftvaEvent is falsy or empty, return
-    an empty array immediately. */
-  if (!series.value || series.value.length === 0) {
-    return []
-  }
-
-  const [firstSeries] = series.value
-
-  if (!firstSeries.ftvaEvent || firstSeries.ftvaEvent.length === 0) {
-    return []
-  }
-
-  // Destructure each series item object and its image object
-  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
-    ...rest,
-    image: image && image.length > 0 ? image[0] : null,
-  }))
-
-  const pageId = page.value.id
-
-  // Return series without the page's featured event
-  const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
-
-  // Return first 3 events
-  return filteredEvents.slice(0, 3)
-})
-
-const parsedFTVAEventScreeningDetails = computed(() => {
-  return page?.value.ftvaEventScreeningDetails?.map((obj) => {
-    return {
-      ...obj,
-      image: obj.image[0] // craft data has an array, but component expects a single object for image
     }
   })
 })
@@ -113,12 +68,14 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 <template>
   <main
     id="main"
-    class="page page-event-detail"
+    class="page page-event-series-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"
         :title="page.title"
+        to="/series"
+        parent-title="Screening Series"
       />
 
       <ResponsiveImage
@@ -126,13 +83,11 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
       >
-        <template
-          v-if="parsedImage[0]?.creditText"
-          #credit
-        >
+        <template>
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
+
       <div
         v-else
         class="lightbox-container"
@@ -149,62 +104,15 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       <div class="primary-column top">
         <SectionWrapper>
           <CardMeta
-            :category="series[0]?.title"
+            category="Series"
             :title="page?.title"
-            :guest-speaker="page.guestSpeaker"
-            :tag-labels="page.tagLabels"
-            :introduction="page.introduction"
-          />
-          <RichText
-            v-if="page.eventDescription"
-            :rich-text-content="page.eventDescription"
-          />
-
-          <RichText
-            v-if="page.acknowledements"
-            :rich-text-content="page.acknowledements"
-          />
-        </SectionWrapper>
-      </div>
-
-      <!-- sidebar slots in here on mobile -->
-      <!-- on desktop sidebar is stickied to the side with css -->
-      <div class="sidebar-column">
-        <div class="sidebar-content-wrapper">
-          <BlockEventDetail
-            :start-date="page.startDateWithTime"
-            :time="page.startDateWithTime"
-            :locations="page.location"
-          />
-          <ButtonDropdown
-            :title="parsedCalendarData.title"
-            :event-description="parsedCalendarData.eventDescription"
-            :start-date-with-time="parsedCalendarData.startDateWithTime"
-            :location="parsedCalendarData.location"
-            :is-event="true"
-            :debug-mode-enabled="false"
-          />
-          <BlockInfo
-            v-if="page.ftvaTicketInformation && page.ftvaTicketInformation.length > 0"
-            :ftva-ticket-information="page.ftvaTicketInformation"
-          />
-        </div>
-      </div>
-
-      <div class="primary-column bottom">
-        <SectionWrapper>
-          <DividerWayFinder />
-        </SectionWrapper>
-
-        <SectionWrapper>
-          <SectionScreeningDetails
-            v-if="parsedFTVAEventScreeningDetails"
-            :items="parsedFTVAEventScreeningDetails"
+            :text="page.eventDescription"
           />
         </SectionWrapper>
       </div>
     </div>
-    <div class="full-width">
+
+    <!-- <div class="full-width">
       <SectionWrapper
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
         section-title="Upcoming events in this series"
@@ -215,7 +123,25 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           :items="parsedFtvaEventSeries"
         />
       </SectionWrapper>
-    </div>
+    </div> -->
+
+    <SectionWrapper>
+      <h2>PAGE</h2>
+      <pre>{{ page }}</pre>
+      <hr>
+      <h2>UpcomingEvents</h2>
+      <pre>{{ upcomingEvents }}</pre>
+      <hr>
+      <h2>Past Events</h2>
+      <pre>{{ pastEvents }}</pre>
+      <hr>
+      <h2>Other Series Ongoing</h2>
+      <pre>{{ otherSeriesOngoing }}</pre>
+      <hr>
+      <h2>Other Series Upcoming</h2>
+      <pre>{{ otherSeriesUpcoming }}</pre>
+      <hr>
+    </SectionWrapper>
   </main>
 </template>
 
@@ -231,7 +157,7 @@ $banner-height: 520px;
 $pale-blue: #E7EDF2;
 
 // PAGE STYLES
-.page-event-detail {
+.page-event-series-detail {
   position: relative;
 
   &:before {
@@ -275,10 +201,6 @@ $pale-blue: #E7EDF2;
       &.bottom {
         margin-top: -30px;
       }
-    }
-
-    .ftva.button-dropdown {
-      margin-top: 30px;
     }
 
     .ftva.block-info {
