@@ -9,11 +9,11 @@ const globalStore = useGlobalStore()
 const classes = ref(['layout',
   'layout-default',])
 // pass global store from server to client using useState
-const { footerPrimary,
+/* const { footerPrimary,
   footerLinks,
   footerSock,
   setFooter } = useFooter()
-setFooter(globalStore)
+setFooter(globalStore) */
 
 const primaryMenuItems = computed(() => {
   // convert file to typescript if we want to use '?' operator to avoid this
@@ -22,13 +22,11 @@ const primaryMenuItems = computed(() => {
 })
 
 const isMobile = ref(false)
-
-onMounted(() => {
+const { $layoutData } = useNuxtApp()
+onMounted(async () => {
   console.log(route.query)
   if (route.query?.preview === 'true' && route.query?.token) {
-    globalStore.footerLinks = footerLinks.value
-    globalStore.footerPrimary = footerPrimary.value
-    globalStore.footerSock = footerSock.value
+    await $layoutData()
   }
 
   classes.value.push({ 'has-scrolled': globalStore.sTop })

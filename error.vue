@@ -5,6 +5,14 @@ const props = defineProps({
   error: Object as () => NuxtError
 })
 const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
+// globalstore state is lost when error age is generate, this is hack to repopulate state on client side
+const { $layoutData } = useNuxtApp()
+onMounted(async () => {
+  if (process.env.NODE_ENV !== 'development') {
+    console.log('In SSG refresh layout data as it gets lost')
+    await $layoutData()
+  }
+})
 </script>
 
 <template>
