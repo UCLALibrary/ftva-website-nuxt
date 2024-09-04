@@ -2,9 +2,18 @@
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 
+const route = useRoute()
+
 const globalStore = useGlobalStore()
+
 const classes = ref(['layout',
   'layout-default',])
+// pass global store from server to client using useState
+const { footerPrimary,
+  footerLinks,
+  footerSock,
+  setFooter } = useFooter()
+setFooter(globalStore)
 
 const primaryMenuItems = computed(() => {
   // convert file to typescript if we want to use '?' operator to avoid this
@@ -15,6 +24,13 @@ const primaryMenuItems = computed(() => {
 const isMobile = ref(false)
 
 onMounted(() => {
+  console.log(route.query)
+  if (route.query?.preview === 'true' && route.query?.token) {
+    globalStore.footerLinks = footerLinks.value
+    globalStore.footerPrimary = footerPrimary.value
+    globalStore.footerSock = footerSock.value
+  }
+
   classes.value.push({ 'has-scrolled': globalStore.sTop })
   classes.value.push({ 'has-scrolled-past-header': globalStore.sTop >= 150 })
   isMobile.value = globalStore.winWidth <= 1024

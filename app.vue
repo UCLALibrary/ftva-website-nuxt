@@ -2,6 +2,7 @@
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 const { enabled, state } = usePreviewMode()
+console.log(enabled, state?.value?.xtoken)
 </script>
 
 <template>
