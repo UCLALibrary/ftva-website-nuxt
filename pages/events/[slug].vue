@@ -225,19 +225,17 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       </div>
     </div>
 
-    <div class="full-width">
-      <SectionWrapper
+    <SectionWrapper
+      v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
+      section-title="Upcoming events in this series"
+      theme="paleblue"
+    >
+      <SectionTeaserCard
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-        section-title="Upcoming events in this series"
-        theme="paleblue"
-      >
-        <SectionTeaserCard
-          v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-          data-test="event-series"
-          :items="parsedFtvaEventSeries"
-        />
-      </SectionWrapper>
-    </div>
+        data-test="event-series"
+        :items="parsedFtvaEventSeries"
+      />
+    </SectionWrapper>
   </main>
 </template>
 
@@ -325,16 +323,6 @@ $pale-blue: #E7EDF2;
         top: 85px;
         will-change: top;
       }
-    }
-  }
-
-  .full-width {
-    width: 100%;
-    background-color: $pale-blue;
-    margin: 0 auto;
-
-    .section-wrapper.theme-paleblue {
-      background-color: $pale-blue;
     }
   }
 
