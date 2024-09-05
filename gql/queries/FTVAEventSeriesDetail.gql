@@ -46,8 +46,9 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       }
     }
   }
-  upcomingEvents: entries(section: "ftvaEvent", sectionHandle: "ftvaEventSeries", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: ">= now", orderBy: "startDateWithTime ASC") {
+  upcomingEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: ">= now", orderBy: "startDateWithTime ASC") {
       uri
+      sectionHandle
       eventTitle
       startDateWithTime
       ftvaImage {
@@ -57,8 +58,9 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
         title
       }
   }
-  pastEvents: entries(section: "ftvaEvent", sectionHandle: "ftvaEventSeries",  relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime ASC") {
+  pastEvents: entries(section: "ftvaEvent",  relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime ASC") {
     uri
+    sectionHandle
     eventTitle
     startDateWithTime
     ftvaImage {
@@ -68,8 +70,9 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       title
     }
   }
-  otherSeriesOngoing: entries(section: "ftvaEventSeries", sectionHandle: "ftvaEventSeries", limit: 3, ongoing: true) {
+  otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true) {
     uri
+    sectionHandle
     title
     startDate
     endDate
@@ -78,8 +81,9 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       ...Image
     }
   }
-  otherSeriesUpcoming: entries(section: "ftvaEventSeries", sectionHandle: "ftvaEventSeries", limit: 3, endDate: ">=now", orderBy: "startDate ASC") {
+  otherSeriesUpcoming: entries(section: "ftvaEventSeries", limit: 3, endDate: ">=now", orderBy: "startDate ASC") {
     uri
+    sectionHandle
     title
     startDate
     endDate
