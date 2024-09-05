@@ -2,22 +2,28 @@
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 const { enabled, state } = usePreviewMode()
-console.log(enabled, state?.value?.token)
+console.log('App.vue', enabled.value, state.token)
 const route = useRoute()
-const { $layoutData } = useNuxtApp()
-const globalStore = useGlobalStore()
 
+const globalStore = useGlobalStore()
+const { header, setHeader } = useHeader()
+setHeader(globalStore)
 const classes = ref(['layout',
-  'layout-default',])
-const draftPrimaryMenuItems = computed(() => {
+  'layout-default'])
+const primaryMenuItems = computed(() => {
   // convert file to typescript if we want to use '?' operator to avoid this
   // ex: return globalStore?.header?.primary
-  return globalStore && (globalStore.header && globalStore.header.primary) ? globalStore.header.primary : null
+  return header?.value?.primary
 })
+watch(globalStore.header, (newVal, oldVal) => {
+  console.log('Global store changed for draft previews', newVal, oldVal)
+  setHeader(globalStore)
+})
+const { $layoutData } = useNuxtApp()
 onMounted(async () => {
   // globalstore state is lost due to 404 error for draft previews, this is hack to repopulate state on client side
-  console.log(route.query)
-  if (route.query?.preview === 'true' && route.query?.token) {
+  console.log('No layout query', route.query, 'preview enabled', enabled.value, 'state?.token', state?.token)
+  if (process.env.NODE_ENV !== 'development' && (route.query?.preview === 'true' || enabled.value) && (route.query?.token !== undefined || state?.token !== undefined)) {
     await $layoutData()
   }
 })
@@ -33,27 +39,17 @@ onMounted(async () => {
       to="#main"
       label="Skip to main content"
     />
-    <NuxtLayout v-if="(!enabled && route.query?.token === undefined) || (enabled && route.query?.token === undefined)">
+    <div :class="classes">
+      <site-brand-bar class="brand-bar" />
+      <header-sticky
+        v-if="primaryMenuItems"
+        class="primary"
+        :primary-items="primaryMenuItems"
+      />
       <NuxtPage />
-    </NuxtLayout>
-    <div
-      v-else
-      :class="classes"
-    >
-      <ClientOnly>
-        <site-brand-bar class="brand-bar" />
-        <header-sticky
-          v-if="draftPrimaryMenuItems"
-          class="primary"
-          :primary-items="draftPrimaryMenuItems"
-        />
-      </ClientOnly>
-      <NuxtPage />
-      <ClientOnly>
-        <footer data-test="footer">
-          <footer-main />
-        </footer>
-      </ClientOnly>
+      <footer data-test="footer">
+        <footer-main />
+      </footer>
     </div>
   </div>
 </template>
