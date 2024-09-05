@@ -3,13 +3,10 @@ const MenuItem = `
             name: title
             to: url
             classes
-            target: newWindow  
+            target: newWindow
     `
 const headerQuery = `
     query HeaderMainMenuItems {
-        secondary: nodes(navHandle: "secondaryMenu", level: 1) {
-            ${MenuItem}
-        }
         primary: nodes(navHandle: "primaryMenu", level: 1) {
             ${MenuItem}
             children {
