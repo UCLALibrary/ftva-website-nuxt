@@ -7,7 +7,7 @@ const MenuItem = `
     `
 const headerQuery = `
     query HeaderMainMenuItems {
-        primary: nodes(navHandle: "primaryMenu", level: 1) {
+        primary: nodes(navHandle: "ftvaPrimaryMenu", level: 1) {
             ${MenuItem}
             children {
                 ${MenuItem}
