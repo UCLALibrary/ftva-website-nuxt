@@ -210,8 +210,6 @@ useHead({
 
 <style lang="scss" scoped>
 .page-home {
-  .button-more {
-    margin: var(--space-2xl) auto;
-  }
+  margin: 20px;
 }
 </style>

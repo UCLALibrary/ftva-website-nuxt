@@ -1,7 +1,0 @@
-#import "~/gql/fragments/MenuItem.gql"
-
-query FTVAFooterSockItems {
-    nodes(navHandle: "footerSockLinks") {
-        ...MenuItem
-    }
-}

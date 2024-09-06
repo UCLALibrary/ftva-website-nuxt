@@ -1,0 +1,27 @@
+#import "../gql/fragments/MenuItem.gql"
+
+query FTVALayout {
+  primary: nodes(navHandle: "ftvaPrimaryMenu", level: 1) {
+      ...MenuItem
+      children {
+          ...MenuItem
+      }
+  }
+  footerPrimary: nodes(navHandle: "footerPrimary", level: 1) {
+      ...MenuItem
+      children {
+          ...MenuItem
+      }
+  }
+  footerLinks: nodes(navHandle: "ftvaFooterNav", level: 1) {
+    category: title
+      children(level: 2) {
+        ...MenuItem
+      }
+  }
+    
+  footerSock: nodes(navHandle: "footerSockLinks") {
+    ...MenuItem
+  }
+
+}

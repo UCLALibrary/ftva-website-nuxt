@@ -1,8 +1,14 @@
 <script setup>
+
+// This layout is only used for error.vue page, for the rest of the page templates we have layout added to app.vue
+
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 
+const { enabled, state } = usePreviewMode()
+const layoutCustomProps = useAttrs()
 const globalStore = useGlobalStore()
+
 const classes = ref(['layout',
   'layout-default',])
 
@@ -13,8 +19,19 @@ const primaryMenuItems = computed(() => {
 })
 
 const isMobile = ref(false)
+watch(globalStore, (newVal, oldVal) => {
+  console.log('Global store changed', newVal, oldVal)
+})
+const { $layoutData } = useNuxtApp()
+// globalstore state is lost when error page is generated , this is hack to repopulate state on client side
+onMounted(async () => {
+  console.log('In default layout', enabled.value, state?.token)
 
-onMounted(() => {
+  if (process.env.NODE_ENV !== 'development' && layoutCustomProps['is-error']) {
+    console.log('In SSG refresh layout data as state is not maintained after an error response')
+    await $layoutData()
+  }
+
   classes.value.push({ 'has-scrolled': globalStore.sTop })
   classes.value.push({ 'has-scrolled-past-header': globalStore.sTop >= 150 })
   isMobile.value = globalStore.winWidth <= 1024
@@ -30,19 +47,7 @@ onMounted(() => {
       class="primary"
       :primary-items="primaryMenuItems"
     />
-
     <slot />
-    <div
-      v-if="$route.path === '/'"
-      style="padding: 50px 250px"
-    >
-      <hr>
-      <pre>FOOTER Primary {{ globalStore.footerPrimary }}</pre>
-      <hr>
-      <pre>FOOTER LINKS{{ globalStore.footerLinks }}</pre>
-      <hr>
-    </div>
-
     <footer data-test="footer">
       <footer-main />
     </footer>

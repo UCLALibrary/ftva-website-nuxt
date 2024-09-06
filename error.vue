@@ -5,10 +5,11 @@ const props = defineProps({
   error: Object as () => NuxtError
 })
 const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
+
 </script>
 
 <template>
-  <NuxtLayout>
+  <NuxtLayout :is-error="true">
     <main
       id="main"
       class="page page-error"
