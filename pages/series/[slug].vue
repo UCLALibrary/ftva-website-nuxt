@@ -110,12 +110,28 @@ const parsedCarouselData = computed(() => {
           />
         </SectionWrapper>
       </div>
+      <div class="sidebar-column">
+        <div class="sidebar-content-wrapper">
+          <BlockEventDetail
+            data-test="event-details"
+            :start-date="page?.startDateWithTime"
+            :time="page?.startDateWithTime"
+            :locations="page?.location"
+          />
+          <BlockInfo
+            v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+            data-test="ticket-info"
+            :ftva-ticket-information="page?.ftvaTicketInformation"
+          />
+        </div>
+      </div>
+
     </div>
 
     <!-- <div class="full-width">
       <SectionWrapper
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-        section-title="Upcoming events in this series"
+        section-title="Explore other series"
         theme="paleblue"
       >
         <SectionTeaserCard
@@ -142,20 +158,18 @@ const parsedCarouselData = computed(() => {
       <pre>{{ otherSeriesUpcoming }}</pre>
       <hr>
     </SectionWrapper>
+    <SectionWrapper
+      v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
+      :items="parsedFtvaEventSeries"
+      section-title="Explore other series"
+      theme="paleblue"
+    >
+      <SectionTeaserCard :items="parsedFtvaEventSeries" />
+    </SectionWrapper>
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
-// VARS - TO DO move to global? reference tokens?
-// WIDTH, HEIGHT, SPACING
-$max-width: 1160px;
-$banner-height: 520px;
-// COLORS
-$pale-blue: #E7EDF2;
-
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-event-series-detail {
   position: relative;
@@ -163,7 +177,7 @@ $pale-blue: #E7EDF2;
   &:before {
     content: '';
     position: absolute;
-    background-color: $pale-blue;
+    background-color: var(--pale-blue);
     aspect-ratio: 1440 / 520;
     max-height: 518px; //prevent overflow on large screens
     min-height: 225px; //prevent too much shrinking on small screens
@@ -173,7 +187,7 @@ $pale-blue: #E7EDF2;
 
   .one-column {
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     margin: 0 auto;
 
     :deep(.nav-breadcrumb) {
@@ -185,7 +199,7 @@ $pale-blue: #E7EDF2;
   .two-column {
     position: relative;
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -233,11 +247,11 @@ $pale-blue: #E7EDF2;
 
   .full-width {
     width: 100%;
-    background-color: $pale-blue;
+    background-color: var(--pale-blue);
     margin: 0 auto;
 
     .section-wrapper.theme-paleblue {
-      background-color: $pale-blue;
+      background-color: var(--pale-blue);
     }
   }
 

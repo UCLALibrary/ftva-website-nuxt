@@ -239,13 +239,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-// VARS - TO DO move to global? reference tokens?
-// WIDTH, HEIGHT, SPACING
-$max-width: 1160px;
-$banner-height: 520px;
-// COLORS
-$pale-blue: #E7EDF2;
-
 // PAGE STYLES
 .page-event-detail {
   position: relative;
@@ -253,7 +246,7 @@ $pale-blue: #E7EDF2;
   &:before {
     content: '';
     position: absolute;
-    background-color: $pale-blue;
+    background-color: var(--pale-blue);
     aspect-ratio: 1440 / 520;
     max-height: 518px; //prevent overflow on large screens
     min-height: 225px; //prevent too much shrinking on small screens
@@ -263,7 +256,7 @@ $pale-blue: #E7EDF2;
 
   .one-column {
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     margin: 0 auto;
 
     :deep(.nav-breadcrumb) {
@@ -275,7 +268,7 @@ $pale-blue: #E7EDF2;
   .two-column {
     position: relative;
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
