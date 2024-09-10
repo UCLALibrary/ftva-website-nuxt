@@ -264,7 +264,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     }
   }
 
-  /* .page-event-detail .two-column .sidebar-column */
   .two-column {
     position: relative;
     width: 100%;

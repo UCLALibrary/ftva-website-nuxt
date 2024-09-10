@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper, TabItem, TabList } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -39,6 +39,9 @@ const pastEvents = ref(_get(data.value, 'pastEvents', {}))
 const otherSeriesOngoing = ref(_get(data.value, 'otherSeriesOngoing', {}))
 const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 
+// TODO get sidebar height and set container height to it if not as big
+const sidebar = ref(null)
+
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaEventSeries', {})
@@ -50,18 +53,45 @@ watch(data, (newVal, oldVal) => {
 
 // Get data for Image or Carousel at top of page
 const parsedImage = computed(() => {
+  // TODO MAKE THIS WORK WHEN NO PAGE.VALUE
   return page.value.imageCarousel
 })
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
+  // TODO MAKE THIS WORK WHEN NO PAGE.VALUE
   return parsedImage.value.map((rawItem, index) => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
     }
   })
+})
+
+// This section only shows 3 items max, and prioritizes upcoming events over ongoing
+const parsedOtherSeries = computed(() => {
+  // fail gracefully if data does not exist (server-side) 
+  if (!otherSeriesUpcoming.value && !otherSeriesOngoing.value)
+    return []
+
+  let otherSeries = otherSeriesUpcoming.value.concat(otherSeriesOngoing.value)
+  // Get first 3 events
+  otherSeries = otherSeries.slice(0, 3)
+
+  // Transform data for SectionTeaserCard
+  otherSeries = otherSeries.map((item, index) => {
+    return {
+      ...item,
+      to: item.uri,
+      startDate: item.startDate ? item.startDate : null,
+      endDate: item.endDate ? item.endDate : null,
+      ongoing: item.ongoing,
+      sectionHandle: item.sectionHandle, //'ftvaEventSeries'
+      image: item.ftvaImage[0],
+    }
+  })
+  return otherSeries
 })
 </script>
 
@@ -107,17 +137,23 @@ const parsedCarouselData = computed(() => {
             category="Series"
             :title="page?.title"
             :text="page.eventDescription"
+            :guest-speaker="page?.guestSpeaker"
           />
         </SectionWrapper>
       </div>
       <div class="sidebar-column">
-        <div class="sidebar-content-wrapper">
-          <BlockEventDetail
-            data-test="event-details"
+        <div
+          ref="sidebar"
+          class="sidebar-content-wrapper"
+        >
+          <!-- re-enable this when ongoing data           
             :start-date="page?.startDateWithTime"
             :time="page?.startDateWithTime"
+            -->
+          <!-- <BlockEventDetail
+            data-test="event-details"
             :locations="page?.location"
-          />
+          /> -->
           <BlockInfo
             v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
             data-test="ticket-info"
@@ -128,20 +164,40 @@ const parsedCarouselData = computed(() => {
 
     </div>
 
-    <!-- <div class="full-width">
-      <SectionWrapper
-        v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-        section-title="Explore other series"
-        theme="paleblue"
-      >
-        <SectionTeaserCard
-          v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-          :items="parsedFtvaEventSeries"
-        />
-      </SectionWrapper>
-    </div> -->
+    <div class="full-width">
+      <SectionWrapper theme="paleblue">
+        <tab-list alignment="left">
+          <tab-item
+            title="Upcoming Events"
+            class="tab-content"
+          >
+            <template v-if="upcomingEvents && upcomingEvents.length > 0">
+              <!-- <SectionTeaserCard :items="upcomingEvents" /> -->
+              {{ upcomingEvents }}
+            </template>
+            <template v-else>
+              <p class="empty-tab">There are no upcoming events in this series.</p>
+            </template>
+          </tab-item>
 
-    <SectionWrapper>
+          <tab-item
+            title="Past Events"
+            class="tab-content"
+          >
+            <template v-if="pastEvents && pastEvents.length > 0">
+              <!-- <SectionTeaserCard :items="upcomingEvents" /> -->
+              {{ pastEvents }}
+            </template>
+            <template v-else>
+              <p class="empty-tab">There are no upcoming events in this series.</p>
+            </template>
+          </tab-item>
+
+        </tab-list>
+      </SectionWrapper>
+    </div>
+
+    <!-- <SectionWrapper>
       <h2>PAGE</h2>
       <pre>{{ page }}</pre>
       <hr>
@@ -156,15 +212,22 @@ const parsedCarouselData = computed(() => {
       <hr>
       <h2>Other Series Upcoming</h2>
       <pre>{{ otherSeriesUpcoming }}</pre>
-      <hr>
-    </SectionWrapper>
+      <hr> 
+    </SectionWrapper> -->
+
+    <!-- TODO: full-width column needed? -->
     <SectionWrapper
-      v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-      :items="parsedFtvaEventSeries"
+      v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
+      :items="parsedOtherSeries"
       section-title="Explore other series"
-      theme="paleblue"
     >
-      <SectionTeaserCard :items="parsedFtvaEventSeries" />
+      <template v-slot:top-right>
+        <smart-link to="/series">
+          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        </smart-link>
+
+      </template>
+      <SectionTeaserCard :items="parsedOtherSeries" />
     </SectionWrapper>
   </main>
 </template>
@@ -195,7 +258,6 @@ const parsedCarouselData = computed(() => {
     }
   }
 
-  /* .page-event-detail .two-column .sidebar-column */
   .two-column {
     position: relative;
     width: 100%;
@@ -239,7 +301,7 @@ const parsedCarouselData = computed(() => {
 
       .sidebar-content-wrapper {
         position: sticky;
-        top: 0;
+        top: 85px;
         will-change: top;
       }
     }
@@ -252,6 +314,15 @@ const parsedCarouselData = computed(() => {
 
     .section-wrapper.theme-paleblue {
       background-color: var(--pale-blue);
+    }
+  }
+
+  .tab-content {
+    min-height: 200px;
+    text-align: center;
+
+    .empty-tab {
+      padding: 100px 0;
     }
   }
 
