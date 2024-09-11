@@ -39,14 +39,6 @@ const pastEvents = ref(_get(data.value, 'pastEvents', {}))
 const otherSeriesOngoing = ref(_get(data.value, 'otherSeriesOngoing', {}))
 const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 
-// Track height of sidebar and ensure main content as at least as tall
-const sidebar = ref(null)
-const primaryCol = ref(null)
-watch(sidebar, (newVal) => {
-  primaryCol.value.style.minHeight = `${newVal.clientHeight + 125}px`
-  // TODO MAKE ALL THIS WORK MOBILE, disable of is mobile?
-}, { deep: true })
-
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaEventSeries', {})
@@ -74,6 +66,7 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+// Transform data for Other Series Section
 // This section only shows 3 items max, and prioritizes upcoming events over ongoing
 const parsedOtherSeries = computed(() => {
   // fail gracefully if data does not exist (server-side)
@@ -84,11 +77,11 @@ const parsedOtherSeries = computed(() => {
   // Get first 3 events
   otherSeries = otherSeries.slice(0, 3)
 
-  // Transform data for SectionTeaserCard
+  // Transform data
   otherSeries = otherSeries.map((item, index) => {
     return {
       ...item,
-      to: item.uri,
+      to: item.uri.replace('series/', ''), // remove 'series/' from uri
       startDate: item.startDate ? item.startDate : null,
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
@@ -98,6 +91,26 @@ const parsedOtherSeries = computed(() => {
   })
   return otherSeries
 })
+
+// LAYOUT & STYLES
+// Track height of sidebar and ensure main content as at least as tall
+const sidebar = ref(null)
+const primaryCol = ref(null)
+const tabs = ref(null)
+// defineExpose({
+//   tabs
+// })
+watch(sidebar, (newVal) => {
+  primaryCol.value.style.minHeight = `${newVal.clientHeight + 125}px`
+  // TODO ADD MOBILE CONDITION, disable this logic if is mobile?
+}, { deep: true })
+
+onMounted(() => {
+  console.log('mounted')
+  // get tab refs so we can watch for tab change
+  // console.log('tabs', tabs.value.activeTab)
+})
+
 </script>
 
 <template>
@@ -154,14 +167,13 @@ const parsedOtherSeries = computed(() => {
           ref="sidebar"
           class="sidebar-content-wrapper"
         >
-          <!-- re-enable this when ongoing data
-            :start-date="page?.startDateWithTime"
-            :time="page?.startDateWithTime"
-            -->
-          <!-- <BlockEventDetail
+          <BlockEventDetail
             data-test="event-details"
+            :start-date="page?.startDate"
+            :end-date="page?.endDate"
+            :ongoing="page?.ongoing"
             :locations="page?.location"
-          /> -->
+          />
           <BlockInfo
             v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
             data-test="ticket-info"
@@ -173,42 +185,45 @@ const parsedOtherSeries = computed(() => {
 
     <div class="full-width">
       <SectionWrapper theme="paleblue">
-        <tab-list alignment="left">
-          <tab-item
+        <!-- TODO listen for event or increment counter on click -->
+        <TabList
+          ref="tabs"
+          alignment="left"
+          @change="console.log('tab changed')"
+        >
+          <TabItem
             title="Upcoming Events"
             class="tab-content"
           >
-            <template v-if="upcomingEvents && upcomingEvents.length > 0">
-              <!-- <SectionTeaserCard :items="upcomingEvents" /> -->
+            <!-- <template v-if="upcomingEvents && upcomingEvents.length > 0">
               {{ upcomingEvents }}
             </template>
-            <template v-else>
-              <p class="empty-tab">
-                There are no upcoming events in this series.
-              </p>
-            </template>
-          </tab-item>
+            <template v-else> -->
+            <p class="empty-tab">
+              There are no upcoming events in this series.
+            </p>
+            <!-- </template> -->
+          </TabItem>
 
-          <tab-item
+          <TabItem
             title="Past Events"
             class="tab-content"
           >
-            <template v-if="pastEvents && pastEvents.length > 0">
-              <!-- <SectionTeaserCard :items="upcomingEvents" /> -->
+            <!-- <template v-if="pastEvents && pastEvents.length > 0">
               {{ pastEvents }}
             </template>
-            <template v-else>
-              <p class="empty-tab">
-                There are no upcoming events in this series.
-              </p>
-            </template>
-          </tab-item>
-        </tab-list>
+            <template v-else> -->
+            <p class="empty-tab">
+              There are no past events in this series.
+            </p>
+            <!-- </template> -->
+          </TabItem>
+        </TabList>
       </SectionWrapper>
     </div>
 
-    <!-- <SectionWrapper>
-      <h2>PAGE</h2>
+    <SectionWrapper>
+      <!-- <h2>PAGE</h2>
       <pre>{{ page }}</pre>
       <hr>
       <h2>UpcomingEvents</h2>
@@ -222,8 +237,8 @@ const parsedOtherSeries = computed(() => {
       <hr>
       <h2>Other Series Upcoming</h2>
       <pre>{{ otherSeriesUpcoming }}</pre>
-      <hr>
-    </SectionWrapper> -->
+      <hr> -->
+    </SectionWrapper>
 
     <!-- TODO: full-width column needed? -->
     <SectionWrapper
@@ -327,12 +342,12 @@ const parsedOtherSeries = computed(() => {
   }
 
   .tab-content {
-    min-height: 200px;
-    text-align: center;
+    // min-height: 200px;
+    // text-align: center;
 
-    .empty-tab {
-      padding: 100px 0;
-    }
+    // .empty-tab {
+    //   padding: 100px 0;
+    // }
   }
 
   /* makes all EventSeries same height */
