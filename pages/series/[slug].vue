@@ -39,8 +39,13 @@ const pastEvents = ref(_get(data.value, 'pastEvents', {}))
 const otherSeriesOngoing = ref(_get(data.value, 'otherSeriesOngoing', {}))
 const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 
-// TODO get sidebar height and set container height to it if not as big
+// Track height of sidebar and ensure main content as at least as tall
 const sidebar = ref(null)
+const primaryCol = ref(null)
+watch(sidebar, (newVal) => {
+  primaryCol.value.style.minHeight = `${newVal.clientHeight + 125}px`
+  // TODO MAKE ALL THIS WORK MOBILE, disable of is mobile?
+}, { deep: true })
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -71,7 +76,7 @@ const parsedCarouselData = computed(() => {
 
 // This section only shows 3 items max, and prioritizes upcoming events over ongoing
 const parsedOtherSeries = computed(() => {
-  // fail gracefully if data does not exist (server-side) 
+  // fail gracefully if data does not exist (server-side)
   if (!otherSeriesUpcoming.value && !otherSeriesOngoing.value)
     return []
 
@@ -87,7 +92,7 @@ const parsedOtherSeries = computed(() => {
       startDate: item.startDate ? item.startDate : null,
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
-      sectionHandle: item.sectionHandle, //'ftvaEventSeries'
+      sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
       image: item.ftvaImage[0],
     }
   })
@@ -131,7 +136,10 @@ const parsedOtherSeries = computed(() => {
     </div>
 
     <div class="two-column">
-      <div class="primary-column top">
+      <div
+        ref="primaryCol"
+        class="primary-column top"
+      >
         <SectionWrapper>
           <CardMeta
             category="Series"
@@ -146,7 +154,7 @@ const parsedOtherSeries = computed(() => {
           ref="sidebar"
           class="sidebar-content-wrapper"
         >
-          <!-- re-enable this when ongoing data           
+          <!-- re-enable this when ongoing data
             :start-date="page?.startDateWithTime"
             :time="page?.startDateWithTime"
             -->
@@ -161,7 +169,6 @@ const parsedOtherSeries = computed(() => {
           />
         </div>
       </div>
-
     </div>
 
     <div class="full-width">
@@ -176,7 +183,9 @@ const parsedOtherSeries = computed(() => {
               {{ upcomingEvents }}
             </template>
             <template v-else>
-              <p class="empty-tab">There are no upcoming events in this series.</p>
+              <p class="empty-tab">
+                There are no upcoming events in this series.
+              </p>
             </template>
           </tab-item>
 
@@ -189,10 +198,11 @@ const parsedOtherSeries = computed(() => {
               {{ pastEvents }}
             </template>
             <template v-else>
-              <p class="empty-tab">There are no upcoming events in this series.</p>
+              <p class="empty-tab">
+                There are no upcoming events in this series.
+              </p>
             </template>
           </tab-item>
-
         </tab-list>
       </SectionWrapper>
     </div>
@@ -212,7 +222,7 @@ const parsedOtherSeries = computed(() => {
       <hr>
       <h2>Other Series Upcoming</h2>
       <pre>{{ otherSeriesUpcoming }}</pre>
-      <hr> 
+      <hr>
     </SectionWrapper> -->
 
     <!-- TODO: full-width column needed? -->
@@ -221,11 +231,10 @@ const parsedOtherSeries = computed(() => {
       :items="parsedOtherSeries"
       section-title="Explore other series"
     >
-      <template v-slot:top-right>
+      <template #top-right>
         <smart-link to="/series">
           View All Series <span style="font-size:1.5em;"> &#8250;</span>
         </smart-link>
-
       </template>
       <SectionTeaserCard :items="parsedOtherSeries" />
     </SectionWrapper>
