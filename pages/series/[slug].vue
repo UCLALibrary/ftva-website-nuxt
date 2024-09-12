@@ -50,14 +50,20 @@ watch(data, (newVal, oldVal) => {
 
 // Get data for Image or Carousel at top of page
 const parsedImage = computed(() => {
-  // TODO MAKE THIS WORK WHEN NO PAGE.VALUE
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.imageCarousel) {
+    return []
+  }
   return page.value.imageCarousel
 })
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!parsedImage.value) {
+    return []
+  }
   // map image to item, map creditText to credit
-  // TODO MAKE THIS WORK WHEN NO PAGE.VALUE
   return parsedImage.value.map((rawItem, index) => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
@@ -92,25 +98,31 @@ const parsedOtherSeries = computed(() => {
   return otherSeries
 })
 
+// MOBILE LOGIC
+const globalStore = useGlobalStore()
+const isMobile = ref(false)
+watch(globalStore, (newVal, oldVal) => {
+  isMobile.value = globalStore.winWidth <= 1024
+})
+
 // LAYOUT & STYLES
 // Track height of sidebar and ensure main content as at least as tall
 const sidebar = ref(null)
 const primaryCol = ref(null)
 const tabs = ref(null)
-// defineExpose({
-//   tabs
-// })
-watch(sidebar, (newVal) => {
-  primaryCol.value.style.minHeight = `${newVal.clientHeight + 125}px`
-  // TODO ADD MOBILE CONDITION, disable this logic if is mobile?
+
+watch([isMobile, sidebar], ([newValIsMobile, newValSidebar], [oldValGlobalStore, oldValSidebar]) => {
+  if (newValIsMobile === true) {
+    primaryCol.value.style.minHeight = 'auto' // on mobile, reset height
+  } else {
+    primaryCol.value.style.minHeight = `${newValSidebar.clientHeight + 125}px`
+  }
 }, { deep: true })
 
+// globalstore state is lost when error page is generated , this is hack to repopulate state on client side
 onMounted(() => {
-  console.log('mounted')
-  // get tab refs so we can watch for tab change
-  // console.log('tabs', tabs.value.activeTab)
+  isMobile.value = globalStore.winWidth <= 1024
 })
-
 </script>
 
 <template>
@@ -188,7 +200,6 @@ onMounted(() => {
 
     <div class="full-width">
       <SectionWrapper theme="paleblue">
-        <!-- TODO listen for event or increment counter on click -->
         <TabList
           ref="tabs"
           alignment="left"
@@ -197,28 +208,28 @@ onMounted(() => {
             title="Upcoming Events"
             class="tab-content"
           >
-            <!-- <template v-if="upcomingEvents && upcomingEvents.length > 0">
+            <template v-if="upcomingEvents && upcomingEvents.length > 0">
               {{ upcomingEvents }}
             </template>
-            <template v-else> -->
-            <p class="empty-tab">
-              There are no upcoming events in this series.
-            </p>
-            <!-- </template> -->
+            <template v-else>
+              <p class="empty-tab">
+                There are no upcoming events in this series.
+              </p>
+            </template>
           </TabItem>
 
           <TabItem
             title="Past Events"
             class="tab-content"
           >
-            <!-- <template v-if="pastEvents && pastEvents.length > 0">
+            <template v-if="pastEvents && pastEvents.length > 0">
               {{ pastEvents }}
             </template>
-            <template v-else> -->
-            <p class="empty-tab">
-              There are no past events in this series.
-            </p>
-            <!-- </template> -->
+            <template v-else>
+              <p class="empty-tab">
+                There are no past events in this series.
+              </p>
+            </template>
           </TabItem>
         </TabList>
       </SectionWrapper>
@@ -242,7 +253,6 @@ onMounted(() => {
       <hr> -->
     </SectionWrapper>
 
-    <!-- TODO: full-width column needed? -->
     <SectionWrapper
       v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
       :items="parsedOtherSeries"
