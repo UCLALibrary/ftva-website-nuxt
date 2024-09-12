@@ -131,7 +131,10 @@ onMounted(() => {
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
       >
-        <template>
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
@@ -189,7 +192,6 @@ onMounted(() => {
         <TabList
           ref="tabs"
           alignment="left"
-          @change="console.log('tab changed')"
         >
           <TabItem
             title="Upcoming Events"
@@ -308,7 +310,6 @@ onMounted(() => {
     }
 
     // SECTION SCREENING DETAILS
-    // TODO when component is patched, remove styles?
     :deep(figure.responsive-video:not(:has(.video-embed))) {
       display: none;
     }
@@ -342,12 +343,12 @@ onMounted(() => {
   }
 
   .tab-content {
-    // min-height: 200px;
-    // text-align: center;
+    min-height: 200px;
+    text-align: center;
 
-    // .empty-tab {
-    //   padding: 100px 0;
-    // }
+    .empty-tab {
+      padding: 100px 0;
+    }
   }
 
   /* makes all EventSeries same height */

@@ -67,13 +67,20 @@ button {
 // Z-indexs
 .header-sticky {
     z-index: 100;
+
+    :deep(nav.nav-primary) {
+
+        // TODO get this working?
+        .section-name {
+            overflow: hidden;
+        }
+    }
 }
 
 .header-main {
     z-index: 200;
 }
 
-// Page Structure
 .page {
     >* {
         margin-left: auto;
