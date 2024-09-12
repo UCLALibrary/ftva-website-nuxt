@@ -172,13 +172,13 @@ onMounted(() => {
           <CardMeta
             category="Series"
             :title="page?.title"
-            :text="page?.richText"
+            :text="page?.eventDescription"
             :introduction="page?.ftvaEventIntroduction"
             :guest-speaker="page?.guestSpeaker"
           />
           <RichText
-            v-if="page?.eventDescription"
-            :rich-text-content="page?.eventDescription"
+            v-if="page?.richText"
+            :rich-text-content="page?.richText"
           />
         </SectionWrapper>
       </div>
