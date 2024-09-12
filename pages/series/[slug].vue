@@ -110,7 +110,6 @@ watch(globalStore, (newVal, oldVal) => {
 // Track height of sidebar and ensure main content as at least as tall
 const sidebar = ref(null)
 const primaryCol = ref(null)
-const tabs = ref(null)
 
 watch([isMobile, sidebar], ([newValIsMobile, newValSidebar], [oldValGlobalStore, oldValSidebar]) => {
   if (newValIsMobile === true) {
@@ -173,8 +172,13 @@ onMounted(() => {
           <CardMeta
             category="Series"
             :title="page?.title"
-            :text="page.eventDescription"
+            :text="page?.richText"
+            :introduction="page?.ftvaEventIntroduction"
             :guest-speaker="page?.guestSpeaker"
+          />
+          <RichText
+            v-if="page?.eventDescription"
+            :rich-text-content="page?.eventDescription"
           />
         </SectionWrapper>
       </div>
@@ -201,10 +205,7 @@ onMounted(() => {
 
     <div class="full-width">
       <SectionWrapper theme="paleblue">
-        <TabList
-          ref="tabs"
-          alignment="left"
-        >
+        <TabList alignment="left">
           <TabItem
             title="Upcoming Events"
             class="tab-content"
@@ -353,11 +354,17 @@ onMounted(() => {
     }
   }
 
+  :deep(.tab-list-body) {
+    background: none;
+  }
+
   .tab-content {
     min-height: 200px;
     text-align: center;
 
     .empty-tab {
+      @include ftva-subtitle-1;
+      color: var(--subtitle-grey);
       padding: 100px 0;
     }
   }
