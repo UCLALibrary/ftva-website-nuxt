@@ -492,7 +492,6 @@ onMounted(() => {
       border: 0;
       margin-bottom: 0;
       padding-bottom: 0;
-      border-radius: 0 0 35px 25px;
     }
 
     // Breakpoints
