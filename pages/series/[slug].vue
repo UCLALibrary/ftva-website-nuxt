@@ -257,9 +257,9 @@ onMounted(() => {
             title="Past Events"
             class="tab-content"
           >
-            <template v-if="pastEvents && pastEvents.length > 0">
+            <template v-if="parsedPastEvents && parsedPastEvents.length > 0">
               <SectionTeaserList
-                :items="pastEvents"
+                :items="parsedPastEvents"
                 component-name="BlockCardThreeColumn"
                 n-shown="10"
                 class="tabbed-event-list"
@@ -464,6 +464,7 @@ onMounted(() => {
 // TEMPORARY STYLES THAT SHOULD BE PART OF BLOCKCARDTHREECOLUMN & SECTIONTEASERLIST
 .tabbed-event-list {
   max-width: none;
+  padding: 2.5%;
 
   :deep(.list-item) {
     position: relative;
@@ -471,13 +472,15 @@ onMounted(() => {
     padding-bottom: 0;
     border-bottom: transparent;
 
-    &:after {
-      content: '';
-      width: 95%;
-      position: absolute;
-      left: 2.5%;
-      bottom: -22px;
-      border-bottom: 1px solid #e7edf2;
+    &:not(:last-child) {
+      &:after {
+        content: '';
+        width: 95%;
+        position: absolute;
+        left: 2.5%;
+        bottom: -22px;
+        border-bottom: 1px solid #e7edf2;
+      }
     }
 
     .day-month-date,
