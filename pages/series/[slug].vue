@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper, TabItem, TabList } from 'ucla-library-website-components'
+import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionTeaserList, SectionWrapper, TabItem, TabList } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -68,6 +68,34 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
+    }
+  })
+})
+
+// Transform Data for Tabbed Section
+const parsedUpcomingEvents = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!upcomingEvents.value)
+    return []
+
+  // Transform data
+  return upcomingEvents.value.map((item, index) => {
+    return {
+      ...item,
+      image: item.image[0]
+    }
+  })
+})
+const parsedPastEvents = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!pastEvents.value)
+    return []
+
+  // Transform data
+  return pastEvents.value.map((item, index) => {
+    return {
+      ...item,
+      image: item.image[0]
     }
   })
 })
@@ -210,8 +238,13 @@ onMounted(() => {
             title="Upcoming Events"
             class="tab-content"
           >
-            <template v-if="upcomingEvents && upcomingEvents.length > 0">
-              {{ upcomingEvents }}
+            <template v-if="parsedUpcomingEvents && parsedUpcomingEvents.length > 0">
+              <SectionTeaserList
+                :items="parsedUpcomingEvents"
+                component-name="BlockCardThreeColumn"
+                n-shown="10"
+                class="tabbed-event-list"
+              />
             </template>
             <template v-else>
               <p class="empty-tab">
@@ -225,7 +258,12 @@ onMounted(() => {
             class="tab-content"
           >
             <template v-if="pastEvents && pastEvents.length > 0">
-              {{ pastEvents }}
+              <SectionTeaserList
+                :items="pastEvents"
+                component-name="BlockCardThreeColumn"
+                n-shown="10"
+                class="tabbed-event-list"
+              />
             </template>
             <template v-else>
               <p class="empty-tab">
@@ -261,9 +299,9 @@ onMounted(() => {
       section-title="Explore other series"
     >
       <template #top-right>
-        <smart-link to="/series">
+        <nuxt-link to="/series">
           View All Series <span style="font-size:1.5em;"> &#8250;</span>
-        </smart-link>
+        </nuxt-link>
       </template>
       <SectionTeaserCard :items="parsedOtherSeries" />
     </SectionWrapper>
@@ -360,12 +398,14 @@ onMounted(() => {
 
   .tab-content {
     min-height: 200px;
-    text-align: center;
+    border-radius: 15px;
+    overflow: hidden;
 
     .empty-tab {
       @include ftva-subtitle-1;
       color: var(--subtitle-grey);
       padding: 100px 0;
+      text-align: center;
     }
   }
 
@@ -416,6 +456,49 @@ onMounted(() => {
         margin: auto var(--unit-gutter);
         padding-top: 0px;
         height: auto; // let content determine height on mobile
+      }
+    }
+  }
+}
+
+// TEMPORARY STYLES THAT SHOULD BE PART OF BLOCKCARDTHREECOLUMN & SECTIONTEASERLIST
+.tabbed-event-list {
+  max-width: none;
+
+  :deep(.list-item) {
+    position: relative;
+    margin-bottom: var(--space-xl);
+    padding-bottom: 0;
+    border-bottom: transparent;
+
+    &:after {
+      content: '';
+      width: 95%;
+      position: absolute;
+      left: 2.5%;
+      bottom: -22px;
+      border-bottom: 1px solid #e7edf2;
+    }
+
+    .day-month-date,
+    .meta {
+      background: white;
+    }
+
+    &:last-child {
+      border: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-radius: 0 0 35px 25px;
+    }
+
+    // Breakpoints
+    @media #{$medium} {
+      --divider-color: none;
+      background-color: transparent;
+
+      &::after {
+        display: none;
       }
     }
   }
