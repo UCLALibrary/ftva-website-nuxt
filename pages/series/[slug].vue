@@ -82,7 +82,7 @@ const parsedUpcomingEvents = computed(() => {
   return upcomingEvents.value.map((item, index) => {
     return {
       ...item,
-      image: item.image[0]
+      image: item.image && item.image.length > 0 ? item.image[0] : null
     }
   })
 })
@@ -95,7 +95,7 @@ const parsedPastEvents = computed(() => {
   return pastEvents.value.map((item, index) => {
     return {
       ...item,
-      image: item.image[0]
+      image: item.image && item.image.length > 0 ? item.image[0] : null
     }
   })
 })
@@ -108,6 +108,8 @@ const parsedOtherSeries = computed(() => {
     return []
 
   let otherSeries = otherSeriesUpcoming.value.concat(otherSeriesOngoing.value)
+  // Remove current series from list
+  otherSeries = otherSeries.filter(item => !item.uri.includes(route.params.slug))
   // Get first 3 events
   otherSeries = otherSeries.slice(0, 3)
 
@@ -274,24 +276,6 @@ onMounted(() => {
         </TabList>
       </SectionWrapper>
     </div>
-
-    <SectionWrapper>
-      <!-- <h2>PAGE</h2>
-      <pre>{{ page }}</pre>
-      <hr>
-      <h2>UpcomingEvents</h2>
-      <pre>{{ upcomingEvents }}</pre>
-      <hr>
-      <h2>Past Events</h2>
-      <pre>{{ pastEvents }}</pre>
-      <hr>
-      <h2>Other Series Ongoing</h2>
-      <pre>{{ otherSeriesOngoing }}</pre>
-      <hr>
-      <h2>Other Series Upcoming</h2>
-      <pre>{{ otherSeriesUpcoming }}</pre>
-      <hr> -->
-    </SectionWrapper>
 
     <SectionWrapper
       v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
