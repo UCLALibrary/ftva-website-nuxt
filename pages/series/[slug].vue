@@ -281,19 +281,23 @@ onMounted(() => {
       v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
       :items="parsedOtherSeries"
       section-title="Explore other series"
+      class="series-section-wrapper"
     >
       <template #top-right>
         <nuxt-link to="/series">
           View All Series <span style="font-size:1.5em;"> &#8250;</span>
         </nuxt-link>
       </template>
-      <SectionTeaserCard :items="parsedOtherSeries" />
+      <SectionTeaserCard
+        class="other-series-section"
+        :items="parsedOtherSeries"
+      />
     </SectionWrapper>
   </main>
 </template>
 
 <style lang="scss" scoped>
-// PAGE STYLES
+// GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
 
@@ -348,6 +352,8 @@ onMounted(() => {
       display: none;
     }
 
+    // move these styles to a component so they can be reused & kept in sync
+    // with /events/[slug].vue
     .sidebar-column {
       min-width: 314px;
       width: 30%;
@@ -356,7 +362,7 @@ onMounted(() => {
       top: 0;
       right: 0;
       padding-top: var(--space-2xl);
-      padding-bottom: 20px;
+      padding-bottom: 40px;
 
       .sidebar-content-wrapper {
         position: sticky;
@@ -393,11 +399,19 @@ onMounted(() => {
     }
   }
 
-  /* makes all EventSeries same height */
-  :deep(.card) {
-    min-height: 350px;
+  .other-series-section {
+    &:has(> :last-child:nth-child(3)) {
+      /* if section has 3 elements */
+      justify-content: space-between;
+    }
+
+    /* makes all Other Series same height */
+    :deep(.card) {
+      min-height: 350px;
+    }
   }
 
+  // MEDIUM DEVICE STYLES
   @media (max-width: 1200px) {
 
     .one-column,
@@ -415,6 +429,7 @@ onMounted(() => {
     }
   }
 
+  // MOBILE STYLES
   @media #{$small} {
     .two-column {
       display: grid;
@@ -442,6 +457,13 @@ onMounted(() => {
         height: auto; // let content determine height on mobile
       }
     }
+  }
+}
+
+// TEMPORARY STYLES THAT SHOULD BE PART OF SECTIONWRAPPER
+.series-section-wrapper {
+  :deep(.section-header) {
+    margin-bottom: 28px;
   }
 }
 
