@@ -124,7 +124,7 @@ const parsedOtherSeries = computed(() => {
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
       sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
-      image: item.ftvaImage[0],
+      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
     }
   })
   return otherSeries
