@@ -85,8 +85,9 @@ const parsedFtvaEventSeries = computed(() => {
   }
 
   // Destructure each series item object and its image object
-  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
+  const seriesEvents = firstSeries.ftvaEvent.map(({ image, to, ...rest }) => ({
     ...rest,
+    to: `/events/${to}`,
     image: image && image.length > 0 ? image[0] : null,
   }))
 
@@ -119,6 +120,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         class="breadcrumb"
         data-test="breadcrumb"
         :title="page?.title"
+        to="/events"
+        parent-title="Events"
       />
 
       <ResponsiveImage

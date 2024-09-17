@@ -82,6 +82,7 @@ const parsedUpcomingEvents = computed(() => {
   return upcomingEvents.value.map((item, index) => {
     return {
       ...item,
+      to: `/${item.to}`,
       image: item.image && item.image.length > 0 ? item.image[0] : null
     }
   })
@@ -95,6 +96,7 @@ const parsedPastEvents = computed(() => {
   return pastEvents.value.map((item, index) => {
     return {
       ...item,
+      to: `/${item.to}`,
       image: item.image && item.image.length > 0 ? item.image[0] : null
     }
   })
@@ -117,7 +119,7 @@ const parsedOtherSeries = computed(() => {
   otherSeries = otherSeries.map((item, index) => {
     return {
       ...item,
-      to: item.uri.replace('series/', ''), // remove 'series/' from uri
+      to: `/${item.uri}`, // remove 'series/' from uri
       startDate: item.startDate ? item.startDate : null,
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
@@ -163,7 +165,7 @@ onMounted(() => {
     <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"
-        :title="page.title"
+        :title="page?.title"
         to="/series"
         parent-title="Screening Series"
       />
@@ -241,10 +243,11 @@ onMounted(() => {
             class="tab-content"
           >
             <template v-if="parsedUpcomingEvents && parsedUpcomingEvents.length > 0">
+              <!-- :n-shown="10"  this prop does not do anything if theme is ftva-->
               <SectionTeaserList
                 :items="parsedUpcomingEvents"
                 component-name="BlockCardThreeColumn"
-                n-shown="10"
+                :n-shown="10"
                 class="tabbed-event-list"
               />
             </template>
