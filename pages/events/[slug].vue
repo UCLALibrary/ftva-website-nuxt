@@ -85,8 +85,9 @@ const parsedFtvaEventSeries = computed(() => {
   }
 
   // Destructure each series item object and its image object
-  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
+  const seriesEvents = firstSeries.ftvaEvent.map(({ image, to, ...rest }) => ({
     ...rest,
+    to: `/events/${to}`,
     image: image && image.length > 0 ? image[0] : null,
   }))
 
@@ -228,6 +229,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
       section-title="Upcoming events in this series"
       theme="paleblue"
+      class="series-section-wrapper"
     >
       <SectionTeaserCard
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
@@ -239,13 +241,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-// VARS - TO DO move to global? reference tokens?
-// WIDTH, HEIGHT, SPACING
-$max-width: 1160px;
-$banner-height: 520px;
-// COLORS
-$pale-blue: #E7EDF2;
-
 // PAGE STYLES
 .page-event-detail {
   position: relative;
@@ -253,7 +248,7 @@ $pale-blue: #E7EDF2;
   &:before {
     content: '';
     position: absolute;
-    background-color: $pale-blue;
+    background-color: var(--pale-blue);
     aspect-ratio: 1440 / 520;
     max-height: 518px; //prevent overflow on large screens
     min-height: 225px; //prevent too much shrinking on small screens
@@ -263,7 +258,7 @@ $pale-blue: #E7EDF2;
 
   .one-column {
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     margin: 0 auto;
 
     :deep(.nav-breadcrumb) {
@@ -271,11 +266,10 @@ $pale-blue: #E7EDF2;
     }
   }
 
-  /* .page-event-detail .two-column .sidebar-column */
   .two-column {
     position: relative;
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -307,6 +301,8 @@ $pale-blue: #E7EDF2;
       display: none;
     }
 
+    // move these styles to a component so they can be reused & kept in sync
+    // with /series/[slug].vue
     .sidebar-column {
       min-width: 314px;
       width: 30%;
@@ -315,7 +311,7 @@ $pale-blue: #E7EDF2;
       top: 0;
       right: 0;
       padding-top: var(--space-2xl);
-      padding-bottom: 20px;
+      padding-bottom: 40px;
 
       .sidebar-content-wrapper {
         position: sticky;
@@ -374,6 +370,13 @@ $pale-blue: #E7EDF2;
         height: auto; // let content determine height on mobile
       }
     }
+  }
+}
+
+// TEMPORARY STYLES THAT SHOULD BE PART OF SECTIONWRAPPER
+.series-section-wrapper {
+  :deep(.section-header) {
+    margin-bottom: 28px;
   }
 }
 </style>

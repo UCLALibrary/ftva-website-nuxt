@@ -1,3 +1,11 @@
+// site-specific variables
+:root {
+    --max-width: 1160px;
+    // COLORS
+    --pale-blue: #E7EDF2;
+    --subtitle-grey: #676767;
+}
+
 html {
     box-sizing: border-box;
 }

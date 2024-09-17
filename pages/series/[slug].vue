@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionTeaserList, SectionWrapper, TabItem, TabList } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -50,11 +50,19 @@ watch(data, (newVal, oldVal) => {
 
 // Get data for Image or Carousel at top of page
 const parsedImage = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.imageCarousel) {
+    return []
+  }
   return page.value.imageCarousel
 })
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!parsedImage.value) {
+    return []
+  }
   // map image to item, map creditText to credit
   return parsedImage.value.map((rawItem, index) => {
     return {
@@ -62,6 +70,90 @@ const parsedCarouselData = computed(() => {
       credit: rawItem?.creditText,
     }
   })
+})
+
+// Transform Data for Tabbed Section
+const parsedUpcomingEvents = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!upcomingEvents.value)
+    return []
+
+  // Transform data
+  return upcomingEvents.value.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.to}`,
+      image: item.image && item.image.length > 0 ? item.image[0] : null
+    }
+  })
+})
+const parsedPastEvents = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!pastEvents.value)
+    return []
+
+  // Transform data
+  return pastEvents.value.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.to}`,
+      image: item.image && item.image.length > 0 ? item.image[0] : null
+    }
+  })
+})
+
+// Transform data for Other Series Section
+// This section only shows 3 items max, and prioritizes upcoming events over ongoing
+const parsedOtherSeries = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!otherSeriesUpcoming.value && !otherSeriesOngoing.value)
+    return []
+
+  let otherSeries = otherSeriesUpcoming.value.concat(otherSeriesOngoing.value)
+  // Remove current series from list
+  otherSeries = otherSeries.filter(item => !item.uri.includes(route.params.slug))
+  // Get first 3 events
+  otherSeries = otherSeries.slice(0, 3)
+
+  // Transform data
+  otherSeries = otherSeries.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.uri}`, // remove 'series/' from uri
+      startDate: item.startDate ? item.startDate : null,
+      endDate: item.endDate ? item.endDate : null,
+      ongoing: item.ongoing,
+      sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
+      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
+    }
+  })
+  return otherSeries
+})
+
+// MOBILE LOGIC
+const globalStore = useGlobalStore()
+const isMobile = ref(false)
+watch(globalStore, (newVal, oldVal) => {
+  isMobile.value = globalStore.winWidth <= 750
+})
+
+// LAYOUT & STYLES
+// TO DO THIS SECTION MAY BE WORTH ADDING TO 2 COL SIDE BAR LAYOUT
+// Track height of sidebar and ensure main content as at least as tall
+const sidebar = ref(null)
+const primaryCol = ref(null)
+
+watch([isMobile, sidebar], ([newValIsMobile, newValSidebar], [oldValGlobalStore, oldValSidebar]) => {
+  if (newValIsMobile === true) {
+    primaryCol.value.style.minHeight = 'auto' // on mobile, reset height
+  } else {
+    primaryCol.value.style.minHeight = `${newValSidebar.clientHeight + 125}px`
+  }
+}, { deep: true })
+
+// globalstore state is lost when error page is generated , this is hack to repopulate state on client side
+onMounted(() => {
+  isMobile.value = globalStore.winWidth <= 750 // 750px is the breakpoint for mobile
 })
 </script>
 
@@ -73,7 +165,7 @@ const parsedCarouselData = computed(() => {
     <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"
-        :title="page.title"
+        :title="page?.title"
         to="/series"
         parent-title="Screening Series"
       />
@@ -83,7 +175,10 @@ const parsedCarouselData = computed(() => {
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
       >
-        <template>
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
@@ -101,69 +196,118 @@ const parsedCarouselData = computed(() => {
     </div>
 
     <div class="two-column">
-      <div class="primary-column top">
+      <div
+        ref="primaryCol"
+        class="primary-column top"
+      >
         <SectionWrapper>
           <CardMeta
             category="Series"
             :title="page?.title"
-            :text="page.eventDescription"
+            :text="page?.eventDescription"
+            :introduction="page?.ftvaEventIntroduction"
+            :guest-speaker="page?.guestSpeaker"
+          />
+          <RichText
+            v-if="page?.richText"
+            :rich-text-content="page?.richText"
           />
         </SectionWrapper>
       </div>
+      <div class="sidebar-column">
+        <div
+          ref="sidebar"
+          class="sidebar-content-wrapper"
+        >
+          <BlockEventDetail
+            data-test="event-details"
+            :start-date="page?.startDate"
+            :end-date="page?.endDate"
+            :ongoing="page?.ongoing"
+            :locations="page?.location"
+          />
+          <BlockInfo
+            v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+            data-test="ticket-info"
+            :ftva-ticket-information="page?.ftvaTicketInformation"
+          />
+        </div>
+      </div>
     </div>
 
-    <!-- <div class="full-width">
-      <SectionWrapper
-        v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-        section-title="Upcoming events in this series"
-        theme="paleblue"
-      >
-        <SectionTeaserCard
-          v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-          :items="parsedFtvaEventSeries"
-        />
-      </SectionWrapper>
-    </div> -->
+    <div class="full-width">
+      <SectionWrapper theme="paleblue">
+        <TabList alignment="left">
+          <TabItem
+            title="Upcoming Events"
+            class="tab-content"
+          >
+            <template v-if="parsedUpcomingEvents && parsedUpcomingEvents.length > 0">
+              <!-- :n-shown="10"  this prop does not do anything if theme is ftva-->
+              <SectionTeaserList
+                :items="parsedUpcomingEvents"
+                component-name="BlockCardThreeColumn"
+                :n-shown="10"
+                class="tabbed-event-list"
+              />
+            </template>
+            <template v-else>
+              <p class="empty-tab">
+                There are no upcoming events in this series.
+              </p>
+            </template>
+          </TabItem>
 
-    <SectionWrapper>
-      <h2>PAGE</h2>
-      <pre>{{ page }}</pre>
-      <hr>
-      <h2>UpcomingEvents</h2>
-      <pre>{{ upcomingEvents }}</pre>
-      <hr>
-      <h2>Past Events</h2>
-      <pre>{{ pastEvents }}</pre>
-      <hr>
-      <h2>Other Series Ongoing</h2>
-      <pre>{{ otherSeriesOngoing }}</pre>
-      <hr>
-      <h2>Other Series Upcoming</h2>
-      <pre>{{ otherSeriesUpcoming }}</pre>
-      <hr>
+          <TabItem
+            title="Past Events"
+            class="tab-content"
+          >
+            <template v-if="parsedPastEvents && parsedPastEvents.length > 0">
+              <SectionTeaserList
+                :items="parsedPastEvents"
+                component-name="BlockCardThreeColumn"
+                n-shown="10"
+                class="tabbed-event-list"
+              />
+            </template>
+            <template v-else>
+              <p class="empty-tab">
+                There are no past events in this series.
+              </p>
+            </template>
+          </TabItem>
+        </TabList>
+      </SectionWrapper>
+    </div>
+
+    <SectionWrapper
+      v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
+      :items="parsedOtherSeries"
+      section-title="Explore other series"
+      class="series-section-wrapper"
+    >
+      <template #top-right>
+        <nuxt-link to="/series">
+          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
+      <SectionTeaserCard
+        class="other-series-section"
+        :items="parsedOtherSeries"
+      />
     </SectionWrapper>
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
-// VARS - TO DO move to global? reference tokens?
-// WIDTH, HEIGHT, SPACING
-$max-width: 1160px;
-$banner-height: 520px;
-// COLORS
-$pale-blue: #E7EDF2;
-
-// PAGE STYLES
+<style lang="scss" scoped>
+// GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
 
   &:before {
     content: '';
     position: absolute;
-    background-color: $pale-blue;
+    background-color: var(--pale-blue);
     aspect-ratio: 1440 / 520;
     max-height: 518px; //prevent overflow on large screens
     min-height: 225px; //prevent too much shrinking on small screens
@@ -173,7 +317,7 @@ $pale-blue: #E7EDF2;
 
   .one-column {
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     margin: 0 auto;
 
     :deep(.nav-breadcrumb) {
@@ -181,11 +325,10 @@ $pale-blue: #E7EDF2;
     }
   }
 
-  /* .page-event-detail .two-column .sidebar-column */
   .two-column {
     position: relative;
     width: 100%;
-    max-width: $max-width;
+    max-width: var(--max-width);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -208,11 +351,12 @@ $pale-blue: #E7EDF2;
     }
 
     // SECTION SCREENING DETAILS
-    // TODO when component is patched, remove styles?
     :deep(figure.responsive-video:not(:has(.video-embed))) {
       display: none;
     }
 
+    // move these styles to a component so they can be reused & kept in sync
+    // with /events/[slug].vue
     .sidebar-column {
       min-width: 314px;
       width: 30%;
@@ -221,11 +365,11 @@ $pale-blue: #E7EDF2;
       top: 0;
       right: 0;
       padding-top: var(--space-2xl);
-      padding-bottom: 20px;
+      padding-bottom: 40px;
 
       .sidebar-content-wrapper {
         position: sticky;
-        top: 0;
+        top: 85px;
         will-change: top;
       }
     }
@@ -233,19 +377,44 @@ $pale-blue: #E7EDF2;
 
   .full-width {
     width: 100%;
-    background-color: $pale-blue;
+    background-color: var(--pale-blue);
     margin: 0 auto;
 
     .section-wrapper.theme-paleblue {
-      background-color: $pale-blue;
+      background-color: var(--pale-blue);
     }
   }
 
-  /* makes all EventSeries same height */
-  :deep(.card) {
-    min-height: 350px;
+  :deep(.tab-list-body) {
+    background: none;
   }
 
+  .tab-content {
+    min-height: 200px;
+    border-radius: 15px;
+    overflow: hidden;
+
+    .empty-tab {
+      @include ftva-subtitle-1;
+      color: var(--subtitle-grey);
+      padding: 100px 0;
+      text-align: center;
+    }
+  }
+
+  .other-series-section {
+    &:has(> :last-child:nth-child(3)) {
+      /* if section has 3 elements */
+      justify-content: space-between;
+    }
+
+    /* makes all Other Series same height */
+    :deep(.card) {
+      min-height: 350px;
+    }
+  }
+
+  // MEDIUM DEVICE STYLES
   @media (max-width: 1200px) {
 
     .one-column,
@@ -263,6 +432,7 @@ $pale-blue: #E7EDF2;
     }
   }
 
+  // MOBILE STYLES
   @media #{$small} {
     .two-column {
       display: grid;
@@ -288,6 +458,58 @@ $pale-blue: #E7EDF2;
         margin: auto var(--unit-gutter);
         padding-top: 0px;
         height: auto; // let content determine height on mobile
+      }
+    }
+  }
+}
+
+// TEMPORARY STYLES THAT SHOULD BE PART OF SECTIONWRAPPER
+.series-section-wrapper {
+  :deep(.section-header) {
+    margin-bottom: 28px;
+  }
+}
+
+// TEMPORARY STYLES THAT SHOULD BE PART OF BLOCKCARDTHREECOLUMN & SECTIONTEASERLIST
+.tabbed-event-list {
+  max-width: none;
+  padding: 2.5%;
+
+  :deep(.list-item) {
+    position: relative;
+    margin-bottom: var(--space-xl);
+    padding-bottom: 0;
+    border-bottom: transparent;
+
+    &:not(:last-child) {
+      &:after {
+        content: '';
+        width: 95%;
+        position: absolute;
+        left: 2.5%;
+        bottom: -22px;
+        border-bottom: 1px solid #e7edf2;
+      }
+    }
+
+    .day-month-date,
+    .meta {
+      background: white;
+    }
+
+    &:last-child {
+      border: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    // Breakpoints
+    @media #{$medium} {
+      --divider-color: none;
+      background-color: transparent;
+
+      &::after {
+        display: none;
       }
     }
   }
