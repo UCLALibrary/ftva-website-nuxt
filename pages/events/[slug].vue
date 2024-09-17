@@ -120,8 +120,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         class="breadcrumb"
         data-test="breadcrumb"
         :title="page?.title"
-        to="/events"
-        parent-title="Events"
       />
 
       <ResponsiveImage

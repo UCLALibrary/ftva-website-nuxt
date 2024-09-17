@@ -10,7 +10,7 @@ import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 const { $graphql } = useNuxtApp()
 
-const { data, error } = await useAsyncData('event-list', async () => {
+const { data, error } = await useAsyncData('series-list', async () => {
   const data = await $graphql.default.request(FTVAEventSeriesList)
   return data
 })
