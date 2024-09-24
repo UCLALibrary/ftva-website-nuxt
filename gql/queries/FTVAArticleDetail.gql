@@ -3,7 +3,7 @@
 #import "../gql/fragments/collections/AllFtvaFpb.gql"
 
 query FTVAArticleDetail($slug: [String!]) {
-  entry(section: "ftvaArticle", slug: $slug)  {
+  ftvaArticle: entry(section: "ftvaArticle", slug: $slug)  {
     id
     typeHandle
     postDate
@@ -40,7 +40,7 @@ query FTVAArticleDetail($slug: [String!]) {
     # SectionTeaserCard (Recent posts)
 
 
-    # Flexible Page Block Collection (FPBs)
+    # FTVA Flexible Page Block Collection (FPBs)
     ...AllFtvaFpb
   }
 }

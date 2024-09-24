@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+// import { BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -15,7 +15,7 @@ const { $graphql } = useNuxtApp()
 const route = useRoute()
 
 // DATA
-const { data, error } = await useAsyncData(`article-detail-${route.params.slug}`, async () => {
+const { data, error } = await useAsyncData(`blog-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVAArticleDetail, { slug: route.params.slug })
   return data
 })
@@ -25,7 +25,7 @@ if (error.value) {
   })
 }
 
-if (!data.value.ftvaEvent) {
+if (!data.value.ftvaArticle) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -33,33 +33,12 @@ if (!data.value.ftvaEvent) {
   })
 }
 
-const page = ref(_get(data.value, 'ftvaEvent', {}))
-const series = ref(_get(data.value, 'ftvaEventSeries', {}))
+const page = ref(_get(data.value, 'ftvaArticle', {}))
 
-// watch(data, (newVal, oldVal) => {
-//   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-//   page.value = _get(newVal, 'ftvaEvent', {})
-//   series.value = _get(newVal, 'ftvaEventSeries', {})
-// })
-
-// Get data for Image or Carousel at top of page
-// const parsedImage = computed(() => {
-//   return page.value.imageCarousel
-// })
-
-// Transform data for Carousel
-// const parsedCarouselData = computed(() => {
-//   // map image to item, map creditText to credit
-//   return parsedImage.value.map((rawItem, index) => {
-//     return {
-//       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
-//       credit: rawItem?.creditText,
-//       captionTitle: 'dfdsfs', // TODO do we need these? test without
-//       captionText: 'dfsdfsd',
-//     }
-//   })
-// })
-
+watch(data, (newVal, oldVal) => {
+  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'ftvaArticle', {})
+})
 </script>
 
 <template>
@@ -123,12 +102,20 @@ const series = ref(_get(data.value, 'ftvaEventSeries', {}))
             :tag-labels="page?.tagLabels"
             :introduction="page?.introduction"
           /> -->
-    <!-- About the Author -->
+
     <!-- <RichText
             v-if="page?.eventDescription"
             data-test="event-description"
             class="eventDescription"
             :rich-text-content="page?.eventDescription"
+          /> -->
+
+    <!-- About the Author -->
+    <!--  <RichText
+            v-if="page?.acknowledements"
+            data-test="acknowledgements"
+            class="acknowledgements"
+            :rich-text-content="page?.acknowledements"
           />
         </SectionWrapper>
       </div>
