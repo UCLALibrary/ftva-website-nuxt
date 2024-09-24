@@ -1,4 +1,5 @@
 #import "../gql/fragments/Image.gql"
+#import "../gql/fragments/MediaAsset.gql"
 #import "../gql/fragments/BlockCallToActionFragment.gql"
 #import "../gql/fragments/BlockContactInfoFragment.gql"
 #import "../gql/fragments/BlockFormFragment.gql"

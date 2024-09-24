@@ -38,7 +38,14 @@ query FTVAArticleDetail($slug: [String!]) {
     aboutTheAuthor
 
     # SectionTeaserCard (Recent posts)
-
+    ftvaRecentPosts: entries(
+      section: "ftvaArticle", limit:3, orderBy: "postDate ASC") {
+        id
+        slug
+        typeHandle
+        title
+        uri
+    }
 
     # FTVA Flexible Page Block Collection (FPBs)
     ...AllFtvaFpb
