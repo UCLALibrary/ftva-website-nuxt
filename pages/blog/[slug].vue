@@ -49,7 +49,6 @@ watch(data, (newVal, oldVal) => {
     <h3>PAGE DATA</h3>
     <pre>{{ page }}</pre>
 
-
     <!-- <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"

@@ -47,7 +47,6 @@ const page = ref(_get(data.value, 'entries', {}))
     style="padding: 25px 100px;"
   >
     <section-wrapper section-title="Recent">
-
       <div
         v-for="article in data.entries"
         :key="article?.id"
