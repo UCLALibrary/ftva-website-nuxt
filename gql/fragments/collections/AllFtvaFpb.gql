@@ -1,15 +1,15 @@
 #import "../gql/fragments/Image.gql"
 #import "../gql/fragments/BlockCallToActionFragment.gql"
-#import "../gql/fragments/BlockContactInfo.gql"
+#import "../gql/fragments/BlockContactInfoFragment.gql"
 #import "../gql/fragments/BlockFormFragment.gql"
-#import "../gql/fragments/BlockHorizontalDivider.gql"
+#import "../gql/fragments/BlockHorizontalDividerFragment.gql"
 #import "../gql/fragments/BlockImpactNumberCardsFragment.gql"
 #import "../gql/fragments/BlockMediaGalleryFragment.gql"
 #import "../gql/fragments/BlockMediaWithTextFragment.gql"
 #import "../gql/fragments/BlockPullQuoteFragment.gql"
 #import "../gql/fragments/BlockRichTextFragment.gql"
 #import "../gql/fragments/BlockSimpleCardsFragment.gql"
-#import "../gql/fragments/BlockTextColumns.gql"
+#import "../gql/fragments/BlockTextColumnsFragment.gql"
 
 fragment AllFtvaFpb on ElementInterface {
     blocks: allFtvaFpb {
@@ -25,7 +25,7 @@ fragment AllFtvaFpb on ElementInterface {
         ... on allFtvaFpb_form_BlockType {
             ...BlockFormFragment
         }
-        ... on allFtvaFpb_horizontalDividerFragment_BlockType {
+        ... on allFtvaFpb_horizontalDivider_BlockType {
             ...BlockHorizontalDividerFragment
         }
         ... on allFtvaFpb_impactNumberCards_BlockType {
