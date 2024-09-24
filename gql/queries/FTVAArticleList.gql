@@ -3,7 +3,7 @@ query FTVAArticleList {
     typeHandle
     id
     title
-    to: uri
+    to: slug
     text: summary
   }
 }

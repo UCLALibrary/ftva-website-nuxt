@@ -8,33 +8,33 @@ import { BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, 
 import _get from 'lodash/get'
 
 // GQL
-import FTVAArticleDetail from '../gql/queries/ FTVAArticleDetail.gql'
+import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
 
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
 
 // DATA
-const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
-  const data = await $graphql.default.request(FTVAArticleDetail.gql, { slug: route.params.slug })
+const { data, error } = await useAsyncData(`article-detail-${route.params.slug}`, async () => {
+  const data = await $graphql.default.request(FTVAArticleDetail, { slug: route.params.slug })
   return data
 })
-// if (error.value) {
-//   throw createError({
-//     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
-//   })
-// }
+if (error.value) {
+  throw createError({
+    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+  })
+}
 
-// if (!data.value.ftvaEvent) {
-//   throw createError({
-//     statusCode: 404,
-//     statusMessage: 'Page Not Found',
-//     fatal: true
-//   })
-// }
+if (!data.value.ftvaEvent) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+    fatal: true
+  })
+}
 
-// const page = ref(_get(data.value, 'ftvaEvent', {}))
-// const series = ref(_get(data.value, 'ftvaEventSeries', {}))
+const page = ref(_get(data.value, 'ftvaEvent', {}))
+const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 // watch(data, (newVal, oldVal) => {
 //   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -67,7 +67,11 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
     id="main"
     class="page page-article-detail"
   >
-    <div class="one-column">
+    <h3>PAGE DATA</h3>
+    <pre>{{ page }}</pre>
+
+
+    <!-- <div class="one-column">
       <NavBreadcrumb
         class="breadcrumb"
         data-test="breadcrumb"
@@ -86,30 +90,30 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
         >
           {{ parsedImage[0]?.creditText }}
         </template>
-      </ResponsiveImage>
-      <div
-        v-else
-        class="lightbox-container"
-      >
-        <FlexibleMediaGalleryNewLightbox
-          data-test="image-carousel"
-          :items="parsedCarouselData"
-        >
-          <template #default="slotProps">
+</ResponsiveImage>
+<div
+  v-else
+  class="lightbox-container"
+>
+  <FlexibleMediaGalleryNewLightbox
+    data-test="image-carousel"
+    :items="parsedCarouselData"
+  >
+    <template #default="slotProps">
             <BlockTag
               data-test="credit-text"
               :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
             />
           </template>
-        </FlexibleMediaGalleryNewLightbox>
-      </div>
-    </div>
+  </FlexibleMediaGalleryNewLightbox>
+</div>
+</div> -->
 
-    <div
+    <!-- <div
       data-test="second-column"
       class="two-column"
-    >
-      <div class="primary-column top">
+    > -->
+    <!-- <div class="primary-column top">
         <SectionWrapper>
           <CardMeta
             data-test="text-block"
@@ -118,9 +122,9 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
             :guest-speaker="page?.guestSpeaker"
             :tag-labels="page?.tagLabels"
             :introduction="page?.introduction"
-          />
-          <!-- About the Author -->
-          <RichText
+          /> -->
+    <!-- About the Author -->
+    <!-- <RichText
             v-if="page?.eventDescription"
             data-test="event-description"
             class="eventDescription"
@@ -128,9 +132,9 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
           />
         </SectionWrapper>
       </div>
-    </div>
+    </div> -->
 
-    <SectionWrapper>
+    <!-- <SectionWrapper>
       <DividerWayFinder />
     </SectionWrapper>
 
@@ -157,7 +161,7 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
         data-test="event-series"
         :items="parsedFtvaEventSeries"
       />
-    </SectionWrapper>
+    </SectionWrapper> -->
   </main>
 </template>
 

@@ -1,4 +1,4 @@
-fragment BlockTextColumns.gqlFragment on ElementInterface {
+fragment BlockTextColumnsFragment on ElementInterface {
     id
     typeHandle
     sectionTitle: titleGeneral

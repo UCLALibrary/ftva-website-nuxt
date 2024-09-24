@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerGeneral, SectionWrapper } from 'ucla-library-website-components'
+import { SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -11,7 +11,7 @@ import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('article-list', async () => {
-  const data = await $graphql.default.request(FTVAArticleList.gql)
+  const data = await $graphql.default.request(FTVAArticleList)
   return data
 })
 
@@ -30,7 +30,7 @@ if (!data.value.entries) {
   })
 }
 
-const page = ref(_get(data.value, 'entries[0]', {}))
+const page = ref(_get(data.value, 'entries', {}))
 
 // const recent = ref(_get(data.value, 'entries[0]', {}))
 
@@ -48,25 +48,51 @@ const page = ref(_get(data.value, 'entries[0]', {}))
   >
     <section-wrapper section-title="Recent">
 
-      <!-- <div
-        v-for="event in data.entries"
-        :key="event?.id"
+      <div
+        v-for="article in data.entries"
+        :key="article?.id"
       >
-        <NuxtLink :to="`/${event?.to}`">
-          {{ event?.title }}
+        <NuxtLink :to="`blog/${article?.to}`">
+          {{ article?.title }}
         </NuxtLink> <br>
-        <h4>startDate: <code>{{ event?.startDate }}</code></h4>
-        <h4>startTime: <code>{{ event?.startTime }}</code></h4>
-        <h4>ftvaEventFilters: <code>{{ event?.ftvaEventFilters }}</code></h4>
-        <h4>image: <code>{{ event?.image }}</code></h4>
+        <!-- <h4>Summary: <code>{{ article?.text }}</code></h4> -->
         <divider-general />
-      </div> -->
+      </div>
 
-      <code><strong>PAGE</strong> {{ page }}</code>
+      <h3>PAGE DATA</h3>
+      <pre> {{ page }}</pre>
     </section-wrapper>
   </div>
 </template>
 
 <style scoped>
-.page-article-list {}
+.page-article-list {
+  a {
+    outline-color: transparent;
+    font-size: 24px;
+  }
+
+  a:link {
+    color: #ca05ca;
+  }
+
+  a:visited {
+    color: #eb087a;
+  }
+
+  a:focus {
+    text-decoration: none;
+    background: #03c2dc;
+  }
+
+  a:hover {
+    text-decoration: none;
+    background: #07eef6;
+  }
+
+  a:active {
+    background: #6900ff;
+    color: #cdfeaa;
+  }
+}
 </style>
