@@ -1,0 +1,9 @@
+fragment BlockTextColumns.gqlFragment on ElementInterface {
+    id
+    typeHandle
+    BlockTextColumns.gql {
+        ... on textColumns_textColumns_BlockType {
+            id
+        }
+    }
+}

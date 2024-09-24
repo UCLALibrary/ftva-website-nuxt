@@ -85,9 +85,8 @@ const parsedFtvaEventSeries = computed(() => {
   }
 
   // Destructure each series item object and its image object
-  const seriesEvents = firstSeries.ftvaEvent.map(({ image, to, ...rest }) => ({
+  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
     ...rest,
-    to: `/events/${to}`,
     image: image && image.length > 0 ? image[0] : null,
   }))
 
@@ -229,7 +228,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
       section-title="Upcoming events in this series"
       theme="paleblue"
-      class="series-section-wrapper"
     >
       <SectionTeaserCard
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
@@ -304,8 +302,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       display: none;
     }
 
-    // move these styles to a component so they can be reused & kept in sync
-    // with /series/[slug].vue
     .sidebar-column {
       min-width: 314px;
       width: 30%;
@@ -314,7 +310,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       top: 0;
       right: 0;
       padding-top: var(--space-2xl);
-      padding-bottom: 40px;
+      padding-bottom: 20px;
 
       .sidebar-content-wrapper {
         position: sticky;
@@ -373,13 +369,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         height: auto; // let content determine height on mobile
       }
     }
-  }
-}
-
-// TEMPORARY STYLES THAT SHOULD BE PART OF SECTIONWRAPPER
-.series-section-wrapper {
-  :deep(.section-header) {
-    margin-bottom: 28px;
   }
 }
 </style>
