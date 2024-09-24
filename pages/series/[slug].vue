@@ -87,6 +87,7 @@ const parsedUpcomingEvents = computed(() => {
     }
   })
 })
+
 const parsedPastEvents = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!pastEvents.value)
@@ -100,6 +101,15 @@ const parsedPastEvents = computed(() => {
       image: item.image && item.image.length > 0 ? item.image[0] : null
     }
   })
+})
+
+// If no Upcoming Events, set starting tab to Past Events
+const parsedInitialTabIndex = computed(() => {
+  if (parsedUpcomingEvents.value.length === 0) {
+    return 1
+  } else {
+    return 0
+  }
 })
 
 // Transform data for Other Series Section
@@ -237,7 +247,10 @@ onMounted(() => {
 
     <div class="full-width">
       <SectionWrapper theme="paleblue">
-        <TabList alignment="left">
+        <TabList
+          alignment="left"
+          :initial-tab="parsedInitialTabIndex"
+        >
           <TabItem
             title="Upcoming Events"
             class="tab-content"
