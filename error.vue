@@ -1,5 +1,9 @@
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+>
 import type { NuxtError } from '#app'
+import { SectionWrapper } from 'ucla-library-website-components'
 
 const props = defineProps({
   error: Object as () => NuxtError
@@ -14,53 +18,74 @@ const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
       id="main"
       class="page page-error"
     >
-      <p class="error">
-        {{ error?.statusCode }}
-      </p>
-      <pre v-if="isDevelopment">
-        {{ error?.message }}
-        <br>
-        {{ error }}
-      </pre>
-      <divider-way-finder />
-
-      <rich-text
-        class="
-        error-text"
-      >
-        <h1
-          v-if="error?.statusCode === 404"
-          class="error-title"
-        >
-          Page not found
-        </h1>
-        <h1
-          v-else
-          class="error-title"
-        >
-          An error occurred
-        </h1>
-
-        <p>
-          We can’t find the page you are looking for, but we're here to help. <nuxt-link to="/">
-            Go back to home
-            page
-          </nuxt-link> or try these regularly visited links:
+      <SectionWrapper>
+        <p class="error">
+          {{ error?.statusCode }}
         </p>
-        <ul>
-          <li><a href="https://library.ucla.edu">UCLA Library Home</a></li>
-          <li><a href="https://www.library.ucla.edu/research-teaching-support/research-help">Research Help</a></li>
-          <li>
-            <a href="https://www.library.ucla.edu/use/access-privileges/disability-resources">Accessibility
-              Resources</a>
-          </li>
-        </ul>
-      </rich-text>
+
+        <h2
+          class="actual-error"
+          v-if="isDevelopment"
+        >Error Mesage</h2>
+        <h3 class="actual-error">
+          <pre>{{ error?.message }}</pre>
+          <br>
+        </h3>
+
+        <divider-way-finder />
+
+        <h2
+          class="error-message"
+          v-if="isDevelopment"
+        >Error</h2>
+        <h3
+          class="error-message"
+          v-if="isDevelopment"
+        >
+          <pre>{{ error }}</pre>
+        </h3>
+
+        <divider-way-finder />
+
+        <rich-text class="
+        error-text">
+          <h1
+            v-if="error?.statusCode === 404"
+            class="error-title"
+          >
+            Page not found
+          </h1>
+          <h1
+            v-else
+            class="error-title"
+          >
+            An error occurred
+          </h1>
+
+          <p>
+            We can’t find the page you are looking for, but we're here to help. <nuxt-link to="/">
+              Go back to home
+              page
+            </nuxt-link> or try these regularly visited links:
+          </p>
+          <ul>
+            <li><a href="https://library.ucla.edu">UCLA Library Home</a></li>
+            <li><a href="https://www.library.ucla.edu/research-teaching-support/research-help">Research Help</a></li>
+            <li>
+              <a href="https://www.library.ucla.edu/use/access-privileges/disability-resources">Accessibility
+                Resources</a>
+            </li>
+          </ul>
+        </rich-text>
+      </SectionWrapper>
     </main>
   </NuxtLayout>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 .page-error {
   padding: var(--space-3xl) var(--unit-gutter);
 
@@ -91,6 +116,11 @@ const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
     p {
       margin-bottom: var(--space-xl);
     }
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-x: auto;
   }
 
   @media #{$small} {
