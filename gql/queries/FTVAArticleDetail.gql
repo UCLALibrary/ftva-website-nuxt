@@ -1,0 +1,67 @@
+#import "../gql/fragments/Image.gql"
+# ftvaArticle
+
+query ftvaArticles {
+  entry(section: "ftvaArticle", slug: "test-tom-reeds-for-members-only-black-perspectives-on-local-l-a-tv") {
+    title
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+    articleCategories {
+      title
+    }
+    contributors {
+      ... on contributors_externalContributor_BlockType {
+        byline
+        contributor
+      }
+      externalContributor {
+        id
+        byline
+        contributor
+      }
+    }
+    aboutTheAuthor
+    allFtvaFpb {
+      typeHandle
+      ... on allFtvaFpb_callToAction_BlockType {
+        ... BlockCallToActionFragment
+      }
+      ... on allFtvaFpb_contactInfo_BlockType {
+        ... BlockContactInfoFragment
+      }
+      ... on allFtvaFpb_form_BlockType {
+        ... BlockFormFragment
+      }
+      ... on allFtvaFpb_horizontalDivider_BlockType {
+        ... BlockHorizontalDividerFragment
+      }
+      ... on allFtvaFpb_impactNumberCards_BlockType {
+        ... BlockImpactNumberCardsFragment
+      }
+      ... on allFtvaFpb_mediaGallery_BlockType {
+        ... BlockMediaGalleryFragment
+      }
+      ... on allFtvaFpb_mediaWithText_BlockType {
+        ... BlockMediaWithTextFragment
+      }
+      ... on allFtvaFpb_pullQuote_BlockType {
+        ... BlockPullQuoteFragment
+      }
+      ... on allFtvaFpb_richText_BlockType {
+        ... BlockRichTextFragment
+      }
+      ... on allFtvaFpb_simpleCards_BlockType {
+        ... BlockSimpleCardsFragment
+      }
+      ... on allFtvaFpb_textColumns_BlockType {
+        ... BlockTextColumnsFragment
+      }
+    }
+  }
+}

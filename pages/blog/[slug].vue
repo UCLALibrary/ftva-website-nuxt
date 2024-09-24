@@ -2,117 +2,70 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import { BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
 
 // GQL
-import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
+import FTVAArticleDetail from '../gql/queries/ FTVAArticleDetail.gql'
 
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
+
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
-  const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
+  const data = await $graphql.default.request(FTVAArticleDetail.gql, { slug: route.params.slug })
   return data
 })
-if (error.value) {
-  throw createError({
-    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
-  })
-}
+// if (error.value) {
+//   throw createError({
+//     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+//   })
+// }
 
-if (!data.value.ftvaEvent) {
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
-    fatal: true
-  })
-}
+// if (!data.value.ftvaEvent) {
+//   throw createError({
+//     statusCode: 404,
+//     statusMessage: 'Page Not Found',
+//     fatal: true
+//   })
+// }
 
-const page = ref(_get(data.value, 'ftvaEvent', {}))
-const series = ref(_get(data.value, 'ftvaEventSeries', {}))
+// const page = ref(_get(data.value, 'ftvaEvent', {}))
+// const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
-watch(data, (newVal, oldVal) => {
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = _get(newVal, 'ftvaEvent', {})
-  series.value = _get(newVal, 'ftvaEventSeries', {})
-})
+// watch(data, (newVal, oldVal) => {
+//   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+//   page.value = _get(newVal, 'ftvaEvent', {})
+//   series.value = _get(newVal, 'ftvaEventSeries', {})
+// })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+// const parsedImage = computed(() => {
+//   return page.value.imageCarousel
+// })
 
 // Transform data for Carousel
-const parsedCarouselData = computed(() => {
-  // map image to item, map creditText to credit
-  return parsedImage.value.map((rawItem, index) => {
-    return {
-      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
-      credit: rawItem?.creditText,
-      captionTitle: 'dfdsfs', // TODO do we need these? test without
-      captionText: 'dfsdfsd',
-    }
-  })
-})
+// const parsedCarouselData = computed(() => {
+//   // map image to item, map creditText to credit
+//   return parsedImage.value.map((rawItem, index) => {
+//     return {
+//       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
+//       credit: rawItem?.creditText,
+//       captionTitle: 'dfdsfs', // TODO do we need these? test without
+//       captionText: 'dfsdfsd',
+//     }
+//   })
+// })
 
-// Data for Calendar Dropdown
-const parsedCalendarData = computed(() => {
-  const event = page.value
-  return {
-    title: event.title,
-    eventDescription: event.eventDescription,
-    startDateWithTime: event.startDateWithTime,
-    location: event.location
-  }
-})
-
-const parsedFtvaEventSeries = computed(() => {
-  /* Early Returns: If series.value is falsy or empty, or
-    if firstSeries.ftvaEvent is falsy or empty, return
-    an empty array immediately. */
-  if (!series.value || series.value.length === 0) {
-    return []
-  }
-
-  const [firstSeries] = series.value
-
-  if (!firstSeries.ftvaEvent || firstSeries.ftvaEvent.length === 0) {
-    return []
-  }
-
-  // Destructure each series item object and its image object
-  const seriesEvents = firstSeries.ftvaEvent.map(({ image, ...rest }) => ({
-    ...rest,
-    image: image && image.length > 0 ? image[0] : null,
-  }))
-
-  const pageId = page.value.id
-
-  // Return series without the page's featured event
-  const filteredEvents = seriesEvents.filter(({ id }) => id !== pageId)
-
-  // Return first 3 events
-  return filteredEvents.slice(0, 3)
-})
-
-const parsedFTVAEventScreeningDetails = computed(() => {
-  return page?.value.ftvaEventScreeningDetails?.map((obj) => {
-    return {
-      ...obj,
-      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
-    }
-  })
-})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-event-detail"
+    class="page page-article-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -166,69 +119,39 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :tag-labels="page?.tagLabels"
             :introduction="page?.introduction"
           />
+          <!-- About the Author -->
           <RichText
             v-if="page?.eventDescription"
             data-test="event-description"
             class="eventDescription"
             :rich-text-content="page?.eventDescription"
           />
-
-          <RichText
-            v-if="page?.acknowledements"
-            data-test="acknowledgements"
-            class="acknowledgements"
-            :rich-text-content="page?.acknowledements"
-          />
-        </SectionWrapper>
-      </div>
-
-      <!-- sidebar slots in here on mobile -->
-      <!-- on desktop sidebar is stickied to the side with css -->
-      <div class="sidebar-column">
-        <div class="sidebar-content-wrapper">
-          <BlockEventDetail
-            data-test="event-details"
-            :start-date="page?.startDateWithTime"
-            :time="page?.startDateWithTime"
-            :locations="page?.location"
-          />
-          <ButtonDropdown
-            data-test="calendar-dropdown"
-            :title="parsedCalendarData?.title"
-            :event-description="parsedCalendarData?.eventDescription"
-            :start-date-with-time="parsedCalendarData?.startDateWithTime"
-            :location="parsedCalendarData?.location"
-            :is-event="true"
-            :debug-mode-enabled="false"
-          />
-          <BlockInfo
-            v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
-            data-test="ticket-info"
-            :ftva-ticket-information="page?.ftvaTicketInformation"
-          />
-        </div>
-      </div>
-
-      <div class="primary-column bottom">
-        <SectionWrapper>
-          <DividerWayFinder />
-        </SectionWrapper>
-
-        <SectionWrapper>
-          <SectionScreeningDetails
-            v-if="parsedFTVAEventScreeningDetails"
-            data-test="screening-details"
-            :items="parsedFTVAEventScreeningDetails"
-          />
         </SectionWrapper>
       </div>
     </div>
+
+    <SectionWrapper>
+      <DividerWayFinder />
+    </SectionWrapper>
+
+    <SectionWrapper>
+      <FlexibleBlocks
+        class="flexible-content"
+        :blocks="page.blocks"
+      />
+    </SectionWrapper>
 
     <SectionWrapper
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
       section-title="Upcoming events in this series"
       theme="paleblue"
     >
+      <template #top-right>
+        <nuxt-link to="/series">
+          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
+
       <SectionTeaserCard
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
         data-test="event-series"
@@ -243,7 +166,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   scoped
 >
 // PAGE STYLES
-.page-event-detail {
+.page-article-detail {
   position: relative;
 
   &:before {
