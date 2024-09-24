@@ -4,6 +4,8 @@ fragment BlockHorizontalDividerFragment on ElementInterface {
     BlockHorizontalDivider {
         ... on horizontalDivider_horizontalDivider_BlockType {
             id
+            typeHandle
+            horizontalDivider
         }
     }
 }

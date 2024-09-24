@@ -1,13 +1,9 @@
-# import "../gql/fragments/Image.gql"
-# typeHandle ftvaListingArticles
-
 query FTVAArticleList {
-  entries(section: ["ftvaListingArticle"], orderBy: "postDate") {
+  entries(section: ["ftvaArticle"], orderBy: "postDate") {
     typeHandle
     id
     title
     to: uri
     text: summary
-    # image
   }
 }

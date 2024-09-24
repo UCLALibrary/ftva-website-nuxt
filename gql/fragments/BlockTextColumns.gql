@@ -1,9 +1,10 @@
 fragment BlockTextColumns.gqlFragment on ElementInterface {
     id
     typeHandle
-    BlockTextColumns.gql {
-        ... on textColumns_textColumns_BlockType {
-            id
-        }
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+    textColumns {
+      titleHeading
+      mainText
     }
 }

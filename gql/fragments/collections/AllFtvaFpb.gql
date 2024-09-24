@@ -49,6 +49,5 @@ fragment AllFtvaFpb on ElementInterface {
         ...on allFtvaFpb_textColumns_BlockType {
             ...BlockTextColumnsFragment
         }
-
     }
 }
