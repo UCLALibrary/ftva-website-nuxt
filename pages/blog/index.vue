@@ -51,10 +51,10 @@ const page = ref(_get(data.value, 'entries', {}))
         v-for="article in data.entries"
         :key="article?.id"
       >
-        <NuxtLink :to="`${article?.to}`">
+        <NuxtLink :to="`blog/${article?.to}`">
           {{ article?.title }}
-        </NuxtLink> <br>
-        <!-- <h4>Summary: <code>{{ article?.text }}</code></h4> -->
+        </NuxtLink>
+
         <divider-general />
       </div>
 
