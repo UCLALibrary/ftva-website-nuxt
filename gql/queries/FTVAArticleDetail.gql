@@ -1,5 +1,4 @@
 #import "../gql/fragments/Image.gql"
-#import "../gql/fragments/MediaAsset.gql"
 #import "../gql/fragments/collections/AllFtvaFpb.gql"
 
 query FTVAArticleDetail($slug: [String!]) {
@@ -41,11 +40,7 @@ query FTVAArticleDetail($slug: [String!]) {
     ...AllFtvaFpb
 
     # SectionTeaserCard (Recent posts)
-    ftvaRecentPosts: entries(
-      section: "ftvaArticle"
-      limit: 3
-      orderBy: "postDate ASC"
-    ) {
+    ftvaRecentPosts: entries( section: "ftvaArticle", limit: 3, orderBy: "postDate ASC") {
       id
       title
       id
