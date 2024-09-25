@@ -64,10 +64,10 @@ const parsedCarouselData = computed(() => {
 // Combine the categories into a String
 const parsedArticleCategories = computed(() => {
   const categoryList = page.value.articleCategories
-  const categories = [];
+  const categories = []
 
   for (const category of categoryList) {
-    categories.push(category.title);
+    categories.push(category.title)
   }
   return categories.join(', ')
 })
