@@ -28,7 +28,7 @@ const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
           class="actual-error"
         >
           Error Mesage
-        </h2>
+        </h2 v-if="isDevelopment">
         <h3 class="actual-error">
           <pre>{{ error?.message }}</pre>
           <br>
@@ -51,10 +51,8 @@ const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
 
         <divider-way-finder />
 
-        <rich-text
-          class="
-        error-text"
-        >
+        <rich-text class="
+        error-text">
           <h1
             v-if="error?.statusCode === 404"
             class="error-title"

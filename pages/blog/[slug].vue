@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-// import { BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import { BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -144,12 +144,10 @@ const parsedArticleCategories = computed(() => {
       <DividerWayFinder />
     </SectionWrapper>
 
-    <SectionWrapper>
-      <FlexibleBlocks
-        class="flexible-content"
-        :blocks="page.blocks"
-      />
-    </SectionWrapper>
+    <FlexibleBlocks
+      class="flexible-content"
+      :blocks="page.blocks"
+    />
 
     <SectionWrapper section-title="Read our  most recent posts">
       <h2>ftvaRecentPosts</h2>
