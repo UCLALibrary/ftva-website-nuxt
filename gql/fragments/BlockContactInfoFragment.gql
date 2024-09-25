@@ -1,0 +1,10 @@
+fragment BlockContactInfoFragment on ElementInterface {
+    id
+    typeHandle
+    contactInfo {
+        ... on contactInfo_contactInfo_BlockType {
+            id
+            title
+        }
+    }
+}

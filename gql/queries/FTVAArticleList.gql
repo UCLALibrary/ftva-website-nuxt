@@ -1,0 +1,9 @@
+query FTVAArticleList {
+  entries(section: ["ftvaArticle"], orderBy: "postDate") {
+    typeHandle
+    id
+    title
+    to: slug
+    text: summary
+  }
+}

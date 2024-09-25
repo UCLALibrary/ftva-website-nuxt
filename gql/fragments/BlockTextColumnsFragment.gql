@@ -1,0 +1,10 @@
+fragment BlockTextColumnsFragment on ElementInterface {
+    id
+    typeHandle
+    sectionTitle: titleGeneral
+    sectionSummary: summary
+    textColumns {
+      titleHeading
+      mainText
+    }
+}
