@@ -37,17 +37,29 @@ query FTVAArticleDetail($slug: [String!]) {
     }
     aboutTheAuthor
 
-    # SectionTeaserCard (Recent posts)
-    ftvaRecentPosts: entries(
-      section: "ftvaArticle", limit:3, orderBy: "postDate ASC") {
-        id
-        slug
-        typeHandle
-        title
-        uri
-    }
-
     # FTVA Flexible Page Block Collection (FPBs)
     ...AllFtvaFpb
+
+    # SectionTeaserCard (Recent posts)
+    ftvaRecentPosts: entries(
+      section: "ftvaArticle"
+      limit: 3
+      orderBy: "postDate ASC"
+    ) {
+      id
+      title
+      id
+      articleCategories {
+        title
+      }
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+        }
+      }
+      postDate @formatDateTime(format: "mm d, Y", timezone: "America/Los_Angeles")
+    }
   }
 }

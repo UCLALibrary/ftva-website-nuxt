@@ -34,10 +34,12 @@ if (!data.value.ftvaArticle) {
 }
 
 const page = ref(_get(data.value, 'ftvaArticle', {}))
+const recentposts = ref(_get(data.value, 'ftvaRecentPosts', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaArticle', {})
+  page.value = _get(newVal, 'ftvaRecentPosts', {})
 })
 </script>
 
@@ -48,6 +50,8 @@ watch(data, (newVal, oldVal) => {
   >
     <h3>PAGE DATA</h3>
     <pre>{{ page }}</pre>
+    <hr>
+    <pre>{{ recentposts }}</pre>
 
     <!-- <div class="one-column">
       <NavBreadcrumb
