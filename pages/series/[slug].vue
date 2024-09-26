@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionTeaserList, SectionWrapper, TabItem, TabList } from 'ucla-library-website-components'
+import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionTeaserList, SectionWrapper, TabItem, TabList, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -87,6 +87,7 @@ const parsedUpcomingEvents = computed(() => {
     }
   })
 })
+
 const parsedPastEvents = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!pastEvents.value)
@@ -100,6 +101,15 @@ const parsedPastEvents = computed(() => {
       image: item.image && item.image.length > 0 ? item.image[0] : null
     }
   })
+})
+
+// If no Upcoming Events, set starting tab to Past Events
+const parsedInitialTabIndex = computed(() => {
+  if (parsedUpcomingEvents.value.length === 0) {
+    return 1
+  } else {
+    return 0
+  }
 })
 
 // Transform data for Other Series Section
@@ -195,49 +205,47 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="two-column">
-      <div
-        ref="primaryCol"
-        class="primary-column top"
-      >
-        <SectionWrapper>
-          <CardMeta
-            category="Series"
-            :title="page?.title"
-            :text="page?.eventDescription"
-            :introduction="page?.ftvaEventIntroduction"
-            :guest-speaker="page?.guestSpeaker"
-          />
-          <RichText
-            v-if="page?.richText"
-            :rich-text-content="page?.richText"
-          />
-        </SectionWrapper>
-      </div>
-      <div class="sidebar-column">
-        <div
-          ref="sidebar"
-          class="sidebar-content-wrapper"
-        >
-          <BlockEventDetail
-            data-test="event-details"
-            :start-date="page?.startDate"
-            :end-date="page?.endDate"
-            :ongoing="page?.ongoing"
-            :locations="page?.location"
-          />
-          <BlockInfo
-            v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
-            data-test="ticket-info"
-            :ftva-ticket-information="page?.ftvaTicketInformation"
-          />
-        </div>
-      </div>
-    </div>
+    <TwoColLayoutWStickySideBar>
+      <template #primaryTop>
+        <CardMeta
+          category="Series"
+          :title="page?.title"
+          :text="page?.eventDescription"
+          :introduction="page?.ftvaEventIntroduction"
+          :guest-speaker="page?.guestSpeaker"
+        />
+      </template>
+      <template #primaryMid>
+        <RichText
+          v-if="page?.richText"
+          :rich-text-content="page?.richText"
+        />
+      </template>
+      <!-- Sidebar -->
+      <template #sidebarTop>
+        <BlockEventDetail
+          data-test="event-details"
+          :start-date="page?.startDate"
+          :end-date="page?.endDate"
+          :ongoing="page?.ongoing"
+          :locations="page?.location"
+        />
+      </template>
+      <template #sidebarBottom>
+        <BlockInfo
+          v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+          data-test="ticket-info"
+          :ftva-ticket-information="page?.ftvaTicketInformation"
+        />
+      </template>
+    </TwoColLayoutWStickySideBar>
 
     <div class="full-width">
       <SectionWrapper theme="paleblue">
-        <TabList alignment="left">
+        <TabList
+          alignment="left"
+          :initial-tab="parsedInitialTabIndex"
+        >
           <TabItem
             title="Upcoming Events"
             class="tab-content"
@@ -325,56 +333,6 @@ onMounted(() => {
     }
   }
 
-  .two-column {
-    position: relative;
-    width: 100%;
-    max-width: var(--max-width);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
-    .primary-column {
-      margin-bottom: 0px;
-      width: 67%;
-
-      .section-wrapper {
-        padding-left: 0px;
-      }
-
-      &.bottom {
-        margin-top: -30px;
-      }
-    }
-
-    .ftva.block-info {
-      margin-top: 48px;
-    }
-
-    // SECTION SCREENING DETAILS
-    :deep(figure.responsive-video:not(:has(.video-embed))) {
-      display: none;
-    }
-
-    // move these styles to a component so they can be reused & kept in sync
-    // with /events/[slug].vue
-    .sidebar-column {
-      min-width: 314px;
-      width: 30%;
-      position: absolute;
-      height: 100%;
-      top: 0;
-      right: 0;
-      padding-top: var(--space-2xl);
-      padding-bottom: 40px;
-
-      .sidebar-content-wrapper {
-        position: sticky;
-        top: 85px;
-        will-change: top;
-      }
-    }
-  }
-
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
@@ -417,100 +375,17 @@ onMounted(() => {
   // MEDIUM DEVICE STYLES
   @media (max-width: 1200px) {
 
-    .one-column,
-    .two-column {
+    .one-column {
       padding-left: var(--unit-gutter);
       padding-right: var(--unit-gutter);
     }
 
+    .two-column {
+      padding-right: 0;
+    }
+
     .sidebar-column {
       padding-right: var(--unit-gutter);
-    }
-
-    .two-column>.primary-column {
-      width: 62%;
-    }
-  }
-
-  // MOBILE STYLES
-  @media #{$small} {
-    .two-column {
-      display: grid;
-      grid-template-columns: 1fr;
-
-      .primary-column {
-        width: auto;
-        grid-column: 1;
-
-        .section-wrapper {
-          padding-left: var(--unit-gutter);
-        }
-
-        &.bottom {
-          margin-top: auto;
-        }
-      }
-
-      .sidebar-column {
-        width: auto;
-        position: relative;
-        grid-column: 1;
-        margin: auto var(--unit-gutter);
-        padding-top: 0px;
-        height: auto; // let content determine height on mobile
-      }
-    }
-  }
-}
-
-// TEMPORARY STYLES THAT SHOULD BE PART OF SECTIONWRAPPER
-.series-section-wrapper {
-  :deep(.section-header) {
-    margin-bottom: 28px;
-  }
-}
-
-// TEMPORARY STYLES THAT SHOULD BE PART OF BLOCKCARDTHREECOLUMN & SECTIONTEASERLIST
-.tabbed-event-list {
-  max-width: none;
-  padding: 2.5%;
-
-  :deep(.list-item) {
-    position: relative;
-    margin-bottom: var(--space-xl);
-    padding-bottom: 0;
-    border-bottom: transparent;
-
-    &:not(:last-child) {
-      &:after {
-        content: '';
-        width: 95%;
-        position: absolute;
-        left: 2.5%;
-        bottom: -22px;
-        border-bottom: 1px solid #e7edf2;
-      }
-    }
-
-    .day-month-date,
-    .meta {
-      background: white;
-    }
-
-    &:last-child {
-      border: 0;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    // Breakpoints
-    @media #{$medium} {
-      --divider-color: none;
-      background-color: transparent;
-
-      &::after {
-        display: none;
-      }
     }
   }
 }
