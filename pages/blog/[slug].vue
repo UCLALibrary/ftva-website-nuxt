@@ -3,7 +3,7 @@
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import {
-  BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar
+  BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar
 } from 'ucla-library-website-components'
 
 // HELPERS
@@ -15,6 +15,34 @@ import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
+
+// TODO should this data be changed to reflect current page URL? Moved somewhere else?
+const socialList = {
+  buttonTitle: 'Share',
+  hasIcon: true,
+  dropdownList: [
+    {
+      dropdownItemTitle: 'Copy Link',
+      dropdownItemUrl: '',
+      iconName: 'svg-icon-ftva-social-link',
+    },
+    {
+      dropdownItemTitle: 'Email',
+      dropdownItemUrl: '',
+      iconName: 'svg-icon-ftva-social-email',
+    },
+    {
+      dropdownItemTitle: 'Facebook',
+      dropdownItemUrl: 'https://www.facebook.com/sharer/sharer.php?u=',
+      iconName: 'svg-icon-ftva-social-facebook',
+    },
+    {
+      dropdownItemTitle: 'X',
+      dropdownItemUrl: 'https://twitter.com/share?url=',
+      iconName: 'svg-icon-ftva-social-x',
+    },
+  ],
+}
 
 // DATA
 const { data, error } = await useAsyncData(`blog-${route.params.slug}`, async () => {
@@ -134,7 +162,15 @@ const parsedRecentPosts = computed(() => {
           :byline-one="page?.contributors[0].contributor"
           :text="page?.aboutTheAuthor"
           section-handle="ftvaArticle"
-        />
+        >
+          <template #sharebutton>
+            <ButtonDropdown
+              button-title="Share"
+              :has-icon="true"
+              :dropdown-list="socialList.dropdownList"
+            />
+          </template>
+        </CardMeta>
         <DividerWayFinder class="remove-top-margin" />
         <FlexibleBlocks
           class="flexible-content"
