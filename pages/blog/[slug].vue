@@ -159,7 +159,7 @@ const parsedRecentPosts = computed(() => {
           :category="parsedArticleCategories"
           :title="page?.title"
           :byline-one="page?.contributors[0].contributor"
-          :dateCreated="page?.postDate"
+          :date-created="page?.postDate"
           :text="page?.aboutTheAuthor"
           section-handle="ftvaArticle"
         >
@@ -177,6 +177,7 @@ const parsedRecentPosts = computed(() => {
           :blocks="page.blocks"
         />
       </template>
+      <template #sidebarTop />
     </TwoColLayoutWStickySideBar>
 
     <SectionWrapper
@@ -231,43 +232,52 @@ const parsedRecentPosts = computed(() => {
     .primary-column {
       width: 78%; // override default 67% for article pages only
 
-      .section-wrapper {
+      .primary-section-wrapper {
         padding-left: 0px;
+        margin-top: var(--space-2xl);
+      }
+
+      .section-wrapper {
         margin-top: var(--space-2xl);
       }
 
       .remove-top-margin {
         margin-top: 0px;
+        padding-top: var(--space-l);
       }
 
     }
   }
 
-  .flexible-content {
-    .rich-text {
-      max-width: none;
-    }
-  }
-
   @media (max-width: 1200px) {
 
-    .one-column {
+    .one-column,
+    .two-column {
       padding-left: var(--unit-gutter);
       padding-right: var(--unit-gutter);
     }
 
     :deep(.two-column) {
-      padding-left: var(--unit-gutter);
+      display: flex;
 
       // increase column percentage to 100 at 1200px
       // only for article pages, since there is no sidebar content
       .primary-column {
         width: 100%;
 
-        .section-wrapper {
+        .primary-section-wrapper {
           padding-right: 0px;
         }
+      }
+    }
+  }
 
+  @media #{$small} {
+    .two-column {
+      display: flex;
+
+      .remove-top-margin {
+        margin-top: var(--space-2xl); //re add space as padding for mobile
       }
     }
   }
