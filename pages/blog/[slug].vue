@@ -154,12 +154,12 @@ const parsedRecentPosts = computed(() => {
 
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
-        <!-- TODO           :dateCreated="postDate"-->
         <CardMeta
           data-test="text-block"
           :category="parsedArticleCategories"
           :title="page?.title"
           :byline-one="page?.contributors[0].contributor"
+          :dateCreated="page?.postDate"
           :text="page?.aboutTheAuthor"
           section-handle="ftvaArticle"
         >
