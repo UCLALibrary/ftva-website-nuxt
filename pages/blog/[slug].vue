@@ -104,7 +104,16 @@ const parsedRecentPosts = computed(() => {
   // fail gracefully if no recent posts
   if (!ftvaRecentPosts.value)
     return []
-  return ftvaRecentPosts.value.filter(item => !item.to.includes(route.params.slug)).slice(0, 3)
+
+  // Transform data
+  const recentPostsWImage = ftvaRecentPosts.value.map((item, index) => {
+    console.log('item', item.imageCarousel[0].image[0])
+    return {
+      ...item,
+      image: item.imageCarousel && item.imageCarousel.length > 0 ? item.imageCarousel[0].image[0] : null,
+    }
+  })
+  return recentPostsWImage.filter(item => !item.to.includes(route.params.slug)).slice(0, 3)
 })
 </script>
 
