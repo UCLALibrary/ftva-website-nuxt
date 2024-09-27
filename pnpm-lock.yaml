@@ -9988,13 +9988,8 @@ packages:
     resolution: {integrity: sha512-HudkrR/TMd5FTV1VGqOrYLg4bsDgb8kgml6rtDF3NgS9vf0hfQyVipxjbEHlfvuPHtQ7RZcn6ftdJHi92JqfSw==}
     dev: true
 
-<<<<<<< Updated upstream
-  /ucla-library-website-components@3.22.1(typescript@5.4.5)(vue@3.4.31):
-    resolution: {integrity: sha512-urlbfKBTtgMhBQkq5pfob3YvF84RMGii3fGM3kak7AqtGKn39m8RNGGyla6ZPAadH2xVONokV7EOZD4kEfklqw==}
-=======
   /ucla-library-website-components@3.23.0(typescript@5.4.5)(vue@3.4.31):
     resolution: {integrity: sha512-8Z2k4WnKygap1KWGjfIQzNlpfAWK/apF15I+0NHgy4CSNyYQzFBIV8Cz+HuWNUyYWpkE482ZTV9V+AhPyIaFBw==}
->>>>>>> Stashed changes
     peerDependencies:
       vue: ^3.4.29
     dependencies:
