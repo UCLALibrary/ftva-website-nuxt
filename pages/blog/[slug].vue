@@ -99,6 +99,14 @@ const parsedArticleCategories = computed(() => {
   return ''
 })
 
+// Get the Contributor data if it exists, otherwise return nothing
+const parsedByline = computed(() => {
+  if ((page.value.contributors && page.value.contributors[0]) && page.value.contributors[0].contributor) {
+    return page.value.contributors[0].contributor
+  }
+  return ''
+})
+
 // Recent Posts: Filter out the current post and then return the first 3 max
 const parsedRecentPosts = computed(() => {
   // fail gracefully if no recent posts
@@ -166,7 +174,7 @@ const parsedRecentPosts = computed(() => {
           data-test="text-block"
           :category="parsedArticleCategories"
           :title="page?.title"
-          :byline-one="page?.contributors[0].contributor"
+          :byline-one="parsedByline"
           :date-created="page?.postDate"
           :text="page?.aboutTheAuthor"
           section-handle="ftvaArticle"
@@ -260,6 +268,11 @@ const parsedRecentPosts = computed(() => {
       }
 
     }
+  }
+
+  // if there is no author content, hide the 'about the author' heading
+  :deep(.heading-about-author:not(:has(+.rich-text))) {
+    display: none;
   }
 
   @media (max-width: 1200px) {
