@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -153,7 +153,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       </div>
     </div>
 
-    <div
+    <TwoColLayoutWStickySideBar data-test="second-column">
+      <template #primaryTop>
+      </template>
+      <template #primaryMid>
+      </template>
+    </TwoColLayoutWStickySidebar>
+    <!-- <div
       data-test="second-column"
       class="two-column"
     >
@@ -183,8 +189,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         </SectionWrapper>
       </div>
 
-      <!-- sidebar slots in here on mobile -->
-      <!-- on desktop sidebar is stickied to the side with css -->
       <div class="sidebar-column">
         <div class="sidebar-content-wrapper">
           <BlockEventDetail
@@ -223,7 +227,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           />
         </SectionWrapper>
       </div>
-    </div>
+    </div> -->
 
     <SectionWrapper
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
@@ -240,10 +244,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
