@@ -244,7 +244,6 @@ onMounted(() => {
           :ftva-ticket-information="page?.ftvaTicketInformation"
         />
       </template>
-
     </TwoColLayoutWStickySideBar>
 
     <div class="full-width">
