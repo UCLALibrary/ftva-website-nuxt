@@ -219,7 +219,6 @@ onMounted(() => {
           v-if="page?.eventDescription"
           :rich-text-content="page?.eventDescription"
         />
-
         <RichText
           v-if="page?.acknowledgement"
           :rich-text-content="page?.acknowledgement"
