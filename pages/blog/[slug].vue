@@ -102,12 +102,11 @@ const parsedArticleCategories = computed(() => {
 // Recent Posts: Filter out the current post and then return the first 3 max
 const parsedRecentPosts = computed(() => {
   // fail gracefully if no recent posts
-  if (!ftvaRecentPosts.value)
+  if (!ftvaRecentPosts.value || !route.params.slug)
     return []
 
   // Transform data
   const recentPostsWImage = ftvaRecentPosts.value.map((item, index) => {
-    console.log('item', item.imageCarousel[0].image[0])
     return {
       ...item,
       image: item.imageCarousel && item.imageCarousel.length > 0 ? item.imageCarousel[0].image[0] : null,
@@ -194,6 +193,11 @@ const parsedRecentPosts = computed(() => {
       section-title="Read our most recent posts"
       theme="paleblue"
     >
+      <template #top-right>
+        <nuxt-link to="/series">
+          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
       <SectionTeaserCard
         v-if="parsedRecentPosts && parsedRecentPosts.length > 0"
         data-test="recent-posts"
