@@ -11,38 +11,11 @@ import _get from 'lodash/get'
 
 // GQL
 import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
+import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-
-// TODO should this data be changed to reflect current page URL? Moved somewhere else?
-const socialList = {
-  buttonTitle: 'Share',
-  hasIcon: true,
-  dropdownList: [
-    {
-      dropdownItemTitle: 'Copy Link',
-      dropdownItemUrl: '',
-      iconName: 'svg-icon-ftva-social-link',
-    },
-    {
-      dropdownItemTitle: 'Email',
-      dropdownItemUrl: '',
-      iconName: 'svg-icon-ftva-social-email',
-    },
-    {
-      dropdownItemTitle: 'Facebook',
-      dropdownItemUrl: 'https://www.facebook.com/sharer/sharer.php?u=',
-      iconName: 'svg-icon-ftva-social-facebook',
-    },
-    {
-      dropdownItemTitle: 'X',
-      dropdownItemUrl: 'https://twitter.com/share?url=',
-      iconName: 'svg-icon-ftva-social-x',
-    },
-  ],
-}
 
 // DATA
 const { data, error } = await useAsyncData(`blog-${route.params.slug}`, async () => {
@@ -85,8 +58,6 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
-      // captionTitle: 'dfdsfs', // TODO do we need these? test without
-      // captionText: 'dfsdfsd',
     }
   })
 })
