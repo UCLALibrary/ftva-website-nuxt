@@ -153,19 +153,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       </div>
     </div>
 
-    <TwoColLayoutWStickySideBar data-test="second-column">
+    <!-- data-test="second-column" -->
+    <TwoColLayoutWStickySideBar>
       <template #primaryTop>
-      </template>
-      <template #primaryMid>
-      </template>
-    </TwoColLayoutWStickySidebar>
-    <!-- <div
-      data-test="second-column"
-      class="two-column"
-    >
-      <div class="primary-column top">
-        <SectionWrapper>
-          <CardMeta
+      <CardMeta
             data-test="text-block"
             :category="series[0]?.title"
             :title="page?.title"
@@ -173,24 +164,8 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :tag-labels="page?.tagLabels"
             :introduction="page?.introduction"
           />
-          <RichText
-            v-if="page?.eventDescription"
-            data-test="event-description"
-            class="eventDescription"
-            :rich-text-content="page?.eventDescription"
-          />
-
-          <RichText
-            v-if="page?.acknowledements"
-            data-test="acknowledgements"
-            class="acknowledgements"
-            :rich-text-content="page?.acknowledements"
-          />
-        </SectionWrapper>
-      </div>
-
-      <div class="sidebar-column">
-        <div class="sidebar-content-wrapper">
+      </template>
+      <template #sidebarTop>
           <BlockEventDetail
             data-test="event-details"
             :start-date="page?.startDateWithTime"
@@ -206,28 +181,37 @@ const parsedFTVAEventScreeningDetails = computed(() => {
             :is-event="true"
             :debug-mode-enabled="false"
           />
+      </template>
+      <!--<template #primaryMid>
+        <RichText
+            v-if="page?.eventDescription"
+            data-test="event-description"
+            class="eventDescription"
+            :rich-text-content="page?.eventDescription"
+          />
+        <RichText
+            v-if="page?.acknowledements"
+            data-test="acknowledgements"
+            class="acknowledgements"
+            :rich-text-content="page?.acknowledements"
+          />
+      </template> -->
+      <template #sidebarBottom>
           <BlockInfo
             v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
             data-test="ticket-info"
             :ftva-ticket-information="page?.ftvaTicketInformation"
           />
-        </div>
-      </div>
-
-      <div class="primary-column bottom">
-        <SectionWrapper>
+      </template>
+      <template #primaryBottom>
           <DividerWayFinder />
-        </SectionWrapper>
-
-        <SectionWrapper>
           <SectionScreeningDetails
             v-if="parsedFTVAEventScreeningDetails"
             data-test="screening-details"
             :items="parsedFTVAEventScreeningDetails"
           />
-        </SectionWrapper>
-      </div>
-    </div> -->
+      </template>
+    </TwoColLayoutWStickySidebar>
 
     <SectionWrapper
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
