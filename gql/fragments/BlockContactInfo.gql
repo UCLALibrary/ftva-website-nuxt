@@ -1,7 +1,7 @@
 fragment BlockContactInfoFragment on ElementInterface {
     id
     typeHandle
-    BlockContactInfo {
+    contactInfo {
         ... on contactInfo_contactInfo_BlockType {
             id
             title
