@@ -14,7 +14,7 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     guestSpeaker
     ftvaEventIntroduction
     eventDescription
-    richText
+    acknowledgement: richText
     startDate
     endDate
     ongoing

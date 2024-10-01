@@ -209,6 +209,8 @@ onMounted(() => {
         <CardMeta
           category="Series"
           :title="page?.title"
+          :guest-speaker="page?.guestSpeaker"
+          :introduction="page?.ftvaEventIntroduction"
         />
       </template>
 
@@ -219,8 +221,8 @@ onMounted(() => {
         />
 
         <RichText
-          v-if="page?.richText"
-          :rich-text-content="page?.richText"
+          v-if="page?.acknowledgement"
+          :rich-text-content="page?.acknowledgement"
         />
       </template>
 
