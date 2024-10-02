@@ -53,8 +53,8 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
-      captionTitle: 'dfdsfs', // TODO do we need these? test without
-      captionText: 'dfsdfsd',
+      // captionTitle: 'dfdsfs', // TODO do we need these? test without
+      // captionText: 'dfsdfsd',
     }
   })
 })
@@ -240,10 +240,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
