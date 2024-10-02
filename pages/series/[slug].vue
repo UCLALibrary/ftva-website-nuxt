@@ -192,7 +192,6 @@ onMounted(() => {
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
-
       <div
         v-else
         class="lightbox-container"
@@ -210,17 +209,22 @@ onMounted(() => {
         <CardMeta
           category="Series"
           :title="page?.title"
-          :text="page?.eventDescription"
-          :introduction="page?.ftvaEventIntroduction"
           :guest-speaker="page?.guestSpeaker"
+          :introduction="page?.ftvaEventIntroduction"
         />
       </template>
+
       <template #primaryMid>
         <RichText
-          v-if="page?.richText"
-          :rich-text-content="page?.richText"
+          v-if="page?.eventDescription"
+          :rich-text-content="page?.eventDescription"
+        />
+        <RichText
+          v-if="page?.acknowledgement"
+          :rich-text-content="page?.acknowledgement"
         />
       </template>
+
       <!-- Sidebar -->
       <template #sidebarTop>
         <BlockEventDetail
@@ -231,6 +235,7 @@ onMounted(() => {
           :locations="page?.location"
         />
       </template>
+
       <template #sidebarBottom>
         <BlockInfo
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
@@ -307,7 +312,10 @@ onMounted(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
