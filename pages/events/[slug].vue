@@ -154,64 +154,67 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     </div>
 
     <!-- data-test="second-column" -->
-    <TwoColLayoutWStickySideBar>
+    <TwoColLayoutWStickySideBar
+      data-test="second-column"
+      class="two-column"
+    >
       <template #primaryTop>
-      <CardMeta
-            data-test="text-block"
-            :category="series[0]?.title"
-            :title="page?.title"
-            :guest-speaker="page?.guestSpeaker"
-            :tag-labels="page?.tagLabels"
-            :introduction="page?.introduction"
-          />
+        <CardMeta
+          data-test="text-block"
+          :category="series[0]?.title"
+          :title="page?.title"
+          :guest-speaker="page?.guestSpeaker"
+          :tag-labels="page?.tagLabels"
+          :introduction="page?.introduction"
+        />
       </template>
       <template #sidebarTop>
-          <BlockEventDetail
-            data-test="event-details"
-            :start-date="page?.startDateWithTime"
-            :time="page?.startDateWithTime"
-            :locations="page?.location"
-          />
-          <ButtonDropdown
-            data-test="calendar-dropdown"
-            :title="parsedCalendarData?.title"
-            :event-description="parsedCalendarData?.eventDescription"
-            :start-date-with-time="parsedCalendarData?.startDateWithTime"
-            :location="parsedCalendarData?.location"
-            :is-event="true"
-            :debug-mode-enabled="false"
-          />
+        <BlockEventDetail
+          data-test="event-details"
+          :start-date="page?.startDateWithTime"
+          :time="page?.startDateWithTime"
+          :locations="page?.location"
+        />
+        <ButtonDropdown
+          data-test="calendar-dropdown"
+          :title="parsedCalendarData?.title"
+          :event-description="parsedCalendarData?.eventDescription"
+          :start-date-with-time="parsedCalendarData?.startDateWithTime"
+          :location="parsedCalendarData?.location"
+          :is-event="true"
+          :debug-mode-enabled="false"
+        />
       </template>
-      <!--<template #primaryMid>
+      <template #primaryMid>
         <RichText
-            v-if="page?.eventDescription"
-            data-test="event-description"
-            class="eventDescription"
-            :rich-text-content="page?.eventDescription"
-          />
+          v-if="page?.eventDescription"
+          data-test="event-description"
+          class="eventDescription"
+          :rich-text-content="page?.eventDescription"
+        />
         <RichText
-            v-if="page?.acknowledements"
-            data-test="acknowledgements"
-            class="acknowledgements"
-            :rich-text-content="page?.acknowledements"
-          />
-      </template> -->
+          v-if="page?.acknowledements"
+          data-test="acknowledgements"
+          class="acknowledgements"
+          :rich-text-content="page?.acknowledements"
+        />
+      </template>
       <template #sidebarBottom>
-          <BlockInfo
-            v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
-            data-test="ticket-info"
-            :ftva-ticket-information="page?.ftvaTicketInformation"
-          />
+        <BlockInfo
+          v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+          data-test="ticket-info"
+          :ftva-ticket-information="page?.ftvaTicketInformation"
+        />
       </template>
       <template #primaryBottom>
-          <DividerWayFinder />
-          <SectionScreeningDetails
-            v-if="parsedFTVAEventScreeningDetails"
-            data-test="screening-details"
-            :items="parsedFTVAEventScreeningDetails"
-          />
+        <DividerWayFinder />
+        <SectionScreeningDetails
+          v-if="parsedFTVAEventScreeningDetails"
+          data-test="screening-details"
+          :items="parsedFTVAEventScreeningDetails"
+        />
       </template>
-    </TwoColLayoutWStickySidebar>
+    </TwoColLayoutWStickySideBar>
 
     <SectionWrapper
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
@@ -255,25 +258,25 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   }
 
   .two-column {
-    position: relative;
-    width: 100%;
-    max-width: var(--max-width);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    // position: relative;
+    // width: 100%;
+    // max-width: var(--max-width);
+    // display: flex;
+    // flex-direction: row;
+    // flex-wrap: wrap;
 
-    .primary-column {
-      margin-bottom: 0px;
-      width: 67%;
+    // .primary-column {
+    //   margin-bottom: 0px;
+    //   width: 67%;
 
-      .section-wrapper {
-        padding-left: 0px;
-      }
+    //   .section-wrapper {
+    //     padding-left: 0px;
+    //   }
 
-      &.bottom {
-        margin-top: -30px;
-      }
-    }
+    //   &.bottom {
+    //     margin-top: -30px;
+    //   }
+    // }
 
     .ftva.button-dropdown {
       margin-top: 30px;
@@ -291,22 +294,22 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 
     // move these styles to a component so they can be reused & kept in sync
     // with /series/[slug].vue
-    .sidebar-column {
-      min-width: 314px;
-      width: 30%;
-      position: absolute;
-      height: 100%;
-      top: 0;
-      right: 0;
-      padding-top: var(--space-2xl);
-      padding-bottom: 40px;
+    // .sidebar-column {
+    //   min-width: 314px;
+    //   width: 30%;
+    //   position: absolute;
+    //   height: 100%;
+    //   top: 0;
+    //   right: 0;
+    //   padding-top: var(--space-2xl);
+    //   padding-bottom: 40px;
 
-      .sidebar-content-wrapper {
-        position: sticky;
-        top: 85px;
-        will-change: top;
-      }
-    }
+    //   .sidebar-content-wrapper {
+    //     position: sticky;
+    //     top: 85px;
+    //     will-change: top;
+    //   }
+    // }
   }
 
   /* makes all EventSeries same height */
@@ -316,47 +319,20 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 
   @media (max-width: 1200px) {
 
-    .one-column,
-    .two-column {
+    // .two-column
+    .one-column {
       padding-left: var(--unit-gutter);
       padding-right: var(--unit-gutter);
     }
 
-    .sidebar-column {
-      padding-right: var(--unit-gutter);
-    }
-
-    .two-column>.primary-column {
-      width: 62%;
+    :deep(.primary-column) {
+      width: 65%;
     }
   }
 
   @media #{$small} {
-    .two-column {
-      display: grid;
-      grid-template-columns: 1fr;
-
-      .primary-column {
-        width: auto;
-        grid-column: 1;
-
-        .section-wrapper {
-          padding-left: var(--unit-gutter);
-        }
-
-        &.bottom {
-          margin-top: auto;
-        }
-      }
-
-      .sidebar-column {
-        width: auto;
-        position: relative;
-        grid-column: 1;
-        margin: auto var(--unit-gutter);
-        padding-top: 0px;
-        height: auto; // let content determine height on mobile
-      }
+    :deep(.primary-column) {
+      width: inherit;
     }
   }
 }
