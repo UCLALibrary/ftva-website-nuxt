@@ -163,9 +163,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           data-test="text-block"
           :category="series[0]?.title"
           :title="page?.title"
-          :guest-speaker="page?.guestSpeaker"
-          :tag-labels="page?.tagLabels"
-          :introduction="page?.introduction"
         />
       </template>
       <template #sidebarTop>
@@ -186,6 +183,11 @@ const parsedFTVAEventScreeningDetails = computed(() => {
         />
       </template>
       <template #primaryMid>
+        <CardMeta
+          :guest-speaker="page?.guestSpeaker"
+          :tag-labels="page?.tagLabels"
+          :introduction="page?.introduction"
+        />
         <RichText
           v-if="page?.eventDescription"
           data-test="event-description"
@@ -258,25 +260,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   }
 
   .two-column {
-    // position: relative;
-    // width: 100%;
-    // max-width: var(--max-width);
-    // display: flex;
-    // flex-direction: row;
-    // flex-wrap: wrap;
-
-    // .primary-column {
-    //   margin-bottom: 0px;
-    //   width: 67%;
-
-    //   .section-wrapper {
-    //     padding-left: 0px;
-    //   }
-
-    //   &.bottom {
-    //     margin-top: -30px;
-    //   }
-    // }
 
     .ftva.button-dropdown {
       margin-top: 30px;
@@ -291,25 +274,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     :deep(figure.responsive-video:not(:has(.video-embed))) {
       display: none;
     }
-
-    // move these styles to a component so they can be reused & kept in sync
-    // with /series/[slug].vue
-    // .sidebar-column {
-    //   min-width: 314px;
-    //   width: 30%;
-    //   position: absolute;
-    //   height: 100%;
-    //   top: 0;
-    //   right: 0;
-    //   padding-top: var(--space-2xl);
-    //   padding-bottom: 40px;
-
-    //   .sidebar-content-wrapper {
-    //     position: sticky;
-    //     top: 85px;
-    //     will-change: top;
-    //   }
-    // }
   }
 
   /* makes all EventSeries same height */
@@ -334,13 +298,16 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     :deep(.primary-column) {
       width: inherit;
     }
+
+    :deep(.block-tags) {
+      padding-top: 30px;
+    }
   }
 }
 
 // TEMPORARY STYLES THAT SHOULD BE PART OF SECTIONWRAPPER
-.series-section-wrapper {
-  :deep(.section-header) {
-    margin-bottom: 28px;
-  }
-}
-</style>
+// .series-section-wrapper {
+//   :deep(.section-header) {
+//     // margin-bottom: 28px;
+//   }
+// }</style>
