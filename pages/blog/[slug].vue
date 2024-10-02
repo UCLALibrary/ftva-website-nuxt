@@ -246,6 +246,14 @@ const parsedRecentPosts = computed(() => {
     display: none;
   }
 
+  // remove max-width from rich-text inside flexible-blocks for ftva
+  :deep(.flexible-block) {
+    .rich-text {
+      max-width: none;
+      padding-right: 0px;
+    }
+  }
+
   @media (max-width: 1200px) {
 
     .one-column,
