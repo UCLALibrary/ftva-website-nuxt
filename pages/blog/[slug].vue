@@ -2,13 +2,16 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper } from 'ucla-library-website-components'
+import {
+  BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar
+} from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
 
 // GQL
 import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
+import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
 
@@ -37,7 +40,7 @@ const page = ref(_get(data.value, 'ftvaArticle', {}))
 const ftvaRecentPosts = ref(_get(data.value, 'ftvaRecentPosts', {}))
 
 watch(data, (newVal, oldVal) => {
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaArticle', {})
   ftvaRecentPosts.value = _get(newVal, 'ftvaRecentPosts', {})
 })
@@ -55,21 +58,40 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
-      captionTitle: 'dfdsfs', // TODO do we need these? test without
-      captionText: 'dfsdfsd',
     }
   })
 })
 
 // Combine the categories into a String
 const parsedArticleCategories = computed(() => {
-  const categoryList = page.value.articleCategories
-  const categories = []
-
-  for (const category of categoryList) {
-    categories.push(category.title)
+  if (page.value.articleCategories) {
+    return page.value.articleCategories.map(category => category.title).join(', ')
   }
-  return categories.join(', ')
+  return ''
+})
+
+// Get the Contributor data if it exists, otherwise return nothing
+const parsedByline = computed(() => {
+  if ((page.value.contributors && page.value.contributors[0]) && page.value.contributors[0].contributor) {
+    return page.value.contributors[0].contributor
+  }
+  return ''
+})
+
+// Recent Posts: Filter out the current post and then return the first 3 max
+const parsedRecentPosts = computed(() => {
+  // fail gracefully if no recent posts
+  if (!ftvaRecentPosts.value || !route.params.slug)
+    return []
+
+  // Transform data
+  const recentPostsWImage = ftvaRecentPosts.value.map((item, index) => {
+    return {
+      ...item,
+      image: item.imageCarousel && item.imageCarousel.length > 0 ? item.imageCarousel[0].image[0] : null,
+    }
+  })
+  return recentPostsWImage.filter(item => !item.to.includes(route.params.slug)).slice(0, 3)
 })
 </script>
 
@@ -117,66 +139,54 @@ const parsedArticleCategories = computed(() => {
       </div>
     </div>
 
-    <div
-      data-test="second-column"
-      class="two-column"
-    >
-      <div class="primary-column top">
-        <SectionWrapper>
-          <CardMeta
-            data-test="text-block"
-            :title="page?.title"
-            :category="parsedArticleCategories"
-          />
-
-          <!-- About the Author -->
-          <RichText
-            v-if="page?.aboutTheAuthor"
-            data-test="aboutTheAuthor"
-            class="acknowledgements"
-            :rich-text-content="page?.aboutTheAuthor"
-          />
-        </SectionWrapper>
-      </div>
-    </div>
-
-    <SectionWrapper>
-      <DividerWayFinder />
-    </SectionWrapper>
-
-    <FlexibleBlocks
-      class="flexible-content"
-      :blocks="page.blocks"
-    />
-
-    <SectionWrapper section-title="Read our  most recent posts">
-      <h2>ftvaRecentPosts</h2>
-      <pre>{{ ftvaRecentPosts }}</pre>
-    </SectionWrapper>
-    <!-- <SectionWrapper
-        v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-        section-title="Upcoming events in this series"
-        theme="paleblue"
-      >
-        <template #top-right>
-          <nuxt-link to="/series">
-            View All Series <span style="font-size:1.5em;"> &#8250;</span>
-          </nuxt-link>
-        </template>
-
-        <SectionTeaserCard
-          v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-          data-test="event-series"
-          :items="parsedFtvaEventSeries"
+    <TwoColLayoutWStickySideBar>
+      <template #primaryTop>
+        <CardMeta
+          data-test="text-block"
+          :category="parsedArticleCategories"
+          :title="page?.title"
+          :byline-one="parsedByline"
+          :date-created="page?.postDate"
+          :text="page?.aboutTheAuthor"
+          section-handle="ftvaArticle"
+        >
+          <template #sharebutton>
+            <ButtonDropdown
+              button-title="Share"
+              :has-icon="true"
+              :dropdown-list="socialList.dropdownList"
+            />
+          </template>
+        </CardMeta>
+        <DividerWayFinder class="remove-top-margin" />
+        <FlexibleBlocks
+          class="flexible-content"
+          :blocks="page.blocks"
         />
-      </SectionWrapper> -->
+      </template>
+      <template #sidebarTop />
+    </TwoColLayoutWStickySideBar>
+
+    <SectionWrapper
+      v-if="parsedRecentPosts && parsedRecentPosts.length > 0"
+      section-title="Read our most recent posts"
+      theme="paleblue"
+    >
+      <template #top-right>
+        <nuxt-link to="/series">
+          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
+      <SectionTeaserCard
+        v-if="parsedRecentPosts && parsedRecentPosts.length > 0"
+        data-test="recent-posts"
+        :items="parsedRecentPosts"
+      />
+    </SectionWrapper>
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-article-detail {
   position: relative;
@@ -202,62 +212,46 @@ const parsedArticleCategories = computed(() => {
     }
   }
 
-  .two-column {
-    position: relative;
-    width: 100%;
-    max-width: var(--max-width);
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+  // makes all EventSeries same height
+  :deep(.card) {
+    min-height: 350px;
+  }
 
+  :deep(.two-column) {
+
+    // specs say 832px for column @ 1440px screen
+    // 78% is close but not exact while being responsive
     .primary-column {
-      margin-bottom: 0px;
-      width: 67%;
+      width: 78%; // override default 67% for article pages only
+
+      .primary-section-wrapper {
+        padding-left: 0px;
+        margin-top: var(--space-2xl);
+      }
 
       .section-wrapper {
-        padding-left: 0px;
+        margin-top: var(--space-2xl);
       }
 
-      &.bottom {
-        margin-top: -30px;
+      .remove-top-margin {
+        margin-top: 0px;
+        padding-top: var(--space-l);
       }
-    }
 
-    .ftva.button-dropdown {
-      margin-top: 30px;
-    }
-
-    .ftva.block-info {
-      margin-top: 48px;
-    }
-
-    // SECTION SCREENING DETAILS
-    // TODO when component is patched, remove styles?
-    :deep(figure.responsive-video:not(:has(.video-embed))) {
-      display: none;
-    }
-
-    .sidebar-column {
-      min-width: 314px;
-      width: 30%;
-      position: absolute;
-      height: 100%;
-      top: 0;
-      right: 0;
-      padding-top: var(--space-2xl);
-      padding-bottom: 20px;
-
-      .sidebar-content-wrapper {
-        position: sticky;
-        top: 85px;
-        will-change: top;
-      }
     }
   }
 
-  /* makes all EventSeries same height */
-  :deep(.card) {
-    min-height: 350px;
+  // if there is no author content, hide the 'about the author' heading
+  :deep(.heading-about-author:not(:has(+.rich-text))) {
+    display: none;
+  }
+
+  // remove max-width from rich-text inside flexible-blocks for ftva
+  :deep(.flexible-block) {
+    .rich-text {
+      max-width: none;
+      padding-right: 0px;
+    }
   }
 
   @media (max-width: 1200px) {
@@ -268,40 +262,27 @@ const parsedArticleCategories = computed(() => {
       padding-right: var(--unit-gutter);
     }
 
-    .sidebar-column {
-      padding-right: var(--unit-gutter);
-    }
+    :deep(.two-column) {
+      display: flex;
 
-    .two-column>.primary-column {
-      width: 62%;
+      // increase column percentage to 100 at 1200px
+      // only for article pages, since there is no sidebar content
+      .primary-column {
+        width: 100%;
+
+        .primary-section-wrapper {
+          padding-right: 0px;
+        }
+      }
     }
   }
 
   @media #{$small} {
     .two-column {
-      display: grid;
-      grid-template-columns: 1fr;
+      display: flex;
 
-      .primary-column {
-        width: auto;
-        grid-column: 1;
-
-        .section-wrapper {
-          padding-left: var(--unit-gutter);
-        }
-
-        &.bottom {
-          margin-top: auto;
-        }
-      }
-
-      .sidebar-column {
-        width: auto;
-        position: relative;
-        grid-column: 1;
-        margin: auto var(--unit-gutter);
-        padding-top: 0px;
-        height: auto; // let content determine height on mobile
+      .remove-top-margin {
+        margin-top: var(--space-2xl); //re add space as padding for mobile
       }
     }
   }
