@@ -53,8 +53,6 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
-      // captionTitle: 'dfdsfs', // TODO do we need these? test without
-      // captionText: 'dfsdfsd',
     }
   })
 })
@@ -153,7 +151,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       </div>
     </div>
 
-    <!-- data-test="second-column" -->
     <TwoColLayoutWStickySideBar
       data-test="second-column"
       class="two-column"
@@ -304,10 +301,4 @@ const parsedFTVAEventScreeningDetails = computed(() => {
     }
   }
 }
-
-// TEMPORARY STYLES THAT SHOULD BE PART OF SECTIONWRAPPER
-// .series-section-wrapper {
-//   :deep(.section-header) {
-//     // margin-bottom: 28px;
-//   }
-// }</style>
+</style>
