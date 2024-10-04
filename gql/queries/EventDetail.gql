@@ -31,8 +31,8 @@ query FTVADetail($slug: [String!]) {
 
 
       # BlockEventDetail
-      startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-      startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+      startDate: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+      startTime: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
       location {
         title
         uri
