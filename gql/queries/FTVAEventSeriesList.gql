@@ -12,8 +12,8 @@ query FTVAEventSeriesList {
       # image: ftvaImage {
       #  ...Image
       # }
-      startDate @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-      endDate @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
+      startDate @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
+      endDate @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
     }
   }
 }
