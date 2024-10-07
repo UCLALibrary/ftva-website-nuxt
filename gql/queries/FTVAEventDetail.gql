@@ -52,9 +52,13 @@ query FTVAEventDetail($slug: [String!]) {
 
     # SIDEBAR
     # BlockEventDetail
-    startDateWithTime
-    startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-    startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+    startDateWithTime 
+      @formatDateTime(
+        format: "Y-m-d\\TH:i"
+        timezone: "America/Los_Angeles"
+      )
+    startDate: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
+    startTime: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
     location {
       title
       campusMapId
@@ -89,8 +93,8 @@ query FTVAEventDetail($slug: [String!]) {
           id
           to: slug
           title: eventTitle
-          startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-          startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+          startDate: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
+          startTime: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
           image: ftvaImage {
             ...Image
           }

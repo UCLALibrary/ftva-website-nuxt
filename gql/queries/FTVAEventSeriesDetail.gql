@@ -15,8 +15,16 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     ftvaEventIntroduction
     eventDescription
     acknowledgement: richText
-    startDate
+    startDate 
+      @formatDateTime(
+        format: "Y-m-d\\TH:i"
+        timezone: "America/Los_Angeles"
+      )
     endDate
+      @formatDateTime(
+      format: "Y-m-d\\TH:i"
+      timezone: "America/Los_Angeles"
+    )
     ongoing
     location {
       title
@@ -37,7 +45,7 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     ftvaEvent {
       uri
       eventTitle
-      startDateWithTime
+      startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
       ftvaImage {
         ...Image
       }
@@ -50,9 +58,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       to: uri
       sectionHandle
       title: eventTitle
-      startDateWithTime
-      startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-    	startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+      startDateWithTime 
+        @formatDateTime(
+          format: "Y-m-d\\TH:i"
+          timezone: "America/Los_Angeles"
+        )
+      startDate: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    	startTime: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
       image: ftvaImage {
         ...Image
       }
@@ -67,8 +79,8 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
                     format: "Y-m-d\\TH:i"
                     timezone: "America/Los_Angeles"
                 )
-    startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-    startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
+    startDate: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    startTime: startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
     image: ftvaImage {
       ...Image
     }
@@ -76,37 +88,12 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       title
     }
   }
-  # CAN BE REMOVED ONCE NEW ONES ARE WORKING
-  # upcomingEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: ">= now", orderBy: "startDateWithTime ASC") {
-  #     uri
-  #     sectionHandle
-  #     eventTitle
-  #     startDateWithTime
-  #     ftvaImage {
-  #       ...Image
-  #     }
-  #     ftvaEventFilters {
-  #       title
-  #     }
-  # }
-  # pastEvents: entries(section: "ftvaEvent",  relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime ASC") {
-  #   uri
-  #   sectionHandle
-  #   eventTitle
-  #   startDateWithTime
-  #   ftvaImage {
-  #     ...Image
-  #   }
-  #   ftvaEventFilters {
-  #     title
-  #   }
-  # }
   otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true) {
     uri
     sectionHandle
     title
-    startDate
-    endDate
+    startDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    endDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
     ongoing
     ftvaImage {
       ...Image
@@ -116,8 +103,8 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     uri
     sectionHandle
     title
-    startDate
-    endDate
+    startDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    endDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
     ongoing
     ftvaImage {
       ...Image
