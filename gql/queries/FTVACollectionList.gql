@@ -1,21 +1,32 @@
 # import "../gql/fragments/Image.gql"
 
+# TODO remove some of these fields? 
 query FTVACollectionList {
   entries(section: ["ftvaCollection"], orderBy: "postDate") {
     typeHandle
     id
-    title: eventTitle
+    title
+    sectionTitle
+    slug
     to: uri
+    ftvaHomepageTitle
+    ftvaHomepageDescription
+    ftvaCollectionType
+    richText 
+    videoEmbed
+    viewAllSectionLink
+    infoBlock 
+    # no images on listview?
+    # heroimage: ftvaHeroImage {
+    #  ...Image
+    # }
     # image: ftvaImage {
     #  ...Image
     # }
-    startDateWithTime
-    # startDate: startDateWithTime @formatDateTime(format: "Y-m-d", timezone: "America/Los_Angeles")
-    # startTime: startDateWithTime @formatDateTime(format: "TH:i:s", timezone: "America/Los_Angeles")
 
-    # ftvaEventFilters {
-    #   title
-    #   uri
-    # }
+    ftvaRelatedCollections {
+      title
+      uri
+    }
   }
 }
