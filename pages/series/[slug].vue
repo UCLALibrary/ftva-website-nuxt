@@ -196,7 +196,10 @@ onMounted(() => {
         v-else
         class="lightbox-container"
       >
-        <FlexibleMediaGalleryNewLightbox :items="parsedCarouselData">
+        <FlexibleMediaGalleryNewLightbox
+          :items="parsedCarouselData"
+          inline="true"
+        >
           <template #default="slotProps">
             <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
           </template>
@@ -312,10 +315,7 @@ onMounted(() => {
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
