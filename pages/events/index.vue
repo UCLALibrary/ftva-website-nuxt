@@ -61,33 +61,5 @@ const page = ref(_get(data.value, 'entries[0]', {}))
 </template>
 
 <style scoped>
-.page-events {
-  a {
-    outline-color: transparent;
-    font-size: 24px;
-  }
-
-  a:link {
-    color: #ca05ca;
-  }
-
-  a:visited {
-    color: #eb087a;
-  }
-
-  a:focus {
-    text-decoration: none;
-    background: #03c2dc;
-  }
-
-  a:hover {
-    text-decoration: none;
-    background: #07eef6;
-  }
-
-  a:active {
-    background: #6900ff;
-    color: #cdfeaa;
-  }
-}
+@import 'assets/styles/listing-pages.scss';
 </style>
