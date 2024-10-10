@@ -1,23 +1,12 @@
 const globalsQuery = `
         query Globals {
-            globalSets {
-                dataId: id
-                handle
-
-                ... on askALibrarian_GlobalSet {
-                    askALibrarianTitle: titleGeneral
-                    askALibrarianText: summary
-                    buttonUrl {
-                        buttonText
-                        buttonUrl
-                    }
-                }
-
-                ... on libraryAlert_GlobalSet {
-                    title: entryTitle
-                    text: richTextAlertBox
-                }
+          globalSets {
+            ... on ftvaViewingInformation_GlobalSet {
+              handle
+              title: titleGeneral
+              text: richTextSimplified
             }
+          }
         }
     `
 export default cachedEventHandler(async (event) => {
