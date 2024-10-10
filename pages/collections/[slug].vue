@@ -9,6 +9,7 @@ import _get from 'lodash/get'
 
 // GQL
 import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
+import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
 
@@ -34,24 +35,49 @@ if (!data.value.ftvaCollection) {
 }
 
 const page = ref(_get(data.value, 'ftvaCollection', {}))
-// const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaEvent', {})
-  // series.value = _get(newVal, 'ftvaEventSeries', {})
 })
 
-// TODO page metadata title
+// DATA PARSING
+const parsedImage = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.imageCarousel) {
+    return []
+  }
+  return page.value.imageCarousel
+})
+// Combine the categories into a String
+const parsedCollectionType = computed(() => {
+  if (page.value.ftvaCollectionType) {
+    // split camelCase items in list and join with space, then join list with comma
+    return page.value.ftvaCollectionType.map(str => str.split(/(?=[A-Z])/).join(' ')).join(', ')
+  }
+  return null
+})
+
+const parsedRelatedCollections = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.ftvaRelatedCollections) {
+    return []
+  }
+
+  const relatedCollections = page.value.ftvaRelatedCollections.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.uri}`, // remove 'collection/' from uri
+      sectionHandle: 'ftvaEventSeries',
+      category: 'collection',
+      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
+    }
+  })
+  return relatedCollections
+})
+
 useHead({
   title: page.value?.title || '... loading',
-  // meta: [
-  //   {
-  //     hid: 'description',
-  //     name: 'description',
-  //     content: 'The UCLA Library creates a vibrant nexus of ideas, collections, expertise, and spaces in which users illuminate solutions for local and global challenges. We constantly evolve to advance UCLA’s research, education, and public service mission by empowering and inspiring communities of scholars and learners to discover, access, create, share, and preserve knowledge.',
-  //   },
-  // ],
 })
 </script>
 <template>
@@ -59,14 +85,79 @@ useHead({
     id="main"
     class="page page-collection-detail"
   >
-    {{ page }}
+    <div class="one-column">
+      <NavBreadcrumb
+        class="breadcrumb"
+        :title="page?.title"
+        to="/collections"
+      />
+
+      <ResponsiveImage
+        v-if="parsedImage.length === 1"
+        :media="parsedImage[0].image[0]"
+        :aspect-ratio="43.103"
+      >
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
+          {{ parsedImage[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
+    </div>
+    <TwoColLayoutWStickySideBar>
+      <template #primaryTop>
+        <CardMeta
+          :category="parsedCollectionType"
+          :title="page?.title"
+        >
+          <template #sharebutton>
+            <ButtonDropdown
+              button-title="Share"
+              :has-icon="true"
+              :dropdown-list="socialList.dropdownList"
+            />
+          </template>
+        </CardMeta>
+        <RichText
+          v-if="page?.richText"
+          :rich-text-content="page?.richText"
+        />
+      </template>
+
+      <!-- Sidebar -->
+      <!-- may need to move to diff slot? -->
+      <template #sidebarTop>
+        {{ page.infoBlock }}
+      </template>
+    </TwoColLayoutWStickySideBar>
+    <div>
+      {{ page }}
+    </div>
+    <SectionWrapper
+      v-if="parsedRelatedCollections && parsedRelatedCollections.length > 0"
+      theme="paleblue"
+      :section-title="page.sectionTitle"
+      class="series-section-wrapper"
+    >
+      <template #top-right>
+        <!-- todo replace with data -->
+        <nuxt-link to="/series">
+          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
+      <SectionTeaserCard
+        class="other-series-section"
+        :items="parsedRelatedCollections"
+      />
+    </SectionWrapper>
   </main>
 </template>
 <style lang="scss" scoped>
 .page-collection-detail {
   position: relative;
 
-  // TODO move this element to global mixin or something
+  // TODO move this element to global mixin or something, its on every detail page
   &:before {
     content: '';
     position: absolute;

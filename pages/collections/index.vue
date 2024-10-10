@@ -31,16 +31,8 @@ if (!data.value.entries) {
 }
 
 const page = ref(_get(data.value, 'entries[0]', {}))
-// TODO page metadata title
 useHead({
   title: page.value?.title || '... loading',
-  // meta: [
-  //   {
-  //     hid: 'description',
-  //     name: 'description',
-  //     content: 'The UCLA Library creates a vibrant nexus of ideas, collections, expertise, and spaces in which users illuminate solutions for local and global challenges. We constantly evolve to advance UCLA’s research, education, and public service mission by empowering and inspiring communities of scholars and learners to discover, access, create, share, and preserve knowledge.',
-  //   },
-  // ],
 })
 </script>
 
@@ -74,34 +66,5 @@ useHead({
 </template>
 
 <style scoped>
-/* TODO move to style file if we are duplicating these styles? */
-.page-collections {
-  a {
-    outline-color: transparent;
-    font-size: 24px;
-  }
-
-  a:link {
-    color: #ca05ca;
-  }
-
-  a:visited {
-    color: #eb087a;
-  }
-
-  a:focus {
-    text-decoration: none;
-    background: #03c2dc;
-  }
-
-  a:hover {
-    text-decoration: none;
-    background: #07eef6;
-  }
-
-  a:active {
-    background: #6900ff;
-    color: #cdfeaa;
-  }
-}
+@import 'assets/styles/listing-pages.scss';
 </style>

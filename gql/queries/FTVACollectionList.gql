@@ -6,26 +6,29 @@ query FTVACollectionList {
     typeHandle
     id
     title
-    sectionTitle
     slug
     to: uri
     ftvaHomepageTitle
     ftvaHomepageDescription
     ftvaCollectionType
     richText 
-    videoEmbed
-    viewAllSectionLink
-    infoBlock 
-    # no images on listview?
-    # heroimage: ftvaHeroImage {
-    #  ...Image
+    infoBlock {
+      ... on infoBlock_infoBlock_BlockType {
+        icon
+        text
+      }
+    }
+    # unknown fragment errors for some reason, works in craftcms
+    # seems to be happening on all list pages?
+    # ftvaImage {
+    #   ...Image
     # }
-    # image: ftvaImage {
-    #  ...Image
-    # }
+
+
 
     ftvaRelatedCollections {
       title
+      richText
       uri
     }
   }

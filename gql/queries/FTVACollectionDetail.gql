@@ -3,28 +3,46 @@
 query FTVACollectionDetail($slug: [String!]) {
   ftvaCollection: entry(section: "ftvaCollection", slug: $slug) {
     typeHandle
-    id
+    id 
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
     title
     sectionTitle
-    slug
-    to: uri
-    ftvaHomepageTitle
-    ftvaHomepageDescription
     ftvaCollectionType
     richText 
     videoEmbed
-    viewAllSectionLink
-    infoBlock 
+    viewAllSectionLink {
+      ... on viewAllSectionLink_viewAllSection_BlockType {
+        viewAllText
+        viewAllLink {
+          uri
+        }
+      }
+    }
+    infoBlock {
+      ... on infoBlock_infoBlock_BlockType {
+        icon
+        text
+      }
+    }
     heroimage: ftvaHeroImage {
      ...Image
     }
-    # image: ftvaImage {
-    #  ...Image
-    # }
-
-    # ftvaRelatedCollections {
-    #   title
-    #   uri
-    # }
+    ftvaRelatedCollections {
+      ftvaImage {
+        ...Image
+      }
+      title
+      richText
+      uri
+    }
+    slug
+    to: uri
   }
 }
