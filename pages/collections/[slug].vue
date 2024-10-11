@@ -102,6 +102,7 @@ const parsedRelatedCollections = computed(() => {
       ...item,
       to: `/${item.uri}`, // remove 'collection/' from uri
       category: 'collection',
+      bylineOne: item.richText,
       image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
     }
   })
@@ -182,7 +183,6 @@ useHead({
       </template>
 
       <!-- Sidebar -->
-      <!-- may need to move to diff slot? -->
       <template #sidebarTop>
         <BlockCallToAction
           :use-global-data="true"
@@ -194,7 +194,6 @@ useHead({
           v-if="page?.richText"
           :rich-text-content="page?.richText"
         />
-        <!-- todo poster image support check craft CMS test data -->
         <DividerWayFinder v-if="page.videoEmbed" />
         <VideoEmbed
           v-if="page.videoEmbed"
@@ -215,7 +214,6 @@ useHead({
         </div>
       </template>
     </TwoColLayoutWStickySideBar>
-    <!-- <div> {{ page }}</div> -->
     <SectionWrapper
       v-if="parsedRelatedCollections && parsedRelatedCollections.length > 0"
       theme="paleblue"
@@ -231,7 +229,7 @@ useHead({
         </nuxt-link>
       </template>
       <SectionTeaserCard
-        class="other-series-section"
+        class="related-collections-card"
         :items="parsedRelatedCollections"
       />
     </SectionWrapper>
@@ -272,6 +270,12 @@ useHead({
 
     .section-wrapper.theme-paleblue {
       background-color: var(--pale-blue);
+    }
+  }
+
+  .related-collections-card {
+    :deep(.byline-group) {
+      @include truncate(2);
     }
   }
 }
