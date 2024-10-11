@@ -73,7 +73,7 @@ const parsedInfoBlockIconLookup = {
 }
 const parsedInfoBlock = computed(() => {
   // fail gracefully if data does not exist (server-side)
-  if (!page.value.infoBlock) {
+  if (!page.value.infoBlock || page.value.infoBlock.length === 0) {
     return null
   }
   return page.value.infoBlock.map((item, index) => {
@@ -83,6 +83,13 @@ const parsedInfoBlock = computed(() => {
       icon: parsedIcon
     }
   })
+})
+const parsedRelatedCollectionsHeader = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.sectionTitle) {
+    return 'Related Collections'
+  }
+  return page.value.sectionTitle ? page.value.sectionTitle : 'Related Collections'
 })
 const parsedRelatedCollections = computed(() => {
   // fail gracefully if data does not exist (server-side)
@@ -212,7 +219,7 @@ useHead({
     <SectionWrapper
       v-if="parsedRelatedCollections && parsedRelatedCollections.length > 0"
       theme="paleblue"
-      :section-title="page.sectionTitle"
+      :section-title="parsedRelatedCollectionsHeader"
       class="series-section-wrapper"
     >
       <template #top-right>
