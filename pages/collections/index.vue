@@ -60,7 +60,7 @@ useHead({
         <divider-general />
       </div>
 
-      <code><strong>PAGE</strong> {{ page }}</code>
+      <!-- <code><strong>PAGE</strong> {{ page }}</code> -->
     </section-wrapper>
   </div>
 </template>
