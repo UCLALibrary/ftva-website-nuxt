@@ -281,7 +281,7 @@ onMounted(() => {
             </template>
             <template v-else>
               <p class="empty-tab">
-                There are no upcoming events in this series.
+                There are no upcoming events in this series
               </p>
             </template>
           </TabItem>
@@ -300,7 +300,7 @@ onMounted(() => {
             </template>
             <template v-else>
               <p class="empty-tab">
-                There are no past events in this series.
+                There are no past events in this series
               </p>
             </template>
           </TabItem>
