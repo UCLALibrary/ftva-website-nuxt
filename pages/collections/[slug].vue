@@ -168,6 +168,7 @@ useHead({
         >
           <template #sharebutton>
             <ButtonDropdown
+              data-test="share-button"
               button-title="Share"
               :has-icon="true"
               :dropdown-list="socialList.dropdownList"
@@ -179,6 +180,7 @@ useHead({
       <!-- Sidebar -->
       <template #sidebarTop>
         <BlockCallToAction
+          data-test="sidebar-cta"
           :use-global-data="true"
           :is-centered="false"
         />
