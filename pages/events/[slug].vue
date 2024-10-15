@@ -114,7 +114,7 @@ useHead({
     {
       hid: 'description',
       name: 'description',
-      content: removeTags(page.text)
+      content: removeTags(page.value.text)
     }
   ]
 })

@@ -8,6 +8,7 @@ import {
 
 // HELPERS
 import _get from 'lodash/get'
+import removeTags from '~/utils/removeTags'
 
 // GQL
 import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
@@ -92,6 +93,17 @@ const parsedRecentPosts = computed(() => {
     }
   })
   return recentPostsWImage.filter(item => !item.to.includes(route.params.slug)).slice(0, 3)
+})
+
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.text)
+    }
+  ]
 })
 </script>
 

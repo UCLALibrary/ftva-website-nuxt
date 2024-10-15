@@ -6,6 +6,7 @@ import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, 
 
 // HELPERS
 import _get from 'lodash/get'
+import removeTags from '~/utils/removeTags'
 
 // GQL
 import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
@@ -138,6 +139,17 @@ const parsedOtherSeries = computed(() => {
     }
   })
   return otherSeries
+})
+
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.text)
+    }
+  ]
 })
 
 // MOBILE LOGIC

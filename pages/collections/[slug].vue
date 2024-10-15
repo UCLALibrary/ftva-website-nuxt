@@ -6,6 +6,7 @@ import { CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcr
 
 // HELPERS
 import _get from 'lodash/get'
+import removeTags from '~/utils/removeTags'
 
 // GQL
 import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
@@ -77,7 +78,14 @@ const parsedRelatedCollections = computed(() => {
 })
 
 useHead({
-  title: page.value?.title || '... loading',
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.text)
+    }
+  ]
 })
 </script>
 <template>
