@@ -235,7 +235,6 @@ useHead({
 .page-collection-detail {
   position: relative;
 
-  // TODO move this element to global mixin or something, its on every detail page
   &:before {
     content: '';
     position: absolute;
@@ -247,7 +246,6 @@ useHead({
     z-index: -1;
   }
 
-  // TODO global?
   .one-column {
     width: 100%;
     max-width: var(--max-width);
@@ -258,7 +256,6 @@ useHead({
     }
   }
 
-  // TODO global?
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
