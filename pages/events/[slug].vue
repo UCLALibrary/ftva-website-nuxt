@@ -6,6 +6,7 @@ import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, Divide
 
 // HELPERS
 import _get from 'lodash/get'
+import removeTags from '../utils/removeTags'
 
 // GQL
 import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
@@ -105,6 +106,17 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
     }
   })
+})
+
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.text)
+    }
+  ]
 })
 </script>
 

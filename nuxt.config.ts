@@ -88,9 +88,7 @@ export default defineNuxtConfig({
     head: {
       titleTemplate: (titleChunk: string) => {
         // If undefined or blank then we don't need the pipe and space
-        return titleChunk
-          ? `${titleChunk} | Modern Endangered Archives Program`
-          : 'Modern Endangered Archives Program'
+        return titleChunk === 'Homepage' ? 'UCLA Film & Television Archive' : `${titleChunk || 'Error'}` + ' | UCLA Film & Television Archive'
       },
       htmlAttrs: {
         lang: 'en',
