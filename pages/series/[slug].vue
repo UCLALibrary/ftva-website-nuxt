@@ -6,10 +6,10 @@ import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, 
 
 // HELPERS
 import _get from 'lodash/get'
+import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 import removeTags from '~/utils/removeTags'
 
 // GQL
-import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 const { $graphql } = useNuxtApp()
 

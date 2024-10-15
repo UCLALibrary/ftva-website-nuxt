@@ -6,10 +6,10 @@ import { CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcr
 
 // HELPERS
 import _get from 'lodash/get'
+import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 import removeTags from '~/utils/removeTags'
 
 // GQL
-import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()

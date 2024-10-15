@@ -8,10 +8,10 @@ import {
 
 // HELPERS
 import _get from 'lodash/get'
+import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
 import removeTags from '~/utils/removeTags'
 
 // GQL
-import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
 import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
