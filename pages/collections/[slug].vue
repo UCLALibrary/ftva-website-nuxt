@@ -124,6 +124,7 @@ useHead({
   >
     <div class="one-column">
       <NavBreadcrumb
+        data-test="breadcrumb"
         class="breadcrumb"
         :title="page?.title"
         to="/collections"
