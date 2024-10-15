@@ -266,6 +266,14 @@ useHead({
     }
   }
 
+  .cta-block {
+    :deep(.block-call-to-action) {
+      &:not(:last-child) {
+        margin-bottom: 16px;
+      }
+    }
+  }
+
   .related-collections-card {
     :deep(.byline-group) {
       @include truncate(2);
