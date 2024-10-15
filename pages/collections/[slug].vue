@@ -59,13 +59,6 @@ const parsedCarouselData = computed(() => {
     }
   })
 })
-const parsedCollectionType = computed(() => {
-  if (page.value.ftvaCollectionType) {
-    // split camelCase items in list and join with space, then join list with comma
-    return page.value.ftvaCollectionType.map(str => str.split(/(?=[A-Z])/).join(' ')).join(', ')
-  }
-  return null
-})
 // Map icon names to svg names for infoBlock
 const parsedInfoBlockIconLookup = {
   'icon-download': 'svg-call-to-action-ftva-pdf',
@@ -100,7 +93,7 @@ const parsedRelatedCollections = computed(() => {
   const relatedCollections = page.value.ftvaRelatedCollections.map((item, index) => {
     return {
       ...item,
-      to: `/${item.uri}`, // remove 'collection/' from uri
+      to: `/${item.uri}`,
       category: 'collection',
       bylineOne: item.richText,
       image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
@@ -169,7 +162,7 @@ useHead({
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
         <CardMeta
-          :category="parsedCollectionType"
+          category="Collection"
           :title="page?.title"
         >
           <template #sharebutton>

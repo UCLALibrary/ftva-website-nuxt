@@ -139,32 +139,6 @@ const parsedOtherSeries = computed(() => {
   })
   return otherSeries
 })
-
-// MOBILE LOGIC
-const globalStore = useGlobalStore()
-const isMobile = ref(false)
-watch(globalStore, (newVal, oldVal) => {
-  isMobile.value = globalStore.winWidth <= 750
-})
-
-// LAYOUT & STYLES
-// TO DO THIS SECTION MAY BE WORTH ADDING TO 2 COL SIDE BAR LAYOUT
-// Track height of sidebar and ensure main content as at least as tall
-const sidebar = ref(null)
-const primaryCol = ref(null)
-
-watch([isMobile, sidebar], ([newValIsMobile, newValSidebar], [oldValGlobalStore, oldValSidebar]) => {
-  if (newValIsMobile === true) {
-    primaryCol.value.style.minHeight = 'auto' // on mobile, reset height
-  } else {
-    primaryCol.value.style.minHeight = `${newValSidebar.clientHeight + 125}px`
-  }
-}, { deep: true })
-
-// globalstore state is lost when error page is generated , this is hack to repopulate state on client side
-onMounted(() => {
-  isMobile.value = globalStore.winWidth <= 750 // 750px is the breakpoint for mobile
-})
 </script>
 
 <template>
