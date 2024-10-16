@@ -41,7 +41,7 @@ const otherSeriesOngoing = ref(_get(data.value, 'otherSeriesOngoing', {}))
 const otherSeriesUpcoming = ref(_get(data.value, 'otherSeriesUpcoming', {}))
 
 watch(data, (newVal, oldVal) => {
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaEventSeries', {})
   upcomingEvents.value = _get(newVal, 'upcomingEvents', {})
   pastEvents.value = _get(newVal, 'pastEvents', {})

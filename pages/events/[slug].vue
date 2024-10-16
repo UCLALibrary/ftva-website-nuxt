@@ -37,7 +37,7 @@ const page = ref(_get(data.value, 'ftvaEvent', {}))
 const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaEvent', {})
   series.value = _get(newVal, 'ftvaEventSeries', {})
 })

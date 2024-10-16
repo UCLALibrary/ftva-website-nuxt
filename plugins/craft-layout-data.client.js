@@ -26,7 +26,7 @@ export default defineNuxtPlugin((nuxtApp) => { //
         ]
       }
 
-      console.log('globalStore.footerPrimary', JSON.stringify(globalStore.footerPrimary))
+      // console.log('globalStore.footerPrimary', JSON.stringify(globalStore.footerPrimary))
     }
   }
   return {

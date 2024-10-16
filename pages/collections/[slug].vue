@@ -38,7 +38,7 @@ if (!data.value.ftvaCollection) {
 const page = ref(_get(data.value, 'ftvaCollection', {}))
 
 watch(data, (newVal, oldVal) => {
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaCollection', {})
 })
 
