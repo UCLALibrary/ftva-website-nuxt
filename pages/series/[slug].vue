@@ -6,9 +6,10 @@ import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, 
 
 // HELPERS
 import _get from 'lodash/get'
+import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
+import removeTags from '~/utils/removeTags'
 
 // GQL
-import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 const { $graphql } = useNuxtApp()
 
@@ -139,6 +140,16 @@ const parsedOtherSeries = computed(() => {
   })
   return otherSeries
 })
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.text)
+    }
+  ]
+})
 </script>
 
 <template>
@@ -243,7 +254,7 @@ const parsedOtherSeries = computed(() => {
             </template>
             <template v-else>
               <p class="empty-tab">
-                There are no upcoming events in this series.
+                There are no upcoming events in this series
               </p>
             </template>
           </TabItem>
@@ -262,7 +273,7 @@ const parsedOtherSeries = computed(() => {
             </template>
             <template v-else>
               <p class="empty-tab">
-                There are no past events in this series.
+                There are no past events in this series
               </p>
             </template>
           </TabItem>
