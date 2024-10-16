@@ -2,7 +2,7 @@
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 const { enabled, state } = usePreviewMode()
-console.log('App.vue', enabled.value, state.token)
+// console.log('App.vue', enabled.value, state.token)
 const route = useRoute()
 
 const globalStore = useGlobalStore()
@@ -16,13 +16,13 @@ const primaryMenuItems = computed(() => {
   return header?.value?.primary
 })
 watch(globalStore.header, (newVal, oldVal) => {
-  console.log('Global store changed for draft previews', newVal, oldVal)
+  // console.log('Global store changed for draft previews', newVal, oldVal)
   setHeader(globalStore)
 })
 const { $layoutData } = useNuxtApp()
 onMounted(async () => {
   // globalstore state is lost due to 404 error for draft previews, this is hack to repopulate state on client side
-  console.log('No layout query', route.query, 'preview enabled', enabled.value, 'state?.token', state?.token)
+  // console.log('No layout query', route.query, 'preview enabled', enabled.value, 'state?.token', state?.token)
   if (process.env.NODE_ENV !== 'development' && (route.query?.preview === 'true' || enabled.value) && (route.query?.token !== undefined || state?.token !== undefined)) {
     await $layoutData()
   }

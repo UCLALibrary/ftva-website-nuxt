@@ -64,7 +64,7 @@ async function keywordSearchWithFilters(
   extraFilters = [],
 ) {
   // var data_url = new URL(`${ES_URL}/apps-dev-library-website/_search`)
-  console.log('In data api keywordsearchwithfilters')
+  // console.log('In data api keywordsearchwithfilters')
   const config = useRuntimeConfig()
   // console.log(config.public.esReadKey)
   // console.log(config.public.esURL)
