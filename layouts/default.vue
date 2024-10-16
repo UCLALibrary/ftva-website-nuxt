@@ -20,15 +20,15 @@ const primaryMenuItems = computed(() => {
 
 const isMobile = ref(false)
 watch(globalStore, (newVal, oldVal) => {
-  console.log('Global store changed', newVal, oldVal)
+  // console.log('Global store changed', newVal, oldVal)
 })
 const { $layoutData } = useNuxtApp()
 // globalstore state is lost when error page is generated , this is hack to repopulate state on client side
 onMounted(async () => {
-  console.log('In default layout', enabled.value, state?.token)
+  // console.log('In default layout', enabled.value, state?.token)
 
   if (process.env.NODE_ENV !== 'development' && layoutCustomProps['is-error']) {
-    console.log('In SSG refresh layout data as state is not maintained after an error response')
+    // console.log('In SSG refresh layout data as state is not maintained after an error response')
     await $layoutData()
   }
 
