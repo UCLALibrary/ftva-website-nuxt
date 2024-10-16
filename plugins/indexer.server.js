@@ -27,13 +27,13 @@ export default defineNuxtPlugin((nuxtApp) => {
         // console.log('Existing data in ES', docExistsResponseValue)
 
         if (docExistsResponseValue && docExistsResponseValue._source) {
-          console.log('GET-RESPONSE: ' + slug)
+          // console.log('GET-RESPONSE: ' + slug)
           const updateUrl = `${esURL}/${esIndex}/_update/${slug}`
-          console.log('ES update url', updateUrl)
+          // console.log('ES update url', updateUrl)
           const postBody = {
             doc: data
           }
-          console.log('postBody', JSON.stringify(postBody))
+          // console.log('postBody', JSON.stringify(postBody))
           const updateResponse = await fetch(
                     `${esURL}/${esIndex}/_update/${slug}`,
                     {
@@ -61,7 +61,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                     }
           )
 
-          console.log('Create a new document in ES:', await response.text())
+          // console.log('Create a new document in ES:', await response.text())
         }
       } else {
         console.warn('not indexing anything')

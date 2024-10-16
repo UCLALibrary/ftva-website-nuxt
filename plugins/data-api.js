@@ -74,9 +74,9 @@ async function keywordSearchWithFilters(
         config.public.esAlias === ''
   )
     return
-  console.log('keyword:' + keyword)
-  console.log('filters:' + filters)
-  console.log('sort:' + sort)
+  // console.log('keyword:' + keyword)
+  // console.log('filters:' + filters)
+  // console.log('sort:' + sort)
 
   const testquery = JSON.stringify({
     _source: [...source],
@@ -100,7 +100,7 @@ async function keywordSearchWithFilters(
       ...parseFieldNames(aggFields),
     },
   })
-  console.log('this is the query: ' + testquery)
+  // console.log('this is the query: ' + testquery)
 
   const response = await fetch(
         `${config.public.esURL}/${config.public.esAlias}/_search`, // replace alias with indexname
