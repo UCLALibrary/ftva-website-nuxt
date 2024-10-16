@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { BlockCallToAction, CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -38,7 +38,7 @@ const page = ref(_get(data.value, 'ftvaCollection', {}))
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = _get(newVal, 'ftvaEvent', {})
+  page.value = _get(newVal, 'ftvaCollection', {})
 })
 
 // DATA PARSING
@@ -49,15 +49,41 @@ const parsedImage = computed(() => {
   }
   return page.value.imageCarousel
 })
-// Combine the categories into a String
-const parsedCollectionType = computed(() => {
-  if (page.value.ftvaCollectionType) {
-    // split camelCase items in list and join with space, then join list with comma
-    return page.value.ftvaCollectionType.map(str => str.split(/(?=[A-Z])/).join(' ')).join(', ')
-  }
-  return null
+// Transform data for Carousel
+const parsedCarouselData = computed(() => {
+  // map image to item, map creditText to credit
+  return parsedImage.value.map((rawItem, index) => {
+    return {
+      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
+      credit: rawItem?.creditText,
+    }
+  })
 })
-
+// Map icon names to svg names for infoBlock
+const parsedInfoBlockIconLookup = {
+  'icon-download': 'svg-call-to-action-ftva-pdf',
+  'icon-external-link': 'svg-call-to-action-ftva-info'
+}
+const parsedInfoBlock = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.infoBlock || page.value.infoBlock.length === 0) {
+    return null
+  }
+  return page.value.infoBlock.map((item, index) => {
+    const parsedIcon = parsedInfoBlockIconLookup[item?.icon] ? parsedInfoBlockIconLookup[item.icon] : parsedInfoBlockIconLookup['icon-external-link']
+    return {
+      text: item.text,
+      icon: parsedIcon
+    }
+  })
+})
+const parsedRelatedCollectionsHeader = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.sectionTitle) {
+    return 'Related Collections'
+  }
+  return page.value.sectionTitle ? page.value.sectionTitle : 'Related Collections'
+})
 const parsedRelatedCollections = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!page.value.ftvaRelatedCollections) {
@@ -67,13 +93,24 @@ const parsedRelatedCollections = computed(() => {
   const relatedCollections = page.value.ftvaRelatedCollections.map((item, index) => {
     return {
       ...item,
-      to: `/${item.uri}`, // remove 'collection/' from uri
-      sectionHandle: 'ftvaEventSeries',
+      to: `/${item.uri}`,
       category: 'collection',
+      bylineOne: item.richText,
       image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
     }
   })
   return relatedCollections
+})
+const parsedRelatedCollectionsText = computed(() => {
+  // TODO does this fail gracefully?
+  const text = _get(page.value, 'viewAllSectionLink[0].viewAllText', '')
+  return text || 'View All'
+})
+// TODO goes to /collections/[uri] - is this correct check with UX?
+const parsedRelatedCollectionsLink = computed(() => {
+  // TODO does this fail gracefully?
+  const link = _get(page.value, 'viewAllSectionLink[0].viewAllLink[0].uri', '')
+  return link || '/collections'
 })
 
 useHead({
@@ -87,6 +124,7 @@ useHead({
   >
     <div class="one-column">
       <NavBreadcrumb
+        data-test="breadcrumb"
         class="breadcrumb"
         :title="page?.title"
         to="/collections"
@@ -104,50 +142,90 @@ useHead({
           {{ parsedImage[0]?.creditText }}
         </template>
       </ResponsiveImage>
+      <div
+        v-else
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox
+          data-test="image-carousel"
+          :items="parsedCarouselData"
+          :inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag
+              data-test="credit-text"
+              :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
+            />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
     </div>
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
         <CardMeta
-          :category="parsedCollectionType"
+          category="Collection"
           :title="page?.title"
         >
           <template #sharebutton>
             <ButtonDropdown
+              data-test="share-button"
               button-title="Share"
               :has-icon="true"
               :dropdown-list="socialList.dropdownList"
             />
           </template>
         </CardMeta>
+      </template>
+
+      <!-- Sidebar -->
+      <template #sidebarTop>
+        <BlockCallToAction
+          data-test="sidebar-cta"
+          :use-global-data="true"
+          :is-centered="false"
+        />
+      </template>
+      <template #primaryMid>
         <RichText
           v-if="page?.richText"
           :rich-text-content="page?.richText"
         />
-      </template>
-
-      <!-- Sidebar -->
-      <!-- may need to move to diff slot? -->
-      <template #sidebarTop>
-        {{ page.infoBlock }}
+        <DividerWayFinder v-if="page.videoEmbed" />
+        <VideoEmbed
+          v-if="page.videoEmbed"
+          :trailer="page.videoEmbed"
+        />
+        <DividerWayFinder v-if="parsedInfoBlock" />
+        <div
+          v-if="parsedInfoBlock"
+          class="cta-block"
+        >
+          <BlockCallToAction
+            v-for="(item) in parsedInfoBlock"
+            :key="item.text.concat(10)"
+            :svg-name="item.icon"
+            :text="item.text"
+            :is-centered="false"
+          />
+        </div>
       </template>
     </TwoColLayoutWStickySideBar>
-    <div>
-      {{ page }}
-    </div>
     <SectionWrapper
       v-if="parsedRelatedCollections && parsedRelatedCollections.length > 0"
       theme="paleblue"
-      :section-title="page.sectionTitle"
+      :section-title="parsedRelatedCollectionsHeader"
       class="series-section-wrapper"
     >
       <template #top-right>
-        <!-- todo replace with data -->
-        <nuxt-link to="/series">
-          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        <nuxt-link
+          v-if="parsedRelatedCollectionsLink"
+          :to="parsedRelatedCollectionsLink"
+        >
+          {{ parsedRelatedCollectionsText }} <span style="font-size:1.5em;"> &#8250;</span>
         </nuxt-link>
       </template>
       <SectionTeaserCard
-        class="other-series-section"
+        class="related-collections-card"
         :items="parsedRelatedCollections"
       />
     </SectionWrapper>
@@ -157,7 +235,6 @@ useHead({
 .page-collection-detail {
   position: relative;
 
-  // TODO move this element to global mixin or something, its on every detail page
   &:before {
     content: '';
     position: absolute;
@@ -169,7 +246,6 @@ useHead({
     z-index: -1;
   }
 
-  // TODO global?
   .one-column {
     width: 100%;
     max-width: var(--max-width);
@@ -180,7 +256,6 @@ useHead({
     }
   }
 
-  // TODO global?
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
@@ -188,6 +263,20 @@ useHead({
 
     .section-wrapper.theme-paleblue {
       background-color: var(--pale-blue);
+    }
+  }
+
+  .cta-block {
+    :deep(.block-call-to-action) {
+      &:not(:last-child) {
+        margin-bottom: 16px;
+      }
+    }
+  }
+
+  .related-collections-card {
+    :deep(.byline-group) {
+      @include truncate(2);
     }
   }
 }
