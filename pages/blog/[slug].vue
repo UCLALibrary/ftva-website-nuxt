@@ -140,6 +140,7 @@ useHead({
         <FlexibleMediaGalleryNewLightbox
           data-test="image-carousel"
           :items="parsedCarouselData"
+          :inline="true"
         >
           <template #default="slotProps">
             <BlockTag
