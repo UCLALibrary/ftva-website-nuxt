@@ -205,6 +205,9 @@ onMounted(() => {
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
+      <h3>START--{{ page }}</h3>
+      <h3>START--{{ page?.startDate }}</h3>
+      <h3>END--{{ page?.endDate }}</h3>
     </div>
 
     <TwoColLayoutWStickySideBar>
@@ -315,7 +318,10 @@ onMounted(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;

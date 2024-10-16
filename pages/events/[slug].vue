@@ -163,13 +163,29 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           :title="page?.title"
         />
       </template>
+      JEN JEN JEN
+
       <template #sidebarTop>
+        <h3>Location-- {{ page?.location[0] }}</h3>
+        <!-- <h3>LOCATION-- {{ page?.location[0] }}</h3>
+        <h3>publicUrl-- {{ page?.location[0]}}</h3>
+        <h3>ftvaEvent-- {{ ftvaEvent }}</h3> -->
+        SERIES
+        <BlockEventDetail
+          data-test="event-details"
+          :start-date="page?.startDate"
+          :end-date="page?.endDate"
+          :ongoing="page?.ongoing"
+          :locations="page?.location"
+        />
+        EVENT
         <BlockEventDetail
           data-test="event-details"
           :start-date="page?.startDateWithTime"
           :time="page?.startDateWithTime"
           :locations="page?.location"
         />
+
         <ButtonDropdown
           data-test="calendar-dropdown"
           :title="parsedCalendarData?.title"
@@ -180,6 +196,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           :debug-mode-enabled="false"
         />
       </template>
+
       <template #primaryMid>
         <CardMeta
           :guest-speaker="page?.guestSpeaker"
@@ -199,6 +216,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           :rich-text-content="page?.acknowledements"
         />
       </template>
+
       <template #sidebarBottom>
         <BlockInfo
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
@@ -206,6 +224,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
           :ftva-ticket-information="page?.ftvaTicketInformation"
         />
       </template>
+
       <template #primaryBottom>
         <DividerWayFinder />
         <SectionScreeningDetails
@@ -231,7 +250,10 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
