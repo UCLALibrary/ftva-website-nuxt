@@ -15,7 +15,7 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     ftvaEventIntroduction
     eventDescription
     acknowledgement: richText
-    startDate 
+    startDate
       @formatDateTime(
         format: "Y-m-d\\TH:i"
         timezone: "America/Los_Angeles"
@@ -58,7 +58,7 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       to: uri
       sectionHandle
       title: eventTitle
-      startDateWithTime 
+      startDateWithTime
         @formatDateTime(
           format: "Y-m-d\\TH:i"
           timezone: "America/Los_Angeles"
@@ -72,7 +72,7 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
         title
       }
   }
-  pastEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime ASC") {
+  pastEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime DESC") {
     to: uri
     title: eventTitle
     startDateWithTime @formatDateTime(
