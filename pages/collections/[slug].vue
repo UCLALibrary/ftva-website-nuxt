@@ -72,7 +72,7 @@ const parsedInfoBlock = computed(() => {
     return null
   }
   return page.value.infoBlock.map((item, index) => {
-    const parsedIcon = parsedInfoBlockIconLookup[item?.icon] ? parsedInfoBlockIconLookup[item.icon] : parsedInfoBlockIconLookup['icon-external-link']
+    const parsedIcon = parsedInfoBlockIconLookup[item?.icon] ? parsedInfoBlockIconLookup[item.icon] : parsedInfoBlockIconLookup['icon-info']
     return {
       text: item.text,
       icon: parsedIcon
