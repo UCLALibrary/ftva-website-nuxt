@@ -162,7 +162,7 @@ useHead({
         class="breadcrumb"
         :title="page?.title"
         to="/series"
-        parent-title="Screening Series"
+        parent-title="Series"
       />
 
       <ResponsiveImage
