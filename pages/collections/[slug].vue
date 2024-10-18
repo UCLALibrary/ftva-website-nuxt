@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
@@ -63,7 +63,8 @@ const parsedCarouselData = computed(() => {
 // Map icon names to svg names for infoBlock
 const parsedInfoBlockIconLookup = {
   'icon-download': 'svg-call-to-action-ftva-pdf',
-  'icon-external-link': 'svg-call-to-action-ftva-info'
+  'icon-info': 'svg-call-to-action-ftva-info',
+  'icon-external-link': 'svg-call-to-action-ftva-external-link-dark'
 }
 const parsedInfoBlock = computed(() => {
   // fail gracefully if data does not exist (server-side)
