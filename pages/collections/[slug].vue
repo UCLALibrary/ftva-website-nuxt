@@ -275,6 +275,12 @@ useHead({
     }
   }
 
+  :deep(.primary-column) {
+    .svg__icon-ftva-external-link-dark {
+      top: 5px;
+    }
+  }
+
   .cta-block {
     :deep(.block-call-to-action) {
       &:not(:last-child) {
