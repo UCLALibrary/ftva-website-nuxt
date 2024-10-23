@@ -171,10 +171,16 @@ useHead({
       <template #primaryTop>
         <CardMeta
           data-test="text-block"
-          :category="series[0]?.title"
           :title="page?.title"
-        />
+        >
+          <template v-slot:linkedcategoryslot>
+            <NuxtLink :to="`/${series[0]?.to}`">
+              {{ series[0]?.title }}
+            </NuxtLink>
+          </template>
+        </CardMeta>
       </template>
+
       <template #sidebarTop>
         <BlockEventDetail
           data-test="event-details"
@@ -243,7 +249,10 @@ useHead({
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
