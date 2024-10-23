@@ -1,6 +1,7 @@
 /* Shared styles for [slug].vue */
 
-.page-article-detail {
+.page-article-detail,
+.page-collection-detail {
   &:before {
     content: '';
     position: absolute;
