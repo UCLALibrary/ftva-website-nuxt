@@ -68,8 +68,8 @@ devDependencies:
     specifier: ^5.27.0
     version: 5.27.0
   ucla-library-website-components:
-    specifier: 3.31.3
-    version: 3.31.3(typescript@5.4.5)(vue@3.4.31)
+    specifier: 3.31.4
+    version: 3.31.4(typescript@5.4.5)(vue@3.4.31)
 
 packages:
 
@@ -3837,7 +3837,7 @@ packages:
     dependencies:
       '@vueuse/core': 10.11.1(vue@3.4.31)
       '@vueuse/shared': 10.11.1(vue@3.4.31)
-      vue-demi: 0.14.8(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -3872,7 +3872,7 @@ packages:
       '@types/web-bluetooth': 0.0.20
       '@vueuse/metadata': 10.11.1
       '@vueuse/shared': 10.11.1(vue@3.4.31)
-      vue-demi: 0.14.8(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -3982,7 +3982,7 @@ packages:
   /@vueuse/shared@10.11.1(vue@3.4.31):
     resolution: {integrity: sha512-LHpC8711VFZlDaYUXEBbFBCQ7GS3dVU9mjOhhMhXP6txTV4EhYQg/KGnQuvt/sPAtoUKq7VVUnL6mVtFoL42sA==}
     dependencies:
-      vue-demi: 0.14.8(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -10050,8 +10050,8 @@ packages:
     resolution: {integrity: sha512-jo1AgrDLzUOcdMHTVZ3HvNmMJrZ0gJMrecGiG0brpmyIm7SeNv6rimf0PN3GF87COhj2oYrZ7PocovU4f7GJEw==}
     dev: true
 
-  /ucla-library-website-components@3.31.3(typescript@5.4.5)(vue@3.4.31):
-    resolution: {integrity: sha512-9fZgBplBQcprhyvnSQPOterZA8xDC3bQlo+2+3Qagn0b7mVYEk9WS/1P7ho5HgQaQ5CJm6EOj0kOlbMVct863Q==}
+  /ucla-library-website-components@3.31.4(typescript@5.4.5)(vue@3.4.31):
+    resolution: {integrity: sha512-smdxr77ipH1/BRI59Zna3zi15Hd/88TfIERTgwg+jbJdzsShVDDsWxHZnTtDt3vLcNrL79T+x2EYEx2JSIGpCg==}
     peerDependencies:
       vue: ^3.5.12
     dependencies:
