@@ -376,10 +376,6 @@ useHead({
     .two-column {
       padding-right: 0;
     }
-
-    .sidebar-column {
-      padding-right: var(--unit-gutter);
-    }
   }
 }
 </style>

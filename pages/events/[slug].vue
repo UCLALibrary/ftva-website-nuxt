@@ -304,7 +304,7 @@ useHead({
     }
   }
 
-  @media #{$small} {
+  @media (max-width: 899px) {
     :deep(.primary-column) {
       width: inherit;
     }
