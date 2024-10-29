@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
@@ -63,7 +63,8 @@ const parsedCarouselData = computed(() => {
 // Map icon names to svg names for infoBlock
 const parsedInfoBlockIconLookup = {
   'icon-download': 'svg-call-to-action-ftva-pdf',
-  'icon-external-link': 'svg-call-to-action-ftva-info'
+  'icon-info': 'svg-call-to-action-ftva-info',
+  'icon-external-link': 'svg-call-to-action-ftva-external-link-dark'
 }
 const parsedInfoBlock = computed(() => {
   // fail gracefully if data does not exist (server-side)
@@ -71,7 +72,7 @@ const parsedInfoBlock = computed(() => {
     return null
   }
   return page.value.infoBlock.map((item, index) => {
-    const parsedIcon = parsedInfoBlockIconLookup[item?.icon] ? parsedInfoBlockIconLookup[item.icon] : parsedInfoBlockIconLookup['icon-external-link']
+    const parsedIcon = parsedInfoBlockIconLookup[item?.icon] ? parsedInfoBlockIconLookup[item.icon] : parsedInfoBlockIconLookup['icon-info']
     return {
       text: item.text,
       icon: parsedIcon
@@ -271,6 +272,12 @@ useHead({
 
     .section-wrapper.theme-paleblue {
       background-color: var(--pale-blue);
+    }
+  }
+
+  :deep(.primary-column) {
+    .svg__icon-ftva-external-link-dark {
+      top: 5px;
     }
   }
 
