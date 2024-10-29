@@ -171,7 +171,9 @@ useHead({
           </template>
         </CardMeta>
 
-        <h3 class="about-the-author">About the Author</h3>
+        <h3 class="about-the-author">
+          About the Author
+        </h3>
 
         <RichText
           v-if="page?.aboutTheAuthor"

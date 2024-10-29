@@ -173,7 +173,7 @@ useHead({
           data-test="text-block"
           :title="page?.title"
         >
-          <template v-slot:linkedcategoryslot>
+          <template #linkedcategoryslot>
             <NuxtLink :to="`/${series[0]?.to}`">
               {{ series[0]?.title }}
             </NuxtLink>
