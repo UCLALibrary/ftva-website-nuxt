@@ -3837,7 +3837,18 @@ packages:
     dependencies:
       '@vueuse/core': 10.11.1(vue@3.4.31)
       '@vueuse/shared': 10.11.1(vue@3.4.31)
-      vue-demi: 0.14.8(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
+
+  /@vueuse/components@11.1.0(vue@3.4.31):
+    resolution: {integrity: sha512-8CTbvH1rHfAlqsMdMg6G2OiIvHiHn8HRx0yyJ+Ri/C8J6cLylXAd7VESawoCAkRdAXT4ucPnj/uYHZqEb0JbBQ==}
+    dependencies:
+      '@vueuse/core': 11.1.0(vue@3.4.31)
+      '@vueuse/shared': 11.1.0(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -3872,7 +3883,19 @@ packages:
       '@types/web-bluetooth': 0.0.20
       '@vueuse/metadata': 10.11.1
       '@vueuse/shared': 10.11.1(vue@3.4.31)
-      vue-demi: 0.14.8(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
+
+  /@vueuse/core@11.1.0(vue@3.4.31):
+    resolution: {integrity: sha512-P6dk79QYA6sKQnghrUz/1tHi0n9mrb/iO1WTMk/ElLmTyNqgDeSZ3wcDf6fRBGzRJbeG1dxzEOvLENMjr+E3fg==}
+    dependencies:
+      '@types/web-bluetooth': 0.0.20
+      '@vueuse/metadata': 11.1.0
+      '@vueuse/shared': 11.1.0(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -3982,7 +4005,16 @@ packages:
   /@vueuse/shared@10.11.1(vue@3.4.31):
     resolution: {integrity: sha512-LHpC8711VFZlDaYUXEBbFBCQ7GS3dVU9mjOhhMhXP6txTV4EhYQg/KGnQuvt/sPAtoUKq7VVUnL6mVtFoL42sA==}
     dependencies:
-      vue-demi: 0.14.8(vue@3.4.31)
+      vue-demi: 0.14.10(vue@3.4.31)
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+    dev: true
+
+  /@vueuse/shared@11.1.0(vue@3.4.31):
+    resolution: {integrity: sha512-YUtIpY122q7osj+zsNMFAfMTubGz0sn5QzE5gPzAIiCmtt2ha3uQUY1+JPyL4gRCTsLPX82Y9brNbo/aqlA91w==}
+    dependencies:
+      vue-demi: 0.14.10(vue@3.4.31)
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
@@ -8583,6 +8615,7 @@ packages:
       '@vue/composition-api': ^1.4.0
       typescript: '>=4.4.4'
       vue: ^2.6.14 || ^3.5.11
+
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
@@ -10052,6 +10085,7 @@ packages:
 
   /ucla-library-website-components@3.31.5(typescript@5.4.5)(vue@3.4.31):
     resolution: {integrity: sha512-jcoZGIv5w5DGLpo8WPd6trV/J4RV5ytyhdnXQTmboRphPydnESmWkvdt1gACXtKGllXi5lUy8Dfoez6lsPI5vA==}
+
     peerDependencies:
       vue: ^3.5.12
     dependencies:
@@ -10062,6 +10096,7 @@ packages:
       date-fns: 2.30.0
       lodash: 4.17.21
       pinia: 2.2.5(typescript@5.4.5)(vue@3.4.31)
+
       vue: 3.4.31(typescript@5.4.5)
       vue3-carousel: 0.3.3(vue@3.4.31)
     transitivePeerDependencies:
