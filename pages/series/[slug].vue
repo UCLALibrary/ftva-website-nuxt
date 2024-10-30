@@ -155,7 +155,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-event-series-detail"
+    class="page page-detail page-event-series-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -305,27 +305,6 @@ useHead({
 .page-event-series-detail {
   position: relative;
 
-  &:before {
-    content: '';
-    position: absolute;
-    background-color: var(--pale-blue);
-    aspect-ratio: 1440 / 520;
-    max-height: 518px; //prevent overflow on large screens
-    min-height: 225px; //prevent too much shrinking on small screens
-    width: 100%;
-    z-index: -1;
-  }
-
-  .one-column {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-  }
-
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
@@ -368,14 +347,11 @@ useHead({
   // MEDIUM DEVICE STYLES
   @media (max-width: 1200px) {
 
-    .one-column {
-      padding-left: var(--unit-gutter);
-      padding-right: var(--unit-gutter);
-    }
-
     .two-column {
       padding-right: 0;
     }
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>

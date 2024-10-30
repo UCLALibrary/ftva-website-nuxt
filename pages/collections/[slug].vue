@@ -129,7 +129,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-collection-detail"
+    class="page page-detail page-collection-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -244,27 +244,6 @@ useHead({
 .page-collection-detail {
   position: relative;
 
-  &:before {
-    content: '';
-    position: absolute;
-    background-color: var(--pale-blue);
-    aspect-ratio: 1440 / 520;
-    max-height: 518px; //prevent overflow on large screens
-    min-height: 225px; //prevent too much shrinking on small screens
-    width: 100%;
-    z-index: -1;
-  }
-
-  .one-column {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-  }
-
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
@@ -295,4 +274,6 @@ useHead({
     }
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>
