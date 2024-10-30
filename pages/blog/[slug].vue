@@ -160,7 +160,6 @@ useHead({
           :title="page?.title"
           :byline-one="parsedByline"
           :date-created="page?.postDate"
-          :text="page?.aboutTheAuthor"
           section-handle="ftvaArticle"
         >
           <template #sharebutton>
@@ -171,7 +170,19 @@ useHead({
             />
           </template>
         </CardMeta>
+
+        <h3 class="about-the-author">
+          About the Author
+        </h3>
+
+        <RichText
+          v-if="page?.aboutTheAuthor"
+          data-test="aboutTheAuthor"
+          :rich-text-content="page?.aboutTheAuthor"
+        />
+
         <DividerWayFinder class="remove-top-margin" />
+
         <FlexibleBlocks
           class="flexible-content"
           :blocks="page.blocks"
@@ -199,7 +210,10 @@ useHead({
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // PAGE STYLES
 .page-article-detail {
   position: relative;
@@ -254,9 +268,10 @@ useHead({
     }
   }
 
-  // if there is no author content, hide the 'about the author' heading
-  :deep(.heading-about-author:not(:has(+.rich-text))) {
-    display: none;
+  .about-the-author {
+    @include ftva-subtitle-2;
+    color: $accent-blue;
+    padding-bottom: 4px;
   }
 
   // remove max-width from rich-text inside flexible-blocks for ftva

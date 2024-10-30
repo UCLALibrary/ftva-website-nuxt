@@ -171,10 +171,16 @@ useHead({
       <template #primaryTop>
         <CardMeta
           data-test="text-block"
-          :category="series[0]?.title"
           :title="page?.title"
-        />
+        >
+          <template #linkedcategoryslot>
+            <NuxtLink :to="`/${series[0]?.to}`">
+              {{ series[0]?.title }}
+            </NuxtLink>
+          </template>
+        </CardMeta>
       </template>
+
       <template #sidebarTop>
         <BlockEventDetail
           data-test="event-details"
@@ -192,6 +198,7 @@ useHead({
           :debug-mode-enabled="false"
         />
       </template>
+
       <template #primaryMid>
         <CardMeta
           :guest-speaker="page?.guestSpeaker"
@@ -211,6 +218,7 @@ useHead({
           :rich-text-content="page?.acknowledements"
         />
       </template>
+
       <template #sidebarBottom>
         <BlockInfo
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
@@ -218,6 +226,7 @@ useHead({
           :ftva-ticket-information="page?.ftvaTicketInformation"
         />
       </template>
+
       <template #primaryBottom>
         <DividerWayFinder />
         <SectionScreeningDetails
@@ -243,7 +252,10 @@ useHead({
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
