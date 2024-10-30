@@ -65,8 +65,8 @@ devDependencies:
     specifier: ^1.66.1
     version: 1.80.3
   ucla-library-design-tokens:
-    specifier: ^5.27.0
-    version: 5.27.1
+    specifier: ^5.27.2
+    version: 5.27.2
   ucla-library-website-components:
     specifier: 3.31.6
     version: 3.31.6(typescript@5.6.3)(vue@3.5.12)
@@ -1628,6 +1628,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.8
+      napi-wasm: 1.1.3
     bundledDependencies:
       - napi-wasm
 
@@ -5938,6 +5939,9 @@ packages:
   /nanotar@0.1.1:
     resolution: {integrity: sha512-AiJsGsSF3O0havL1BydvI4+wR76sKT+okKRwWIaK96cZUnXqH0uNBOsHlbwZq3+m2BR1VKqHDVudl3gO4mYjpQ==}
 
+  /napi-wasm@1.1.3:
+    resolution: {integrity: sha512-h/4nMGsHjZDCYmQVNODIrYACVJ+I9KItbG+0si6W/jSjdA9JbWDoU4LLeMXVcEQGHjttI2tuXqDrbGF7qkUHHg==}
+
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -7890,8 +7894,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  /ucla-library-design-tokens@5.27.1:
-    resolution: {integrity: sha512-ITiA/3ZGiH0y2Jt8KIhOqLt5FEX53Zhmp+h6CvxGmu3dmzNZArh2NdP/EDw4QyHRYJibOWKyudGObyyJS6BBsA==}
+  /ucla-library-design-tokens@5.27.2:
+    resolution: {integrity: sha512-+GgHevX1Fflu1uSAgT7otxzqLUuOAXaVKK9vKqTckSiSMxMs1dqBBXqA6+++HuPym2MazR0lSBHA8B53cfVk1Q==}
     dev: true
 
   /ucla-library-website-components@3.31.6(typescript@5.6.3)(vue@3.5.12):

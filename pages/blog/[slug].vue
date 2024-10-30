@@ -270,8 +270,7 @@ useHead({
 
   .about-the-author {
     @include ftva-subtitle-2;
-    color: #115daf;
-    /* $accent-blue; */
+    color: $accent-blue;
     padding-bottom: 4px;
   }
 
