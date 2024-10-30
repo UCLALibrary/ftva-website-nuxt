@@ -48,6 +48,19 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - uses: ./.github/workflows/setup-workspace
+            # Cache the Cypress binary
+            - name: Cache Cypress binary
+              uses: actions/cache@v3
+              with:
+                  path: ~/.cache/Cypress
+                  key: cypress-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+                  restore-keys: |
+                      cypress-${{ runner.os }}-
+            
+            # Install Cypress binary
+            - name: Install Cypress
+              run: pnpx cypress install
+
             - name: Set deployment date
               id: set-deploy-date
               run: echo "DEPLOY_DATE=$(date '+%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
