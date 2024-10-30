@@ -95,10 +95,14 @@ jobs:
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
+            # Install Cypress binary explicitly to ensure it's available
+            - name: Install Cypress
+              run: npx cypress install
+              
             - uses: cypress-io/github-action@v3
               with:
                   start: pnpm dlx serve .output/public
-                  install: false
+                  install: false # Skip automatic install
                   wait-on: http://127.0.0.1:3000
                   wait-on-timeout: 110
               env:
