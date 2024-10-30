@@ -2,7 +2,8 @@
 
 .page-article-detail,
 .page-collection-detail,
-.page-event-detail {
+.page-event-detail,
+.page-event-series-detail {
   &:before {
     content: '';
     position: absolute;
