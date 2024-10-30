@@ -210,10 +210,7 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-article-detail {
   position: relative;
@@ -253,7 +250,7 @@ useHead({
     padding-bottom: 4px;
   }
 
-  // remove max-width from rich-text inside flexible-blocks for ftva
+  /* remove max-width from rich-text inside flexible-blocks for ftva */
   :deep(.flexible-block) {
     .rich-text {
       max-width: none;
