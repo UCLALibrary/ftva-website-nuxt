@@ -110,7 +110,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-article-detail"
+    class="page page-detail page-article-detail"
   >
     <div class="one-column">
       <NavBreadcrumb

@@ -123,7 +123,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-event-detail"
+    class="page page-detail page-event-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
