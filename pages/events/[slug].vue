@@ -123,7 +123,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-event-detail"
+    class="page page-detail page-event-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -171,10 +171,16 @@ useHead({
       <template #primaryTop>
         <CardMeta
           data-test="text-block"
-          :category="series[0]?.title"
           :title="page?.title"
-        />
+        >
+          <template #linkedcategoryslot>
+            <NuxtLink :to="`/${series[0]?.to}`">
+              {{ series[0]?.title }}
+            </NuxtLink>
+          </template>
+        </CardMeta>
       </template>
+
       <template #sidebarTop>
         <BlockEventDetail
           data-test="event-details"
@@ -192,6 +198,7 @@ useHead({
           :debug-mode-enabled="false"
         />
       </template>
+
       <template #primaryMid>
         <CardMeta
           :guest-speaker="page?.guestSpeaker"
@@ -211,6 +218,7 @@ useHead({
           :rich-text-content="page?.acknowledements"
         />
       </template>
+
       <template #sidebarBottom>
         <BlockInfo
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
@@ -218,6 +226,7 @@ useHead({
           :ftva-ticket-information="page?.ftvaTicketInformation"
         />
       </template>
+
       <template #primaryBottom>
         <DividerWayFinder />
         <SectionScreeningDetails
@@ -248,27 +257,6 @@ useHead({
 .page-event-detail {
   position: relative;
 
-  &:before {
-    content: '';
-    position: absolute;
-    background-color: var(--pale-blue);
-    aspect-ratio: 1440 / 520;
-    max-height: 518px; //prevent overflow on large screens
-    min-height: 225px; //prevent too much shrinking on small screens
-    width: 100%;
-    z-index: -1;
-  }
-
-  .one-column {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-  }
-
   .two-column {
 
     .ftva.button-dropdown {
@@ -292,13 +280,6 @@ useHead({
   }
 
   @media (max-width: 1200px) {
-
-    // .two-column
-    .one-column {
-      padding-left: var(--unit-gutter);
-      padding-right: var(--unit-gutter);
-    }
-
     :deep(.primary-column) {
       width: 65%;
     }
@@ -314,4 +295,6 @@ useHead({
     }
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>

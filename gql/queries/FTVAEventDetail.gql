@@ -52,7 +52,7 @@ query FTVAEventDetail($slug: [String!]) {
 
     # SIDEBAR
     # BlockEventDetail
-    startDateWithTime 
+    startDateWithTime
       @formatDateTime(
         format: "Y-m-d\\TH:i"
         timezone: "America/Los_Angeles"
@@ -85,6 +85,7 @@ query FTVAEventDetail($slug: [String!]) {
     relatedToEntries: {section: "ftvaEvent", slug: $slug}) {
     ... on ftvaEventSeries_eventSeries_Entry {
       id
+      to: uri
       slug
       typeHandle
       title

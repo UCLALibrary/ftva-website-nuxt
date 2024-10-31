@@ -110,7 +110,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-article-detail"
+    class="page page-detail page-article-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -160,7 +160,6 @@ useHead({
           :title="page?.title"
           :byline-one="parsedByline"
           :date-created="page?.postDate"
-          :text="page?.aboutTheAuthor"
           section-handle="ftvaArticle"
         >
           <template #sharebutton>
@@ -171,7 +170,19 @@ useHead({
             />
           </template>
         </CardMeta>
+
+        <h3 class="about-the-author">
+          About the Author
+        </h3>
+
+        <RichText
+          v-if="page?.aboutTheAuthor"
+          data-test="aboutTheAuthor"
+          :rich-text-content="page?.aboutTheAuthor"
+        />
+
         <DividerWayFinder class="remove-top-margin" />
+
         <FlexibleBlocks
           class="flexible-content"
           :blocks="page.blocks"
@@ -204,27 +215,6 @@ useHead({
 .page-article-detail {
   position: relative;
 
-  &:before {
-    content: '';
-    position: absolute;
-    background-color: var(--pale-blue);
-    aspect-ratio: 1440 / 520;
-    max-height: 518px; //prevent overflow on large screens
-    min-height: 225px; //prevent too much shrinking on small screens
-    width: 100%;
-    z-index: -1;
-  }
-
-  .one-column {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-  }
-
   // makes all EventSeries same height
   :deep(.card) {
     min-height: 350px;
@@ -254,12 +244,13 @@ useHead({
     }
   }
 
-  // if there is no author content, hide the 'about the author' heading
-  :deep(.heading-about-author:not(:has(+.rich-text))) {
-    display: none;
+  .about-the-author {
+    @include ftva-subtitle-2;
+    color: $accent-blue;
+    padding-bottom: 4px;
   }
 
-  // remove max-width from rich-text inside flexible-blocks for ftva
+  /* remove max-width from rich-text inside flexible-blocks for ftva */
   :deep(.flexible-block) {
     .rich-text {
       max-width: none;
@@ -268,8 +259,6 @@ useHead({
   }
 
   @media (max-width: 1200px) {
-
-    .one-column,
     .two-column {
       padding-left: var(--unit-gutter);
       padding-right: var(--unit-gutter);
@@ -300,4 +289,6 @@ useHead({
     }
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>
