@@ -11,20 +11,20 @@ export async function useIndexAggregator() {
           size: 0,
           query: {
             bool: {
-              filter: [
-                { term: { 'sectionHandle.keyword': 'ftvaEvent' } },
-              ],
-            },
+              filter: {
+                term: { 'sectionHandle.keyword': 'ftvaEvent' }
+              }
+            }
           },
           aggs: {
             'Event Type': {
               terms: {
                 field: 'tagLabels.title.keyword',
                 size: 100
-              },
-            },
-          },
-        }),
+              }
+            }
+          }
+        })
       }
   )
 

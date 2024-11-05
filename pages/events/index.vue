@@ -40,11 +40,11 @@ async function setFilters() {
   const searchAggsResponse = await useIndexAggregator()
 
   console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
-  /* searchFilters.value = getListingFilters(
-  //   // TODO is getListingFilters
-  //   searchAggsResponse,
-  //   config.newsIndex.filters
-  // ) */
+  // TODO will we use getListingFilters function here?
+  //   searchFilters.value = getListingFilters(
+  //     searchAggsResponse,
+  //     config.newsIndex.filters
+  //  )
 }
 
 onMounted(async () => {
