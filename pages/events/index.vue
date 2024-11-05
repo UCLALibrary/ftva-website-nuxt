@@ -7,6 +7,7 @@ import _get from 'lodash/get'
 
 // GQL
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
+import { useIndexAggregator } from '~/composables/useIndexAggregator'
 
 const { $graphql } = useNuxtApp()
 
@@ -31,6 +32,24 @@ if (!data.value.entries) {
 }
 
 const page = ref(_get(data.value, 'entries[0]', {}))
+
+// SEARCH
+const searchFilters = ref([])
+// fetch filters for the page from ES after page loads in Onmounted hook on the client side
+async function setFilters() {
+  const searchAggsResponse = await useIndexAggregator()
+
+  console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
+  /* searchFilters.value = getListingFilters(
+  //   // TODO is getListingFilters
+  //   searchAggsResponse,
+  //   config.newsIndex.filters
+  // ) */
+}
+
+onMounted(async () => {
+  await setFilters()
+})
 </script>
 
 <template>

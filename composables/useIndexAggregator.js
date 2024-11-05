@@ -1,9 +1,5 @@
-export async function useIndexAggregator(fields) {
-  // fail gracefully if no fields are provided
-  if (!fields || fields.length === 0) return
-
+export async function useIndexAggregator() {
   const config = useRuntimeConfig()
-  // TODO is fetch path correct? ticket mentioned Alias /_search
   const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
         headers: {
@@ -16,15 +12,14 @@ export async function useIndexAggregator(fields) {
           query: {
             bool: {
               filter: [
-                { term: { "sectionHandle.keyword": "ftvaEvent" } },
+                { term: { 'sectionHandle.keyword': 'ftvaEvent' } },
               ],
             },
           },
           aggs: {
-            // TODO is space correct?
-            "Event Type": {
+            'Event Type': {
               terms: {
-                field: "tagLabels.title.keyword",
+                field: 'tagLabels.title.keyword',
                 size: 100
               },
             },
@@ -32,7 +27,7 @@ export async function useIndexAggregator(fields) {
         }),
       }
   )
-  
+
   const data = await response.json()
   return data.aggregations
 }
