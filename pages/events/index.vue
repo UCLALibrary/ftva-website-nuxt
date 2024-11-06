@@ -40,16 +40,12 @@ async function setFilters() {
   const searchAggsResponse = await useIndexAggregator()
 
   console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
-  // TODO will we use getListingFilters function here?
-  //   searchFilters.value = getListingFilters(
-  //     searchAggsResponse,
-  //     config.newsIndex.filters
-  //  )
-}
+  // TODO format the data as needed for the page
+  searchFilters.value = searchAggsResponse
 
-onMounted(async () => {
-  await setFilters()
-})
+  onMounted(async () => {
+    await setFilters()
+  })
 </script>
 
 <template>
