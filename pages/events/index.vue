@@ -8,6 +8,8 @@ import _get from 'lodash/get'
 // GQL
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
+import useIndexFilter from '~/composables/useIndexFilter'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('event-list', async () => {
