@@ -8,11 +8,18 @@ import {
 
 // HELPERS
 import _get from 'lodash/get'
-import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
 import removeTags from '~/utils/removeTags'
 
 // GQL
+import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
+
+// COMPOSABLE
+import { useContentIndexer } from '/composables/useContentIndexer'
+
 import socialList from '~/utils/socialList'
+
+// COMPOSABLE
+import { useContentIndexer } from '/composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
 
@@ -35,6 +42,19 @@ if (!data.value.ftvaArticle) {
     statusMessage: 'Page Not Found',
     fatal: true
   })
+}
+
+// This is creating an index of the main content (not related content)
+if (data.value.ftvaArticle && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    // Index the article data using the composable during static build
+    await indexContent(data.value.ftvaArticle, route.params.slug)
+    console.log('Article indexed successfully during static build')
+  } catch (error) {
+    console.error('Failed to index article during static build:', error)
+  }
 }
 
 const page = ref(_get(data.value, 'ftvaArticle', {}))
