@@ -6,13 +6,15 @@ import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, Divide
 
 // HELPERS
 import _get from 'lodash/get'
-import removeTags from '../utils/removeTags'
 
 // GQL
 import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
+
+//UTILS
+import removeTags from '../utils/removeTags'
 
 const { $graphql } = useNuxtApp()
 

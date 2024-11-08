@@ -6,14 +6,17 @@ import { BlockCallToAction, CardMeta, DividerWayFinder, NavBreadcrumb, Responsiv
 
 // HELPERS
 import _get from 'lodash/get'
-import removeTags from '~/utils/removeTags'
-import socialList from '~/utils/socialList'
+
 
 // GQL
 import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
+
+// UTILS
+import removeTags from '~/utils/removeTags'
+import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
 
