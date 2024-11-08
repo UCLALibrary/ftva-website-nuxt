@@ -7,7 +7,7 @@ export function useContentIndexer() {
   async function indexContent(data, slug) {
 
     try {
-      if (import.meta.prerender === true && data && slug && esIndex) {
+      if (data && slug && esIndex) {
         /* console.log(
                 "this is the elasticsearch plugin: " + JSON.stringify(data)
             ) */
@@ -71,6 +71,7 @@ export function useContentIndexer() {
       throw new Error('Elastic Search Indexing failed ' + e) // TODO uncomment when cause is clear
     }
   }
+
 
   return {
     indexContent

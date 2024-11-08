@@ -43,8 +43,8 @@ if (data.value.ftvaEventSeries && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     // Index the event series data using the composable during static build
-    //await indexContent(data.value.ftvaEventSeries, route.params.slug)
-    console.log('Event series indexed successfully during static build')
+    await indexContent(data.value.ftvaEventSeries, route.params.slug)
+    // console.log('Event series indexed successfully during static build')
   } catch (error) {
     console.error('FAILED TO INDEX EVENT SERIES during static build:', error)
   }
