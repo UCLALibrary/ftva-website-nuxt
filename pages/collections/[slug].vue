@@ -48,7 +48,7 @@ if (data.value.ftvaCollection && import.meta.prerender) {
     await indexContent(data.value.ftvaCollection, route.params.slug)
     console.log('Collection indexed successfully during static build')
   } catch (error) {
-    console.error('Failed to collection event during static build:', error)
+    console.error('FAILED TO INDEX COLLECTION during static build:', error)
   }
 }
 

@@ -45,7 +45,7 @@ if (data.value.ftvaEvent && import.meta.prerender) {
     await indexContent(data.value.ftvaEvent, route.params.slug)
     console.log('Event indexed successfully during static build')
   } catch (error) {
-    console.error('Failed to index event during static build:', error)
+    console.error('FAILED TO INDEX EVENT during static build:', error)
   }
 }
 

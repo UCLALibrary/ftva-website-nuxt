@@ -50,7 +50,7 @@ if (data.value.ftvaArticle && import.meta.prerender) {
     await indexContent(data.value.ftvaArticle, route.params.slug)
     console.log('Article indexed successfully during static build')
   } catch (error) {
-    console.error('Failed to index article during static build:', error)
+    console.error('FAILED TO INDEX ARTICLE during static build:', error)
   }
 }
 
