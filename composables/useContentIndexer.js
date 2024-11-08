@@ -5,18 +5,24 @@ export function useContentIndexer() {
   const esWriteKey = useRuntimeConfig().esWriteKey
 
   async function indexContent(data, slug) {
+
     try {
-      if (data && slug && esIndex) {
+      if (import.meta.prerender === true && data && slug && esIndex) {
+        /* console.log(
+                "this is the elasticsearch plugin: " + JSON.stringify(data)
+            ) */
         // console.log(`Requesting URL: ${esURL}/${esIndex}/_doc/${slug}`)
-        const docExistsResponseValue = await $fetch(
-                  `${esURL}/${esIndex}/_doc/${slug}`,
-                  {
-                    headers: {
-                      Authorization: `ApiKey ${esReadKey}`,
-                    },
-                  }
+        const docExists = await fetch(
+                `${esURL}/${esIndex}/_doc/${slug}`,
+                {
+                  headers: {
+                    Authorization: `ApiKey ${esReadKey}`,
+                  },
+                }
         )
 
+        const body = await docExists.text()
+        const docExistsResponseValue = JSON.parse(body)
         // console.log('Existing data in ES', docExistsResponseValue)
 
         if (docExistsResponseValue && docExistsResponseValue._source) {
@@ -27,31 +33,34 @@ export function useContentIndexer() {
             doc: data
           }
           // console.log('postBody', JSON.stringify(postBody))
-          const updateJson = await $fetch(
-                      `${esURL}/${esIndex}/_update/${slug}`,
-                      {
-                        headers: {
-                          Authorization: `ApiKey ${esWriteKey}`,
-                          'Content-Type': 'application/json',
-                        },
-                        method: 'POST',
-                        body: JSON.stringify(postBody),
-                      }
+          const updateResponse = await fetch(
+                    `${esURL}/${esIndex}/_update/${slug}`,
+                    {
+                      headers: {
+                        Authorization: `ApiKey ${esWriteKey}`,
+                        'Content-Type': 'application/json',
+                      },
+                      method: 'POST',
+                      body: JSON.stringify(postBody),
+                    }
           )
-
+          // console.log('Update document in ES', updateResponse)
+          const updateJson = await updateResponse.text()
           console.log('Update in ES', updateJson)
         } else {
-          const response = await $fetch(
-                      `${esURL}/${esIndex}/_doc/${slug}`,
-                      {
-                        headers: {
-                          Authorization: `ApiKey ${esWriteKey}`,
-                          'Content-Type': 'application/json',
-                        },
-                        method: 'POST',
-                        body: JSON.stringify(data),
-                      }
+          const response = await fetch(
+                    `${esURL}/${esIndex}/_doc/${slug}`,
+                    {
+                      headers: {
+                        Authorization: `ApiKey ${esWriteKey}`,
+                        'Content-Type': 'application/json',
+                      },
+                      method: 'POST',
+                      body: JSON.stringify(data),
+                    }
           )
+
+          // console.log('Create a new document in ES:', await response.text())
         }
       } else {
         console.warn('not indexing anything')

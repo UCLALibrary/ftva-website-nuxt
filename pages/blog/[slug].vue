@@ -48,7 +48,7 @@ if (data.value.ftvaArticle && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     // Index the article data using the composable during static build
-    await indexContent(data.value.ftvaArticle, route.params.slug)
+    // await indexContent(data.value.ftvaArticle, route.params.slug)
     console.log('Article indexed successfully during static build')
   } catch (error) {
     console.error('FAILED TO INDEX ARTICLE during static build:', error)
