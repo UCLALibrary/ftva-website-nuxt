@@ -4,16 +4,15 @@
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import { BlockCallToAction, CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
 
-// HELPERS
-import _get from 'lodash/get'
-import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
-import { useContentIndexer } from '~/composables/useContentIndexer'
-import removeTags from '~/utils/removeTags'
-
 // GQL
+import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 
 // COMPOSABLE
+import { useContentIndexer } from '~/composables/useContentIndexer'
 
+// HELPERS
+import _get from 'lodash/get'
+import removeTags from '~/utils/removeTags'
 import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()

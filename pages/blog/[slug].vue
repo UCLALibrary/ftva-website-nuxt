@@ -15,7 +15,6 @@ import { useContentIndexer } from '~/composables/useContentIndexer'
 // HELPERS
 import _get from 'lodash/get'
 import removeTags from '~/utils/removeTags'
-
 import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
