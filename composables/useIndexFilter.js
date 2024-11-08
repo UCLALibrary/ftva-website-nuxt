@@ -5,8 +5,7 @@ export default function useIndexFilter() {
 async function indexFilters(
   sectionHandle,
   filters,
-  tagLabels,
-  date, // array of single or multiple dates?
+  date,
   sort,
   orderBy,
   source = ['*'],
@@ -36,9 +35,6 @@ async function indexFilters(
               bool: {
                 filter: [
                   ...parseSectionHandle(sectionHandle),
-                  ...parseTagLabels(tagLabels),
-
-                  // Is parseFilter needed?
                   ...parseFilterQuery(filters),
                   // {
                   //   range: {
@@ -63,6 +59,7 @@ async function indexFilters(
 function parseDateRange(date) {}
 
 function parseFilterQuery(filters) {
+  console.log('parseFilterQuery argument: ', filters)
   if (!filters || filters.length === 0) return []
   const boolQuery = []
   /* Example structure we want this function to return for ES
@@ -100,9 +97,9 @@ function parseSectionHandle(sectionHandle) {
   const boolQuery = []
 
   const sectionHandleTermQueryObj = {}
-
+  const key = 'sectionHandle.keyword'
   sectionHandleTermQueryObj.term = {}
-  sectionHandleTermQueryObj.term.sectionHandle = sectionHandle
+  sectionHandleTermQueryObj.term[key] = sectionHandle
 
   boolQuery.push(sectionHandleTermQueryObj)
 
@@ -119,17 +116,4 @@ function parseSort(sortField, orderBy = 'asc') {
   }
 
   return parseQuery
-}
-
-function parseTagLabels(tagLabels) {
-  if (!tagLabels || tagLabels.length === 0) return []
-
-  const tags = []
-
-  tagLabels.forEach(tag => tags.push(tag))
-
-  const tagLabelQueryObj = {}
-  tagLabelQueryObj.term.tagLabel = tags
-
-  return tagLabelQueryObj
 }
