@@ -18,9 +18,6 @@ import { useContentIndexer } from '/composables/useContentIndexer'
 
 import socialList from '~/utils/socialList'
 
-// COMPOSABLE
-import { useContentIndexer } from '/composables/useContentIndexer'
-
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
