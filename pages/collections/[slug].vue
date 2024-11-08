@@ -7,7 +7,6 @@ import { BlockCallToAction, CardMeta, DividerWayFinder, NavBreadcrumb, Responsiv
 // HELPERS
 import _get from 'lodash/get'
 
-
 // GQL
 import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 
