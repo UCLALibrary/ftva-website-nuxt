@@ -4,15 +4,15 @@
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionTeaserList, SectionWrapper, TabItem, TabList, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
 
+// HELPERS
+import _get from 'lodash/get'
+
 // GQL
 import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
-
-// HELPERS
-import _get from 'lodash/get'
 
 const { $graphql } = useNuxtApp()
 

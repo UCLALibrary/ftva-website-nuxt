@@ -6,16 +6,16 @@ import {
   BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar
 } from 'ucla-library-website-components'
 
+// HELPERS
+import _get from 'lodash/get'
+import removeTags from '~/utils/removeTags'
+import socialList from '~/utils/socialList'
+
 // GQL
 import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
-
-// HELPERS
-import _get from 'lodash/get'
-import removeTags from '~/utils/removeTags'
-import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
 
