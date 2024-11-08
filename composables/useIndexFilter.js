@@ -5,7 +5,7 @@ export default function useIndexFilter() {
 async function indexFilters(
   sectionHandle,
   filters,
-  date,
+  dates,
   sort,
   orderBy,
   source = ['*'],
@@ -36,13 +36,7 @@ async function indexFilters(
                 filter: [
                   ...parseSectionHandle(sectionHandle),
                   ...parseFilterQuery(filters),
-                  // {
-                  //   range: {
-                  //     startDate: {
-                  //       gte: '2015-01-01'
-                  //     }
-                  //   }
-                  // }
+                  parseDateRange(dates)
                 ]
               },
             },
@@ -55,14 +49,28 @@ async function indexFilters(
   return data
 }
 
-// What will date query/search arguments look like?
-function parseDateRange(date) {}
+function parseDateRange(dates) {
+  if (!dates || dates.length === 0) return
+
+  const dateObj = { range: {} }
+  dateObj.range.startDate = {}
+
+  if (dates.length === 2) {
+    dateObj.range.startDate.gte = dates[0]
+    dateObj.range.startDate.lte = dates[1]
+  } else {
+    dateObj.range.startDate.gte = dates[0]
+  }
+
+  dateObj.range.startDate.format = 'yyyy-MM-dd'
+
+  return dateObj
+}
 
 function parseFilterQuery(filters) {
-  console.log('parseFilterQuery argument: ', filters)
   if (!filters || filters.length === 0) return []
   const boolQuery = []
-  /* Example structure we want this function to return for ES
+  /* Example structure to return for ES
     [
       {
         "term": {

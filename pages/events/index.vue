@@ -8,8 +8,6 @@ import _get from 'lodash/get'
 // GQL
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
-import useIndexFilter from '~/composables/useIndexFilter'
-
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('event-list', async () => {
@@ -45,26 +43,10 @@ async function setFilters() {
   searchFilters.value = searchAggsResponse
 }
 
-onMounted(async () => {
-  await setFilters()
-})
-// ES PLACEHOLDER / TEST
 const { indexFilters } = useIndexFilter()
 
-const testSectionHandle = 'ftvaEvent'
-const testDates = [''] // 2027-03-08
-
-// Returns 5 hits:
-// const testFilters = { 'tagLabels.title.keyword': ['Guest speaker', '35mm'] }
-
-// Returns 2 hits:
-const testFilters = { 'tagLabels.title.keyword': ['DCP', 'Dance'] }
-
-const testSort = 'startDate'
-
 onMounted(async () => {
-  const test = await indexFilters(testSectionHandle, testFilters, testDates, testSort)
-  console.log(test.hits.hits)
+  await setFilters()
 })
 
 </script>
