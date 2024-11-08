@@ -11,7 +11,7 @@ import _get from 'lodash/get'
 import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 // COMPOSABLE
-import { useContentIndexer } from '../composables/useContentIndexer'
+import { useContentIndexer } from '~/composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
 
 const { $graphql } = useNuxtApp()

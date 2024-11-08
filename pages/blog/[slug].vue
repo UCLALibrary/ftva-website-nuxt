@@ -9,7 +9,7 @@ import {
 // HELPERS
 import _get from 'lodash/get'
 import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
-import { useContentIndexer } from '../composables/useContentIndexer'
+import { useContentIndexer } from '~/composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
 
 // GQL
