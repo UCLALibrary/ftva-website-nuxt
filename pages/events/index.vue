@@ -31,6 +31,21 @@ if (!data.value.entries) {
 }
 
 const page = ref(_get(data.value, 'entries[0]', {}))
+
+// SEARCH
+const searchFilters = ref([])
+// fetch filters for the page from ES after page loads in Onmounted hook on the client side
+async function setFilters() {
+  const searchAggsResponse = await useIndexAggregator()
+
+  console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
+  // TODO format the data as needed for the page
+  searchFilters.value = searchAggsResponse
+}
+
+onMounted(async () => {
+  await setFilters()
+})
 </script>
 
 <template>
