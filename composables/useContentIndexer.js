@@ -7,9 +7,6 @@ export function useContentIndexer() {
   async function indexContent(data, slug) {
     try {
       if (data && slug && esIndex) {
-        /* console.log(
-                  "this is the elasticsearch plugin: " + JSON.stringify(data)
-              ) */
         // console.log(`Requesting URL: ${esURL}/${esIndex}/_doc/${slug}`)
         const docExistsResponseValue = await $fetch(
                   `${esURL}/${esIndex}/_doc/${slug}`,
