@@ -139,7 +139,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-event-detail"
+    class="page page-detail page-event-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -268,34 +268,10 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
-
-  &:before {
-    content: '';
-    position: absolute;
-    background-color: var(--pale-blue);
-    aspect-ratio: 1440 / 520;
-    max-height: 518px; //prevent overflow on large screens
-    min-height: 225px; //prevent too much shrinking on small screens
-    width: 100%;
-    z-index: -1;
-  }
-
-  .one-column {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-  }
 
   .two-column {
 
@@ -320,13 +296,6 @@ useHead({
   }
 
   @media (max-width: 1200px) {
-
-    // .two-column
-    .one-column {
-      padding-left: var(--unit-gutter);
-      padding-right: var(--unit-gutter);
-    }
-
     :deep(.primary-column) {
       width: 65%;
     }
@@ -342,4 +311,6 @@ useHead({
     }
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>

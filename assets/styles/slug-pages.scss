@@ -1,0 +1,31 @@
+/* Shared styles for [slug].vue */
+
+.page-detail {
+  &:before {
+    content: '';
+    position: absolute;
+    background-color: var(--pale-blue);
+    aspect-ratio: 1440 / 520;
+    max-height: 518px; //prevent overflow on large screens
+    min-height: 225px; //prevent too much shrinking on small screens
+    width: 100%;
+    z-index: -1;
+  }
+
+  .one-column {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+
+    :deep(.nav-breadcrumb) {
+      padding: 0px;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .one-column {
+      padding-left: var(--unit-gutter);
+      padding-right: var(--unit-gutter);
+    }
+  }
+}

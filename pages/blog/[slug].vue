@@ -127,7 +127,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-article-detail"
+    class="page page-detail page-article-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -227,34 +227,10 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-article-detail {
   position: relative;
-
-  &:before {
-    content: '';
-    position: absolute;
-    background-color: var(--pale-blue);
-    aspect-ratio: 1440 / 520;
-    max-height: 518px; //prevent overflow on large screens
-    min-height: 225px; //prevent too much shrinking on small screens
-    width: 100%;
-    z-index: -1;
-  }
-
-  .one-column {
-    width: 100%;
-    max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-  }
 
   // makes all EventSeries same height
   :deep(.card) {
@@ -291,7 +267,7 @@ useHead({
     padding-bottom: 4px;
   }
 
-  // remove max-width from rich-text inside flexible-blocks for ftva
+  /* remove max-width from rich-text inside flexible-blocks for ftva */
   :deep(.flexible-block) {
     .rich-text {
       max-width: none;
@@ -300,8 +276,6 @@ useHead({
   }
 
   @media (max-width: 1200px) {
-
-    .one-column,
     .two-column {
       padding-left: var(--unit-gutter);
       padding-right: var(--unit-gutter);
@@ -332,4 +306,6 @@ useHead({
     }
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>
