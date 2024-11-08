@@ -1,5 +1,4 @@
 export function useContentIndexer() {
-  // console.log('elastic search plugin index  :')
   const esIndex = useRuntimeConfig().public.esTempIndex
   const esURL = useRuntimeConfig().public.esURL
   const esReadKey = useRuntimeConfig().public.esReadKey
