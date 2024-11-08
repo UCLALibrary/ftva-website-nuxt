@@ -12,7 +12,7 @@ import removeTags from '../utils/removeTags'
 import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 
 // COMPOSABLE
-import { useContentIndexer } from '../../../../../../composables/useContentIndexer'
+import { useContentIndexer } from '../composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
 
@@ -268,7 +268,10 @@ useHead({
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
