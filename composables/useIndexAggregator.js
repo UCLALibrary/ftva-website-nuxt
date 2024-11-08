@@ -1,6 +1,6 @@
 export async function useIndexAggregator() {
   const config = useRuntimeConfig()
-  const response = await fetch(
+  const response = await $fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
         headers: {
           Authorization: `ApiKey ${config.public.esReadKey}`,

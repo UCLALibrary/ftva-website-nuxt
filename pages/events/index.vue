@@ -7,7 +7,6 @@ import _get from 'lodash/get'
 
 // GQL
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
-import { useIndexAggregator } from '~/composables/useIndexAggregator'
 
 const { $graphql } = useNuxtApp()
 
@@ -42,10 +41,11 @@ async function setFilters() {
   console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
   // TODO format the data as needed for the page
   searchFilters.value = searchAggsResponse
+}
 
-  onMounted(async () => {
-    await setFilters()
-  })
+onMounted(async () => {
+  await setFilters()
+})
 </script>
 
 <template>
