@@ -6,13 +6,13 @@ import { BlockCallToAction, CardMeta, DividerWayFinder, NavBreadcrumb, Responsiv
 
 // HELPERS
 import _get from 'lodash/get'
+import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
+import { useContentIndexer } from '../../../../../../composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
 
 // GQL
-import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 
 // COMPOSABLE
-import { useContentIndexer } from '/composables/useContentIndexer'
 
 import socialList from '~/utils/socialList'
 

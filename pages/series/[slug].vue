@@ -6,13 +6,13 @@ import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, 
 
 // HELPERS
 import _get from 'lodash/get'
-import removeTags from '~/utils/removeTags'
 
 // GQL
 import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 // COMPOSABLE
-import { useContentIndexer } from '/composables/useContentIndexer'
+import { useContentIndexer } from '../../../../../../composables/useContentIndexer'
+import removeTags from '~/utils/removeTags'
 
 const { $graphql } = useNuxtApp()
 
