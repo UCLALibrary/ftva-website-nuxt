@@ -5,7 +5,6 @@ export function useContentIndexer() {
   const esWriteKey = useRuntimeConfig().esWriteKey
 
   async function indexContent(data, slug) {
-
     try {
       if (data && slug && esIndex) {
         /* console.log(
@@ -71,7 +70,6 @@ export function useContentIndexer() {
       throw new Error('Elastic Search Indexing failed ' + e) // TODO uncomment when cause is clear
     }
   }
-
 
   return {
     indexContent
