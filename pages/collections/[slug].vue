@@ -6,10 +6,15 @@ import { BlockCallToAction, CardMeta, DividerWayFinder, NavBreadcrumb, Responsiv
 
 // HELPERS
 import _get from 'lodash/get'
-import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
-import removeTags from '~/utils/removeTags'
 
 // GQL
+import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
+
+// COMPOSABLE
+import { useContentIndexer } from '~/composables/useContentIndexer'
+
+// UTILS
+import removeTags from '~/utils/removeTags'
 import socialList from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
@@ -33,6 +38,19 @@ if (!data.value.ftvaCollection) {
     statusMessage: 'Page Not Found',
     fatal: true
   })
+}
+
+// This is creating an index of the main content (not related content)
+if (data.value.ftvaCollection && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    // Index the collection data using the composable during static build
+    await indexContent(data.value.ftvaCollection, route.params.slug)
+    // console.log('Collection indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX COLLECTION during static build:', error)
+  }
 }
 
 const page = ref(_get(data.value, 'ftvaCollection', {}))
@@ -240,7 +258,11 @@ useHead({
     </SectionWrapper>
   </main>
 </template>
-<style lang="scss" scoped>
+
+<style
+  lang="scss"
+  scoped
+>
 .page-collection-detail {
   position: relative;
 

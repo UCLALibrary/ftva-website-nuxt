@@ -10,6 +10,9 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
         creditText
       }
     }
+    id
+    typeHandle
+    sectionHandle
     title
     guestSpeaker
     ftvaEventIntroduction

@@ -4,6 +4,7 @@ query FTVAEventDetail($slug: [String!]) {
   ftvaEvent: entry(section: "ftvaEvent", slug: $slug) {
     id
     typeHandle
+    sectionHandle
     slug
     uri
 
