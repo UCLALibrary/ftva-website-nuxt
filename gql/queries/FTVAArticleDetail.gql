@@ -5,6 +5,7 @@ query FTVAArticleDetail($slug: [String!]) {
   ftvaArticle: entry(section: "ftvaArticle", slug: $slug)  {
     id
     typeHandle
+    sectionHandle
     postDate
     slug
     title

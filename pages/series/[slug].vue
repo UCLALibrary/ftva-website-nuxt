@@ -6,10 +6,13 @@ import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, 
 
 // HELPERS
 import _get from 'lodash/get'
-import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
-import removeTags from '~/utils/removeTags'
 
 // GQL
+import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
+
+// COMPOSABLE
+import { useContentIndexer } from '~/composables/useContentIndexer'
+import removeTags from '~/utils/removeTags'
 
 const { $graphql } = useNuxtApp()
 
@@ -32,6 +35,19 @@ if (!data.value.ftvaEventSeries) {
     statusMessage: 'Page Not Found for ftvaEventSeries',
     fatal: true
   })
+}
+
+// This is creating an index of the main content (not related content)
+if (data.value.ftvaEventSeries && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    // Index the event series data using the composable during static build
+    await indexContent(data.value.ftvaEventSeries, route.params.slug)
+    // console.log('Event series indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX EVENT SERIES during static build:', error)
+  }
 }
 
 const page = ref(_get(data.value, 'ftvaEventSeries', {}))
@@ -300,7 +316,10 @@ useHead({
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style
+  lang="scss"
+  scoped
+>
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
