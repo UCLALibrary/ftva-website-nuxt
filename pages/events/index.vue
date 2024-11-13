@@ -47,9 +47,12 @@ const { indexFilters } = useIndexFilter()
 
 onMounted(async () => {
   await setFilters()
+
   const testFilters = {
-    'tagLabels.title.keyword': ['Guest speaker', '35mm']
+    'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
+    'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
   }
+
   const esOutput = await indexFilters('ftvaEvent', testFilters, ['2000-03-08', '2029-03-08'], 'startDate', 'asc')
   console.log(esOutput.hits.total.value)
 })
