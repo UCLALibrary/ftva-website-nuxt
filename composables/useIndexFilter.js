@@ -60,9 +60,10 @@ function parseDateRange(dates) {
     dateObj.range.startDate.lte = dates[1]
   } else {
     dateObj.range.startDate.gte = dates[0]
+    dateObj.range.startDate.lte = dates[0] // This is needed for exact date match
   }
 
-  dateObj.range.startDate.format = 'yyyy-MM-dd'
+  // dateObj.range.startDate.format = 'yyyy-MM-dd' // TODO will decide the date format later
 
   return dateObj
 }
