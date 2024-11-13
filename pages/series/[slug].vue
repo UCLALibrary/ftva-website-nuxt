@@ -23,6 +23,7 @@ const { data, error } = await useAsyncData(`ftva-event-series-detail-${route.par
   const data = await $graphql.default.request(FTVAEventSeriesDetail, { slug: route.params.slug })
   return data
 })
+
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found .' + error.value, fatal: true
@@ -50,6 +51,7 @@ if (data.value.ftvaEventSeries && import.meta.prerender) {
   }
 }
 
+// console.log('data: ', data.value)
 const page = ref(_get(data.value, 'ftvaEventSeries', {}))
 const upcomingEvents = ref(_get(data.value, 'upcomingEvents', {}))
 const pastEvents = ref(_get(data.value, 'pastEvents', {}))
@@ -97,8 +99,11 @@ const parsedUpcomingEvents = computed(() => {
 
   // Transform data
   return upcomingEvents.value.map((item, index) => {
+    const parsedTagLabels = getParsedTagLabels(item)
+
     return {
       ...item,
+      tagLabels: parsedTagLabels,
       to: `/${item.to}`,
       image: item.image && item.image.length > 0 ? item.image[0] : null
     }
@@ -112,13 +117,36 @@ const parsedPastEvents = computed(() => {
 
   // Transform data
   return pastEvents.value.map((item, index) => {
+    const parsedTagLabels = getParsedTagLabels(item)
+
     return {
       ...item,
+      tagLabels: parsedTagLabels,
       to: `/${item.to}`,
       image: item.image && item.image.length > 0 ? item.image[0] : null
     }
   })
 })
+
+function getParsedTagLabels(obj) {
+  if (!obj.ftvaEventTypeFilters && !obj.ftvaScreeningFormatFilters) {
+    return []
+  }
+
+  const parsedLabels = []
+  const typeFilters = obj.ftvaEventTypeFilters
+  const formatFilters = obj.ftvaScreeningFormatFilters
+
+  if (typeFilters.length) {
+    typeFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
+  }
+
+  if (formatFilters.length) {
+    formatFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
+  }
+
+  return parsedLabels
+}
 
 // If no Upcoming Events, set starting tab to Past Events
 const parsedInitialTabIndex = computed(() => {
@@ -156,6 +184,7 @@ const parsedOtherSeries = computed(() => {
   })
   return otherSeries
 })
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -316,10 +345,7 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
