@@ -52,8 +52,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       ftvaImage {
         ...Image
       }
-      ftvaEventFilters {
+      ftvaScreeningFormatFilters {
+        id
         title
+      }
+      ftvaEventTypeFilters {
+        title
+        id
       }
     }
   }
