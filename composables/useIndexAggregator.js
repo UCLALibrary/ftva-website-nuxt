@@ -19,7 +19,13 @@ export async function useIndexAggregator() {
           aggs: {
             'Event Type': {
               terms: {
-                field: 'tagLabels.title.keyword',
+                field: 'ftvaEventTypeFilters.title.keyword',
+                size: 100
+              }
+            },
+            'Film Format': {
+              terms: {
+                field: 'ftvaScreeningFormatFilters.title.keyword',
                 size: 100
               }
             }
