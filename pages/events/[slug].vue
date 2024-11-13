@@ -25,6 +25,7 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
   return data
 })
+
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
@@ -54,6 +55,10 @@ if (data.value.ftvaEvent && import.meta.prerender) {
 
 const page = ref(_get(data.value, 'ftvaEvent', {}))
 const series = ref(_get(data.value, 'ftvaEventSeries', {}))
+
+// console.log('data: ', data.value)
+// console.log('page data: ', page.value)
+// console.log('series data: ', series.value)
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -125,6 +130,19 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
     }
   })
+})
+
+const parsedTagLabels = computed(() => {
+  if (!page.value.ftvaEventTypeFilters && !page.value.ftvaScreeningFormatFilters) {
+    return []
+  }
+
+  const parsedLabels = []
+
+  page.value.ftvaEventTypeFilters.forEach(obj => parsedLabels.push(obj.title))
+  page.value.ftvaScreeningFormatFilters.forEach(obj => parsedLabels.push(obj.title))
+
+  return parsedLabels
 })
 
 useHead({
@@ -221,7 +239,7 @@ useHead({
       <template #primaryMid>
         <CardMeta
           :guest-speaker="page?.guestSpeaker"
-          :tag-labels="page?.tagLabels"
+          :tag-labels="parsedTagLabels"
           :introduction="page?.introduction"
         />
         <RichText
@@ -271,10 +289,7 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
