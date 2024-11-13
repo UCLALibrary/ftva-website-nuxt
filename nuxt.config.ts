@@ -104,11 +104,6 @@ export default defineNuxtConfig({
       ],
       link: [{ rel: 'icon', type: 'image/svg', href: '/icon-ucla-favicon.svg' }],
     },
-
-    pageTransition: {
-      name: 'fade',
-      mode: 'out-in',
-    },
   },
 
   /*

@@ -43,9 +43,17 @@ async function setFilters() {
   searchFilters.value = searchAggsResponse
 }
 
+const { indexFilters } = useIndexFilter()
+
 onMounted(async () => {
   await setFilters()
+  const testFilters = {
+    'tagLabels.title.keyword': ['Guest speaker', '35mm']
+  }
+  const esOutput = await indexFilters('ftvaEvent', testFilters, ['2000-03-08', '2029-03-08'], 'startDate', 'asc')
+  console.log(esOutput.hits.total.value)
 })
+
 </script>
 
 <template>
