@@ -56,6 +56,10 @@ if (data.value.ftvaEvent && import.meta.prerender) {
 const page = ref(_get(data.value, 'ftvaEvent', {}))
 const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
+// console.log('data: ', data.value)
+// console.log('page data: ', page.value)
+// console.log('series data: ', series.value)
+
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaEvent', {})
@@ -134,16 +138,9 @@ const parsedTagLabels = computed(() => {
   }
 
   const parsedLabels = []
-  const typeFilters = page.value.ftvaEventTypeFilters
-  const formatFilters = page.value.ftvaScreeningFormatFilters
 
-  if (typeFilters.length) {
-    typeFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
-  }
-
-  if (formatFilters.length) {
-    formatFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
-  }
+  page.value.ftvaEventTypeFilters.forEach(obj => parsedLabels.push(obj.title))
+  page.value.ftvaScreeningFormatFilters.forEach(obj => parsedLabels.push(obj.title))
 
   return parsedLabels
 })
