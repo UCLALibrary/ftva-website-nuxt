@@ -138,11 +138,11 @@ const parsedTagLabels = computed(() => {
   const formatFilters = page.value.ftvaScreeningFormatFilters
 
   if (typeFilters.length) {
-    typeFilters.forEach(obj => parsedLabels.push(obj.title))
+    typeFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
   }
 
   if (formatFilters.length) {
-    formatFilters.forEach(obj => parsedLabels.push(obj.title))
+    formatFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
   }
 
   return parsedLabels
