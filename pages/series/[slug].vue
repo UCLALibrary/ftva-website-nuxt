@@ -51,7 +51,6 @@ if (data.value.ftvaEventSeries && import.meta.prerender) {
   }
 }
 
-// console.log('data: ', data.value)
 const page = ref(_get(data.value, 'ftvaEventSeries', {}))
 const upcomingEvents = ref(_get(data.value, 'upcomingEvents', {}))
 const pastEvents = ref(_get(data.value, 'pastEvents', {}))
