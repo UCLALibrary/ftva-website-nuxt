@@ -76,8 +76,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       image: ftvaImage {
         ...Image
       }
-      tagLabels: ftvaEventFilters {
+      ftvaScreeningFormatFilters {
+        id
         title
+      }
+      ftvaEventTypeFilters {
+        title
+        id
       }
   }
   pastEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime DESC") {
@@ -92,8 +97,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     image: ftvaImage {
       ...Image
     }
-    tagLabels: ftvaEventFilters {
+    ftvaScreeningFormatFilters {
+      id
       title
+    }
+    ftvaEventTypeFilters {
+      title
+      id
     }
   }
   otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true) {
