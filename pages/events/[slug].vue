@@ -25,6 +25,7 @@ const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`,
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
   return data
 })
+
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
@@ -127,6 +128,26 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   })
 })
 
+const parsedTagLabels = computed(() => {
+  if (!page.value.ftvaEventTypeFilters && !page.value.ftvaScreeningFormatFilters) {
+    return []
+  }
+
+  const parsedLabels = []
+  const typeFilters = page.value.ftvaEventTypeFilters
+  const formatFilters = page.value.ftvaScreeningFormatFilters
+
+  if (typeFilters.length) {
+    typeFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
+  }
+
+  if (formatFilters.length) {
+    formatFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
+  }
+
+  return parsedLabels
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -221,7 +242,7 @@ useHead({
       <template #primaryMid>
         <CardMeta
           :guest-speaker="page?.guestSpeaker"
-          :tag-labels="page?.tagLabels"
+          :tag-labels="parsedTagLabels"
           :introduction="page?.introduction"
         />
         <RichText
@@ -271,10 +292,7 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-event-detail {
   position: relative;
