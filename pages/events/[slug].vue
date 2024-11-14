@@ -15,6 +15,7 @@ import removeTags from '../utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // UTILS
+import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
 
 const { $graphql } = useNuxtApp()
 
@@ -128,24 +129,11 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   })
 })
 
+// Extract tag labels from event filters
 const parsedTagLabels = computed(() => {
-  if (!page.value.ftvaEventTypeFilters && !page.value.ftvaScreeningFormatFilters) {
-    return []
-  }
-
-  const parsedLabels = []
-  const typeFilters = page.value.ftvaEventTypeFilters
-  const formatFilters = page.value.ftvaScreeningFormatFilters
-
-  if (typeFilters.length) {
-    typeFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
-  }
-
-  if (formatFilters.length) {
-    formatFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
-  }
-
-  return parsedLabels
+  const eventObj = page.value
+  const parsedTagLabels = getEventFilterLabels(eventObj)
+  return parsedTagLabels
 })
 
 useHead({

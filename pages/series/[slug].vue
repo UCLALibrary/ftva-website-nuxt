@@ -10,6 +10,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
+// UTIL
+import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
+
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
@@ -98,7 +101,7 @@ const parsedUpcomingEvents = computed(() => {
 
   // Transform data
   return upcomingEvents.value.map((item, index) => {
-    const parsedTagLabels = getParsedTagLabels(item)
+    const parsedTagLabels = getEventFilterLabels(item)
 
     return {
       ...item,
@@ -116,7 +119,7 @@ const parsedPastEvents = computed(() => {
 
   // Transform data
   return pastEvents.value.map((item, index) => {
-    const parsedTagLabels = getParsedTagLabels(item)
+    const parsedTagLabels = getEventFilterLabels(item)
 
     return {
       ...item,
@@ -126,26 +129,6 @@ const parsedPastEvents = computed(() => {
     }
   })
 })
-
-function getParsedTagLabels(obj) {
-  if (!obj.ftvaEventTypeFilters && !obj.ftvaScreeningFormatFilters) {
-    return []
-  }
-
-  const parsedLabels = []
-  const typeFilters = obj.ftvaEventTypeFilters
-  const formatFilters = obj.ftvaScreeningFormatFilters
-
-  if (typeFilters.length) {
-    typeFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
-  }
-
-  if (formatFilters.length) {
-    formatFilters.forEach(obj => parsedLabels.push({ title: obj.title }))
-  }
-
-  return parsedLabels
-}
 
 // If no Upcoming Events, set starting tab to Past Events
 const parsedInitialTabIndex = computed(() => {
