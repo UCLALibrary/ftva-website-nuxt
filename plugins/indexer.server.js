@@ -8,7 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     // console.log('elastic search plugin index function :', esIndex)
 
     try {
-      if (process.env.NODE_ENV !== 'development' && data && slug && esIndex) {
+      if (import.meta.prerender && data && slug && esIndex) {
         /* console.log(
                 "this is the elasticsearch plugin: " + JSON.stringify(data)
             ) */
