@@ -48,10 +48,33 @@ export default defineNuxtConfig({
         } */
         // console.log('prerender:generate', route)
       },
-      'prerender:routes'(routes) {
-        // const allRoutes = []
+      async 'prerender:routes'(routes) {
+        const allRoutes = []
 
-        // console.log('prerender:routes ctx.routes', routes)
+        const response = await fetch(import.meta.env.CRAFT_ENDPOINT, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          method: 'POST',
+          body: JSON.stringify({ query: 'query AllPages { entries { uri, sectionHandle } }' })
+        })
+
+        const postPages = await response.json()
+        // console.log('All pages', JSON.stringify(postPages.data.entries))
+        if (postPages && postPages.data && postPages.data.entries) {
+          const postWithoutPayloadRoutes = postPages.data.entries.filter(item => item.sectionHandle.includes('ftva')).map(entry => '/' + entry.uri)
+          allRoutes.push(...postWithoutPayloadRoutes)
+        }
+
+        if (allRoutes.length) {
+          for (const route of allRoutes) {
+            routes.add(route)
+          }
+          /* routes.add('/about/reports')
+          routes.add('/help')
+          routes.add('/about/status-updates') */
+        }
+        console.log('prerender:routes ctx.routes', routes)
       }
     },
 
@@ -59,16 +82,16 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     // Private keys are only available on the server
-    esWriteKey: process.env.ES_WRITE_KEY,
+    esWriteKey: import.meta.env.ES_WRITE_KEY,
 
     // Public keys that are exposed to the client
     public: {
-      craftGraphqlURL: process.env.CRAFT_ENDPOINT || '',
-      esReadKey: process.env.ES_READ_KEY || '',
-      esAlias: process.env.ES_ALIAS || '',
-      esIndexPrefix: process.env.ES_INDEX_PREFIX || '',
-      esTempIndex: process.env.ES_INDEX_PREFIX + '-' + new Date().toISOString().toLowerCase().replaceAll(':', '-'),
-      esURL: process.env.ES_URL || '',
+      craftGraphqlURL: import.meta.env.CRAFT_ENDPOINT || '',
+      esReadKey: import.meta.env.ES_READ_KEY || '',
+      esAlias: import.meta.env.ES_ALIAS || '',
+      esIndexPrefix: import.meta.env.ES_INDEX_PREFIX || '',
+      esTempIndex: import.meta.env.ES_INDEX_PREFIX + '-' + new Date().toISOString().toLowerCase().replaceAll(':', '-'),
+      esURL: import.meta.env.ES_URL || '',
       gtm: {
         id: 'GTM-T2SXV2'
       }
@@ -134,7 +157,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: process.env.SITEMAP_HOST || 'https://www.library.ucla.edu',
+    url: import.meta.env.SITEMAP_HOST || 'https://www.library.ucla.edu',
   },
 
   imports: {
@@ -155,7 +178,7 @@ export default defineNuxtConfig({
         /**
          * The client endpoint url
          */
-        endpoint: process.env.CRAFT_ENDPOINT || '',
+        endpoint: import.meta.env.CRAFT_ENDPOINT || '',
         /**
          * Per-client options overrides
          * See: https://github.com/prisma-labs/graphql-request#passing-more-options-to-fetch

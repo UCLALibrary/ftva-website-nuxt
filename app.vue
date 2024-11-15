@@ -23,7 +23,7 @@ const { $layoutData } = useNuxtApp()
 onMounted(async () => {
   // globalstore state is lost due to 404 error for draft previews, this is hack to repopulate state on client side
   // console.log('No layout query', route.query, 'preview enabled', enabled.value, 'state?.token', state?.token)
-  if (process.env.NODE_ENV !== 'development' && (route.query?.preview === 'true' || enabled.value) && (route.query?.token !== undefined || state?.token !== undefined)) {
+  if (!import.meta.dev && (route.query?.preview === 'true' || enabled.value) && (route.query?.token !== undefined || state?.token !== undefined)) {
     await $layoutData()
   }
 })
