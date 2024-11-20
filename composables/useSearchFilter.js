@@ -3,7 +3,7 @@ export default function useSearchFilter() {
 }
 
 async function paginatedSearchFilters(
-  currentPage = 1, 
+  currentPage = 1,
   documentsPerPage = 10,
   sectionHandle,
   filters,
@@ -21,7 +21,7 @@ async function paginatedSearchFilters(
         config.public.esAlias === ''
   )
     return
-console.log('(currentPage - 1) * documentsPerPage',(currentPage - 1) * documentsPerPage, currentPage, documentsPerPage)
+  console.log('(currentPage - 1) * documentsPerPage', (currentPage - 1) * documentsPerPage, currentPage, documentsPerPage)
   const response = await fetch(
         `${config.public.esURL}/${config.public.esAlias}/_search`,
         {
@@ -66,10 +66,10 @@ console.log('(currentPage - 1) * documentsPerPage',(currentPage - 1) * documents
 }
 
 function parseDateRange(dates) {
-  
-
   const dateObj = { range: {} }
-  if (!dates || dates.length === 0) dateObj
+
+  if (!dates || dates.length === 0) return dateObj // Ensure it returns early if dates are empty
+
   dateObj.range.startDate = {}
 
   if (dates.length === 2) {

@@ -12,7 +12,7 @@ import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
 // GQL
 // TODO Add new query to fetch title and summary for this template from Craft singles check ticket APPS-3050
 
-/*const { $graphql } = useNuxtApp()
+/* const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('event-list', async () => {
   const data = await $graphql.default.request(FTVAEventList)
@@ -32,7 +32,7 @@ if (!data.value.entries) {
     statusMessage: 'Page Not Found',
     fatal: true
   })
-}*/
+} */
 
 // const page = ref(_get(data.value, 'entries[0]', {}))
 
@@ -48,22 +48,20 @@ const noResultsFound = ref(false)
 watch(
   () => route.query,
   (newVal, oldVal) => {
-
     userFilterSelection.value = parseFilters(route.query.filters || '')
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    console.log("route.query.dates", route?.query?.dates)
+    console.log('route.query.dates', route?.query?.dates)
     userDateSelection.value = parseDateFromURL(route.query.dates || [])
-    console.log("userDateSelection.value", userDateSelection.value)
+    console.log('userDateSelection.value', userDateSelection.value)
     searchES()
   }, { deep: true, immediate: true }
 )
 
 function parseDateFromURL(datesParam) {
-  console.log("datesParam", datesParam)
+  console.log('datesParam', datesParam)
   if (datesParam.length === 0) return ''
   return datesParam.split(',')
 }
-
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
@@ -74,18 +72,17 @@ async function searchES() {
     // console.log('Search ES HITS,', results.hits.hits)
     const totalDocuments = results.hits.total.value
     events.value = results.hits.hits
-    totalPages.value = Math.ceil(totalDocuments / documentsPerPage);
+    totalPages.value = Math.ceil(totalDocuments / documentsPerPage)
     noResultsFound.value = false
   } else {
     noResultsFound.value = true
     events.value = []
     totalPages.value = 0
   }
-
 }
 
 const parsedEvents = computed(() => {
-  if (events.value.length == 0) return []
+  if (events.value.length === 0) return []
   return events.value.map((obj) => {
     return {
       ...obj._source,
@@ -111,9 +108,9 @@ function transformEsResponseToFilterGroups(aggregations) {
     // Map the key to the appropriate searchField
     let searchField
     if (key === 'Event Type') {
-      searchField = 'ftvaEventTypeFilters.title.keyword';
+      searchField = 'ftvaEventTypeFilters.title.keyword'
     } else if (key === 'Film Format') {
-      searchField = 'ftvaScreeningFormatFilters.title.keyword';
+      searchField = 'ftvaScreeningFormatFilters.title.keyword'
     }
 
     // Add the filter group to the array
@@ -129,47 +126,42 @@ function transformEsResponseToFilterGroups(aggregations) {
   return filterGroups
 }
 
-
-
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const searchAggsResponse = await useIndexAggregator()
   console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
   // Transform the response
   searchFilters.value = transformEsResponseToFilterGroups(searchAggsResponse)
-  console.log("searchFilters", searchFilters.value)
+  console.log('searchFilters', searchFilters.value)
 }
-
 
 const dateListDateFilter = ref([])
 onMounted(async () => {
   await setFilters()
   const { paginatedSearchFilters } = useSearchFilter()
-  /*const testFilters = {
+  /* const testFilters = {
     'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
     'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
-  }*/
+  } */
   // Logic to fetch all events startDates formated for DateFilter
   const esOutput = await paginatedSearchFilters(1, 1000, 'ftvaEvent', {}, [], 'startDate', 'asc', ['startDate'])
   console.log(esOutput.hits.total.value)
   if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
   dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
-
 })
 
 const parsedListViewURL = computed(() => {
-  const queryParams = new URLSearchParams({ ...route.query, view: "list" })
+  const queryParams = new URLSearchParams({ ...route.query, view: 'list' })
   return `${route.path}?${queryParams.toString()}`
 })
 const parsedCalendarViewURL = computed(() => {
-  const queryParams = new URLSearchParams({ ...route.query, view: "calendar" })
+  const queryParams = new URLSearchParams({ ...route.query, view: 'calendar' })
   return `${route.path}?${queryParams.toString()}`
 })
 
 // This is event handler which is invoked by datefilter component selections
 function applyDateFilterSelectionToRouteURL(data) {
-
-  console.log("Data from Date filters", data)
+  console.log('Data from Date filters', data)
 
   // Function to format date to yyyy-MM-dd
   const formatDate = (date) => {
@@ -227,9 +219,9 @@ function applyEventFilterSelectionToRouteURL(data) {
 
 const visiblePages = computed(() => {
   // Calculate the range of page numbers to display
-  const maxPages = 10;
-  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2));
-  const endPage = Math.min(totalPages.value, startPage + maxPages - 1);
+  const maxPages = 10
+  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2))
+  const endPage = Math.min(totalPages.value, startPage + maxPages - 1)
 
   return Array.from(
     { length: endPage - startPage + 1 },
@@ -252,7 +244,7 @@ const visiblePages = computed(() => {
     <div>
       <date-filter
         :key="dateListDateFilter"
-        :eventDates="dateListDateFilter"
+        :event-dates="dateListDateFilter"
         @input-selected="applyDateFilterSelectionToRouteURL"
       /> <!-- Add prop initial dates from the URl-->
       <!--DropdownFilter
@@ -274,20 +266,20 @@ const visiblePages = computed(() => {
               <SectionTeaserList
                 :items="parsedEvents"
                 component-name="BlockCardThreeColumn"
-                :nShown="10"
+                :n-shown="10"
                 class="tabbed-event-list"
               />
             </template>
             <template v-else>
               <p
-                class="empty-tab"
                 v-if="noResultsFound"
+                class="empty-tab"
               >
                 There are no events found
               </p>
               <p
-                class="empty-tab"
                 v-else
+                class="empty-tab"
               >
                 Search in progress ...
               </p>
@@ -305,14 +297,14 @@ const visiblePages = computed(() => {
             </template>
             <template v-else>
               <p
-                class="empty-tab"
                 v-if="noResultsFound"
+                class="empty-tab"
               >
                 There are no events found
               </p>
               <p
-                class="empty-tab"
                 v-else
+                class="empty-tab"
               >
                 Search in Progress ...
               </p>
@@ -324,15 +316,15 @@ const visiblePages = computed(() => {
       <SectionWrapper>
         <!-- Pagination -->
         <div
-          class="pagination"
           v-if="totalPages > 1"
+          class="pagination"
         >
           <!-- Previous Link -->
           <nuxt-link
+            v-if="currentPage > 1"
             :to="{ query: { ...$route.query, page: currentPage - 1 } }"
             class="prev-btn"
             :class="{ disabled: currentPage === 1 }"
-            v-if="currentPage > 1"
           >
             Previous
           </nuxt-link>
@@ -352,10 +344,10 @@ const visiblePages = computed(() => {
 
           <!-- Next Link -->
           <nuxt-link
+            v-if="currentPage < totalPages"
             :to="{ query: { ...$route.query, page: currentPage + 1 } }"
             class="next-btn"
             :class="{ disabled: currentPage === totalPages }"
-            v-if="currentPage < totalPages"
           >
             Next
           </nuxt-link>
@@ -364,7 +356,7 @@ const visiblePages = computed(() => {
       <SectionWrapper>
         <section-pagination
           :pages="totalPages"
-          :initialCurrentPage="currentPage"
+          :initial-current-page="currentPage"
         />
       </SectionWrapper>
     </div>
