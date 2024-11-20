@@ -66,7 +66,7 @@ async function paginatedSearchFilters(
 }
 
 function parseDateRange(dates) {
-  const dateObj = { range: {} }
+  const dateObj = { range: { startDate: {} } }
 
   if (!dates || dates.length === 0) return dateObj // Ensure it returns early if dates are empty
 
