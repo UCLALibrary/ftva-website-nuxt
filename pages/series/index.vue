@@ -49,7 +49,7 @@ const page = ref(_get(data.value, 'entries', {}))
     </div>
 
     <DividerWayFinder />
-
+    <h3>DATAdotVALUE: {{ data.value }}</h3>
     <div
       v-for="event in page"
       :key="event?.id"
