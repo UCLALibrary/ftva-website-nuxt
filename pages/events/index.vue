@@ -37,7 +37,8 @@ if (!data.value.entries) {
 // const page = ref(_get(data.value, 'entries[0]', {}))
 
 const events = ref([]) // Add typescript
-const searchfilters = ref({}) // Add typescript and should we have separate filters ref for date and eventFilters
+const userFilterSelection = ref({}) // Add typescript and should we have separate filters ref for date and eventFilters
+const userDateSelection = ref([])
 const documentsPerPage = 10
 const totalPages = ref(0)
 const currentPage = ref(1)
@@ -48,17 +49,26 @@ watch(
   () => route.query,
   (newVal, oldVal) => {
 
-    searchfilters.value = parseFilters(route.query.filters || '')
+    userFilterSelection.value = parseFilters(route.query.filters || '')
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    console.log("route.query.dates", route?.query?.dates)
+    userDateSelection.value = parseDateFromURL(route.query.dates || [])
+    console.log("userDateSelection.value", userDateSelection.value)
     searchES()
   }, { deep: true, immediate: true }
 )
+
+function parseDateFromURL(datesParam) {
+  console.log("datesParam", datesParam)
+  if (datesParam.length === 0) return ''
+  return datesParam.split(',')
+}
 
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
   const { paginatedSearchFilters } = useSearchFilter()
-  const results = await paginatedSearchFilters(currentPage.value, documentsPerPage.value, 'ftvaEvent', searchfilters.value, [], 'startDate', 'asc')
+  const results = await paginatedSearchFilters(currentPage.value, documentsPerPage.value, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
 
   if (results && results.hits && results.hits.total.value > 0) {
     // console.log('Search ES HITS,', results.hits.hits)
@@ -86,44 +96,132 @@ const parsedEvents = computed(() => {
   })
 })
 
-const parsedDateList = computed(() => {
-  if (events.value.length == 0) return []
-  return events.value.map(event => event.fields.formatted_date[0]);
-
-
-})
-
-
-
-
 // SEARCH
 const searchFilters = ref([])
 
+function transformEsResponseToFilterGroups(aggregations) {
+  // Initialize the filterGroups array
+  const filterGroups = []
+
+  // Iterate over the aggregations in the Elasticsearch response
+  for (const [key, value] of Object.entries(aggregations)) {
+    // Extract the bucket keys as options
+    const options = value.buckets.map(bucket => bucket.key)
+
+    // Map the key to the appropriate searchField
+    let searchField
+    if (key === 'Event Type') {
+      searchField = 'ftvaEventTypeFilters.title.keyword';
+    } else if (key === 'Film Format') {
+      searchField = 'ftvaScreeningFormatFilters.title.keyword';
+    }
+
+    // Add the filter group to the array
+    if (searchField) {
+      filterGroups.push({
+        name: key,
+        searchField,
+        options,
+      })
+    }
+  }
+
+  return filterGroups
+}
 
 
 
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const searchAggsResponse = await useIndexAggregator()
-
   console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
-  // TODO format the data as needed for the Date Filter and Filter drop down components
-  searchFilters.value = searchAggsResponse
+  // Transform the response
+  searchFilters.value = transformEsResponseToFilterGroups(searchAggsResponse)
+  console.log("searchFilters", searchFilters.value)
 }
 
 
-
+const dateListDateFilter = ref([])
 onMounted(async () => {
   await setFilters()
   const { paginatedSearchFilters } = useSearchFilter()
-  const testFilters = {
+  /*const testFilters = {
     'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
     'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
+  }*/
+  // Logic to fetch all events startDates formated for DateFilter
+  const esOutput = await paginatedSearchFilters(1, 1000, 'ftvaEvent', {}, [], 'startDate', 'asc', ['startDate'])
+  console.log(esOutput.hits.total.value)
+  if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
+  dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
+
+})
+
+const parsedListViewURL = computed(() => {
+  const queryParams = new URLSearchParams({ ...route.query, view: "list" })
+  return `${route.path}?${queryParams.toString()}`
+})
+const parsedCalendarViewURL = computed(() => {
+  const queryParams = new URLSearchParams({ ...route.query, view: "calendar" })
+  return `${route.path}?${queryParams.toString()}`
+})
+
+// This is event handler which is invoked by datefilter component selections
+function applyDateFilterSelectionToRouteURL(data) {
+
+  console.log("Data from Date filters", data)
+
+  // Function to format date to yyyy-MM-dd
+  const formatDate = (date) => {
+    const d = new Date(date)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, '0') // Months are 0-based
+    const day = String(d.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
   }
 
-  const esOutput = await paginatedSearchFilters(currentPage.value, documentsPerPage.value, 'ftvaEvent', testFilters, ['2000-03-08', '2029-03-08'], 'startDate', 'asc')
-  console.log(esOutput.hits.total.value)
-})
+  // Format the dates
+  const startDate = formatDate(data.startDate)
+  const endDate = formatDate(data.endDate)
+
+  // Combine into a single query parameter
+  const datesParam = `${startDate},${endDate}`
+  const filters = []
+  for (const key in userFilterSelection.value) {
+    if (userFilterSelection.value[key].length > 0) {
+      filters.push(`${key}:(${userFilterSelection.value[key].join(' OR ')})`)
+    }
+  }
+
+  // Use router.push to navigate with query params
+  useRouter().push({
+    path: '/events',
+    query: {
+      dates: datesParam,
+      filters: filters.join(' AND '),
+      page: currentPage.value
+    }
+  })
+}
+
+// This is event handler which is invoked by dropdownfilters component selections
+function applyEventFilterSelectionToRouteURL(data) {
+  // Use router.push to navigate with query params
+  const filters = []
+  for (const key in data) {
+    if (data[key].length > 0) {
+      filters.push(`${key}:(${data[key].join(' OR ')})`)
+    }
+  }
+  useRouter().push({
+    path: '/events',
+    query: {
+      dates: userDateSelection.join(','),
+      filters: filters.join(' AND '),
+      page: currentPage.value
+    }
+  })
+}
 
 // Delete following lines once SectionPagination working as expected
 
@@ -152,7 +250,16 @@ const visiblePages = computed(() => {
     </div>
 
     <div>
-      <date-filter :eventDates="parsedDateList" /> <!-- Add prop initial dates from the URl-->
+      <date-filter
+        :key="dateListDateFilter"
+        :eventDates="dateListDateFilter"
+        @input-selected="applyDateFilterSelectionToRouteURL"
+      /> <!-- Add prop initial dates from the URl-->
+      <!--DropdownFilter
+        :filterGroups="searchFilters"
+        :selectedFilters="userFilterSelection"
+        @input-selected="applyEventFilterSelectionToRouteURL"
+      /-->
     </div>
     <div class="full-width">
       <SectionWrapper theme="paleblue">
@@ -167,7 +274,7 @@ const visiblePages = computed(() => {
               <SectionTeaserList
                 :items="parsedEvents"
                 component-name="BlockCardThreeColumn"
-                nShown="10"
+                :nShown="10"
                 class="tabbed-event-list"
               />
             </template>

@@ -46,7 +46,13 @@ console.log('(currentPage - 1) * documentsPerPage',(currentPage - 1) * documents
             script_fields: {
               formatted_date: {
                 script: {
-                  source: `doc['startDate'].value.toString('MM/dd/yyyy')`
+                  source: `
+                  def date = doc['startDate'].value.toInstant().atZone(ZoneId.of('UTC')).toLocalDate();
+                  def month = date.getMonthValue(); // No leading zero
+                  def day = date.getDayOfMonth(); // No leading zero
+                  def year = date.getYear();
+                  return month + '/' + day + '/' + year;
+                `
                 }
               }
             },
