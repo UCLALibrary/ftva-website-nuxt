@@ -23,6 +23,5 @@ export function getEventFilterLabels(obj) {
   if (screeningFormatFilters.length) {
     screeningFormatFilters.forEach(obj => parsedTagLabels.push({ title: obj.title }))
   }
-
   return parsedTagLabels
 }

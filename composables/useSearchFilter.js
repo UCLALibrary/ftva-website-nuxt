@@ -1,8 +1,10 @@
-export default function useIndexFilter() {
-  return { indexFilters }
+export default function useSearchFilter() {
+  return { paginatedSearchFilters }
 }
 
-async function indexFilters(
+async function paginatedSearchFilters(
+  currentPage = 1, 
+  documentsPerPage = 10,
   sectionHandle,
   filters,
   dates,
@@ -19,7 +21,7 @@ async function indexFilters(
         config.public.esAlias === ''
   )
     return
-
+console.log('(currentPage - 1) * documentsPerPage',(currentPage - 1) * documentsPerPage, currentPage, documentsPerPage)
   const response = await fetch(
         `${config.public.esURL}/${config.public.esAlias}/_search`,
         {
@@ -29,7 +31,8 @@ async function indexFilters(
           },
           method: 'POST',
           body: JSON.stringify({
-            size: '1000',
+            from: (currentPage - 1) * documentsPerPage,
+            size: documentsPerPage,
             _source: [...source],
             query: {
               bool: {
@@ -39,6 +42,13 @@ async function indexFilters(
                   parseDateRange(dates)
                 ]
               },
+            },
+            script_fields: {
+              formatted_date: {
+                script: {
+                  source: `doc['startDate'].value.toString('MM/dd/yyyy')`
+                }
+              }
             },
             ...parseSort(sort, orderBy),
           }),
@@ -50,9 +60,10 @@ async function indexFilters(
 }
 
 function parseDateRange(dates) {
-  if (!dates || dates.length === 0) return
+  
 
   const dateObj = { range: {} }
+  if (!dates || dates.length === 0) dateObj
   dateObj.range.startDate = {}
 
   if (dates.length === 2) {
