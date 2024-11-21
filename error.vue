@@ -1,14 +1,11 @@
-<script
-  setup
-  lang="ts"
->
+<script setup lang="ts">
 import type { NuxtError } from '#app'
 import { SectionWrapper } from 'ucla-library-website-components'
 
 const props = defineProps({
   error: Object as () => NuxtError
 })
-const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
+const isDevelopment = computed(() => import.meta.dev)
 
 </script>
 
@@ -92,10 +89,7 @@ const isDevelopment = computed(() => process.env.NODE_ENV === 'development')
   </NuxtLayout>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 .page-error {
   padding: var(--space-3xl) var(--unit-gutter);
 

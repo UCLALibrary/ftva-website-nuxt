@@ -27,7 +27,7 @@ const { $layoutData } = useNuxtApp()
 onMounted(async () => {
   // console.log('In default layout', enabled.value, state?.token)
 
-  if (process.env.NODE_ENV !== 'development' && layoutCustomProps['is-error']) {
+  if (!import.meta.dev && layoutCustomProps['is-error']) {
     // console.log('In SSG refresh layout data as state is not maintained after an error response')
     await $layoutData()
   }

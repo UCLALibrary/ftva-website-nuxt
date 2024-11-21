@@ -2,8 +2,9 @@
 
 query FTVACollectionDetail($slug: [String!]) {
   ftvaCollection: entry(section: "ftvaCollection", slug: $slug) {
+    id
     typeHandle
-    id 
+    sectionHandle
     imageCarousel {
       ... on imageCarousel_imageCarousel_BlockType {
         image {
@@ -15,7 +16,7 @@ query FTVACollectionDetail($slug: [String!]) {
     title
     sectionTitle
     ftvaCollectionType
-    richText 
+    richText
     videoEmbed
     viewAllSectionLink {
       ... on viewAllSectionLink_viewAllSection_BlockType {

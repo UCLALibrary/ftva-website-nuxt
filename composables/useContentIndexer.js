@@ -1,14 +1,12 @@
-export default defineNuxtPlugin((nuxtApp) => {
-  // console.log("elastic search plugin index  :")
+export function useContentIndexer() {
   const esIndex = useRuntimeConfig().public.esTempIndex
   const esURL = useRuntimeConfig().public.esURL
   const esReadKey = useRuntimeConfig().public.esReadKey
   const esWriteKey = useRuntimeConfig().esWriteKey
-  async function index(data, slug) {
-    // console.log('elastic search plugin index function :', esIndex)
 
+  async function indexContent(data, slug) {
     try {
-      if (import.meta.prerender && data && slug && esIndex) {
+      if (data && slug && esIndex) {
         /* console.log(
                 "this is the elasticsearch plugin: " + JSON.stringify(data)
             ) */
@@ -47,7 +45,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           )
           // console.log('Update document in ES', updateResponse)
           const updateJson = await updateResponse.text()
-          // console.log('Update in ES', updateJson)
+          console.log('Update in ES', updateJson)
         } else {
           const response = await fetch(
                     `${esURL}/${esIndex}/_doc/${slug}`,
@@ -74,11 +72,14 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   return {
-    provide: {
-      elasticsearchplugin: {
-        index
-        // Make plugin available to all components
-      }
-    }
+    indexContent
   }
-})
+}
+
+// Checks the page slug
+// Calls ES (Elastic Search)
+//  Checks if the document exists in ES
+//   if the document already exists
+//    it overwrites/replaces it in the index
+//   if the document doesn't exist
+//    it adds it to the index

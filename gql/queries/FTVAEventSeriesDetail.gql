@@ -10,6 +10,9 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
         creditText
       }
     }
+    id
+    typeHandle
+    sectionHandle
     title
     guestSpeaker
     ftvaEventIntroduction
@@ -49,8 +52,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       ftvaImage {
         ...Image
       }
-      ftvaEventFilters {
+      ftvaScreeningFormatFilters {
+        id
         title
+      }
+      ftvaEventTypeFilters {
+        title
+        id
       }
     }
   }
@@ -68,8 +76,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       image: ftvaImage {
         ...Image
       }
-      tagLabels: ftvaEventFilters {
+      ftvaScreeningFormatFilters {
+        id
         title
+      }
+      ftvaEventTypeFilters {
+        title
+        id
       }
   }
   pastEvents: entries(section: "ftvaEvent", relatedToEntries: { section: "ftvaEventSeries", slug: $slug }, startDateWithTime: "< now", orderBy: "startDateWithTime DESC") {
@@ -84,8 +97,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     image: ftvaImage {
       ...Image
     }
-    tagLabels: ftvaEventFilters {
+    ftvaScreeningFormatFilters {
+      id
       title
+    }
+    ftvaEventTypeFilters {
+      title
+      id
     }
   }
   otherSeriesOngoing: entries(section: "ftvaEventSeries", limit: 3, ongoing: true) {

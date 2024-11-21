@@ -6,19 +6,27 @@ import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, Divide
 
 // HELPERS
 import _get from 'lodash/get'
-import removeTags from '../utils/removeTags'
 
 // GQL
 import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 
+// COMPOSABLE
+import removeTags from '../utils/removeTags'
+import { useContentIndexer } from '~/composables/useContentIndexer'
+
+// UTILS
+import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
+
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
   return data
 })
+
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
@@ -31,6 +39,19 @@ if (!data.value.ftvaEvent) {
     statusMessage: 'Page Not Found',
     fatal: true
   })
+}
+
+// This is creating an index of the main content (not related content)
+if (data.value.ftvaEvent && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    // Index the event data using the composable during static build
+    await indexContent(data.value.ftvaEvent, route.params.slug)
+    // console.log('Event indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX EVENT during static build:', error)
+  }
 }
 
 const page = ref(_get(data.value, 'ftvaEvent', {}))
@@ -106,6 +127,13 @@ const parsedFTVAEventScreeningDetails = computed(() => {
       image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
     }
   })
+})
+
+// Extract tag labels from event filters
+const parsedTagLabels = computed(() => {
+  const eventObj = page.value
+  const parsedTagLabels = getEventFilterLabels(eventObj)
+  return parsedTagLabels
 })
 
 useHead({
@@ -202,7 +230,7 @@ useHead({
       <template #primaryMid>
         <CardMeta
           :guest-speaker="page?.guestSpeaker"
-          :tag-labels="page?.tagLabels"
+          :tag-labels="parsedTagLabels"
           :introduction="page?.introduction"
         />
         <RichText
