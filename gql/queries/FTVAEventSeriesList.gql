@@ -1,4 +1,4 @@
-# import "../gql/fragments/Image.gql"
+#import "../gql/fragments/Image.gql"
 
 query FTVAEventSeriesList {
   entries(section: ["ftvaEventSeries"], orderBy: "postDate DESC") {

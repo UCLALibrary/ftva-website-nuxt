@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerWayFinder } from 'ucla-library-website-components'
+import { DividerWayFinder, SectionStaffArticleList } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -31,6 +31,20 @@ if (!data.value.entries) {
 }
 
 const page = ref(_get(data.value, 'entries', {}))
+
+const parsedEventSeries = computed(() => {
+  return page.value.map((obj) => {
+    return {
+      ...obj,
+      to: obj.to,
+      description: obj.description,
+      startDate: obj.startDate,
+      endDate: obj.endDate,
+      ongoing: obj.ongoing,
+      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
+    }
+  })
+})
 </script>
 
 <template>
@@ -49,7 +63,19 @@ const page = ref(_get(data.value, 'entries', {}))
     </div>
 
     <DividerWayFinder />
-    <h3>DATAdotVALUE: {{ data.value }}</h3>
+    <!-- TEST FTVA STYLE -->
+    <BlockEventDetail
+      data-test="event-details"
+      start-date="2025-11-06T00:00:00"
+      time="2025-11-06T00:00:00"
+      :locations="page?.location"
+    />
+
+    <SectionStaffArticleList
+      :items="parsedEventSeries"
+      section-title="Event Series"
+    />
+
     <div
       v-for="event in page"
       :key="event?.id"
