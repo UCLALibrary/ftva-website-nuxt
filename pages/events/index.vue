@@ -4,6 +4,7 @@ import { DividerGeneral, SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
+import { parseISO } from 'date-fns'
 
 // UTILS
 import parseFilters from '@/utils/parseFilters'
@@ -136,6 +137,21 @@ async function setFilters() {
 }
 
 const dateListDateFilter = ref([])
+
+const parsedInitialDates = computed(() => {
+  const initialDates = {
+    startDate: null,
+    endDate: null
+  }
+  if (userDateSelection.value && userDateSelection.value.length === 1) {
+    initialDates.startDate = parseISO(userDateSelection.value[0])
+    initialDates.endDate = parseISO(userDateSelection.value[0])
+  } else if (userDateSelection.value && userDateSelection.value.length === 2) {
+    initialDates.startDate = parseISO(userDateSelection.value[0])
+    initialDates.endDate = parseISO(userDateSelection.value[1])
+  }
+  return initialDates
+})
 onMounted(async () => {
   await setFilters()
   const { paginatedSearchFilters } = useSearchFilter()
@@ -150,6 +166,7 @@ onMounted(async () => {
   dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
 })
 
+// TODO write a ticket to make tabs items links so users cn bookmark the calendar and list view
 const parsedListViewURL = computed(() => {
   const queryParams = new URLSearchParams({ ...route.query, view: 'list' })
   return `${route.path}?${queryParams.toString()}`
@@ -245,8 +262,9 @@ const visiblePages = computed(() => {
       <date-filter
         :key="dateListDateFilter"
         :event-dates="dateListDateFilter"
+        :initial-dates="parsedInitialDates"
         @input-selected="applyDateFilterSelectionToRouteURL"
-      /> <!-- Add prop initial dates from the URl-->
+      />
       <!--DropdownFilter
         :filterGroups="searchFilters"
         :selectedFilters="userFilterSelection"
