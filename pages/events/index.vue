@@ -246,6 +246,12 @@ const visiblePages = computed(() => {
   )
 })
 
+// remove this later
+const isOpen = ref(false)
+function toggleCode() {
+  isOpen.value = !isOpen.value
+}
+
 </script>
 
 <template>
@@ -299,7 +305,7 @@ const visiblePages = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Search in progress ...
+                Data loading in progress ...
               </p>
             </template>
           </TabItem>
@@ -310,8 +316,24 @@ const visiblePages = computed(() => {
             :to="parsedCalendarViewURL"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
-              <h3>Calendar View</h3>
-              <code> {{ parsedEvents }} </code>
+              <div class="code-container">
+                <button
+                  class="code-header"
+                  @click="toggleCode"
+                >
+                  {{ isOpen ? 'Click to hide ES data' : 'Click to view ES data' }}
+                </button>
+                <div
+                  v-if="isOpen"
+                  class="code-body"
+                >
+                  <pre> {{ parsedEvents }} </pre>
+                </div>
+              </div>
+
+              <div style="display: flex;justify-content: center;">
+                <base-calendar :events="parsedEvents" />
+              </div>
             </template>
             <template v-else>
               <p
@@ -324,7 +346,7 @@ const visiblePages = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Search in Progress ...
+                Data loading in progress ...
               </p>
             </template>
           </TabItem>
@@ -460,6 +482,26 @@ Remove the following css later
 .next-btn.disabled {
   pointer-events: none;
   background-color: #ccc;
+}
+
+.code-header {
+  background-color: #f5f5f5;
+  padding: 10px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.code-header:hover {
+  background-color: #e0e0e0;
+}
+
+.code-body {
+  background-color: #272822;
+  color: #f8f8f2;
+  padding: 15px;
+  font-family: "Courier New", Courier, monospace;
+  white-space: pre;
 }
 
 @import 'assets/styles/listing-pages.scss';
