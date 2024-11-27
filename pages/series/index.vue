@@ -8,6 +8,8 @@ import _get from 'lodash/get'
 // GQL
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
+import EventSeriesTestData from '../data/eventSeriesTestData.json'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {
@@ -45,6 +47,27 @@ const parsedEventSeries = computed(() => {
     }
   })
 })
+
+// onMounted(async () => {
+//   await setFilters()
+//   const { paginatedEventSeriesFilters } = useSearchFilter()
+//   /* const testFilters = {
+//     'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
+//     'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
+//   } */
+//   // Logic to fetch all events startDates formated for DateFilter
+
+//   // first we are returning pastSeries
+//   const esOutputPastSeries = await paginatedEventSeriesFilters(1, 1000, 'ftvaEventSeries', {}, ['now/d'], 'startDate', 'asc', ['startDate'])
+//   // return Current & Ongoing series
+//   const esOutputCurrentOngoingSeries = await paginatedEventSeriesFilters(1, 1000, 'ftvaEventSeries', {}, [], 'startDate', 'asc', ['startDate'])
+//   // return Upcoming series & Ongoing series
+//   const esOutputUpcomingOngoingSeries = await paginatedEventSeriesFilters(1, 1000, 'ftvaEventSeries', {}, [], 'startDate', 'asc', ['startDate'])
+//   // console.log(esOutput.hits.total.value)
+
+// })
+
+
 </script>
 
 <template>
@@ -63,36 +86,11 @@ const parsedEventSeries = computed(() => {
     </div>
 
     <DividerWayFinder />
-    <!-- TEST FTVA STYLE -->
-    <BlockEventDetail
-      data-test="event-details"
-      start-date="2025-11-06T00:00:00"
-      time="2025-11-06T00:00:00"
-      :locations="page?.location"
-    />
 
     <SectionStaffArticleList
       :items="parsedEventSeries"
       section-title="Event Series"
     />
-
-    <div
-      v-for="event in page"
-      :key="event?.id"
-      class="events"
-    >
-      <NuxtLink :to="`/${event?.to}`">
-        <h3>{{ event?.title }}</h3>
-      </NuxtLink> <br>
-      <h4>image: <code>{{ event?.image }}</code></h4>
-      <h4>startdate: <code>{{ event?.startDate }}</code></h4>
-      <h4>enddate: <code>{{ event?.endDate }}</code></h4>
-      <h4>eventDescription: <code>{{ event?.eventDescription }}</code></h4>
-      <divider-general />
-    </div>
-
-    <h3>ALL ENTRY DATA</h3>
-    <code>PAGE: {{ page }}</code>
 
     <!-- PAGINATION -->
   </div>
