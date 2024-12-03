@@ -207,8 +207,7 @@ function applyDateFilterSelectionToRouteURL(data) {
     path: '/events',
     query: {
       dates: datesParam,
-      filters: filters.join(' AND '),
-      page: currentPage.value
+      filters: filters.join(' AND ')
     }
   })
 }
@@ -226,25 +225,16 @@ function applyEventFilterSelectionToRouteURL(data) {
     path: '/events',
     query: {
       dates: userDateSelection.join(','),
-      filters: filters.join(' AND '),
-      page: currentPage.value
+      filters: filters.join(' AND ')
     }
   })
 }
 
-// Delete following lines once SectionPagination working as expected
-
-const visiblePages = computed(() => {
-  // Calculate the range of page numbers to display
-  const maxPages = 10
-  const startPage = Math.max(1, currentPage.value - Math.floor(maxPages / 2))
-  const endPage = Math.min(totalPages.value, startPage + maxPages - 1)
-
-  return Array.from(
-    { length: endPage - startPage + 1 },
-    (_, i) => startPage + i
-  )
-})
+// remove this later
+const isOpen = ref(false)
+function toggleCode() {
+  isOpen.value = !isOpen.value
+}
 
 </script>
 
@@ -265,6 +255,7 @@ const visiblePages = computed(() => {
         :initial-dates="parsedInitialDates"
         @input-selected="applyDateFilterSelectionToRouteURL"
       />
+      <!-- Sample way to add DropdownFilter component -->
       <!--DropdownFilter
         :filterGroups="searchFilters"
         :selectedFilters="userFilterSelection"
@@ -287,6 +278,13 @@ const visiblePages = computed(() => {
                 :n-shown="10"
                 class="tabbed-event-list"
               />
+
+              <section-pagination
+                v-if="totalPages !== 1"
+                class="pagination-ucla"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
             </template>
             <template v-else>
               <p
@@ -299,7 +297,7 @@ const visiblePages = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Search in progress ...
+                Data loading in progress ...
               </p>
             </template>
           </TabItem>
@@ -310,8 +308,24 @@ const visiblePages = computed(() => {
             :to="parsedCalendarViewURL"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
-              <h3>Calendar View</h3>
-              <code> {{ parsedEvents }} </code>
+              <div class="code-container">
+                <button
+                  class="code-header"
+                  @click="toggleCode"
+                >
+                  {{ isOpen ? 'Click to hide ES data' : 'Click to view ES data' }}
+                </button>
+                <div
+                  v-if="isOpen"
+                  class="code-body"
+                >
+                  <pre> {{ parsedEvents }} </pre>
+                </div>
+              </div>
+
+              <div style="display: flex;justify-content: center;">
+                <base-calendar :events="parsedEvents" />
+              </div>
             </template>
             <template v-else>
               <p
@@ -324,58 +338,11 @@ const visiblePages = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Search in Progress ...
+                Data loading in progress ...
               </p>
             </template>
           </TabItem>
         </TabList>
-      </SectionWrapper>
-      <div>{{ currentPage }}</div>
-      <SectionWrapper>
-        <!-- Pagination -->
-        <div
-          v-if="totalPages > 1"
-          class="pagination"
-        >
-          <!-- Previous Link -->
-          <nuxt-link
-            v-if="currentPage > 1"
-            :to="{ query: { ...$route.query, page: currentPage - 1 } }"
-            class="prev-btn"
-            :class="{ disabled: currentPage === 1 }"
-          >
-            Previous
-          </nuxt-link>
-
-          <!-- Page Number Links -->
-          <ul class="page-links">
-            <li
-              v-for="page in visiblePages"
-              :key="page"
-              :class="{ active: page === currentPage }"
-            >
-              <nuxt-link :to="{ query: { ...$route.query, page } }">
-                {{ page }}
-              </nuxt-link>
-            </li>
-          </ul>
-
-          <!-- Next Link -->
-          <nuxt-link
-            v-if="currentPage < totalPages"
-            :to="{ query: { ...$route.query, page: currentPage + 1 } }"
-            class="next-btn"
-            :class="{ disabled: currentPage === totalPages }"
-          >
-            Next
-          </nuxt-link>
-        </div>
-      </SectionWrapper>
-      <SectionWrapper>
-        <section-pagination
-          :pages="totalPages"
-          :initial-current-page="currentPage"
-        />
       </SectionWrapper>
     </div>
   </main>
@@ -393,6 +360,9 @@ const visiblePages = computed(() => {
     /*.section-wrapper.theme-paleblue {
       background-color: var(--pale-blue);
     }*/
+    .pagination-ucla {
+      margin-top: 20px;
+    }
   }
 
   :deep(.tab-list-body) {
@@ -413,53 +383,24 @@ const visiblePages = computed(() => {
   }
 }
 
-/*
-Remove the following css later
-*/
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 2em;
-}
-
-.page-links {
-  list-style: none;
-  display: flex;
-  padding: 0;
-  margin: 0 1em;
-}
-
-.page-links li {
-  margin: 0 0.5em;
-}
-
-.page-links a {
-  text-decoration: none;
-  padding: 0.5em 1em;
-  border-radius: 4px;
-  background: #f0f0f0;
-}
-
-.page-links .active a {
+.code-header {
+  background-color: #f5f5f5;
+  padding: 10px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
   font-weight: bold;
-  color: #fff;
-  background-color: #007acc;
 }
 
-.prev-btn,
-.next-btn {
-  padding: 0.5em 1em;
-  background-color: #007acc;
-  color: white;
-  text-decoration: none;
-  border-radius: 4px;
+.code-header:hover {
+  background-color: #e0e0e0;
 }
 
-.prev-btn.disabled,
-.next-btn.disabled {
-  pointer-events: none;
-  background-color: #ccc;
+.code-body {
+  background-color: #272822;
+  color: #f8f8f2;
+  padding: 15px;
+  font-family: "Courier New", Courier, monospace;
+  white-space: pre;
 }
 
 @import 'assets/styles/listing-pages.scss';
