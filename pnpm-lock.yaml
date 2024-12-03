@@ -76,8 +76,8 @@ importers:
         specifier: ^5.27.2
         version: 5.27.2
       ucla-library-website-components:
-        specifier: 3.38.0
-        version: 3.38.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+        specifier: 3.39.0
+        version: 3.39.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
 
 packages:
 
@@ -4456,8 +4456,8 @@ packages:
   ucla-library-design-tokens@5.27.2:
     resolution: {integrity: sha512-+GgHevX1Fflu1uSAgT7otxzqLUuOAXaVKK9vKqTckSiSMxMs1dqBBXqA6+++HuPym2MazR0lSBHA8B53cfVk1Q==}
 
-  ucla-library-website-components@3.38.0:
-    resolution: {integrity: sha512-YNg7YXcW0G08mCwAWy+jD65p5fGzeFmZSYz6DFzu6wQBjmNy5en5W6tJxtfxa8p798TdVbJ+UI0n5UHdUqreZA==}
+  ucla-library-website-components@3.39.0:
+    resolution: {integrity: sha512-8faZTQ/jDHzaP1QAffssPFSv5Dp00seDV8YBxbo5LFFveJFYuLXWqEOSru5YZU/44v9AoD4izvaQQ8ktIFxpDw==}
     engines: {pnpm: ^9.12.1}
     peerDependencies:
       vue: ^3.5.12
@@ -9998,7 +9998,7 @@ snapshots:
 
   ucla-library-design-tokens@5.27.2: {}
 
-  ucla-library-website-components@3.38.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))):
+  ucla-library-website-components@3.39.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))):
     dependencies:
       '@vuepic/vue-datepicker': 8.8.1(vue@3.5.12(typescript@5.6.3))
       '@vueuse/components': 11.3.0(vue@3.5.12(typescript@5.6.3))
