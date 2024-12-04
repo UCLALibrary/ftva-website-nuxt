@@ -1,4 +1,4 @@
-export default function useSearchFilter() {
+export default function useListSearchFilter() {
   return { paginatedSearchFilters }
 }
 
