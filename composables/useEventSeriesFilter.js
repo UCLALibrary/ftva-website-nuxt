@@ -4,8 +4,9 @@ export default function useEventSeriesFilter() {
   return { paginatedEventSeriesFilters }
 }
 
-//create 3 queries for using JS obj PAST CUrrent  UPcoming
+// create 3 queries for using JS obj PAST CUrrent  UPcoming
 // Create constsants outside paginatedEventSeriesFilters the use it inside paginatedEventSeriesFilters
+
 async function paginatedEventSeriesFilters(
   currentPage = 1,
   documentsPerPage = 10,
@@ -54,42 +55,79 @@ async function paginatedEventSeriesFilters(
 }
 
 // the view argument is refering to the past series upcoming series, current seroies tab view
+// function parseDateRange(dates, view) {
+//   if (!dates || dates.length === 0) return [] // Ensure it returns early if dates are empty
+
+//   const dateRange = []
+
+//   switch (view) {
+//     case 'past series':
+//       const dateObj = { range: {} }
+//       dateObj.range.endDate = {}
+//       dateObj.range.endDate.lt = dates[0]
+//       dateRange.push(dateObj)
+//       return dateRange
+//       break
+//     case 'current series':
+//       dateObj.range.startDate.gte = dates[0]
+//       break
+//     case 'upcoming series':
+
+//       break
+
+//     default:
+//       break
+//   }
+//   if (dates.length === 2) {
+//     dateObj.range.startDate.gte = dates[0]
+//     dateObj.range.startDate.lte = dates[1]
+//   } else {
+//     dateObj.range.startDate.gte = dates[0]
+//     dateObj.range.startDate.lte = dates[0] // This is needed for exact date match
+//   }
+
+//   // dateObj.range.startDate.format = 'yyyy-MM-dd' // TODO will decide the date format later
+
+//   return dateObj
+// }
+
 function parseDateRange(dates, view) {
-
-
-  if (!dates || dates.length === 0) return [] // Ensure it returns early if dates are empty
+  if (!dates || dates.length === 0) return []
 
   const dateRange = []
 
+  const dateObj = { range: {} }
+
   switch (view) {
     case 'past series':
-      const dateObj = {range: {}}
-      dateObj.range.endDate = {}
-      dateObj.range.endDate.lt = dates[0]
+      // Events that ended before the first date
+      dateObj.range.endDate = { lt: dates[0] }
       dateRange.push(dateObj)
-      return dateRange
-      break;
+      break
+
     case 'current series':
-      dateObj.range.startDate.gte = dates[0]
-      break;
+      // Events that started on or after the first date
+      dateObj.range.startDate = { gte: dates[0] }
+
+      // If two dates are provided, add an upper limit
+      if (dates.length === 2) {
+        dateObj.range.startDate.lte = dates[1]
+      }
+      dateRange.push(dateObj)
+      break
+
     case 'upcoming series':
+      // Events that start on or after the first date
+      dateObj.range.startDate = { gte: dates[0] }
+      dateRange.push(dateObj)
+      break
 
-      break;
-
-      default:
-      break;
-  }
-  if (dates.length === 2) {
-    dateObj.range.startDate.gte = dates[0]
-    dateObj.range.startDate.lte = dates[1]
-  } else {
-    dateObj.range.startDate.gte = dates[0]
-    dateObj.range.startDate.lte = dates[0] // This is needed for exact date match
+    default:
+      // If no valid view is provided, return an empty array
+      return []
   }
 
-  // dateObj.range.startDate.format = 'yyyy-MM-dd' // TODO will decide the date format later
-
-  return dateObj
+  return dateRange // Always return an array of filters
 }
 
 function parseSectionHandle(sectionHandle) {

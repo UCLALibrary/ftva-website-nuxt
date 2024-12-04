@@ -8,7 +8,7 @@ query FTVAEventSeriesList {
     title
 
     ... on ftvaEventSeries_eventSeries_Entry {
-      to: uri
+      to: slug
       description: eventDescription
       image: ftvaImage {
        ...Image
