@@ -1,7 +1,11 @@
 <script setup>
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+
+// COMPONENTS
 import { DividerWayFinder, SectionStaffArticleList } from 'ucla-library-website-components'
+
+// COMPOSABLE
 import useEventSeriesFilter from '@/composables/useEventSeriesFilter'
 
 const route = useRoute()
