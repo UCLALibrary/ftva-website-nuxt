@@ -60,8 +60,6 @@ const parsedEventSeries = computed(() => {
       />
 
       <SectionWrapper>
-        <DividerWayFinder />
-
         <div class="one-column">
           <SectionStaffArticleList :items="parsedEventSeries" />
         </div>
