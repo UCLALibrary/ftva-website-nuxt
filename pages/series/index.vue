@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerWayFinder, SectionStaffArticleList } from 'ucla-library-website-components'
+import { DividerWayFinder, SectionStaffArticleList, SectionPagination } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -57,15 +57,48 @@ const parsedEventSeries = computed(() => {
         class="header"
         :section-title="heading.titleGeneral"
         :section-summary="heading.summary"
-      />
+      >
+        <!-- TAB TOGGLE -->
+        <div class="wrapper">
+          <tab-list alignment="center">
+            <tab-item
+              title="Past Series"
+              icon="icon-calendar"
+              :content="text1"
+            />
 
+            <tab-item
+              title="Current and Upcoming Series"
+              icon="icon-list"
+              :content="text2"
+            />
+          </tab-list>
+        </div>
+      </SectionWrapper>
+
+      <!-- EVENT SERIES LIST -->
       <SectionWrapper>
         <div class="one-column">
-          <SectionStaffArticleList :items="parsedEventSeries" />
+          <SectionStaffArticleList
+            v-if="parsedEventSeries.length > 0"
+            :items="parsedEventSeries"
+          />
+          <p v-else-if="noResultsFound">
+            No events found for this series.
+          </p>
+          <p v-else>
+            Loading...
+          </p>
         </div>
       </SectionWrapper>
 
       <!-- PAGINATION -->
+      <section-pagination
+        v-if="totalPages !== 1"
+        class="pagination-ucla"
+        :pages="totalPages"
+        :initial-current-page="currentPage"
+      />
     </div>
   </div>
 </template>
@@ -95,7 +128,6 @@ const parsedEventSeries = computed(() => {
 
       .section-summary {
         color: var(--body-grey);
-        margin-bottom: var(--space-xl);
       }
     }
 
@@ -124,10 +156,6 @@ const parsedEventSeries = computed(() => {
     }
   }
 
-  APPS-3052_add-ftva-event-series-query.header {
-    max-width: 305px;
-  }
-
   .events {
     display: flex;
     flex-direction: column;
@@ -136,35 +164,9 @@ const parsedEventSeries = computed(() => {
 
   }
 
-  /* a {
-    outline-color: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+  :deep(.tab-list-body) {
+    margin-top: 0;
+    padding: 0;
   }
-
-  a:link {
-    color: #6900ff;
-  }
-
-  a:visited {
-    color: #a5c300;
-  }
-
-  a:focus {
-    text-decoration: none;
-    background: #bae498;
-  }
-
-  a:hover {
-    text-decoration: none;
-    background: #cdfeaa;
-  }
-
-  a:active {
-    background: #6900ff;
-    color: #cdfeaa;
-  } */
 }
 </style>
