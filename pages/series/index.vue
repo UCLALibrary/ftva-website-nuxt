@@ -88,6 +88,8 @@ const parsedEventSeries = computed(() => {
       justify-content: flex-start;
       align-content: center;
       align-items: center;
+      text-align: center;
+      max-width: 687px;
 
       >.section-title {
         color: #191919;
@@ -98,6 +100,34 @@ const parsedEventSeries = computed(() => {
         margin-bottom: var(--space-xl);
       }
     }
+
+    .section-staff-article-list {
+      background: var(--color-white);
+      padding: 45px;
+
+      :deep(.container) {
+        max-width: 100%;
+      }
+
+      :deep(.block-staff-article-item) {
+        border-bottom: 1px solid var(--pale-blue);
+        padding: 40px 0;
+        margin-bottom: 0;
+      }
+
+      :deep(.block-staff-article-item:first-child) {
+        padding-top: 0;
+      }
+
+      :deep(.block-staff-article-item:last-child) {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  APPS-3052_add-ftva-event-series-query.header {
+    max-width: 305px;
   }
 
   .events {
@@ -108,7 +138,7 @@ const parsedEventSeries = computed(() => {
 
   }
 
-  a {
+  /* a {
     outline-color: transparent;
     display: flex;
     flex-direction: column;
@@ -137,6 +167,6 @@ const parsedEventSeries = computed(() => {
   a:active {
     background: #6900ff;
     color: #cdfeaa;
-  }
+  } */
 }
 </style>
