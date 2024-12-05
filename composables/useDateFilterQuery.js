@@ -55,7 +55,6 @@ async function allEvents(
   return data
 }
 
-
 function parseSectionHandle(sectionHandle) {
   if (sectionHandle && sectionHandle === '') return []
 

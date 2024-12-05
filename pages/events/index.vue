@@ -250,6 +250,13 @@ function applyEventFilterSelectionToRouteURL(data) {
 const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
 })
+const parseFirstEventMonth = computed(() => {
+  if (parsedEvents.value && parsedEvents.value.length > 0) {
+    // console.log("parseFirstEventMonth", parsedEvents.value[0].startDate, typeof parsedEvents.value[0].startDate)
+    return [new Date(parsedEvents.value[0].startDate)]
+  }
+  return null
+})
 
 // remove this later
 const isOpen = ref(false)
@@ -295,7 +302,6 @@ function toggleCode() {
             :to="parsedListViewURL"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
-              <!-- :n-shown="10"  this prop does not do anything if theme is ftva-->
               <SectionTeaserList
                 :items="parsedEvents"
                 component-name="BlockCardThreeColumn"
@@ -333,7 +339,10 @@ function toggleCode() {
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <div style="display: flex;justify-content: center;">
-                <base-calendar :events="parsedEvents" />
+                <base-calendar
+                  :events="parsedEvents"
+                  :first-event-month="parseFirstEventMonth"
+                />
               </div>
               <br>
               <br>

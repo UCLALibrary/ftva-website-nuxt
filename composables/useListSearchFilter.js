@@ -61,11 +61,10 @@ function getTodaysDate() {
 function parseDateRange(dates) {
   const dateObj = { range: { startDate: {} } }
 
-  if (!dates || dates.length === 0){
+  if (!dates || dates.length === 0) {
     dateObj.range.startDate.gte = getTodaysDate()
     return dateObj // Always return upcoming events when no date filter selected
   }
-
 
   dateObj.range.startDate = {}
 
