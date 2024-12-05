@@ -1,4 +1,4 @@
-export default function useSearchFilter() {
+export default function useListSearchFilter() {
   return { paginatedSearchFilters }
 }
 
@@ -43,19 +43,6 @@ async function paginatedSearchFilters(
                 ]
               },
             },
-            script_fields: {
-              formatted_date: {
-                script: {
-                  source: `
-                  def date = doc['startDate'].value.toInstant().atZone(ZoneId.of('UTC')).toLocalDate();
-                  def month = date.getMonthValue(); // No leading zero
-                  def day = date.getDayOfMonth(); // No leading zero
-                  def year = date.getYear();
-                  return month + '/' + day + '/' + year;
-                `
-                }
-              }
-            },
             ...parseSort(sort, orderBy),
           }),
         }
@@ -64,11 +51,20 @@ async function paginatedSearchFilters(
   const data = await response.json()
   return data
 }
-
+function getTodaysDate() {
+  const today = new Date()
+  const year = today.getFullYear()
+  const month = String(today.getMonth() + 1).padStart(2, '0') // Months are 0-based
+  const day = String(today.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
 function parseDateRange(dates) {
   const dateObj = { range: { startDate: {} } }
 
-  if (!dates || dates.length === 0) return dateObj // Ensure it returns early if dates are empty
+  if (!dates || dates.length === 0) {
+    dateObj.range.startDate.gte = getTodaysDate()
+    return dateObj // Always return upcoming events when no date filter selected
+  }
 
   dateObj.range.startDate = {}
 

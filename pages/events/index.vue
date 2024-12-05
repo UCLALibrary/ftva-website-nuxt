@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerGeneral, SectionWrapper } from 'ucla-library-website-components'
+import { SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -40,6 +40,7 @@ if (!data.value.entries) {
 const events = ref([]) // Add typescript
 const userFilterSelection = ref({}) // Add typescript and should we have separate filters ref for date and eventFilters
 const userDateSelection = ref([])
+const userViewSelection = ref('list')
 const documentsPerPage = 10
 const totalPages = ref(0)
 const currentPage = ref(1)
@@ -51,6 +52,7 @@ watch(
   (newVal, oldVal) => {
     userFilterSelection.value = parseFilters(route.query.filters || '')
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    userViewSelection.value = route.query.view || 'list'
     console.log('route.query.dates', route?.query?.dates)
     userDateSelection.value = parseDateFromURL(route.query.dates || [])
     console.log('userDateSelection.value', userDateSelection.value)
@@ -66,8 +68,15 @@ function parseDateFromURL(datesParam) {
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
-  const { paginatedSearchFilters } = useSearchFilter()
-  const results = await paginatedSearchFilters(currentPage.value, documentsPerPage.value, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+  let results = {}
+  if (userViewSelection.value === 'list') {
+    const { paginatedSearchFilters } = useListSearchFilter()
+    results = await paginatedSearchFilters(currentPage.value, documentsPerPage.value, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+  } else {
+    //  Calendar View code
+    const { paginatedSearchFilters } = useCalendarSearchFilter()
+    results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+  }
 
   if (results && results.hits && results.hits.total.value > 0) {
     // console.log('Search ES HITS,', results.hits.hits)
@@ -81,6 +90,13 @@ async function searchES() {
     totalPages.value = 0
   }
 }
+// Get data for Image or Carousel at top of page
+function parsedImage(obj) {
+  return obj._source.imageCarousel
+}
+function isImageExists(obj) {
+  return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
+}
 
 const parsedEvents = computed(() => {
   if (events.value.length === 0) return []
@@ -89,7 +105,7 @@ const parsedEvents = computed(() => {
       ...obj._source,
       tagLabels: getEventFilterLabels(obj._source),
       to: `/${obj._source.uri}`,
-      image: obj._source.image && obj._source.image.length > 0 ? obj._source.image[0] : null
+      image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
     }
   })
 })
@@ -154,13 +170,13 @@ const parsedInitialDates = computed(() => {
 })
 onMounted(async () => {
   await setFilters()
-  const { paginatedSearchFilters } = useSearchFilter()
+  const { allEvents } = useDateFilterQuery()
   /* const testFilters = {
     'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
     'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
   } */
   // Logic to fetch all events startDates formated for DateFilter
-  const esOutput = await paginatedSearchFilters(1, 1000, 'ftvaEvent', {}, [], 'startDate', 'asc', ['startDate'])
+  const esOutput = await allEvents('ftvaEvent', ['startDate'])
   console.log(esOutput.hits.total.value)
   if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
   dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
@@ -207,7 +223,8 @@ function applyDateFilterSelectionToRouteURL(data) {
     path: '/events',
     query: {
       dates: datesParam,
-      filters: filters.join(' AND ')
+      filters: filters.join(' AND '),
+      view: userViewSelection.value
     }
   })
 }
@@ -225,10 +242,21 @@ function applyEventFilterSelectionToRouteURL(data) {
     path: '/events',
     query: {
       dates: userDateSelection.join(','),
-      filters: filters.join(' AND ')
+      filters: filters.join(' AND '),
+      view: userViewSelection.value
     }
   })
 }
+const parseViewSelection = computed(() => {
+  return userViewSelection.value === 'list' ? 0 : 1
+})
+const parseFirstEventMonth = computed(() => {
+  if (parsedEvents.value && parsedEvents.value.length > 0) {
+    // console.log("parseFirstEventMonth", parsedEvents.value[0].startDate, typeof parsedEvents.value[0].startDate)
+    return [new Date(parsedEvents.value[0].startDate)]
+  }
+  return null
+})
 
 // remove this later
 const isOpen = ref(false)
@@ -264,14 +292,16 @@ function toggleCode() {
     </div>
     <div class="full-width">
       <SectionWrapper theme="paleblue">
-        <TabList alignment="right">
+        <TabList
+          alignment="right"
+          :initial-tab="parseViewSelection"
+        >
           <TabItem
             title="List View"
             class="tab-content"
             :to="parsedListViewURL"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
-              <!-- :n-shown="10"  this prop does not do anything if theme is ftva-->
               <SectionTeaserList
                 :items="parsedEvents"
                 component-name="BlockCardThreeColumn"
@@ -308,6 +338,14 @@ function toggleCode() {
             :to="parsedCalendarViewURL"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
+              <div style="display: flex;justify-content: center;">
+                <base-calendar
+                  :events="parsedEvents"
+                  :first-event-month="parseFirstEventMonth"
+                />
+              </div>
+              <br>
+              <br>
               <div class="code-container">
                 <button
                   class="code-header"
@@ -321,10 +359,6 @@ function toggleCode() {
                 >
                   <pre> {{ parsedEvents }} </pre>
                 </div>
-              </div>
-
-              <div style="display: flex;justify-content: center;">
-                <base-calendar :events="parsedEvents" />
               </div>
             </template>
             <template v-else>
