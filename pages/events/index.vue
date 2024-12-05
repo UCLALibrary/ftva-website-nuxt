@@ -66,6 +66,24 @@ function parseDateFromURL(datesParam) {
   return datesParam.split(',')
 }
 
+function addHighlightState(tagLabels) {
+  // if userFilterSelection.value is an empty object for initial page load, then just return tagLabels array back
+  if (Object.keys(userFilterSelection.value).length === 0) return tagLabels
+
+  console.log('filter has values')
+  // loop through the keys of userFilterSelection.value object and its array values
+  for (const [key, value] of Object.entries(userFilterSelection.value)) {
+    // loop through tagLabels array
+    for (let i = 0; i < tagLabels.length; i++) {
+      // if tagLabels.title array has a match with userFilterSelection.value array then set isHighlighted as true
+      if (tagLabels[i].title === value) {
+        tagLabels[i].highlighted = true
+      }
+    }
+  }
+  return tagLabels
+}
+
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
   let results = {}
@@ -103,7 +121,7 @@ const parsedEvents = computed(() => {
   return events.value.map((obj) => {
     return {
       ...obj._source,
-      tagLabels: getEventFilterLabels(obj._source),
+      tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
       image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
     }
