@@ -170,13 +170,13 @@ const parsedInitialDates = computed(() => {
 })
 onMounted(async () => {
   await setFilters()
-  const { paginatedSearchFilters } = useListSearchFilter()
+  const { allEvents } = useDateFilterQuery()
   /* const testFilters = {
     'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
     'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
   } */
   // Logic to fetch all events startDates formated for DateFilter
-  const esOutput = await paginatedSearchFilters(1, 1000, 'ftvaEvent', {}, [], 'startDate', 'asc', ['startDate'])
+  const esOutput = await allEvents('ftvaEvent', ['startDate'])
   console.log(esOutput.hits.total.value)
   if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
   dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
@@ -248,7 +248,7 @@ function applyEventFilterSelectionToRouteURL(data) {
   })
 }
 const parseViewSelection = computed(() => {
-  return userViewSelection === 'list' ? 0 : 1
+  return userViewSelection.value === 'list' ? 0 : 1
 })
 
 // remove this later
