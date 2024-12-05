@@ -6,4 +6,16 @@ query FTVAEventSeriesList {
     titleGeneral
     summary
   }
+  entries(section: ["ftvaEventSeries"], orderBy: "postDate") {
+    typeHandle
+    id
+    title
+    to: uri
+    ... on ftvaEventSeries_eventSeries_Entry {
+      id
+      eventDescription
+      startDate @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
+      endDate @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
+    }
+  }
 }

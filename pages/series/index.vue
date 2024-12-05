@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerWayFinder } from 'ucla-library-website-components'
+import { DividerWayFinder, SectionStaffArticleList } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -30,56 +30,75 @@ if (!data.value.entries) {
   })
 }
 
+const heading = ref(_get(data.value, 'entry', {}))
+
 const page = ref(_get(data.value, 'entries', {}))
+
+// // EVENTS WITH GQL DATA
+const parsedEventSeries = computed(() => {
+  return page.value.map((obj) => {
+    return {
+      ...obj,
+      to: obj.to,
+      description: obj.description,
+      startDate: obj.startDate,
+      endDate: obj.endDate,
+      ongoing: obj.ongoing,
+      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
+    }
+  })
+})
 </script>
 
 <template>
-  <div
-    class="page page-events"
-    style="padding: 25px 100px;"
-  >
-    <div class="header">
-      <h2>Screening Series</h2>
-      <p class="text">
-        Discover the magic of our Upcoming Series, where we curate an immersive experience that transcends
-        time and
-        genre. From classic masterpieces to cutting-edge contemporary works, our series showcase the diverse voices and
-        visions that have shaped the evolution of visual storytelling.
-      </p>
+  <div class="page page-event-series">
+    <div class="full-width">
+      <SectionWrapper
+        class="header"
+        :section-title="heading.titleGeneral"
+        :section-summary="heading.summary"
+      />
+      <SectionWrapper>
+        <DividerWayFinder />
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <div class="one-column">
+          <SectionStaffArticleList :items="parsedEventSeries" />
+        </div>
+      </SectionWrapper>
+
+      <!-- PAGINATION -->
     </div>
-
-    <DividerWayFinder />
-
-    <div
-      v-for="event in page"
-      :key="event?.id"
-      class="events"
-    >
-      <NuxtLink :to="`/${event?.to}`">
-        <h3>{{ event?.title }}</h3>
-      </NuxtLink> <br>
-      <h4>image: <code>{{ event?.image }}</code></h4>
-      <h4>startdate: <code>{{ event?.startDate }}</code></h4>
-      <h4>enddate: <code>{{ event?.endDate }}</code></h4>
-      <h4>eventDescription: <code>{{ event?.eventDescription }}</code></h4>
-      <divider-general />
-    </div>
-
-    <h3>ALL ENTRY DATA</h3>
-    <code>PAGE: {{ page }}</code>
-
-    <!-- PAGINATION -->
   </div>
 </template>
 
 <style scoped>
-.page-events {
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
+@import 'assets/styles/listing-pages.scss';
+
+.page-event-series {
+  position: relative;
+  background-color: var(--pale-blue);
+
+  :deep(.section-wrapper) {
+    background-color: var(--pale-blue);
+
+    >.section-header {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-content: center;
+      align-items: center;
+
+      >.section-title {
+        color: #191919;
+      }
+
+      .section-summary {
+        color: var(--body-grey);
+        margin-bottom: var(--space-xl);
+      }
+    }
   }
 
   .events {
