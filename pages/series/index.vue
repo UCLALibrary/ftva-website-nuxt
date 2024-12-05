@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 // COMPONENTS
-import { DividerWayFinder, SectionStaffArticleList } from 'ucla-library-website-components'
+import { DividerWayFinder, SectionWrapper, SectionStaffArticleList } from 'ucla-library-website-components'
 
 // COMPOSABLE
 import useEventSeriesFilter from '@/composables/useEventSeriesFilter'
@@ -105,38 +105,107 @@ const parsedPastSeriesURL = computed(() => {
   const queryParams = new URLSearchParams({ ...route.query, view: 'past', page: 1 })
   return `${route.path}?${queryParams.toString()}`
 })
+
+// EVENTS with ES data
+const parsedEventSeries = computed(() => {
+  if (events.value.length === 0) return []
+
+  return events.value.map((obj) => {
+    return {
+      ...obj._source,
+      tagLabels: getEventFilterLabels(obj._source),
+      to: `/${obj._source.to}`,
+      description: obj._source.description,
+      startDate: obj._source.startDate,
+      endDate: obj._source.endDate,
+      ongoing: obj._source.ongoing,
+      image: obj._source.image && obj._source.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
+    }
+  })
+})
+
+// // EVENTS WITH GQL DATA
+// const parsedEventSeries = computed(() => {
+//   return page.value.map((obj) => {
+//     return {
+//       ...obj,
+//       to: obj.to,
+//       description: obj.description,
+//       startDate: obj.startDate,
+//       endDate: obj.endDate,
+//       ongoing: obj.ongoing,
+//       image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
+//     }
+//   })
+// })
 </script>
 
 <template>
-  <main class="page-events">
-    <div class="one-column">
-      <h2>Series Events</h2>
-      <div>Select a view to explore series events.</div>
-    </div>
+  <main
+    id="main"
+    class="page page-events"
+  >
 
-    <!-- Tabs for View Selection -->
-    <div class="tab-container">
-      <nuxt-link
-        :to="parsedCurrentSeriesURL"
-        :class="{ active: currentView === 'current' }"
-        @click.prevent="router.push({ query: { ...route.query, view: 'current', page: 1 } })"
-      >
-        Current Series
-      </nuxt-link>
-      <nuxt-link
-        :to="parsedUpcomingSeriesURL"
-        :class="{ active: currentView === 'upcoming' }"
-        @click.prevent="currentView = 'upcoming'"
-      >
-        Upcoming Series
-      </nuxt-link>
-      <nuxt-link
-        :to="parsedPastSeriesURL"
-        :class="{ active: currentView === 'past' }"
-        @click.prevent="currentView = 'past'"
-      >
-        Past Series
-      </nuxt-link>
+    <div class="full-width">
+      <SectionWrapper theme="paleblue">
+        <div class="one-column">
+          <h2>Series Events</h2>
+          <div>Select a view to explore series events.</div>
+        </div>
+
+        <!-- Tabs for View Selection -->
+        <TabList alignment="right">
+          <TabItem
+            title="Current Series"
+            class="tab-content"
+            :to="parsedCurrentSeriesURL"
+          >
+            <template v-if="parsedCurrentSeriesURL && parsedCurrentSeriesURL.length > 0">
+
+              <SectionStaffArticleList
+                :items="parsedCurrentSeriesURL"
+                component-name="BlockStaffArticleList"
+                :n-shown="10"
+                class="tabbed-event-list"
+              />
+            </template>
+
+            <template v-else-if="parsedUpcomingSeriesURL && parsedUpcomingSeriesURL.length > 0">
+
+              <SectionStaffArticleList
+                :items="parsedUpcomingSeriesURL"
+                component-name="BlockStaffArticleList"
+                :n-shown="10"
+                class="tabbed-event-list"
+              />
+            </template>
+
+            <template v-else-if="parsedPastSeriesURL && parsedPastSeriesURL.length > 0">
+
+              <SectionStaffArticleList
+                :items="parsedPastSeriesURL"
+                component-name="BlockStaffArticleList"
+                :n-shown="10"
+                class="tabbed-event-list"
+              />
+            </template>
+
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no events found
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Search in progress ...
+              </p>
+            </template>
+          </TabItem>
+        </TabList>
     </div>
 
     <!-- Series List -->
@@ -151,6 +220,9 @@ const parsedPastSeriesURL = computed(() => {
       <p v-else>
         Loading...
       </p>
+    </div>
+
+    </SectionWrapper>
     </div>
 
     <!-- Pagination -->
