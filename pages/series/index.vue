@@ -58,11 +58,10 @@ const parsedEventSeries = computed(() => {
         :section-title="heading.titleGeneral"
         :section-summary="heading.summary"
       />
-      <SectionWrapper>
-        <DividerWayFinder />
-      </SectionWrapper>
 
       <SectionWrapper>
+        <DividerWayFinder />
+
         <div class="one-column">
           <SectionStaffArticleList :items="parsedEventSeries" />
         </div>
