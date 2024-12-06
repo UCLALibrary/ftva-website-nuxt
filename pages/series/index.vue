@@ -57,7 +57,12 @@ const parsedEventSeries = computed(() => {
         class="header"
         :section-title="heading.titleGeneral"
         :section-summary="heading.summary"
+        theme="paleblue"
       >
+      </SectionWrapper>
+
+      <!-- EVENT SERIES LIST -->
+      <SectionWrapper theme="paleblue">
         <!-- TAB TOGGLE -->
         <div class="wrapper">
           <tab-list alignment="center">
@@ -74,10 +79,7 @@ const parsedEventSeries = computed(() => {
             />
           </tab-list>
         </div>
-      </SectionWrapper>
 
-      <!-- EVENT SERIES LIST -->
-      <SectionWrapper>
         <div class="one-column">
           <SectionStaffArticleList
             v-if="parsedEventSeries.length > 0"
@@ -106,14 +108,15 @@ const parsedEventSeries = computed(() => {
 <style scoped>
 @import 'assets/styles/listing-pages.scss';
 
+/* CENTER SECTION WRAPPER */
 .page-event-series {
   position: relative;
-  background-color: var(--pale-blue);
+  /* background-color: var(--pale-blue); */
 
   :deep(.section-wrapper) {
-    background-color: var(--pale-blue);
+    /* background-color: var(--pale-blue); */
 
-    >.section-header {
+    /* >.section-header {
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -137,9 +140,9 @@ const parsedEventSeries = computed(() => {
 
       :deep(.container) {
         max-width: 100%;
-      }
+      } */
 
-      :deep(.block-staff-article-item) {
+    /* :deep(.block-staff-article-item) {
         border-bottom: 1px solid var(--pale-blue);
         padding: 40px 0;
         margin-bottom: 0;
@@ -153,7 +156,7 @@ const parsedEventSeries = computed(() => {
         border-bottom: 0;
         padding-bottom: 0;
       }
-    }
+    } */
   }
 
   .events {
