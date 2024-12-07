@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerWayFinder } from 'ucla-library-website-components'
+import { DividerWayFinder, SectionStaffArticleList, SectionPagination } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -30,56 +30,133 @@ if (!data.value.entries) {
   })
 }
 
+const heading = ref(_get(data.value, 'entry', {}))
+
 const page = ref(_get(data.value, 'entries', {}))
+
+// // EVENTS WITH GQL DATA
+const parsedEventSeries = computed(() => {
+  return page.value.map((obj) => {
+    return {
+      ...obj,
+      to: obj.to,
+      description: obj.description,
+      startDate: obj.startDate,
+      endDate: obj.endDate,
+      ongoing: obj.ongoing,
+      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
+    }
+  })
+})
 </script>
 
 <template>
-  <div
-    class="page page-events"
-    style="padding: 25px 100px;"
-  >
-    <div class="header">
-      <h2>Screening Series</h2>
-      <p class="text">
-        Discover the magic of our Upcoming Series, where we curate an immersive experience that transcends
-        time and
-        genre. From classic masterpieces to cutting-edge contemporary works, our series showcase the diverse voices and
-        visions that have shaped the evolution of visual storytelling.
-      </p>
+  <div class="page page-event-series">
+    <div class="full-width">
+      <SectionWrapper
+        class="header"
+        :section-title="heading.titleGeneral"
+        :section-summary="heading.summary"
+        theme="paleblue"
+      >
+      </SectionWrapper>
+
+      <!-- EVENT SERIES LIST -->
+      <SectionWrapper theme="paleblue">
+        <!-- TAB TOGGLE -->
+        <div class="wrapper">
+          <tab-list alignment="center">
+            <tab-item
+              title="Past Series"
+              icon="icon-calendar"
+              :content="text1"
+            />
+
+            <tab-item
+              title="Current and Upcoming Series"
+              icon="icon-list"
+              :content="text2"
+            />
+          </tab-list>
+        </div>
+
+        <div class="one-column">
+          <SectionStaffArticleList
+            v-if="parsedEventSeries.length > 0"
+            :items="parsedEventSeries"
+          />
+          <p v-else-if="noResultsFound">
+            No events found for this series.
+          </p>
+          <p v-else>
+            Loading...
+          </p>
+        </div>
+      </SectionWrapper>
+
+      <!-- PAGINATION -->
+      <section-pagination
+        v-if="totalPages !== 1"
+        class="pagination-ucla"
+        :pages="totalPages"
+        :initial-current-page="currentPage"
+      />
     </div>
-
-    <DividerWayFinder />
-
-    <div
-      v-for="event in page"
-      :key="event?.id"
-      class="events"
-    >
-      <NuxtLink :to="`/${event?.to}`">
-        <h3>{{ event?.title }}</h3>
-      </NuxtLink> <br>
-      <h4>image: <code>{{ event?.image }}</code></h4>
-      <h4>startdate: <code>{{ event?.startDate }}</code></h4>
-      <h4>enddate: <code>{{ event?.endDate }}</code></h4>
-      <h4>eventDescription: <code>{{ event?.eventDescription }}</code></h4>
-      <divider-general />
-    </div>
-
-    <h3>ALL ENTRY DATA</h3>
-    <code>PAGE: {{ page }}</code>
-
-    <!-- PAGINATION -->
   </div>
 </template>
 
 <style scoped>
-.page-events {
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-content: center;
-    justify-content: center;
+@import 'assets/styles/listing-pages.scss';
+
+/* CENTER SECTION WRAPPER */
+.page-event-series {
+  position: relative;
+  /* background-color: var(--pale-blue); */
+
+  :deep(.section-wrapper) {
+    /* background-color: var(--pale-blue); */
+
+    /* >.section-header {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-content: center;
+      align-items: center;
+      text-align: center;
+      max-width: 687px;
+
+      >.section-title {
+        color: #191919;
+      }
+
+      .section-summary {
+        color: var(--body-grey);
+      }
+    }
+
+    .section-staff-article-list {
+      background: var(--color-white);
+      padding: 45px;
+
+      :deep(.container) {
+        max-width: 100%;
+      } */
+
+    /* :deep(.block-staff-article-item) {
+        border-bottom: 1px solid var(--pale-blue);
+        padding: 40px 0;
+        margin-bottom: 0;
+      }
+
+      :deep(.block-staff-article-item:first-child) {
+        padding-top: 0;
+      }
+
+      :deep(.block-staff-article-item:last-child) {
+        border-bottom: 0;
+        padding-bottom: 0;
+      }
+    } */
   }
 
   .events {
@@ -90,35 +167,9 @@ const page = ref(_get(data.value, 'entries', {}))
 
   }
 
-  a {
-    outline-color: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-
-  a:link {
-    color: #6900ff;
-  }
-
-  a:visited {
-    color: #a5c300;
-  }
-
-  a:focus {
-    text-decoration: none;
-    background: #bae498;
-  }
-
-  a:hover {
-    text-decoration: none;
-    background: #cdfeaa;
-  }
-
-  a:active {
-    background: #6900ff;
-    color: #cdfeaa;
+  :deep(.tab-list-body) {
+    margin-top: 0;
+    padding: 0;
   }
 }
 </style>
