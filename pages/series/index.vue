@@ -59,39 +59,26 @@ const parsedEventSeries = computed(() => {
         :section-summary="heading.summary"
         theme="paleblue"
       >
-      </SectionWrapper>
 
-      <!-- EVENT SERIES LIST -->
-      <SectionWrapper theme="paleblue">
-        <!-- TAB TOGGLE -->
-        <div class="wrapper">
-          <tab-list alignment="center">
-            <tab-item
-              title="Past Series"
-              icon="icon-calendar"
-              :content="text1"
-            />
+        <TabList alignment="center">
+          <TabItem
+            title="Past Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries.length > 0">
+              <SectionStaffArticleList :items="parsedEventSeries" />
+            </template>
+          </TabItem>
 
-            <tab-item
-              title="Current and Upcoming Series"
-              icon="icon-list"
-              :content="text2"
-            />
-          </tab-list>
-        </div>
-
-        <div class="one-column">
-          <SectionStaffArticleList
-            v-if="parsedEventSeries.length > 0"
-            :items="parsedEventSeries"
-          />
-          <p v-else-if="noResultsFound">
-            No events found for this series.
-          </p>
-          <p v-else>
-            Loading...
-          </p>
-        </div>
+          <TabItem
+            title="Current and Upcoming Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries.length > 0">
+              <SectionStaffArticleList :items="parsedEventSeries" />
+            </template>
+          </TabItem>
+        </TabList>
       </SectionWrapper>
 
       <!-- PAGINATION -->
@@ -108,68 +95,29 @@ const parsedEventSeries = computed(() => {
 <style scoped>
 @import 'assets/styles/listing-pages.scss';
 
-/* CENTER SECTION WRAPPER */
 .page-event-series {
   position: relative;
-  /* background-color: var(--pale-blue); */
+  background-color: var(--pale-blue);
 
-  :deep(.section-wrapper) {
-    /* background-color: var(--pale-blue); */
-
-    /* >.section-header {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      align-content: center;
-      align-items: center;
-      text-align: center;
-      max-width: 687px;
-
-      >.section-title {
-        color: #191919;
-      }
-
-      .section-summary {
-        color: var(--body-grey);
-      }
-    }
-
-    .section-staff-article-list {
-      background: var(--color-white);
-      padding: 45px;
-
-      :deep(.container) {
-        max-width: 100%;
-      } */
-
-    /* :deep(.block-staff-article-item) {
-        border-bottom: 1px solid var(--pale-blue);
-        padding: 40px 0;
-        margin-bottom: 0;
-      }
-
-      :deep(.block-staff-article-item:first-child) {
-        padding-top: 0;
-      }
-
-      :deep(.block-staff-article-item:last-child) {
-        border-bottom: 0;
-        padding-bottom: 0;
-      }
-    } */
-  }
-
-  .events {
+  .header {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
     justify-content: flex-start;
-
+    align-content: center;
+    align-items: center;
+    text-align: center;
   }
 
-  :deep(.tab-list-body) {
-    margin-top: 0;
-    padding: 0;
+
+  .section-header .section-summary {
+    .section-wrapper2 {
+      padding-top: 0;
+    }
+  }
+
+
+  :deep(.tab-list .tab-list-header) {
+    margin-bottom: 50px;
   }
 }
 </style>
