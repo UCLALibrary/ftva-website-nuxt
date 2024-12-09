@@ -59,7 +59,6 @@ const parsedEventSeries = computed(() => {
         :section-summary="heading.summary"
         theme="paleblue"
       >
-
         <TabList alignment="center">
           <TabItem
             title="Past Series"
@@ -108,13 +107,11 @@ const parsedEventSeries = computed(() => {
     text-align: center;
   }
 
-
   .section-header .section-summary {
     .section-wrapper2 {
       padding-top: 0;
     }
   }
-
 
   :deep(.tab-list .tab-list-header) {
     margin-bottom: 50px;
