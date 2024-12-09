@@ -59,7 +59,6 @@ const parsedEventSeries = computed(() => {
         :section-summary="heading.summary"
         theme="paleblue"
       >
-
         <TabList alignment="center">
           <TabItem
             title="Past Series"
