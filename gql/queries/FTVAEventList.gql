@@ -1,6 +1,10 @@
 # import "../gql/fragments/Image.gql"
 
 query FTVAEventList {
+  entry(section: ["ftvaListingEvents"]) {
+    titleGeneral
+    summary
+  }
   entries(section: ["ftvaEvent"], orderBy: "postDate") {
     typeHandle
     id

@@ -7,35 +7,32 @@ import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
 
 // UTILS
+import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import parseFilters from '@/utils/parseFilters'
 import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
 
 // GQL
-// TODO Add new query to fetch title and summary for this template from Craft singles check ticket APPS-3050
-
-/* const { $graphql } = useNuxtApp()
-
+const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('event-list', async () => {
   const data = await $graphql.default.request(FTVAEventList)
   return data
 })
-
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })
 }
 
-if (!data.value.entries) {
+if (!data.value.entry || !data.value.entries) {
   // console.log('no data')
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
     fatal: true
   })
-} */
-
-// const page = ref(_get(data.value, 'entries[0]', {}))
+}
+const heading = ref(_get(data.value, 'entry', {}))
+const page = ref(_get(data.value, 'entries[0]', {})) // TODO map this to events?
 
 const events = ref([]) // Add typescript
 const userFilterSelection = ref({}) // Add typescript and should we have separate filters ref for date and eventFilters
@@ -272,8 +269,8 @@ function toggleCode() {
     class="page page-events"
   >
     <div class="one-column">
-      <h2> Craft Title Upcoming Events</h2>
-      <div> Craft Summary Text </div>
+      <h2>{{ heading.generalTitle }}</h2>
+      <div>{{ heading.summary }}</div>
     </div>
 
     <div>
