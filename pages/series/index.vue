@@ -98,6 +98,7 @@ const parsedEventSeries = computed(() => {
 
 .page-event-series {
   position: relative;
+  background-color: var(--pale-blue);
 
   .header {
     display: flex;
