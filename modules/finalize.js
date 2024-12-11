@@ -13,7 +13,7 @@ export default defineNuxtModule({
         Authorization: `ApiKey ${nuxt.options.runtimeConfig.esWriteKey}`,
         'Content-Type': 'application/json',
       }
-      console.log('This is alias rest api call url :', `${esUrl}/_alias/${alias}`)
+      // console.log('This is alias rest api call url :', `${esUrl}/_alias/${alias}`)
       // Step 1: Fetch the alias and its indices
       let indicesToDelete = []
       try {
