@@ -4,7 +4,7 @@ export default defineNuxtModule({
 
   setup(options, nuxt) {
     console.log('Nuxt module start ')
-    console.log('Is the environement local Dev' + import.meta.dev)
+    // console.log('Is the environement local Dev' + import.meta.dev)
     if (!nuxt.options._prepare && !import.meta.dev) {
       nuxt.hooks.hook('nitro:init', async (nitro) => {
         console.log('Ready to create library temp index...')
