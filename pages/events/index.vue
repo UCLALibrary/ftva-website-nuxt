@@ -24,7 +24,7 @@ if (error.value) {
   })
 }
 
-if (!data.value.entry || !data.value.entries) {
+if (!data.value.entry) {
   // console.log('no data')
   throw createError({
     statusCode: 404,
@@ -33,7 +33,6 @@ if (!data.value.entry || !data.value.entries) {
   })
 }
 const heading = ref(_get(data.value, 'entry', {}))
-const page = ref(_get(data.value, 'entries[0]', {})) // TODO map this to events?
 
 // TYPES
 interface FilterItem {
@@ -232,7 +231,7 @@ onMounted(async () => {
     // console.log('newWidth', newWidth)
     isMobile.value = newWidth <= 750
   },
-  { immediate: true })
+    { immediate: true })
   await setFilters()
   const { allEvents } = useDateFilterQuery()
   /* const testFilters = {
