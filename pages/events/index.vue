@@ -8,35 +8,31 @@ import { parseISO } from 'date-fns'
 import { useWindowSize } from '@vueuse/core'
 
 // UTILS
+import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import parseFilters from '@/utils/parseFilters'
 import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
 
 // GQL
-// TODO Add new query to fetch title and summary for this template from Craft singles check ticket APPS-3050
-
-/* const { $graphql } = useNuxtApp()
-
+const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('event-list', async () => {
   const data = await $graphql.default.request(FTVAEventList)
   return data
 })
-
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })
 }
 
-if (!data.value.entries) {
+if (!data.value.entry) {
   // console.log('no data')
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
     fatal: true
   })
-} */
-
-// const page = ref(_get(data.value, 'entries[0]', {}))
+}
+const heading = ref(_get(data.value, 'entry', {}))
 
 // TYPES
 interface FilterItem {
@@ -364,8 +360,8 @@ function toggleCode() {
     <div class="full-width">
       <SectionWrapper
         class="header"
-        section-title="Craft Title Upcoming Events"
-        section-summary="Craft Summary Text"
+        :section-title="heading.titleGeneral"
+        :section-summary="heading.summary"
         theme="paleblue"
       />
 
