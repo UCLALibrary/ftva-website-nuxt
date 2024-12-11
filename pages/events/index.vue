@@ -251,7 +251,7 @@ onMounted(async () => {
 
 // This is event handler which is invoked by datefilter component selections
 function applyDateFilterSelectionToRouteURL(data) {
-  console.log('Data from Date filters', data)
+  // console.log('Data from Date filters', data)
 
   // Function to format date to yyyy-MM-dd
   const formatDate = (date) => {
@@ -274,15 +274,12 @@ function applyDateFilterSelectionToRouteURL(data) {
     endDate = formatDate(data.endDate)
     datesParam = datesParam + ',' + endDate
   }
-
-
   const eventFilters = []
   for (const key in userFilterSelection.value) {
     if (userFilterSelection.value[key].length > 0) {
       eventFilters.push(`${key}:(${userFilterSelection.value[key].join(' OR ')})`)
     }
   }
-
   // Use router.push to navigate with query params
   useRouter().push({
     path: '/events',

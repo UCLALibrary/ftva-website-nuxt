@@ -21,7 +21,7 @@ async function paginatedSearchFilters(
         config.public.esAlias === ''
   )
     return
-  console.log('(currentPage - 1) * documentsPerPage', (currentPage - 1) * documentsPerPage, currentPage, documentsPerPage)
+  // console.log('(currentPage - 1) * documentsPerPage', (currentPage - 1) * documentsPerPage, currentPage, documentsPerPage)
   const response = await fetch(
         `${config.public.esURL}/${config.public.esAlias}/_search`,
         {

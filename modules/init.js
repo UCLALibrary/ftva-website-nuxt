@@ -3,14 +3,14 @@ import fetch from 'node-fetch'
 export default defineNuxtModule({
 
   setup(options, nuxt) {
-    console.log('Nuxt module start ')
+    // console.log('Nuxt module start ')
     // console.log('Is the environement local Dev' + import.meta.dev)
     if (!nuxt.options._prepare && !import.meta.dev) {
       nuxt.hooks.hook('nitro:init', async (nitro) => {
-        console.log('Ready to create library temp index...')
+        // console.log('Ready to create library temp index...')
 
         const esLibraryIndexTemp = nuxt.options.runtimeConfig.public.esTempIndex
-        console.log('Index named:' + esLibraryIndexTemp)
+        // console.log('Index named:' + esLibraryIndexTemp)
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/flattened.html
         try {
           const response = await fetch(`${nuxt.options.runtimeConfig.public.esURL}/${esLibraryIndexTemp}`, {
