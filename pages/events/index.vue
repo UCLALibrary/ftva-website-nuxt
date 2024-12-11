@@ -235,7 +235,7 @@ onMounted(async () => {
     // console.log('newWidth', newWidth)
     isMobile.value = newWidth <= 750
   },
-  { immediate: true })
+    { immediate: true })
   await setFilters()
   const { allEvents } = useDateFilterQuery()
   /* const testFilters = {
@@ -261,13 +261,21 @@ function applyDateFilterSelectionToRouteURL(data) {
     const day = String(d.getDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
   }
-
+  let startDate: string = ''
+  let endDate: string = ''
   // Format the dates
-  const startDate = formatDate(data.startDate)
-  const endDate = formatDate(data.endDate)
-
   // Combine into a single query parameter
-  const datesParam = `${startDate},${endDate}`
+  let datesParam: string = ''
+  if (data.startDate) {
+    startDate = formatDate(data.startDate)
+    datesParam = startDate
+  }
+  if (data.endDate) {
+    endDate = formatDate(data.endDate)
+    datesParam = datesParam + ',' + endDate
+  }
+
+
   const eventFilters = []
   for (const key in userFilterSelection.value) {
     if (userFilterSelection.value[key].length > 0) {
