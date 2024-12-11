@@ -269,7 +269,7 @@ function toggleCode() {
     class="page page-events"
   >
     <div class="one-column">
-      <h2>{{ heading.generalTitle }}</h2>
+      <h2>{{ heading.titleGeneral }}</h2>
       <div>{{ heading.summary }}</div>
     </div>
 
