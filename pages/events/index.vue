@@ -67,7 +67,6 @@ interface FilterGroup {
   options: string[]; // The options available for this filter group.
 }
 
-
 const events = ref<EventItem[]>([]) // Add typescript
 const userFilterSelection = ref<FilterItem>({}) // Add typescript and should we have separate filters ref for date and eventFilters
 const userDateSelection = ref<string[]>([])
@@ -82,15 +81,14 @@ const noResultsFound = ref<boolean>(false)
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
   const datesObj = userDateSelection.value
-  console.log("parsedRemoveSearchFilters", datesObj)
+  console.log('parsedRemoveSearchFilters', datesObj)
   if (datesObj && datesObj.length === 2) {
     removefilters.dates = [`${datesObj[0]},${datesObj[1]}`]
-
   }
   if (datesObj && datesObj.length === 1) {
     removefilters.dates = [datesObj[0]]
   }
-  console.log("parsedRemoveSearchFilters", removefilters)
+  console.log('parsedRemoveSearchFilters', removefilters)
   /*
   Sample ftva filters selection data structure
   {
@@ -103,7 +101,7 @@ const parsedRemoveSearchFilters = computed(() => {
       removefilters[key] = userFilterSelection.value[key]
     }
   }
-  console.log("In parsedFilters SectionRemoveSearchfilter component", removefilters, JSON.stringify(Object.entries(removefilters)))
+  console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
 
   return removefilters
 })
@@ -173,8 +171,6 @@ const parsedEvents = computed(() => {
   })
 })
 
-
-
 function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGroup[] {
   // Initialize the filterGroups array
   const filterGroups: FilterGroup[] = []
@@ -239,7 +235,7 @@ onMounted(async () => {
     // console.log('newWidth', newWidth)
     isMobile.value = newWidth <= 750
   },
-    { immediate: true })
+  { immediate: true })
   await setFilters()
   const { allEvents } = useDateFilterQuery()
   /* const testFilters = {
@@ -290,7 +286,6 @@ function applyDateFilterSelectionToRouteURL(data) {
   })
 }
 
-
 // This is event handler which is invoked by dropdownfilters component selections
 function applyEventFilterSelectionToRouteURL(data) {
   // Use router.push to navigate with query params
@@ -312,8 +307,8 @@ function applyEventFilterSelectionToRouteURL(data) {
 
 function applyChangesToSearch() {
   const eventFilters = []
-  let dateFilters = ""
-  console.log("applyChangesToSearch allFilters.value", allFilters.value)
+  let dateFilters = ''
+  console.log('applyChangesToSearch allFilters.value', allFilters.value)
   // separate dates and event filters
   for (const key in allFilters.value) {
     if (allFilters.value[key].length > 0) {
@@ -361,7 +356,6 @@ function toggleCode() {
     id="main"
     class="page page-events"
   >
-
     <div class="full-width">
       <SectionWrapper
         class="header"
@@ -384,9 +378,9 @@ function toggleCode() {
         @input-selected="applyEventFilterSelectionToRouteURL"
       /-->
         <TabList
+          v-if="!isMobile"
           alignment="right"
           :initial-tab="parseViewSelection"
-          v-if="!isMobile"
         >
           <TabItem
             title="List View"
@@ -467,8 +461,8 @@ function toggleCode() {
           </TabItem>
         </TabList>
         <div
-          class="mobile-container"
           v-else
+          class="mobile-container"
         >
           <section-remove-search-filter
             :filters="allFilters"
@@ -477,11 +471,11 @@ function toggleCode() {
             @remove-selected="applyChangesToSearch"
           />
           <SectionTeaserList
+            v-if="parsedEvents && parsedEvents.length > 0"
             :items="parsedEvents"
             component-name="BlockCardThreeColumn"
             :n-shown="10"
             class="tabbed-event-list"
-            v-if="parsedEvents && parsedEvents.length > 0"
           />
           <div v-else>
             <p
@@ -498,7 +492,6 @@ function toggleCode() {
             </p>
           </div>
         </div>
-
       </SectionWrapper>
     </div>
   </main>
