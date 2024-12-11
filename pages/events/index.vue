@@ -231,7 +231,7 @@ onMounted(async () => {
     // console.log('newWidth', newWidth)
     isMobile.value = newWidth <= 750
   },
-    { immediate: true })
+  { immediate: true })
   await setFilters()
   const { allEvents } = useDateFilterQuery()
   /* const testFilters = {
