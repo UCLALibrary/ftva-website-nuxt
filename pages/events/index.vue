@@ -81,14 +81,14 @@ const noResultsFound = ref<boolean>(false)
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
   const datesObj = userDateSelection.value
-  console.log('parsedRemoveSearchFilters', datesObj)
+  // console.log('parsedRemoveSearchFilters', datesObj)
   if (datesObj && datesObj.length === 2) {
     removefilters.dates = [`${datesObj[0]},${datesObj[1]}`]
   }
   if (datesObj && datesObj.length === 1) {
     removefilters.dates = [datesObj[0]]
   }
-  console.log('parsedRemoveSearchFilters', removefilters)
+  // console.log('parsedRemoveSearchFilters', removefilters)
   /*
   Sample ftva filters selection data structure
   {
@@ -101,7 +101,7 @@ const parsedRemoveSearchFilters = computed(() => {
       removefilters[key] = userFilterSelection.value[key]
     }
   }
-  console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
+  // console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
 
   return removefilters
 })
@@ -113,16 +113,16 @@ watch(
     userFilterSelection.value = parseFilters(route.query.filters || '')
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     userViewSelection.value = (route.query.view as string | undefined) || 'list'
-    console.log('route.query.dates', route?.query?.dates)
+    // console.log('route.query.dates', route?.query?.dates)
     userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
     allFilters.value = parsedRemoveSearchFilters.value
-    console.log('userDateSelection.value', userDateSelection.value)
+    // console.log('userDateSelection.value', userDateSelection.value)
     searchES()
   }, { deep: true, immediate: true }
 )
 
 function parseDateFromURL(datesParam: string): string[] {
-  console.log('datesParam', datesParam)
+  // console.log('datesParam', datesParam)
   if (datesParam === '') return []
   return datesParam?.split(',')
 }
@@ -205,10 +205,10 @@ const searchFilters = ref([])
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const searchAggsResponse: Aggregations = await useIndexAggregator()
-  console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
+  // console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
   // Transform the response
   searchFilters.value = transformEsResponseToFilterGroups(searchAggsResponse)
-  console.log('searchFilters', searchFilters.value)
+  // console.log('searchFilters', searchFilters.value)
 }
 
 const dateListDateFilter = ref([])
@@ -244,7 +244,7 @@ onMounted(async () => {
   } */
   // Logic to fetch all events startDates formated for DateFilter
   const esOutput = await allEvents('ftvaEvent', ['startDate'])
-  console.log(esOutput.hits.total.value)
+  // console.log(esOutput.hits.total.value)
   if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
   dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
 })
@@ -313,7 +313,7 @@ function applyEventFilterSelectionToRouteURL(data) {
 function applyChangesToSearch() {
   const eventFilters = []
   let dateFilters = ''
-  console.log('applyChangesToSearch allFilters.value', allFilters.value)
+  // console.log('applyChangesToSearch allFilters.value', allFilters.value)
   // separate dates and event filters
   for (const key in allFilters.value) {
     if (allFilters.value[key].length > 0) {
@@ -334,7 +334,7 @@ function applyChangesToSearch() {
 }
 function handleFilterUpdate(updatedFilters) {
   allFilters.value = updatedFilters
-  console.log('Filters updated:', allFilters.value)
+  // console.log('Filters updated:', allFilters.value)
 }
 
 const parseViewSelection = computed(() => {
