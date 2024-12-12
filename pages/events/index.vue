@@ -12,7 +12,7 @@ import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import parseFilters from '@/utils/parseFilters'
 import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
 
-// GQL to fetch title and summary
+// GQL
 const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('event-list', async () => {
   const data = await $graphql.default.request(FTVAEventList)
@@ -63,12 +63,17 @@ interface FilterGroup {
   options: string[]; // The options available for this filter group.
 }
 
-// infinite scroll/ pagination refs and functions
-
+const events = ref<EventItem[]>([]) // Add typescript
+const userFilterSelection = ref<FilterItem>({}) // Add typescript and should we have separate filters ref for date and eventFilters
+const userDateSelection = ref<string[]>([])
+const allFilters = ref<FilterItem>({})
+const userViewSelection = ref<string>('list')
 const documentsPerPage = 10
 const totalPages = ref<number>(0)
-const totalDocuments = ref<number>(0)
 const currentPage = ref<number>(1)
+const route = useRoute()
+const noResultsFound = ref<boolean>(false)
+
 const hasMore = ref(true) // Flag to control infinite scroll
 const el = ref<HTMLElement | null>(null)
 const { reset } = useInfiniteScroll(
@@ -81,16 +86,6 @@ const { reset } = useInfiniteScroll(
   },
   { distance: 20 }
 )
-
-const events = ref<EventItem[]>([])
-const userFilterSelection = ref<FilterItem>({}) //   filters ref for date and eventFilters
-const userDateSelection = ref<string[]>([])
-const allFilters = ref<FilterItem>({})
-const userViewSelection = ref<string>('list')
-
-const route = useRoute()
-const noResultsFound = ref<boolean>(false)
-const isMobile = ref(false)
 
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
@@ -131,6 +126,7 @@ watch(
     userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
     allFilters.value = parsedRemoveSearchFilters.value
     // console.log('userDateSelection.value', userDateSelection.value)
+    events.value = []
     searchES()
   }, { deep: true, immediate: true }
 )
@@ -144,51 +140,48 @@ function parseDateFromURL(datesParam: string): string[] {
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
   let results: any = {}
-  if (currentPage.value <= totalPages.value || totalPages.value === 0) { // Desktop
-    if (userViewSelection.value === 'list') {
-      const { paginatedSearchFilters } = useListSearchFilter()
-      results = await paginatedSearchFilters(currentPage.value, documentsPerPage, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-    } else {
-      //  Calendar View code
-      const { paginatedSearchFilters } = useCalendarSearchFilter()
-      results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-    }
+  if (userViewSelection.value === 'list') {
+    const { paginatedSearchFilters } = useListSearchFilter()
+    results = await paginatedSearchFilters(currentPage.value, documentsPerPage, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+  } else {
+    //  Calendar View code
+    const { paginatedSearchFilters } = useCalendarSearchFilter()
+    results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
   }
+
   if (results && results.hits && results.hits.total.value > 0) {
-    console.log('Search ES HITS,', results.hits.hits.length, 'currentPage', currentPage.value, 'totalpages', totalPages.value)
-    totalDocuments.value = results.hits.total.value
-    totalPages.value = Math.ceil(totalDocuments.value / documentsPerPage)
+    // console.log('Search ES HITS,', results.hits.hits)
+    const totalDocuments = results.hits.total.value
     if (!isMobile.value) {
       events.value = results.hits.hits
     } else
       events.value.push(...results.hits.hits)
+    totalPages.value = Math.ceil(totalDocuments / documentsPerPage)
     noResultsFound.value = false
   } else {
     noResultsFound.value = true
     if (!isMobile.value) {
       events.value = []
       totalPages.value = 0
-      totalDocuments.value = 0
     } else
       hasMore.value = false
   }
 }
 // Get data for Image or Carousel at top of page
 function parsedImage(obj) {
-  return obj?._source?.imageCarousel
+  return obj._source.imageCarousel
 }
 function isImageExists(obj) {
   return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
 }
 
 const parsedEvents = computed(() => {
-  // console.log("In parsedevents", events.value?.length)
-  if (events.value && events.value.length === 0) return []
+  if (events.value.length === 0) return []
   return events.value.map((obj) => {
     return {
-      ...obj?._source,
-      tagLabels: getEventFilterLabels(obj?._source),
-      to: `/${obj?._source?.uri}`,
+      ...obj._source,
+      tagLabels: getEventFilterLabels(obj._source),
+      to: `/${obj._source.uri}`,
       image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
     }
   })
@@ -251,6 +244,7 @@ const parsedInitialDates = computed(() => {
   return initialDates
 })
 
+const isMobile = ref(false)
 const { width } = useWindowSize()
 watch(width, (newWidth) => {
   // console.log('newWidth', newWidth)
@@ -260,7 +254,7 @@ watch(width, (newWidth) => {
 onMounted(async () => {
   await setFilters()
   const { allEvents } = useDateFilterQuery()
-  /* const sampleFiltersData = {
+  /* const testFilters = {
     'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
     'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
   } */
@@ -335,8 +329,8 @@ function applyEventFilterSelectionToRouteURL(data) {
 }
 
 function applyChangesToSearch() {
-  events.value = []
   const eventFilters = []
+  events.value = []
   let dateFilters = ''
   // console.log('applyChangesToSearch allFilters.value', allFilters.value)
   // separate dates and event filters
@@ -528,7 +522,7 @@ function toggleCode() {
   </main>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .page-events {
   position: relative;
 
