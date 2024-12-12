@@ -273,6 +273,7 @@ onMounted(async () => {
 
 // This is event handler which is invoked by datefilter component selections
 function applyDateFilterSelectionToRouteURL(data) {
+  events.value = []
   // console.log('Data from Date filters', data)
 
   // Function to format date to yyyy-MM-dd
@@ -316,6 +317,7 @@ function applyDateFilterSelectionToRouteURL(data) {
 // This is event handler which is invoked by dropdownfilters component selections
 function applyEventFilterSelectionToRouteURL(data) {
   // Use router.push to navigate with query params
+  events.value = []
   const eventFilters = []
   for (const key in data) {
     if (data[key].length > 0) {
@@ -333,6 +335,7 @@ function applyEventFilterSelectionToRouteURL(data) {
 }
 
 function applyChangesToSearch() {
+  events.value = []
   const eventFilters = []
   let dateFilters = ''
   // console.log('applyChangesToSearch allFilters.value', allFilters.value)
@@ -525,7 +528,7 @@ function toggleCode() {
   </main>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .page-events {
   position: relative;
 
