@@ -8,6 +8,8 @@ import _get from 'lodash/get'
 // GQL
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
+// import EventSeriesTestData from '../data/eventSeriesTestData.json'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {
@@ -34,20 +36,23 @@ const heading = ref(_get(data.value, 'entry', {}))
 
 const page = ref(_get(data.value, 'entries', {}))
 
-// // EVENTS WITH GQL DATA
-const parsedEventSeries = computed(() => {
-  return page.value.map((obj) => {
-    return {
-      ...obj,
-      to: obj.to,
-      description: obj.description,
-      startDate: obj.startDate,
-      endDate: obj.endDate,
-      ongoing: obj.ongoing,
-      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
-    }
-  })
-})
+const userViewSelection = ref('current')
+
+
+
+
+
+const { pastEventSeriesQuery, currentEventSeriesQuery } = useEventSeriesListSearchFilter()
+const testdata = await pastEventSeriesQuery(
+  ['*'],)
+
+const testdata2 = await currentEventSeriesQuery(
+  ['*'],)
+
+// const testdata3 = await eventSeriesQuery(
+//   ['*'],)
+
+console.log(testdata.hits.total.value)
 </script>
 
 <template>
@@ -60,8 +65,14 @@ const parsedEventSeries = computed(() => {
         theme="paleblue"
       />
 
-      <SectionWrapper theme="paleblue">
-        <TabList alignment="center">
+      <SectionWrapper>
+        <h2>{{ testdata2 }}</h2>
+      </SectionWrapper>
+
+      <!-- <SectionWrapper theme="paleblue">
+        <TabList
+        alignment="center"
+        :initial-tab="current">
           <TabItem
             title="Past Series"
             class="tab-content"
@@ -69,26 +80,23 @@ const parsedEventSeries = computed(() => {
             <template v-if="parsedEventSeries.length > 0">
               <SectionStaffArticleList :items="parsedEventSeries" />
             </template>
-          </TabItem>
+</TabItem>
 
-          <TabItem
-            title="Current and Upcoming Series"
-            class="tab-content"
-          >
-            <template v-if="parsedEventSeries.length > 0">
+<TabItem title="Current and Upcoming Series" class="tab-content">
+  <template v-if="parsedEventSeries.length > 0">
               <SectionStaffArticleList :items="parsedEventSeries" />
             </template>
-          </TabItem>
-        </TabList>
-      </SectionWrapper>
+</TabItem>
+</TabList>
+</SectionWrapper> -->
 
       <!-- PAGINATION -->
-      <section-pagination
+      <!-- <section-pagination
         v-if="totalPages !== 1"
         class="pagination-ucla"
         :pages="totalPages"
         :initial-current-page="currentPage"
-      />
+      /> -->
     </div>
   </div>
 </template>
