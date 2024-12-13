@@ -13,7 +13,7 @@ import parseFilters from '@/utils/parseFilters'
 import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
 
 // GQL
-/* const { $graphql } = useNuxtApp()
+const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('event-list', async () => {
   const data = await $graphql.default.request(FTVAEventList)
   return data
@@ -32,7 +32,7 @@ if (!data.value.entry) {
     fatal: true
   })
 }
-const heading = ref(_get(data.value, 'entry', {})) */
+const heading = ref(_get(data.value, 'entry', {}))
 
 // TYPES
 interface FilterItem {
@@ -428,11 +428,11 @@ function toggleCode() {
     class="page page-events"
   >
     <div class="full-width">
-      <!-- :section-title="heading.titleGeneral"
-        :section-summary="heading.summary" -->
       <SectionWrapper
         class="header"
         theme="paleblue"
+        :section-title="heading.titleGeneral"
+        :section-summary="heading.summary"
       />
 
       <SectionWrapper theme="paleblue">
