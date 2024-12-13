@@ -45,7 +45,7 @@ export function useContentIndexer() {
           )
           // console.log('Update document in ES', updateResponse)
           const updateJson = await updateResponse.text()
-          console.log('Update in ES', updateJson)
+          // console.log('Update in ES', updateJson)
         } else {
           const response = await fetch(
                     `${esURL}/${esIndex}/_doc/${slug}`,

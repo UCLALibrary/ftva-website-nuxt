@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerWayFinder } from 'ucla-library-website-components'
+import { DividerWayFinder, SectionStaffArticleList, SectionPagination } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -30,95 +30,90 @@ if (!data.value.entries) {
   })
 }
 
+const heading = ref(_get(data.value, 'entry', {}))
+
 const page = ref(_get(data.value, 'entries', {}))
+
+// // EVENTS WITH GQL DATA
+const parsedEventSeries = computed(() => {
+  return page.value.map((obj) => {
+    return {
+      ...obj,
+      to: obj.to,
+      description: obj.description,
+      startDate: obj.startDate,
+      endDate: obj.endDate,
+      ongoing: obj.ongoing,
+      image: obj.image && obj.image.length === 1 ? obj.image[0] : null, // craft data has an array, but component expects a single object for image
+    }
+  })
+})
 </script>
 
 <template>
-  <div
-    class="page page-events"
-    style="padding: 25px 100px;"
-  >
-    <div class="header">
-      <h2>Screening Series</h2>
-      <p class="text">
-        Discover the magic of our Upcoming Series, where we curate an immersive experience that transcends
-        time and
-        genre. From classic masterpieces to cutting-edge contemporary works, our series showcase the diverse voices and
-        visions that have shaped the evolution of visual storytelling.
-      </p>
+  <div class="page page-event-series">
+    <div class="full-width">
+      <SectionWrapper
+        class="header"
+        :section-title="heading.titleGeneral"
+        :section-summary="heading.summary"
+        theme="paleblue"
+      />
+
+      <SectionWrapper theme="paleblue">
+        <TabList alignment="center">
+          <TabItem
+            title="Past Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries.length > 0">
+              <SectionStaffArticleList :items="parsedEventSeries" />
+            </template>
+          </TabItem>
+
+          <TabItem
+            title="Current and Upcoming Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries.length > 0">
+              <SectionStaffArticleList :items="parsedEventSeries" />
+            </template>
+          </TabItem>
+        </TabList>
+      </SectionWrapper>
+
+      <!-- PAGINATION -->
+      <section-pagination
+        v-if="totalPages !== 1"
+        class="pagination-ucla"
+        :pages="totalPages"
+        :initial-current-page="currentPage"
+      />
     </div>
-
-    <DividerWayFinder />
-
-    <div
-      v-for="event in page"
-      :key="event?.id"
-      class="events"
-    >
-      <NuxtLink :to="`/${event?.to}`">
-        <h3>{{ event?.title }}</h3>
-      </NuxtLink> <br>
-      <h4>image: <code>{{ event?.image }}</code></h4>
-      <h4>startdate: <code>{{ event?.startDate }}</code></h4>
-      <h4>enddate: <code>{{ event?.endDate }}</code></h4>
-      <h4>eventDescription: <code>{{ event?.eventDescription }}</code></h4>
-      <divider-general />
-    </div>
-
-    <h3>ALL ENTRY DATA</h3>
-    <code>PAGE: {{ page }}</code>
-
-    <!-- PAGINATION -->
   </div>
 </template>
 
 <style scoped>
-.page-events {
+@import 'assets/styles/listing-pages.scss';
+
+.page-event-series {
+  position: relative;
+  background-color: var(--pale-blue);
+
   .header {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: flex-start;
     align-content: center;
-    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    max-width: 787px;
   }
 
-  .events {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-
-  }
-
-  a {
-    outline-color: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-  }
-
-  a:link {
-    color: #6900ff;
-  }
-
-  a:visited {
-    color: #a5c300;
-  }
-
-  a:focus {
-    text-decoration: none;
-    background: #bae498;
-  }
-
-  a:hover {
-    text-decoration: none;
-    background: #cdfeaa;
-  }
-
-  a:active {
-    background: #6900ff;
-    color: #cdfeaa;
+  :deep(.tab-list .tab-list-header) {
+    margin-top: -50px;
+    margin-bottom: 50px;
   }
 }
 </style>
