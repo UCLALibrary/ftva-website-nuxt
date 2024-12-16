@@ -32,13 +32,13 @@ async function pastEventSeriesQuery(
             filter: [
               {
                 term: {
-                  "sectionHandle.keyword": "ftvaEventSeries"
+                  'sectionHandle.keyword': 'ftvaEventSeries'
                 }
               },
               {
                 range: {
                   endDate: {
-                    lt: "now/d-8h"
+                    lt: 'now/d-8h'
                   }
                 }
               }
@@ -81,13 +81,13 @@ async function currentEventSeriesQuery(
             filter: [
               {
                 term: {
-                  "sectionHandle.keyword": "ftvaEventSeries"
+                  'sectionHandle.keyword': 'ftvaEventSeries'
                 }
               },
               {
                 range: {
                   startDate: {
-                    gte: "now/d-8h"
+                    gte: 'now/d-8h'
                   }
                 }
               }

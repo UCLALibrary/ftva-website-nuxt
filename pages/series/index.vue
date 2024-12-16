@@ -64,8 +64,6 @@ const { pastEventSeriesQuery, currentEventSeriesQuery } = useEventSeriesListSear
 const testdata = await pastEventSeriesQuery(['*'])
 const testdata2 = await currentEventSeriesQuery(['*'])
 
-
-
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
   let results = {}
