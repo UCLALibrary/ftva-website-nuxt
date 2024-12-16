@@ -5,7 +5,7 @@ import { SectionWrapper } from 'ucla-library-website-components'
 // HELPERS
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
-import { useWindowSize } from '@vueuse/core'
+import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // UTILS
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
@@ -62,8 +62,13 @@ interface FilterGroup {
   searchField: string; // The corresponding search field in Elasticsearch.
   options: string[]; // The options available for this filter group.
 }
+// State Management
+const desktopPage = useState<number>('desktopPage', () => 1) // Persist desktop page
 
-const events = ref<EventItem[]>([]) // Add typescript
+// STATE
+const desktopEvents = ref([]) // Desktop events list
+const mobileEvents = ref([]) // Mobile events list
+const events = computed((): EventItem[] => (isMobile.value ? mobileEvents.value : desktopEvents.value))
 const userFilterSelection = ref<FilterItem>({}) // Add typescript and should we have separate filters ref for date and eventFilters
 const userDateSelection = ref<string[]>([])
 const allFilters = ref<FilterItem>({})
@@ -73,6 +78,42 @@ const totalPages = ref<number>(0)
 const currentPage = ref<number>(1)
 const route = useRoute()
 const noResultsFound = ref<boolean>(false)
+const isLoading = ref<boolean>(false)
+const isMobile = ref<boolean>(false)
+const hasMore = ref(true) // Flag to control infinite scroll
+
+// Window Size Handling
+const { width } = useWindowSize()
+watch(width, (newWidth) => {
+  const wasMobile = isMobile.value
+  isMobile.value = newWidth <= 750
+
+  // Reinitialize only when transitioning between mobile and desktop
+  if (wasMobile !== isMobile.value) {
+    handleScreenTransition()
+  }
+}, { immediate: true })
+
+// Handle screen transitions
+function handleScreenTransition() {
+  if (isMobile.value) {
+    // Switching to mobile: save desktop page, clear query param
+    desktopPage.value = currentPage.value
+    currentPage.value = 1
+    mobileEvents.value = []
+    hasMore.value = true
+    const { page, ...remainingQuery } = route.query
+    useRouter().push({ query: remainingQuery })
+  } else {
+    // Switching to desktop: restore query param
+    if (totalPages.value === 1) desktopPage.value = 1
+    const restoredPage = desktopPage.value || 1
+    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
+    currentPage.value = restoredPage
+    desktopEvents.value = []
+  }
+  searchES()
+}
 
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
@@ -113,8 +154,45 @@ watch(
     userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
     allFilters.value = parsedRemoveSearchFilters.value
     // console.log('userDateSelection.value', userDateSelection.value)
+    isMobile.value ? mobileEvents.value = [] : desktopEvents.value = []
+    hasMore.value = true
     searchES()
   }, { deep: true, immediate: true }
+)
+// SEARCH
+const searchFilters = ref([])
+// fetch filters for the page from ES after page loads in Onmounted hook on the client side
+async function setFilters() {
+  const searchAggsResponse: Aggregations = await useIndexAggregator()
+  // console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
+  // Transform the response
+  searchFilters.value = transformEsResponseToFilterGroups(searchAggsResponse)
+  // console.log('searchFilters', searchFilters.value)
+}
+onMounted(async () => {
+  await setFilters()
+  const { allEvents } = useDateFilterQuery()
+  /* const testFilters = {
+    'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
+    'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
+  } */
+  // Logic to fetch all events startDates formated for DateFilter
+  const esOutput = await allEvents('ftvaEvent', ['startDate'])
+  // console.log(esOutput.hits.total.value)
+  if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
+  dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
+})
+
+const el = ref<HTMLElement | null>(null)
+const { reset } = useInfiniteScroll(
+  el,
+  async () => {
+    if (isMobile.value && hasMore.value && !isLoading.value) {
+      currentPage.value++
+      await searchES()
+    }
+  },
+  { distance: 100 }
 )
 
 function parseDateFromURL(datesParam: string): string[] {
@@ -145,26 +223,43 @@ function addHighlightState(tagLabels) {
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
-  let results: any = {}
-  if (userViewSelection.value === 'list') {
-    const { paginatedSearchFilters } = useListSearchFilter()
-    results = await paginatedSearchFilters(currentPage.value, documentsPerPage, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-  } else {
-    //  Calendar View code
-    const { paginatedSearchFilters } = useCalendarSearchFilter()
-    results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-  }
+  if (isLoading.value || !hasMore.value) return
 
-  if (results && results.hits && results.hits.total.value > 0) {
-    // console.log('Search ES HITS,', results.hits.hits)
-    const totalDocuments = results.hits.total.value
-    events.value = results.hits.hits
-    totalPages.value = Math.ceil(totalDocuments / documentsPerPage)
-    noResultsFound.value = false
-  } else {
-    noResultsFound.value = true
-    events.value = []
-    totalPages.value = 0
+  isLoading.value = true
+
+  try {
+    const page = currentPage.value
+    const size = 10
+    let results: any = {}
+    if (!isMobile.value || userViewSelection.value === 'list') {
+      const { paginatedSearchFilters } = useListSearchFilter()
+      results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+    } else {
+      //  Calendar View code
+      const { paginatedSearchFilters } = useCalendarSearchFilter()
+      results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+    }
+
+    if (results && results.hits && results.hits.total.value > 0) {
+      const newEvents = results.hits.hits || []
+      if (isMobile.value) {
+        mobileEvents.value.push(...newEvents)
+        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+      } else {
+        desktopEvents.value = newEvents
+        totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+      }
+      noResultsFound.value = false
+    } else {
+      noResultsFound.value = true
+      if (!isMobile.value) totalPages.value = 0
+      hasMore.value = false
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    hasMore.value = false
+  } finally {
+    isLoading.value = false
   }
 }
 // Get data for Image or Carousel at top of page
@@ -216,6 +311,7 @@ function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGr
 
   return filterGroups
 }
+
 // SEARCH
 const searchFilters = ref([] as FilterGroup[])
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
@@ -246,29 +342,10 @@ const parsedInitialDates = computed(() => {
   return initialDates
 })
 
-const isMobile = ref(false)
-onMounted(async () => {
-  const { width } = useWindowSize()
-  watch(width, (newWidth) => {
-    // console.log('newWidth', newWidth)
-    isMobile.value = newWidth <= 750
-  },
-    { immediate: true })
-  await setFilters()
-  const { allEvents } = useDateFilterQuery()
-  /* const testFilters = {
-    'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
-    'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
-  } */
-  // Logic to fetch all events startDates formated for DateFilter
-  const esOutput = await allEvents('ftvaEvent', ['startDate'])
-  // console.log(esOutput.hits.total.value)
-  if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
-  dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
-})
-
 // This is event handler which is invoked by datefilter component selections
 function applyDateFilterSelectionToRouteURL(data) {
+  desktopEvents.value = []
+  mobileEvents.value = []
   // console.log('Data from Date filters', data)
 
   // Function to format date to yyyy-MM-dd
@@ -312,6 +389,8 @@ function applyDateFilterSelectionToRouteURL(data) {
 // This is event handler which is invoked by dropdownfilters component selections
 function applyEventFilterSelectionToRouteURL(data) {
   // Use router.push to navigate with query params
+  desktopEvents.value = []
+  mobileEvents.value = []
   const eventFilters = []
   for (const key in data) {
     if (data[key].length > 0) {
@@ -330,6 +409,8 @@ function applyEventFilterSelectionToRouteURL(data) {
 
 function applyChangesToSearch() {
   const eventFilters = []
+  desktopEvents.value = []
+  mobileEvents.value = []
   let dateFilters = ''
   // console.log('applyChangesToSearch allFilters.value', allFilters.value)
   // separate dates and event filters
@@ -382,9 +463,9 @@ function toggleCode() {
     <div class="full-width">
       <SectionWrapper
         class="header"
+        theme="paleblue"
         :section-title="heading.titleGeneral"
         :section-summary="heading.summary"
-        theme="paleblue"
       />
 
       <SectionWrapper theme="paleblue">
@@ -492,6 +573,7 @@ function toggleCode() {
         </TabList>
         <div
           v-else
+          ref="el"
           class="mobile-container"
         >
           <section-remove-search-filter
@@ -504,7 +586,7 @@ function toggleCode() {
             v-if="parsedEvents && parsedEvents.length > 0"
             :items="parsedEvents"
             component-name="BlockCardThreeColumn"
-            :n-shown="10"
+            :n-shown="events.length"
             class="tabbed-event-list"
           />
           <div v-else>
