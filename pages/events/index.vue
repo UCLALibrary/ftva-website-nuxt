@@ -126,15 +126,17 @@ function parseDateFromURL(datesParam: string): string[] {
 function addHighlightState(tagLabels) {
   // if userFilterSelection.value is an empty object for initial page load, then just return tagLabels array back
   if (Object.keys(userFilterSelection.value).length === 0) return tagLabels
-
-  console.log('filter has values')
   // loop through the keys of userFilterSelection.value object and its array values
   for (const [key, value] of Object.entries(userFilterSelection.value)) {
     // loop through tagLabels array
-    for (let i = 0; i < tagLabels.length; i++) {
-      // if tagLabels.title array has a match with userFilterSelection.value array then set isHighlighted as true
-      if (tagLabels[i].title === value) {
-        tagLabels[i].highlighted = true
+    for (let v = 0; v < value.length; v++) {
+      for (let i = 0; i < tagLabels.length; i++) {
+        // console.log('tagLabels[i].title', tagLabels[i].title)
+        // console.log('does it match value?', value[v])
+        // if tagLabels.title array has a match with userFilterSelection.value array then set isHighlighted as true
+        if (tagLabels[i].title === value[v]) {
+          tagLabels[i].isHighlighted = true
+        }
       }
     }
   }
@@ -215,7 +217,7 @@ function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGr
   return filterGroups
 }
 // SEARCH
-const searchFilters = ref([])
+const searchFilters = ref([] as FilterGroup[])
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const searchAggsResponse: Aggregations = await useIndexAggregator()
@@ -224,6 +226,8 @@ async function setFilters() {
   searchFilters.value = transformEsResponseToFilterGroups(searchAggsResponse)
   // console.log('searchFilters', searchFilters.value)
 }
+
+const filterDropdownSelectedFilters = ref({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
 
 const dateListDateFilter = ref([])
 
@@ -249,7 +253,7 @@ onMounted(async () => {
     // console.log('newWidth', newWidth)
     isMobile.value = newWidth <= 750
   },
-  { immediate: true })
+    { immediate: true })
   await setFilters()
   const { allEvents } = useDateFilterQuery()
   /* const testFilters = {
@@ -384,23 +388,30 @@ function toggleCode() {
       />
 
       <SectionWrapper theme="paleblue">
-        <date-filter
-          :key="dateListDateFilter"
-          :event-dates="dateListDateFilter"
-          :initial-dates="parsedInitialDates"
-          @input-selected="applyDateFilterSelectionToRouteURL"
-        />
-        <!-- Sample way to add DropdownFilter component -->
-        <!--DropdownFilter
-        :filterGroups="searchFilters"
-        :selectedFilters="userFilterSelection"
-        @input-selected="applyEventFilterSelectionToRouteURL"
-      /-->
         <TabList
           v-if="!isMobile"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
+          <template #filters>
+            <!-- TODO remove or restyle this filters-wrapper element as needed-->
+            <div
+              class="filters-wrapper"
+              style="display: flex; z-index: 1000;"
+            >
+              <date-filter
+                :key="dateListDateFilter"
+                :event-dates="dateListDateFilter"
+                :initial-dates="parsedInitialDates"
+                @input-selected="applyDateFilterSelectionToRouteURL"
+              />
+              <filters-dropdown
+                v-model:selected-filters="filterDropdownSelectedFilters"
+                :filter-groups="searchFilters"
+                @update-display="applyEventFilterSelectionToRouteURL"
+              />
+            </div>
+          </template>
           <TabItem
             title="List View"
             class="tab-content"
@@ -517,6 +528,10 @@ function toggleCode() {
 </template>
 
 <style scoped>
+:deep(.button-dropdown-modal-wrapper.is-expanded) {
+  z-index: 1000;
+}
+
 .page-events {
   position: relative;
 
