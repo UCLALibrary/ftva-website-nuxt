@@ -5,10 +5,8 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination } from 'uc
 // HELPERS
 import _get from 'lodash/get'
 
-// GQL
+// GQL - start
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
-
-// import EventSeriesTestData from '../data/eventSeriesTestData.json'
 
 const { $graphql } = useNuxtApp()
 
@@ -33,26 +31,75 @@ if (!data.value.entries) {
 }
 
 const heading = ref(_get(data.value, 'entry', {}))
-
 const page = ref(_get(data.value, 'entries', {}))
+// GQL - End
 
-const userViewSelection = ref('current')
+// TYPES
+// interface EventItem {
+//   _source: {
+//     uri: string
+//     title: string
+//     startDate: string
+//     endDate: string
+//     ongoing: boolean
+//     imageCarousel?: { image: { url: string }[] }[]
+//     eventDescription?: string
+//     [key: string]: any
+//   }
+//   [key: string]: any
+// }
 
+// const events = ref < EventItem[] > ([])
 
-
-
+// ARGUMENTS on useEventSeriesListSearchFilter
+const events = ref([]) // Add typescript
+const documentsPerPage = 10
+const totalPages = ref(0)
+const currentPage = ref(1)
+const route = useRoute()
+const noResultsFound = ref(false)
+const currentView = ref('current')
 
 const { pastEventSeriesQuery, currentEventSeriesQuery } = useEventSeriesListSearchFilter()
-const testdata = await pastEventSeriesQuery(
-  ['*'],)
+const testdata = await pastEventSeriesQuery(['*'])
+const testdata2 = await currentEventSeriesQuery(['*'])
 
-const testdata2 = await currentEventSeriesQuery(
-  ['*'],)
 
-// const testdata3 = await eventSeriesQuery(
-//   ['*'],)
 
-console.log(testdata.hits.total.value)
+// ELASTIC SEARCH FUNCTION
+async function searchES() {
+  let results = {}
+
+  if (currentView.value === 'current') {
+    // Current series
+    const { currentEventSeriesQuery } = await useEventSeriesListSearchFilter()
+    results = await currentEventSeriesQuery()
+  } else {
+    // Past series
+    const { pastEventSeriesQuery } = await useEventSeriesListSearchFilter()
+    results = await pastEventSeriesQuery()
+  }
+
+  if (results && results.hits && results.hits.total.value > 0) {
+    const totalDocuments = results.hits.total.value
+    events.value = results.hits.hits
+    noResultsFound.value = false
+    // pagination logic
+    totalPages.value = Math.ceil(totalDocuments / documentsPerPage)
+  } else {
+    noResultsFound.value = true
+    events.value = []
+    // pagination logic
+    totalPages.value = 0
+  }
+}
+
+onMounted(() => {
+  searchES()
+})
+
+const testdata3 = await searchES()
+
 </script>
 
 <template>
@@ -66,7 +113,7 @@ console.log(testdata.hits.total.value)
       />
 
       <SectionWrapper>
-        <h2>{{ testdata2 }}</h2>
+        <h2>TESTDATA3 - {{ testdata3 }}</h2>
       </SectionWrapper>
 
       <!-- <SectionWrapper theme="paleblue">
