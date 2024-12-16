@@ -160,7 +160,7 @@ watch(
   }, { deep: true, immediate: true }
 )
 // SEARCH
-const searchFilters = ref([])
+const searchFilters = ref([] as FilterGroup[])
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const searchAggsResponse: Aggregations = await useIndexAggregator()
@@ -310,17 +310,6 @@ function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGr
   }
 
   return filterGroups
-}
-
-// SEARCH
-const searchFilters = ref([] as FilterGroup[])
-// fetch filters for the page from ES after page loads in Onmounted hook on the client side
-async function setFilters() {
-  const searchAggsResponse: Aggregations = await useIndexAggregator()
-  // console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
-  // Transform the response
-  searchFilters.value = transformEsResponseToFilterGroups(searchAggsResponse)
-  // console.log('searchFilters', searchFilters.value)
 }
 
 const filterDropdownSelectedFilters = ref({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
