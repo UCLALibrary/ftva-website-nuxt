@@ -8,7 +8,6 @@ import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 import useEventSeriesListSearchFilter from '@/composables/useEventSeriesListSearchFilter'
 
 // GQL - start
-
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {

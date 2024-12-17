@@ -22,8 +22,6 @@ async function pastEventSeriesQuery(
   const response = await fetch(
     `${config.public.esURL}/${config.public.esAlias}/_search`,
     {
-      from: (currentPage - 1) * documentsPerPage,
-      size: documentsPerPage,
       headers: {
         Authorization: `ApiKey ${config.public.esReadKey}`,
         'Content-Type': 'application/json',
