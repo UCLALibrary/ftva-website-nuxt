@@ -69,7 +69,9 @@ const desktopPage = useState<number>('desktopPage', () => 1) // Persist desktop 
 const desktopEvents = ref([]) // Desktop events list
 const mobileEvents = ref([]) // Mobile events list
 const events = computed((): EventItem[] => (isMobile.value ? mobileEvents.value : desktopEvents.value))
-const userFilterSelection = ref<FilterItem>({}) // Add typescript and should we have separate filters ref for date and eventFilters
+// userFilterSelection is used by FilterDropdown component to display selected filters, but also update selected items in filter groups
+// therefore, it MUST always have a key for each filter group in the dropdown, even if the value is an empty array
+const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
 const userDateSelection = ref<string[]>([])
 const allFilters = ref<FilterItem>({})
 const userViewSelection = ref<string>('list')
@@ -147,7 +149,8 @@ const parsedRemoveSearchFilters = computed(() => {
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    userFilterSelection.value = parseFilters(route.query.filters || '')
+    const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+    userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     userViewSelection.value = (route.query.view as string | undefined) || 'list'
     // console.log('route.query.dates', route?.query?.dates)
@@ -312,8 +315,6 @@ function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGr
   return filterGroups
 }
 
-const filterDropdownSelectedFilters = ref({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
-
 const dateListDateFilter = ref([])
 
 const parsedInitialDates = computed(() => {
@@ -458,30 +459,22 @@ function toggleCode() {
       />
 
       <SectionWrapper theme="paleblue">
+        <date-filter
+          :key="dateListDateFilter"
+          :event-dates="dateListDateFilter"
+          :initial-dates="parsedInitialDates"
+          @input-selected="applyDateFilterSelectionToRouteURL"
+        />
+        <filters-dropdown
+          v-model:selected-filters="userFilterSelection"
+          :filter-groups="searchFilters"
+          @update-display="applyEventFilterSelectionToRouteURL"
+        />
         <TabList
           v-if="!isMobile"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
-          <template #filters>
-            <!-- TODO remove or restyle this filters-wrapper element as needed-->
-            <div
-              class="filters-wrapper"
-              style="display: flex; z-index: 1000;"
-            >
-              <date-filter
-                :key="dateListDateFilter"
-                :event-dates="dateListDateFilter"
-                :initial-dates="parsedInitialDates"
-                @input-selected="applyDateFilterSelectionToRouteURL"
-              />
-              <filters-dropdown
-                v-model:selected-filters="filterDropdownSelectedFilters"
-                :filter-groups="searchFilters"
-                @update-display="applyEventFilterSelectionToRouteURL"
-              />
-            </div>
-          </template>
           <TabItem
             title="List View"
             class="tab-content"
