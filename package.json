@@ -41,8 +41,8 @@
     "lodash": "^4.17.21",
     "nuxt-graphql-request": "^7.0.5",
     "sass": "^1.66.1",
-    "ucla-library-design-tokens": "^5.27.2",
-    "ucla-library-website-components": "3.41.0"
+    "ucla-library-design-tokens": "^5.28.0",
+    "ucla-library-website-components": "3.43.2"
   },
   "engines": {
     "pnpm": "^9.12.1"
