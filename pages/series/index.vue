@@ -68,10 +68,18 @@ async function searchES() {
   try {
     let results
     if (currentView.value === 'current') {
-      results = await currentEventSeriesQuery(['*'])
+      results = await currentEventSeriesQuery(currentPage.value,
+        documentsPerPage.value,
+        // sort,
+        // orderBy,
+        ['*'],)
 
     } else {
-      results = await pastEventSeriesQuery(['*'])
+      results = await pastEventSeriesQuery(currentPage.value,
+        documentsPerPage.value,
+        // sort,
+        // orderBy,
+        ['*'])
     }
 
     if (results?.hits?.total?.value > 0) {
@@ -112,7 +120,7 @@ watch(
         :section-summary="heading.summary"
         theme="paleblue"
       />
-
+      <h3>parsedEventSeries{{ parsedEventSeries.length }}</h3>
       <SectionWrapper theme="paleblue">
         <TabList
           alignment="center"
@@ -122,8 +130,14 @@ watch(
             title="Past Series"
             class="tab-content"
           >
-            <template v-if="parsedEventSeries.length > 0">
+            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList :items="parsedEventSeries" />
+
+              <section-pagination
+                v-if="totalPages !== 1"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
             </template>
           </TabItem>
 
@@ -131,20 +145,21 @@ watch(
             title="Current and Upcoming Series"
             class="tab-content"
           >
-            <template v-if="parsedEventSeries.length > 0">
+            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList :items="parsedEventSeries" />
+
+              <section-pagination
+                v-if="totalPages !== 1"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
             </template>
           </TabItem>
         </TabList>
       </SectionWrapper>
 
-      <!-- PAGINATION -->
-      <!-- <section-pagination
-        v-if="totalPages !== 1"
-        class="pagination-ucla"
-        :pages="totalPages"
-        :initial-current-page="currentPage"
-      /> -->
+
+
     </div>
   </div>
 </template>
