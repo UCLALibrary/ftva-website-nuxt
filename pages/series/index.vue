@@ -29,7 +29,6 @@ if (!data.value.entries) {
 }
 
 const heading = ref(_get(data.value, 'entry', {}))
-const page = ref(_get(data.value, 'entries', {}))
 // GQL - End
 
 // STATE VARIABLES - ARGUMENTS on useEventSeriesListSearchFilter
