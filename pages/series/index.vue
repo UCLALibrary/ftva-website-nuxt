@@ -63,7 +63,7 @@ const parsedEventSeries = computed(() => {
   })
 })
 
-// FETCH EVENTS FUNCTION
+// ES FUNCTION
 async function searchES() {
   try {
     let results
@@ -89,6 +89,10 @@ async function searchES() {
 }
 
 onMounted(() => searchES())
+
+const parseViewSelection = computed(() => {
+  return currentView.value === 'current' ? 1 : 0
+})
 </script>
 
 <template>
@@ -104,7 +108,7 @@ onMounted(() => searchES())
       <SectionWrapper theme="paleblue">
         <TabList
           alignment="center"
-          :initial-tab="current"
+          :initial-tab="parseViewSelection"
         >
           <TabItem
             title="Past Series"
