@@ -4,10 +4,10 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination, TabItem, 
 
 // HELPERS
 import _get from 'lodash/get'
+import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 import useEventSeriesListSearchFilter from '@/composables/useEventSeriesListSearchFilter'
 
 // GQL - start
-import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 const { $graphql } = useNuxtApp()
 
@@ -82,7 +82,6 @@ async function searchES() {
         'startDate',
         'asc',
         ['*'],)
-
     } else {
       results = await pastEventSeriesQuery(currentPage.value,
         documentsPerPage.value,
@@ -196,9 +195,6 @@ watch(
           </TabItem>
         </TabList>
       </SectionWrapper>
-
-
-
     </div>
   </div>
 </template>

@@ -5,7 +5,7 @@ export default function useEventSeriesListSearchFilter() {
 }
 
 async function pastEventSeriesQuery(
-  currentPage= 1,
+  currentPage = 1,
   documentsPerPage = 10,
   sort,
   orderBy,
@@ -61,7 +61,7 @@ async function pastEventSeriesQuery(
 }
 
 async function currentEventSeriesQuery(
-  currentPage= 1,
+  currentPage = 1,
   documentsPerPage = 10,
   sort,
   orderBy,
