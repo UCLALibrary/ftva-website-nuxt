@@ -79,15 +79,15 @@ async function searchES() {
     if (currentView.value === 'current') {
       results = await currentEventSeriesQuery(currentPage.value,
         documentsPerPage.value,
-        // sort,
-        // orderBy,
+        'startDate',
+        'asc',
         ['*'],)
 
     } else {
       results = await pastEventSeriesQuery(currentPage.value,
         documentsPerPage.value,
-        // sort,
-        // orderBy,
+        'startDate',
+        'desc',
         ['*'])
     }
 
@@ -148,6 +148,21 @@ watch(
                 :initial-current-page="currentPage"
               />
             </template>
+
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no past event series
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
+            </template>
           </TabItem>
 
           <TabItem
@@ -162,6 +177,21 @@ watch(
                 :pages="totalPages"
                 :initial-current-page="currentPage"
               />
+            </template>
+
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no current or upcoming event series
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
             </template>
           </TabItem>
         </TabList>
@@ -194,6 +224,14 @@ watch(
   :deep(.tab-list .tab-list-header) {
     margin-top: -50px;
     margin-bottom: 50px;
+  }
+
+  .empty-tab {
+    background-color: var(--pale-blue);
+    @include ftva-subtitle-1;
+    color: var(--subtitle-grey);
+    padding: 100px 0;
+    text-align: center;
   }
 }
 </style>

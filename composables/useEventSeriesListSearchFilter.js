@@ -7,8 +7,8 @@ export default function useEventSeriesListSearchFilter() {
 async function pastEventSeriesQuery(
   currentPage= 1,
   documentsPerPage = 10,
-  // sort,
-  // orderBy,
+  sort,
+  orderBy,
   source = ['*'],
 ) {
   const config = useRuntimeConfig()
@@ -50,7 +50,8 @@ async function pastEventSeriesQuery(
               }
             ]
           },
-        }
+        },
+        ...parseSort(sort, orderBy),
       }),
     }
   )
@@ -62,8 +63,8 @@ async function pastEventSeriesQuery(
 async function currentEventSeriesQuery(
   currentPage= 1,
   documentsPerPage = 10,
-  // sort,
-  // orderBy,
+  sort,
+  orderBy,
   source = ['*'],
 ) {
   const config = useRuntimeConfig()
@@ -103,11 +104,24 @@ async function currentEventSeriesQuery(
               }
             ]
           },
-        }
+        },
+        ...parseSort(sort, orderBy),
       }),
     }
   )
 
   const data = await response.json()
   return data
+}
+
+function parseSort(sortField, orderBy = 'asc') {
+  if (!sortField || sortField === '') return {}
+  const parseQuery = {}
+  parseQuery.sort = []
+  parseQuery.sort[0] = {}
+  parseQuery.sort[0][sortField] = {
+    order: orderBy
+  }
+
+  return parseQuery
 }
