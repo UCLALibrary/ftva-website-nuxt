@@ -45,24 +45,33 @@ const route = useRoute()
 // COMPOSABLE FOR QUERIES
 const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
 
+// Helper functions copied from event index
+// Get data for Image
+function parsedImage(obj) {
+  return obj._source.imageCarousel
+}
+
+function isImageExists(obj) {
+  return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
+}
+
 // FORMATTED COMPUTED EVENTS
 const parsedEventSeries = computed(() => {
-  if (!events.value || events.value.length === 0) return []
+  console.log(events.value)
+  if (events.value.length === 0) return []
 
   return events.value.map((obj) => {
     return {
       ...obj._source,
-      tagLabels: getEventFilterLabels(obj._source),
-      to: `/${obj._source.to}`,
-      description: obj._source.description,
+      to: `/${obj._source.uri}`,
+      description: obj._source.eventDescription,
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
       ongoing: obj._source.ongoing,
-      image: obj._source.image && obj._source.image.length === 1 ? obj._source.image[0] : null, // Handle single image
+      image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
     }
   })
 })
-
 // ES FUNCTION
 async function searchES() {
   try {
@@ -120,7 +129,7 @@ watch(
         :section-summary="heading.summary"
         theme="paleblue"
       />
-      <h3>parsedEventSeries{{ parsedEventSeries.length }}</h3>
+
       <SectionWrapper theme="paleblue">
         <TabList
           alignment="center"
