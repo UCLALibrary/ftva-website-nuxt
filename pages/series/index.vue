@@ -138,7 +138,7 @@ watch(
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList :items="parsedEventSeries" />
 
-              <section-pagination
+              <SectionPagination
                 v-if="totalPages !== 1"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
@@ -168,7 +168,7 @@ watch(
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList :items="parsedEventSeries" />
 
-              <section-pagination
+              <SectionPagination
                 v-if="totalPages !== 1"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
@@ -225,6 +225,13 @@ watch(
     color: var(--subtitle-grey);
     padding: 100px 0;
     text-align: center;
+  }
+
+  :deep(.section-pagination) {
+    /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
+    background-color: white;
+    max-width: unset;
+    padding: 2.5%;
   }
 }
 </style>
