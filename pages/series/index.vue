@@ -96,6 +96,7 @@ async function searchES() {
     } else {
       events.value = []
       noResultsFound.value = true
+      totalPages.value = 0
     }
   } catch (err) {
     console.error('Error fetching events:', err)
@@ -104,7 +105,6 @@ async function searchES() {
 }
 
 onMounted(() => searchES())
-
 const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
 })
