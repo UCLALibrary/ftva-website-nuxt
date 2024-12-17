@@ -67,10 +67,11 @@ const parsedEventSeries = computed(() => {
 async function searchES() {
   try {
     let results
-    if (currentView.value === 'past') {
-      results = await pastEventSeriesQuery(['*'])
-    } else {
+    if (currentView.value === 'current') {
       results = await currentEventSeriesQuery(['*'])
+
+    } else {
+      results = await pastEventSeriesQuery(['*'])
     }
 
     if (results?.hits?.total?.value > 0) {
@@ -99,14 +100,6 @@ onMounted(() => searchES())
         :section-summary="heading.summary"
         theme="paleblue"
       />
-
-      <SectionWrapper>
-        <h2 v-if="noResultsFound">No events found</h2>
-        <SectionStaffArticleList
-          v-else
-          :items="parsedEventSeries"
-        />
-      </SectionWrapper>
 
       <SectionWrapper theme="paleblue">
         <TabList
