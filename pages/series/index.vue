@@ -40,9 +40,6 @@ const totalPages = ref(0)
 const currentPage = ref(1)
 const route = useRoute()
 
-// COMPOSABLE FOR QUERIES
-const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
-
 // Helper functions copied from event index
 // Get data for Image
 function parsedImage(obj) {
@@ -70,8 +67,12 @@ const parsedEventSeries = computed(() => {
     }
   })
 })
+
 // ES FUNCTION
 async function searchES() {
+  // COMPOSABLE
+  const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
+
   try {
     let results
     if (currentView.value === 'current') {
