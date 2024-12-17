@@ -69,7 +69,9 @@ const desktopPage = useState<number>('desktopPage', () => 1) // Persist desktop 
 const desktopEvents = ref([]) // Desktop events list
 const mobileEvents = ref([]) // Mobile events list
 const events = computed((): EventItem[] => (isMobile.value ? mobileEvents.value : desktopEvents.value))
-const userFilterSelection = ref<FilterItem>({}) // Add typescript and should we have separate filters ref for date and eventFilters
+// userFilterSelection is used by FilterDropdown component to display selected filters, but also update selected items in filter groups
+// therefore, it MUST always have a key for each filter group in the dropdown, even if the value is an empty array
+const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
 const userDateSelection = ref<string[]>([])
 const allFilters = ref<FilterItem>({})
 const userViewSelection = ref<string>('list')
@@ -147,7 +149,8 @@ const parsedRemoveSearchFilters = computed(() => {
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    userFilterSelection.value = parseFilters(route.query.filters || '')
+    const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+    userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     userViewSelection.value = (route.query.view as string | undefined) || 'list'
     // console.log('route.query.dates', route?.query?.dates)
@@ -160,7 +163,7 @@ watch(
   }, { deep: true, immediate: true }
 )
 // SEARCH
-const searchFilters = ref([])
+const searchFilters = ref([] as FilterGroup[])
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const searchAggsResponse: Aggregations = await useIndexAggregator()
@@ -199,6 +202,26 @@ function parseDateFromURL(datesParam: string): string[] {
   // console.log('datesParam', datesParam)
   if (datesParam === '') return []
   return datesParam?.split(',')
+}
+
+function addHighlightState(tagLabels) {
+  // if userFilterSelection.value is an empty object for initial page load, then just return tagLabels array back
+  if (Object.keys(userFilterSelection.value).length === 0) return tagLabels
+  // loop through the keys of userFilterSelection.value object and its array values
+  for (const [key, value] of Object.entries(userFilterSelection.value)) {
+    // loop through tagLabels array
+    for (let v = 0; v < value.length; v++) {
+      for (let i = 0; i < tagLabels.length; i++) {
+        // console.log('tagLabels[i].title', tagLabels[i].title)
+        // console.log('does it match value?', value[v])
+        // if tagLabels.title array has a match with userFilterSelection.value array then set isHighlighted as true
+        if (tagLabels[i].title === value[v]) {
+          tagLabels[i].isHighlighted = true
+        }
+      }
+    }
+  }
+  return tagLabels
 }
 
 // ELASTIC SEARCH FUNCTION
@@ -255,7 +278,7 @@ const parsedEvents = computed(() => {
   return events.value.map((obj) => {
     return {
       ...obj._source,
-      tagLabels: getEventFilterLabels(obj._source),
+      tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
       image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
     }
@@ -442,12 +465,11 @@ function toggleCode() {
           :initial-dates="parsedInitialDates"
           @input-selected="applyDateFilterSelectionToRouteURL"
         />
-        <!-- Sample way to add DropdownFilter component -->
-        <!--DropdownFilter
-        :filterGroups="searchFilters"
-        :selectedFilters="userFilterSelection"
-        @input-selected="applyEventFilterSelectionToRouteURL"
-      /-->
+        <filters-dropdown
+          v-model:selected-filters="userFilterSelection"
+          :filter-groups="searchFilters"
+          @update-display="applyEventFilterSelectionToRouteURL"
+        />
         <TabList
           v-if="!isMobile"
           alignment="right"
@@ -570,6 +592,10 @@ function toggleCode() {
 </template>
 
 <style scoped>
+:deep(.button-dropdown-modal-wrapper.is-expanded) {
+  z-index: 1000;
+}
+
 .page-events {
   position: relative;
 

@@ -18,11 +18,11 @@ export function getEventFilterLabels(obj) {
   const screeningFormatFilters = obj.ftvaScreeningFormatFilters
 
   if (eventTypeFilters.length) {
-    eventTypeFilters.forEach(obj => parsedTagLabels.push({ title: obj.title }))
+    eventTypeFilters.forEach(obj => parsedTagLabels.push({ title: obj.title, isHighlighted: false }))
   }
 
   if (screeningFormatFilters.length) {
-    screeningFormatFilters.forEach(obj => parsedTagLabels.push({ title: obj.title }))
+    screeningFormatFilters.forEach(obj => parsedTagLabels.push({ title: obj.title, isHighlighted: false }))
   }
   return parsedTagLabels
 }
