@@ -93,6 +93,14 @@ onMounted(() => searchES())
 const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
 })
+
+watch(
+  () => route.query,
+  (newVal, oldVal) => {
+    currentView.value = route.query.view || 'current'
+    searchES()
+  }, { deep: true, immediate: true }
+)
 </script>
 
 <template>

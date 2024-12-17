@@ -147,6 +147,10 @@ const parsedRemoveSearchFilters = computed(() => {
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    console.log("newVal" + newVal)
+    console.log("oldVal" + oldVal)
+    console.log("route" + route)
+    console.log("route.query" + route.query)
     userFilterSelection.value = parseFilters(route.query.filters || '')
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     userViewSelection.value = (route.query.view as string | undefined) || 'list'
