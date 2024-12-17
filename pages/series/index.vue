@@ -5,7 +5,6 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination, TabItem, 
 // HELPERS
 import _get from 'lodash/get'
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
-import useEventSeriesListSearchFilter from '@/composables/useEventSeriesListSearchFilter'
 
 // GQL - start
 const { $graphql } = useNuxtApp()
@@ -50,7 +49,7 @@ function isImageExists(obj) {
   return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
 }
 
-// FORMATTED COMPUTED EVENT-SERIES
+// FORMATTED COMPUTED EVENTS
 const parsedEventSeries = computed(() => {
   console.log(series.value)
   if (series.value.length === 0) return []
@@ -90,21 +89,19 @@ async function searchES() {
     }
 
     if (results?.hits?.total?.value > 0) {
-      events.value = results.hits.hits
+      series.value = results.hits.hits
       noResultsFound.value = false
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
-      events.value = []
+      series.value = []
       noResultsFound.value = true
-      totalPages.value = 0
     }
   } catch (err) {
-    console.error('Error fetching events:', err)
+    console.error('Error fetching series:', err)
     noResultsFound.value = true
   }
 }
 
-onMounted(() => searchES())
 const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
 })
@@ -114,6 +111,7 @@ watch(
   (newVal, oldVal) => {
     currentView.value = route.query.view || 'current'
     searchES()
+    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
   }, { deep: true, immediate: true }
 )
 </script>
