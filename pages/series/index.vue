@@ -32,7 +32,7 @@ const heading = ref(_get(data.value, 'entry', {}))
 // GQL - End
 
 // STATE VARIABLES - ARGUMENTS on useEventSeriesListSearchFilter
-const events = ref([]) // Add typescript
+const series = ref([]) // Add typescript
 const currentView = ref('current') // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
 const documentsPerPage = 10
@@ -50,12 +50,12 @@ function isImageExists(obj) {
   return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
 }
 
-// FORMATTED COMPUTED EVENTS
+// FORMATTED COMPUTED EVENT-SERIES
 const parsedEventSeries = computed(() => {
-  console.log(events.value)
-  if (events.value.length === 0) return []
+  console.log(series.value)
+  if (series.value.length === 0) return []
 
-  return events.value.map((obj) => {
+  return series.value.map((obj) => {
     return {
       ...obj._source,
       to: `/${obj._source.uri}`,
