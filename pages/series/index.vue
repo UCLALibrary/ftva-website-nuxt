@@ -6,7 +6,6 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination, TabItem, 
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
-
 // GQL - start
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
@@ -221,10 +220,10 @@ watch(
               />
 
               <SectionPagination
-                class="pagination"
                 v-if="
                   totalPages
-                  !== 1"
+                    !== 1"
+                class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
               />
@@ -304,9 +303,6 @@ watch(
             </p>
           </div>
         </div>
-
-
-
       </SectionWrapper>
     </div>
   </div>
