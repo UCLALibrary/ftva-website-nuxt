@@ -459,17 +459,19 @@ function toggleCode() {
       />
 
       <SectionWrapper theme="paleblue">
-        <date-filter
-          :key="dateListDateFilter"
-          :event-dates="dateListDateFilter"
-          :initial-dates="parsedInitialDates"
-          @input-selected="applyDateFilterSelectionToRouteURL"
-        />
-        <filters-dropdown
-          v-model:selected-filters="userFilterSelection"
-          :filter-groups="searchFilters"
-          @update-display="applyEventFilterSelectionToRouteURL"
-        />
+        <div class="test">
+          <date-filter
+            :key="dateListDateFilter"
+            :event-dates="dateListDateFilter"
+            :initial-dates="parsedInitialDates"
+            @input-selected="applyDateFilterSelectionToRouteURL"
+          />
+          <filters-dropdown
+            v-model:selected-filters="userFilterSelection"
+            :filter-groups="searchFilters"
+            @update-display="applyEventFilterSelectionToRouteURL"
+          />
+        </div>
         <TabList
           v-if="!isMobile"
           alignment="right"
@@ -591,7 +593,7 @@ function toggleCode() {
   </main>
 </template>
 
-<style scoped>
+<style lang='scss' scoped>
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -641,9 +643,37 @@ function toggleCode() {
     }
   }
 
+  .test {
+    display: flex;
+    gap: 16px;
+
+    .date-filter {
+      flex: 1;
+      width: 100%;
+
+      .vue-date-picker {
+        width: unset;
+      }
+    }
+
+    .filters-dropdown {
+      flex: 1;
+
+      .mobile-button {
+        min-width: 0;
+      }
+    }
+  }
+
   .mobile-remove-filters {
     margin-top: 20px;
     margin-bottom: 20px;
+  }
+
+  @media #{$small} {
+    // .filters-dropdown .mobile-button {
+    //   min-width: 0;
+    // }
   }
 }
 
