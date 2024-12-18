@@ -113,7 +113,7 @@ const parsedEventSeries = computed(() => {
   return series.value.map((obj) => {
     return {
       ...obj._source,
-      to: `/${obj._source.uri}`,
+      to: `/${obj._source.ftvaEvent[0].uri}`,
       description: obj._source.eventDescription,
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
@@ -125,12 +125,9 @@ const parsedEventSeries = computed(() => {
 
 // ES FUNCTION
 async function searchES() {
-  console.log('isLoading.value' + isLoading.value)
-  console.log('hasMore' + !hasMore.value)
   if (isLoading.value || !hasMore.value) return
 
   isLoading.value = true
-  console.log(currentView.value)
   // COMPOSABLE
   const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
 
