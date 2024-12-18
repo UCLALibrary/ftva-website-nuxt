@@ -30,7 +30,7 @@ if (!data.value.entries) {
 const heading = ref(_get(data.value, 'entry', {}))
 // GQL - End
 
-// STATE VARIABLES - ARGUMENTS on useEventSeriesListSearchFilter
+// STATE MANAGEMENT
 const series = ref([]) // Add typescript
 const currentView = ref('current') // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
@@ -39,8 +39,45 @@ const totalPages = ref(0)
 const currentPage = ref(1)
 const route = useRoute()
 
-// Helper functions copied from event index
-// Get data for Image
+// INFINITE SCROLLING
+const isLoading = ref < boolean > (false)
+const isMobile = ref < boolean > (false)
+const hasMore = ref(true) // Flag to control infinite scroll
+
+// WINDOW SIZE HANDLING
+const { width } = useWindowSize()
+watch(width, (newWidth) => {
+  const wasMobile = isMobile.value
+  isMobile.value = newWidth <= 750
+
+  // Reinitialize only when transitioning between mobile and desktop
+  if (wasMobile !== isMobile.value) {
+    handleScreenTransition()
+  }
+}, { immediate: true })
+
+// HANDLE SCREEN TRANSITIONS
+function handleScreenTransition() {
+  if (isMobile.value) {
+    // Switching to mobile: save desktop page, clear query param
+    desktopPage.value = currentPage.value
+    currentPage.value = 1
+    mobileEvents.value = []
+    hasMore.value = true
+    const { page, ...remainingQuery } = route.query
+    useRouter().push({ query: remainingQuery })
+  } else {
+    // Switching to desktop: restore query param
+    if (totalPages.value === 1) desktopPage.value = 1
+    const restoredPage = desktopPage.value || 1
+    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
+    currentPage.value = restoredPage
+    desktopEvents.value = []
+  }
+  searchES()
+}
+
+// GET DTA FOR IMAGE
 function parsedImage(obj) {
   return obj._source.imageCarousel
 }
@@ -128,6 +165,7 @@ watch(
 
       <SectionWrapper theme="paleblue">
         <TabList
+          v-if="!isMobile"
           alignment="center"
           :initial-tab="parseViewSelection"
         >
@@ -191,6 +229,39 @@ watch(
             </template>
           </TabItem>
         </TabList>
+
+
+
+        <div
+          v-else
+          ref="el"
+          class="mobile-container"
+        >
+          <SectionTeaserList
+            v-if="parsedEventSeries && parsedEventSeries.length > 0"
+            :items="parsedEventSeries"
+            component-name="BlockCardThreeColumn"
+            :n-shown="series.length"
+            class="tabbed-event-list"
+          />
+          <div v-else>
+            <p
+              v-if="noResultsFound"
+              class="empty-tab"
+            >
+              There are no events found
+            </p>
+            <p
+              v-else
+              class="empty-tab"
+            >
+              Data loading in progress ...
+            </p>
+          </div>
+        </div>
+
+
+
       </SectionWrapper>
     </div>
   </div>
