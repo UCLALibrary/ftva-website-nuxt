@@ -4,9 +4,12 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination, TabItem, 
 
 // HELPERS
 import _get from 'lodash/get'
-import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
+import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
+
 
 // GQL - start
+import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {
@@ -31,7 +34,10 @@ const heading = ref(_get(data.value, 'entry', {}))
 // GQL - End
 
 // STATE MANAGEMENT
-const series = ref([]) // Add typescript
+const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
+const desktopSeries = ref([]) // Desktop series list
+const mobileSeries = ref([]) // Mobile series list
+const series = computed(() => (isMobile.value ? mobileSeries.value : desktopSeries.value))
 const currentView = ref('current') // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
 const documentsPerPage = 10
@@ -40,9 +46,21 @@ const currentPage = ref(1)
 const route = useRoute()
 
 // INFINITE SCROLLING
-const isLoading = ref < boolean > (false)
-const isMobile = ref < boolean > (false)
+const isLoading = ref(false)
+const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
+const scrollEl = ref(null)
+const desktopEl = ref(null)
+const { reset } = useInfiniteScroll(
+  scrollEl,
+  async () => {
+    if (isMobile.value && hasMore.value && !isLoading.value) {
+      currentPage.value++
+      await searchES()
+    }
+  },
+  { distance: 100 }
+)
 
 // WINDOW SIZE HANDLING
 const { width } = useWindowSize()
@@ -57,12 +75,14 @@ watch(width, (newWidth) => {
 }, { immediate: true })
 
 // HANDLE SCREEN TRANSITIONS
+
 function handleScreenTransition() {
   if (isMobile.value) {
     // Switching to mobile: save desktop page, clear query param
+
     desktopPage.value = currentPage.value
     currentPage.value = 1
-    mobileEvents.value = []
+    mobileSeries.value = []
     hasMore.value = true
     const { page, ...remainingQuery } = route.query
     useRouter().push({ query: remainingQuery })
@@ -72,7 +92,7 @@ function handleScreenTransition() {
     const restoredPage = desktopPage.value || 1
     useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
     currentPage.value = restoredPage
-    desktopEvents.value = []
+    desktopSeries.value = []
   }
   searchES()
 }
@@ -106,6 +126,12 @@ const parsedEventSeries = computed(() => {
 
 // ES FUNCTION
 async function searchES() {
+  console.log('isLoading.value' + isLoading.value)
+  console.log('hasMore' + !hasMore.value)
+  if (isLoading.value || !hasMore.value) return
+
+  isLoading.value = true
+  console.log(currentView.value)
   // COMPOSABLE
   const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
 
@@ -113,29 +139,38 @@ async function searchES() {
     let results
     if (currentView.value === 'current') {
       results = await currentEventSeriesQuery(currentPage.value,
-        documentsPerPage.value,
+        documentsPerPage,
         'startDate',
         'asc',
         ['*'],)
     } else {
       results = await pastEventSeriesQuery(currentPage.value,
-        documentsPerPage.value,
+        documentsPerPage,
         'startDate',
         'desc',
         ['*'])
     }
 
     if (results?.hits?.total?.value > 0) {
-      series.value = results.hits.hits
+      const newSeries = results.hits.hits || []
+      if (isMobile.value) {
+        mobileSeries.value.push(...newSeries)
+        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+      } else {
+        desktopSeries.value = newSeries
+        totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+      }
       noResultsFound.value = false
-      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
-      series.value = []
       noResultsFound.value = true
+      if (!isMobile.value) totalPages.value = 0
+      hasMore.value = false
     }
   } catch (err) {
     console.error('Error fetching series:', err)
     noResultsFound.value = true
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -143,12 +178,18 @@ const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
 })
 
+const parseEl = computed(() => {
+  return isMobile.value ? scrollEl.value : desktopEl.value
+})
+
 watch(
   () => route.query,
   (newVal, oldVal) => {
     currentView.value = route.query.view || 'current'
-    searchES()
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    isMobile.value ? mobileSeries.value = [] : desktopSeries.value = []
+    hasMore.value = true
+    searchES()
   }, { deep: true, immediate: true }
 )
 </script>
@@ -174,10 +215,16 @@ watch(
             class="tab-content"
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
-              <SectionStaffArticleList :items="parsedEventSeries" />
+              <SectionStaffArticleList
+                :ref="parseEl"
+                :items="parsedEventSeries"
+              />
 
               <SectionPagination
-                v-if="totalPages !== 1"
+                class="pagination"
+                v-if="
+                  totalPages
+                  !== 1"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
               />
@@ -230,8 +277,6 @@ watch(
           </TabItem>
         </TabList>
 
-
-
         <div
           v-else
           ref="el"
@@ -267,7 +312,7 @@ watch(
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
 
 .page-event-series {
@@ -303,6 +348,12 @@ watch(
     background-color: white;
     max-width: unset;
     padding: 2.5%;
+  }
+
+  @media #{$small} {
+    .pagination {
+      display: none;
+    }
   }
 }
 </style>
