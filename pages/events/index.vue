@@ -88,7 +88,7 @@ const hasMore = ref(true) // Flag to control infinite scroll
 const { width } = useWindowSize()
 watch(width, (newWidth) => {
   const wasMobile = isMobile.value
-  isMobile.value = newWidth <= 750
+  isMobile.value = newWidth <= 1024
 
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
@@ -459,22 +459,34 @@ function toggleCode() {
       />
 
       <SectionWrapper theme="paleblue">
-        <date-filter
-          :key="dateListDateFilter"
-          :event-dates="dateListDateFilter"
-          :initial-dates="parsedInitialDates"
-          @input-selected="applyDateFilterSelectionToRouteURL"
-        />
-        <filters-dropdown
-          v-model:selected-filters="userFilterSelection"
-          :filter-groups="searchFilters"
-          @update-display="applyEventFilterSelectionToRouteURL"
-        />
         <TabList
-          v-if="!isMobile"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
+          <template #filters>
+            <div class="filters-wrapper">
+              <date-filter
+                :key="dateListDateFilter"
+                :event-dates="dateListDateFilter"
+                :initial-dates="parsedInitialDates"
+                @input-selected="applyDateFilterSelectionToRouteURL"
+              />
+              <filters-dropdown
+                v-model:selected-filters="userFilterSelection"
+                :filter-groups="searchFilters"
+                @update-display="applyEventFilterSelectionToRouteURL"
+              />
+
+              <!-- Right spot? -->
+              <section-remove-search-filter
+                :filters="allFilters"
+                class="mobile-remove-filters"
+                @update:filters="handleFilterUpdate"
+                @remove-selected="applyChangesToSearch"
+              />
+            </div>
+          </template>
+
           <TabItem
             title="List View"
             class="tab-content"
@@ -510,6 +522,7 @@ function toggleCode() {
           </TabItem>
 
           <TabItem
+            v-if="!isMobile"
             title="Calendar View"
             class="tab-content"
           >
@@ -522,7 +535,7 @@ function toggleCode() {
               </div>
               <br>
               <br>
-              <div class="code-container">
+              <!-- <div class="code-container">
                 <button
                   class="code-header"
                   @click="toggleCode"
@@ -535,7 +548,7 @@ function toggleCode() {
                 >
                   <pre> {{ parsedEvents }} </pre>
                 </div>
-              </div>
+              </div> -->
             </template>
             <template v-else>
               <p
@@ -553,7 +566,7 @@ function toggleCode() {
             </template>
           </TabItem>
         </TabList>
-        <div
+        <!-- <div
           v-else
           ref="el"
           class="mobile-container"
@@ -585,13 +598,13 @@ function toggleCode() {
               Data loading in progress ...
             </p>
           </div>
-        </div>
+        </div> -->
       </SectionWrapper>
     </div>
   </main>
 </template>
 
-<style scoped>
+<style lang='scss' scoped>
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -628,9 +641,61 @@ function toggleCode() {
     padding: 2.5%;
   }
 
+  :deep(.tab-list.right) {
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+
+    .filters {
+      flex-basis: 65%;
+    }
+  }
+
+  .filters-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .date-filter {
+    flex: 1;
+    width: 100%;
+
+    :deep(.vue-date-picker) {
+      width: 100%;
+
+      .dp__menu {
+        // min-width: 100%;
+      }
+
+      .dp__outer_menu_wrap.dp--menu-wrapper {
+        left: 0 !important;
+        top: 56px !important;
+        width: 100%;
+      }
+    }
+  }
+
+  .filters-dropdown {
+    flex: 1;
+    width: 100%;
+
+    :deep(.mobile-button) {
+      min-width: unset;
+    }
+
+    :deep(.button-dropdown-modal-wrapper.is-expanded) {
+      min-width: unset;
+    }
+  }
+
   .tab-content {
     min-height: 200px;
-    border-radius: 15px;
+    // border-radius: 15px;
+    background-color: white;
+    border-radius: 2px;
     overflow: hidden;
 
     .empty-tab {
@@ -645,27 +710,123 @@ function toggleCode() {
     margin-top: 20px;
     margin-bottom: 20px;
   }
+
+  :deep(.base-calendar) {
+    max-width: 1000px;
+    padding-top: 32px;
+
+    .v-calendar-header {
+      margin-bottom: 14px;
+    }
+
+  }
+
+  // :deep(.base-calendar .v-calendar-header) {
+  //   margin-bottom: 20px;
+  // }
+
+  @media(max-width: 1200px) {
+    .base-calendar {
+      max-width: 900px;
+    }
+  }
+
+  @media(max-width: 1100px) {
+    .base-calendar {
+      max-width: 800px;
+    }
+  }
+
+  @media #{$medium} {
+
+    :deep(.tab-list.right) {
+      .tab-list-header {
+        display: none;
+      }
+
+      .filters {
+        flex-basis: 100%;
+      }
+    }
+
+    .date-filter {
+      :deep(.vue-date-picker) {
+        .dp__outer_menu_wrap.dp--menu-wrapper {
+          // max-width: 406px;
+          // width: 100%;
+        }
+
+        // .custom-header {
+        //   font-size: 20px;
+
+        //   .custom-nav-buttons .today-button {
+        //     font-size: 14px;
+        //     width: 60px;
+        //   }
+        // }
+      }
+    }
+  }
+
+  @media #{$small} {
+
+    .date-filter {
+      flex: unset;
+      width: auto;
+
+      :deep(.vue-date-picker) {
+        width: unset;
+
+        // .custom-header {
+        //   font-size: 26px;
+
+        //   .custom-nav-buttons .today-button {
+        //     font-size: 16px;
+        //     width: 81px;
+        //   }
+        // }
+      }
+    }
+
+    .filters-dropdown {
+      :deep(.mobile-button) {
+        border-radius: 4px;
+        padding: 6px 6px 6px 12px;
+        width: 100%;
+      }
+    }
+  }
+
+  // @media(max-width: 520px) {
+  //   .date-filter {
+  //     flex: 1 1 0%;
+  //   }
+
+  //   .filters-dropdown {
+  //     flex: 1 1 100%;
+  //   }
+  // }
 }
 
-.code-header {
-  background-color: #f5f5f5;
-  padding: 10px;
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-}
+// .code-header {
+//   background-color: #f5f5f5;
+//   padding: 10px;
+//   cursor: pointer;
+//   font-family: Arial, sans-serif;
+//   font-weight: bold;
+// }
 
-.code-header:hover {
-  background-color: #e0e0e0;
-}
+// .code-header:hover {
+//   background-color: #e0e0e0;
+// }
 
-.code-body {
-  background-color: #272822;
-  color: #f8f8f2;
-  padding: 15px;
-  font-family: "Courier New", Courier, monospace;
-  white-space: pre;
-}
+// .code-body {
+//   background-color: #272822;
+//   color: #f8f8f2;
+//   padding: 15px;
+//   font-family: "Courier New", Courier, monospace;
+//   white-space: pre;
+// }
 
 @import 'assets/styles/listing-pages.scss';
 </style>
