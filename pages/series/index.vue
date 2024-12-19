@@ -37,7 +37,7 @@ const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
 const desktopSeries = ref([]) // Desktop series list
 const mobileSeries = ref([]) // Mobile series list
 const series = computed(() => (isMobile.value ? mobileSeries.value : desktopSeries.value))
-const currentView = ref('current') // Tracks 'current' or 'past'
+const currentView = computed(() => route.query.view || 'current') // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
 const documentsPerPage = 10
 const totalPages = ref(0)
@@ -85,12 +85,13 @@ function handleScreenTransition() {
     mobileSeries.value = []
     hasMore.value = true
     const { page, ...remainingQuery } = route.query
-    useRouter().push({ query: remainingQuery })
+    useRouter().push({ query: { ...remainingQuery, view: currentView.value } })
   } else {
     // Switching to desktop: restore query param
-    if (totalPages.value === 1) desktopPage.value = 1
+    if (totalPages.value === 1)
+      desktopPage.value = 1
     const restoredPage = desktopPage.value || 1
-    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
+    useRouter().push({ query: { ...route.query, page: restoredPage.toString(), view: currentView.value } })
     currentPage.value = restoredPage
     desktopSeries.value = []
   }
@@ -180,17 +181,38 @@ const parseViewSelection = computed(() => {
 })
 
 function parseEl(el) {
+  console.log('ELLLLLL', el)
   isMobile.value
     ? scrollEl.value = el
     : scrollEl.value = null
 }
 
 watch(
+  () => scrollEl,
+  (newVal, oldVal) => {
+    console.log('NEWVALLL OLDVALLL', newVal, oldVal)
+    const { reset } = useInfiniteScroll(
+      scrollEl,
+      async () => {
+        console.log('useInfiniteScroll', reset)
+        console.log('hasMore.value', hasMore.value)
+        console.log('isLoading.value', isLoading.value)
+        if (isMobile.value && hasMore.value && !isLoading.value) {
+          currentPage.value++
+          await searchES()
+        }
+      },
+      { distance: 100 }
+    )
+  }, { deep: true, immediate: true }
+)
+
+watch(
   () => route.query,
   (newVal, oldVal) => {
     isLoading.value = false
-    currentView.value = route.query.view || 'current'
-    console.log('currentView.value' + currentView.value)
+    // currentView.value = route.query.view || 'current'
+    // console.log('currentView.value' + currentView.value)
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
     isMobile.value ? mobileSeries.value = [] : desktopSeries.value = []
     hasMore.value = true
@@ -220,7 +242,7 @@ watch(
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList
-                :ref="parseEl"
+                :ref="parseEl(el)"
                 :items="parsedEventSeries"
               />
 
