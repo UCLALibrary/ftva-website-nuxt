@@ -76,7 +76,6 @@ watch(width, (newWidth) => {
 }, { immediate: true })
 
 // HANDLE SCREEN TRANSITIONS
-
 function handleScreenTransition() {
   if (isMobile.value) {
     // Switching to mobile: save desktop page, clear query param
