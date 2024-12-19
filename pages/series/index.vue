@@ -4,9 +4,11 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination, TabItem, 
 
 // HELPERS
 import _get from 'lodash/get'
-import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
+import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // GQL - start
+import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {
@@ -19,7 +21,6 @@ if (error.value) {
   })
 }
 if (!data.value.entries) {
-  // console.log('no data')
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -30,17 +31,81 @@ if (!data.value.entries) {
 const heading = ref(_get(data.value, 'entry', {}))
 // GQL - End
 
-// STATE VARIABLES - ARGUMENTS on useEventSeriesListSearchFilter
-const series = ref([]) // Add typescript
-const currentView = ref('current') // Tracks 'current' or 'past'
+// STATE MANAGEMENT
+const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
+const desktopSeries = ref([]) // Desktop series list
+const mobileSeries = ref([]) // Mobile series list
+const series = computed(() => (isMobile.value ? mobileSeries.value : desktopSeries.value))
+const currentView = computed(() => route.query.view || 'current') // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
 const documentsPerPage = 10
 const totalPages = ref(0)
 const currentPage = ref(1)
 const route = useRoute()
 
-// Helper functions copied from event index
-// Get data for Image
+// INFINITE SCROLLING
+const isLoading = ref(false)
+const isMobile = ref(false)
+const hasMore = ref(true) // Flag to control infinite scroll
+const scrollElPast = ref(null)
+const scrollElCurrent = ref(null)
+// const desktopEl = ref(null)
+const pastScroll = useInfiniteScroll(
+  scrollElPast,
+  async () => {
+    if (isMobile.value && hasMore.value && !isLoading.value) {
+      currentPage.value++
+      await searchES()
+    }
+  },
+  { distance: 100 }
+)
+const currentScroll = useInfiniteScroll(
+  scrollElCurrent,
+  async () => {
+    if (isMobile.value && hasMore.value && !isLoading.value) {
+      currentPage.value++
+      await searchES()
+    }
+  },
+  { distance: 100 }
+)
+
+// WINDOW SIZE HANDLING
+const { width } = useWindowSize()
+watch(width, (newWidth) => {
+  const wasMobile = isMobile.value
+  isMobile.value = newWidth <= 750
+
+  // Reinitialize only when transitioning between mobile and desktop
+  if (wasMobile !== isMobile.value) {
+    handleScreenTransition()
+  }
+}, { immediate: true })
+
+// HANDLE SCREEN TRANSITIONS
+function handleScreenTransition() {
+  if (isMobile.value) {
+    // Switching to mobile: save desktop page, clear query param
+
+    desktopPage.value = currentPage.value
+    currentPage.value = 1
+    mobileSeries.value = []
+    hasMore.value = true
+    const { page, ...remainingQuery } = route.query
+    useRouter().push({ query: { ...remainingQuery, view: currentView.value } })
+  } else {
+    // Switching to desktop: restore query param
+    if (totalPages.value === 1)
+      desktopPage.value = 1
+    const restoredPage = desktopPage.value || 1
+    useRouter().push({ query: { ...route.query, page: restoredPage.toString(), view: currentView.value } })
+    currentPage.value = restoredPage
+    desktopSeries.value = []
+  }
+}
+
+// GET DATA FOR IMAGE
 function parsedImage(obj) {
   return obj._source.imageCarousel
 }
@@ -51,7 +116,6 @@ function isImageExists(obj) {
 
 // FORMATTED COMPUTED EVENTS
 const parsedEventSeries = computed(() => {
-  console.log(series.value)
   if (series.value.length === 0) return []
 
   return series.value.map((obj) => {
@@ -69,36 +133,48 @@ const parsedEventSeries = computed(() => {
 
 // ES FUNCTION
 async function searchES() {
+  if (isLoading.value || !hasMore.value) return
+
+  isLoading.value = true
   // COMPOSABLE
   const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
 
   try {
     let results
+
     if (currentView.value === 'current') {
       results = await currentEventSeriesQuery(currentPage.value,
-        documentsPerPage.value,
+        documentsPerPage,
         'startDate',
         'asc',
         ['*'],)
     } else {
       results = await pastEventSeriesQuery(currentPage.value,
-        documentsPerPage.value,
+        documentsPerPage,
         'startDate',
         'desc',
         ['*'])
     }
 
-    if (results?.hits?.total?.value > 0) {
-      series.value = results.hits.hits
+    if (results?.hits?.hits?.length > 0) {
+      const newSeries = results.hits.hits || []
+      if (isMobile.value) {
+        mobileSeries.value.push(...newSeries)
+        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+      } else {
+        desktopSeries.value = newSeries
+        totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+      }
       noResultsFound.value = false
-      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
-      series.value = []
       noResultsFound.value = true
+      if (!isMobile.value) totalPages.value = 0
+      hasMore.value = false
     }
   } catch (err) {
-    console.error('Error fetching series:', err)
     noResultsFound.value = true
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -109,9 +185,11 @@ const parseViewSelection = computed(() => {
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    currentView.value = route.query.view || 'current'
-    searchES()
+    isLoading.value = false
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    isMobile.value ? mobileSeries.value = [] : desktopSeries.value = []
+    hasMore.value = true
+    searchES()
   }, { deep: true, immediate: true }
 )
 </script>
@@ -128,6 +206,7 @@ watch(
 
       <SectionWrapper theme="paleblue">
         <TabList
+          v-if="!isMobile"
           alignment="center"
           :initial-tab="parseViewSelection"
         >
@@ -139,7 +218,10 @@ watch(
               <SectionStaffArticleList :items="parsedEventSeries" />
 
               <SectionPagination
-                v-if="totalPages !== 1"
+                v-if="
+                  totalPages
+                    !== 1"
+                class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
               />
@@ -191,12 +273,87 @@ watch(
             </template>
           </TabItem>
         </TabList>
+
+        <TabList
+          v-else
+          alignment="center"
+          :initial-tab="parseViewSelection"
+        >
+          <TabItem
+            title="Past Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
+              <SectionStaffArticleList
+                ref="scrollElPast"
+                :items="parsedEventSeries"
+              />
+
+              <SectionPagination
+                v-if="
+                  totalPages
+                    !== 1"
+                class="pagination"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
+            </template>
+
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no past event series
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
+            </template>
+          </TabItem>
+
+          <TabItem
+            title="Current and Upcoming Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
+              <SectionStaffArticleList
+                ref="scrollElCurrent"
+                :items="parsedEventSeries"
+              />
+
+              <SectionPagination
+                v-if="totalPages !== 1"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
+            </template>
+
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no current or upcoming event series
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
+            </template>
+          </TabItem>
+        </TabList>
       </SectionWrapper>
     </div>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
 
 .page-event-series {
@@ -232,6 +389,12 @@ watch(
     background-color: white;
     max-width: unset;
     padding: 2.5%;
+  }
+
+  @media #{$small} {
+    .pagination {
+      display: none;
+    }
   }
 }
 </style>

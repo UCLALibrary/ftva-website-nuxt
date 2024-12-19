@@ -243,7 +243,7 @@ async function searchES() {
       results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
     }
 
-    if (results && results.hits && results.hits.total.value > 0) {
+    if (results && results.hits && results.hits.hits.length > 0) {
       const newEvents = results.hits.hits || []
       if (isMobile.value) {
         mobileEvents.value.push(...newEvents)

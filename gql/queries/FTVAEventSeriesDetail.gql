@@ -13,6 +13,7 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     id
     typeHandle
     sectionHandle
+    uri
     title
     guestSpeaker
     ftvaEventIntroduction
