@@ -53,6 +53,8 @@ const desktopEl = ref(null)
 const { reset } = useInfiniteScroll(
   scrollEl,
   async () => {
+    console.log('hasMore.value' + hasMore.value)
+    console.log('isLoading.value' + isLoading.value)
     if (isMobile.value && hasMore.value && !isLoading.value) {
       currentPage.value++
       await searchES()
@@ -96,7 +98,7 @@ function handleScreenTransition() {
   searchES()
 }
 
-// GET DTA FOR IMAGE
+// GET DATA FOR IMAGE
 function parsedImage(obj) {
   return obj._source.imageCarousel
 }
@@ -113,7 +115,7 @@ const parsedEventSeries = computed(() => {
   return series.value.map((obj) => {
     return {
       ...obj._source,
-      to: `/${obj._source.ftvaEvent[0].uri}`,
+      to: `/${obj._source.uri}`,
       description: obj._source.eventDescription,
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
@@ -125,6 +127,9 @@ const parsedEventSeries = computed(() => {
 
 // ES FUNCTION
 async function searchES() {
+  console.log('currentView.value' + currentView.value)
+  console.log('isLoading.value' + isLoading.value)
+  console.log('!hasMore.value' + !hasMore.value)
   if (isLoading.value || !hasMore.value) return
 
   isLoading.value = true
@@ -133,6 +138,7 @@ async function searchES() {
 
   try {
     let results
+    console.log('currentView.value' + currentView.value)
     if (currentView.value === 'current') {
       results = await currentEventSeriesQuery(currentPage.value,
         documentsPerPage,
@@ -175,13 +181,17 @@ const parseViewSelection = computed(() => {
 })
 
 const parseEl = computed(() => {
-  return isMobile.value ? scrollEl.value : desktopEl.value
+  // return isMobile.value ? scrollEl.value : desktopEl.value
+  return isMobile.value ? el => (scrollEl.value = el) : scrollEl.value = null
+
 })
 
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    isLoading.value = false
     currentView.value = route.query.view || 'current'
+    console.log('currentView.value' + currentView.value)
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
     isMobile.value ? mobileSeries.value = [] : desktopSeries.value = []
     hasMore.value = true
@@ -202,7 +212,6 @@ watch(
 
       <SectionWrapper theme="paleblue">
         <TabList
-          v-if="!isMobile"
           alignment="center"
           :initial-tab="parseViewSelection"
         >
@@ -212,14 +221,14 @@ watch(
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList
-                :ref="parseEl"
+                :ref='parseEl'
                 :items="parsedEventSeries"
               />
 
               <SectionPagination
                 v-if="
                   totalPages
-                    !== 1"
+                  !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
@@ -247,7 +256,10 @@ watch(
             class="tab-content"
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
-              <SectionStaffArticleList :items="parsedEventSeries" />
+              <SectionStaffArticleList
+                :ref='parseEl'
+                :items="parsedEventSeries"
+              />
 
               <SectionPagination
                 v-if="totalPages !== 1"
@@ -272,34 +284,6 @@ watch(
             </template>
           </TabItem>
         </TabList>
-
-        <div
-          v-else
-          ref="el"
-          class="mobile-container"
-        >
-          <SectionTeaserList
-            v-if="parsedEventSeries && parsedEventSeries.length > 0"
-            :items="parsedEventSeries"
-            component-name="BlockCardThreeColumn"
-            :n-shown="series.length"
-            class="tabbed-event-list"
-          />
-          <div v-else>
-            <p
-              v-if="noResultsFound"
-              class="empty-tab"
-            >
-              There are no events found
-            </p>
-            <p
-              v-else
-              class="empty-tab"
-            >
-              Data loading in progress ...
-            </p>
-          </div>
-        </div>
       </SectionWrapper>
     </div>
   </div>
