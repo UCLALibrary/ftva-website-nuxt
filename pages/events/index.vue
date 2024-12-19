@@ -680,10 +680,23 @@ const parseFirstEventMonth = computed(() => {
     :deep(.vue-date-picker) {
       width: 100%;
 
+      .dp__menu {
+        min-width: unset;
+      }
+
       .dp__outer_menu_wrap.dp--menu-wrapper {
         left: 0 !important;
-        top: 56px !important;
+        top: 54px !important;
         width: 100%;
+      }
+
+      .custom-header {
+        font-size: 20px;
+
+        .custom-nav-buttons .today-button {
+          font-size: 14px;
+          width: 60px;
+        }
       }
     }
   }
@@ -751,23 +764,46 @@ const parseFirstEventMonth = computed(() => {
         flex-basis: 100%;
       }
     }
+
+    .date-filter {
+      :deep(.vue-date-picker) {
+        .dp__outer_menu_wrap.dp--menu-wrapper {
+          width: 100%;
+        }
+      }
+    }
   }
 
   @media #{$small} {
-    .date-filter {
-      flex: unset;
-      width: auto;
 
+    .date-filter {
       :deep(.vue-date-picker) {
         width: unset;
+
+        .dp__menu {
+          min-width: var(--dp-menu-min-width);
+        }
+
+        .custom-header {
+          font-size: 26px;
+
+          .custom-nav-buttons .today-button {
+            font-size: 16px;
+            width: 81px;
+          }
+        }
       }
     }
 
+    .date-filter,
     .filters-dropdown {
-      :deep(.mobile-button) {
-        border-radius: 4px;
-        padding: 6px 6px 6px 12px;
+
+      :deep(.dropdown-wrapper) {
         width: 100%;
+
+        .mobile-button {
+          width: 100%;
+        }
       }
     }
   }
