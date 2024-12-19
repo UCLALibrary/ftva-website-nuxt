@@ -488,11 +488,13 @@ const parseFirstEventMonth = computed(() => {
                 :key="dateListDateFilter"
                 :event-dates="dateListDateFilter"
                 :initial-dates="parsedInitialDates"
+                data-test="date-filter"
                 @input-selected="applyDateFilterSelectionToRouteURL"
               />
               <filters-dropdown
                 v-model:selected-filters="userFilterSelection"
                 :filter-groups="searchFilters"
+                data-test="filters-dropdown"
                 @update-display="applyEventFilterSelectionToRouteURL"
               />
             </div>
@@ -501,6 +503,7 @@ const parseFirstEventMonth = computed(() => {
           <TabItem
             title="List View"
             class="tab-content"
+            data-test="tab-content"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <SectionTeaserList
@@ -535,6 +538,7 @@ const parseFirstEventMonth = computed(() => {
           <TabItem
             title="Calendar View"
             class="tab-content"
+            data-test="tab-content"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <div style="display: flex;justify-content: center;">
@@ -572,11 +576,13 @@ const parseFirstEventMonth = computed(() => {
               :key="dateListDateFilter"
               :event-dates="dateListDateFilter"
               :initial-dates="parsedInitialDates"
+              data-test="date-filter"
               @input-selected="applyDateFilterSelectionToRouteURL"
             />
             <filters-dropdown
               v-model:selected-filters="userFilterSelection"
               :filter-groups="searchFilters"
+              data-test="filters-dropdown"
               @update-display="applyEventFilterSelectionToRouteURL"
             />
           </div>
