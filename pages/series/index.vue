@@ -21,7 +21,6 @@ if (error.value) {
   })
 }
 if (!data.value.entries) {
-  // console.log('no data')
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -48,13 +47,22 @@ const route = useRoute()
 const isLoading = ref(false)
 const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
-const scrollEl = ref(null)
-const desktopEl = ref(null)
-const { reset } = useInfiniteScroll(
-  scrollEl,
+const scrollElPast = ref(null)
+const scrollElCurrent = ref(null)
+// const desktopEl = ref(null)
+const pastScroll = useInfiniteScroll(
+  scrollElPast,
   async () => {
-    console.log('hasMore.value' + hasMore.value)
-    console.log('isLoading.value' + isLoading.value)
+    if (isMobile.value && hasMore.value && !isLoading.value) {
+      currentPage.value++
+      await searchES()
+    }
+  },
+  { distance: 100 }
+)
+const currentScroll = useInfiniteScroll(
+  scrollElCurrent,
+  async () => {
     if (isMobile.value && hasMore.value && !isLoading.value) {
       currentPage.value++
       await searchES()
@@ -95,7 +103,6 @@ function handleScreenTransition() {
     currentPage.value = restoredPage
     desktopSeries.value = []
   }
-  searchES()
 }
 
 // GET DATA FOR IMAGE
@@ -109,7 +116,6 @@ function isImageExists(obj) {
 
 // FORMATTED COMPUTED EVENTS
 const parsedEventSeries = computed(() => {
-  console.log(series.value)
   if (series.value.length === 0) return []
 
   return series.value.map((obj) => {
@@ -127,9 +133,6 @@ const parsedEventSeries = computed(() => {
 
 // ES FUNCTION
 async function searchES() {
-  console.log('currentView.value' + currentView.value)
-  console.log('isLoading.value' + isLoading.value)
-  console.log('!hasMore.value' + !hasMore.value)
   if (isLoading.value || !hasMore.value) return
 
   isLoading.value = true
@@ -138,7 +141,7 @@ async function searchES() {
 
   try {
     let results
-    console.log('currentView.value' + currentView.value)
+
     if (currentView.value === 'current') {
       results = await currentEventSeriesQuery(currentPage.value,
         documentsPerPage,
@@ -153,7 +156,7 @@ async function searchES() {
         ['*'])
     }
 
-    if (results?.hits?.total?.value > 0) {
+    if (results?.hits?.hits?.length > 0) {
       const newSeries = results.hits.hits || []
       if (isMobile.value) {
         mobileSeries.value.push(...newSeries)
@@ -169,7 +172,6 @@ async function searchES() {
       hasMore.value = false
     }
   } catch (err) {
-    console.error('Error fetching series:', err)
     noResultsFound.value = true
   } finally {
     isLoading.value = false
@@ -180,39 +182,10 @@ const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
 })
 
-function parseEl(el) {
-  console.log('ELLLLLL', el)
-  isMobile.value
-    ? scrollEl.value = el
-    : scrollEl.value = null
-}
-
-watch(
-  () => scrollEl,
-  (newVal, oldVal) => {
-    console.log('NEWVALLL OLDVALLL', newVal, oldVal)
-    const { reset } = useInfiniteScroll(
-      scrollEl,
-      async () => {
-        console.log('useInfiniteScroll', reset)
-        console.log('hasMore.value', hasMore.value)
-        console.log('isLoading.value', isLoading.value)
-        if (isMobile.value && hasMore.value && !isLoading.value) {
-          currentPage.value++
-          await searchES()
-        }
-      },
-      { distance: 100 }
-    )
-  }, { deep: true, immediate: true }
-)
-
 watch(
   () => route.query,
   (newVal, oldVal) => {
     isLoading.value = false
-    // currentView.value = route.query.view || 'current'
-    // console.log('currentView.value' + currentView.value)
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
     isMobile.value ? mobileSeries.value = [] : desktopSeries.value = []
     hasMore.value = true
@@ -233,6 +206,76 @@ watch(
 
       <SectionWrapper theme="paleblue">
         <TabList
+          v-if="!isMobile"
+          alignment="center"
+          :initial-tab="parseViewSelection"
+        >
+          <TabItem
+            title="Past Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
+              <SectionStaffArticleList :items="parsedEventSeries" />
+
+              <SectionPagination
+                v-if="
+                  totalPages
+                    !== 1"
+                class="pagination"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
+            </template>
+
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no past event series
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
+            </template>
+          </TabItem>
+
+          <TabItem
+            title="Current and Upcoming Series"
+            class="tab-content"
+          >
+            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
+              <SectionStaffArticleList :items="parsedEventSeries" />
+
+              <SectionPagination
+                v-if="totalPages !== 1"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
+            </template>
+
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no current or upcoming event series
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
+            </template>
+          </TabItem>
+        </TabList>
+
+        <TabList
+          v-else
           alignment="center"
           :initial-tab="parseViewSelection"
         >
@@ -242,14 +285,14 @@ watch(
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList
-                :ref="parseEl(el)"
+                ref="scrollElPast"
                 :items="parsedEventSeries"
               />
 
               <SectionPagination
                 v-if="
                   totalPages
-                  !== 1"
+                    !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
@@ -278,7 +321,7 @@ watch(
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList
-                :ref="parseEl"
+                ref="scrollElCurrent"
                 :items="parsedEventSeries"
               />
 
