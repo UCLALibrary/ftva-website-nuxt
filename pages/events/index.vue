@@ -476,6 +476,14 @@ function toggleCode() {
                 :filter-groups="searchFilters"
                 @update-display="applyEventFilterSelectionToRouteURL"
               />
+
+              <!-- Right spot? -->
+              <section-remove-search-filter
+                :filters="allFilters"
+                class="mobile-remove-filters"
+                @update:filters="handleFilterUpdate"
+                @remove-selected="applyChangesToSearch"
+              />
             </div>
           </template>
 
@@ -527,7 +535,7 @@ function toggleCode() {
               </div>
               <br>
               <br>
-              <div class="code-container">
+              <!-- <div class="code-container">
                 <button
                   class="code-header"
                   @click="toggleCode"
@@ -540,7 +548,7 @@ function toggleCode() {
                 >
                   <pre> {{ parsedEvents }} </pre>
                 </div>
-              </div>
+              </div> -->
             </template>
             <template v-else>
               <p
@@ -636,6 +644,7 @@ function toggleCode() {
   :deep(.tab-list.right) {
     justify-content: space-between;
     width: 100%;
+    margin-bottom: 20px;
 
     .filters {
       flex-basis: 65%;
@@ -658,7 +667,7 @@ function toggleCode() {
       width: 100%;
 
       .dp__menu {
-        min-width: 100%;
+        // min-width: 100%;
       }
 
       .dp__outer_menu_wrap.dp--menu-wrapper {
@@ -671,6 +680,7 @@ function toggleCode() {
 
   .filters-dropdown {
     flex: 1;
+    width: 100%;
 
     :deep(.mobile-button) {
       min-width: unset;
@@ -683,7 +693,9 @@ function toggleCode() {
 
   .tab-content {
     min-height: 200px;
-    border-radius: 15px;
+    // border-radius: 15px;
+    background-color: white;
+    border-radius: 2px;
     overflow: hidden;
 
     .empty-tab {
@@ -697,6 +709,32 @@ function toggleCode() {
   .mobile-remove-filters {
     margin-top: 20px;
     margin-bottom: 20px;
+  }
+
+  :deep(.base-calendar) {
+    max-width: 1000px;
+    padding-top: 32px;
+
+    .v-calendar-header {
+      margin-bottom: 14px;
+    }
+
+  }
+
+  // :deep(.base-calendar .v-calendar-header) {
+  //   margin-bottom: 20px;
+  // }
+
+  @media(max-width: 1200px) {
+    .base-calendar {
+      max-width: 900px;
+    }
+  }
+
+  @media(max-width: 1100px) {
+    .base-calendar {
+      max-width: 800px;
+    }
   }
 
   @media #{$medium} {
@@ -714,18 +752,18 @@ function toggleCode() {
     .date-filter {
       :deep(.vue-date-picker) {
         .dp__outer_menu_wrap.dp--menu-wrapper {
-          max-width: 406px;
-          width: 100%;
+          // max-width: 406px;
+          // width: 100%;
         }
 
-        .custom-header {
-          font-size: 20px;
+        // .custom-header {
+        //   font-size: 20px;
 
-          .custom-nav-buttons .today-button {
-            font-size: 14px;
-            width: 60px;
-          }
-        }
+        //   .custom-nav-buttons .today-button {
+        //     font-size: 14px;
+        //     width: 60px;
+        //   }
+        // }
       }
     }
   }
@@ -733,17 +771,20 @@ function toggleCode() {
   @media #{$small} {
 
     .date-filter {
+      flex: unset;
+      width: auto;
+
       :deep(.vue-date-picker) {
         width: unset;
 
-        .custom-header {
-          font-size: 26px;
+        // .custom-header {
+        //   font-size: 26px;
 
-          .custom-nav-buttons .today-button {
-            font-size: 16px;
-            width: 81px;
-          }
-        }
+        //   .custom-nav-buttons .today-button {
+        //     font-size: 16px;
+        //     width: 81px;
+        //   }
+        // }
       }
     }
 
@@ -755,27 +796,37 @@ function toggleCode() {
       }
     }
   }
+
+  // @media(max-width: 520px) {
+  //   .date-filter {
+  //     flex: 1 1 0%;
+  //   }
+
+  //   .filters-dropdown {
+  //     flex: 1 1 100%;
+  //   }
+  // }
 }
 
-.code-header {
-  background-color: #f5f5f5;
-  padding: 10px;
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-}
+// .code-header {
+//   background-color: #f5f5f5;
+//   padding: 10px;
+//   cursor: pointer;
+//   font-family: Arial, sans-serif;
+//   font-weight: bold;
+// }
 
-.code-header:hover {
-  background-color: #e0e0e0;
-}
+// .code-header:hover {
+//   background-color: #e0e0e0;
+// }
 
-.code-body {
-  background-color: #272822;
-  color: #f8f8f2;
-  padding: 15px;
-  font-family: "Courier New", Courier, monospace;
-  white-space: pre;
-}
+// .code-body {
+//   background-color: #272822;
+//   color: #f8f8f2;
+//   padding: 15px;
+//   font-family: "Courier New", Courier, monospace;
+//   white-space: pre;
+// }
 
 @import 'assets/styles/listing-pages.scss';
 </style>
