@@ -461,13 +461,6 @@ const parseFirstEventMonth = computed(() => {
   }
   return null
 })
-
-// remove this later
-// const isOpen = ref(false)
-// function toggleCode() {
-//   isOpen.value = !isOpen.value
-// }
-
 </script>
 
 <template>
@@ -808,26 +801,6 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 }
-
-// .code-header {
-//   background-color: #f5f5f5;
-//   padding: 10px;
-//   cursor: pointer;
-//   font-family: Arial, sans-serif;
-//   font-weight: bold;
-// }
-
-// .code-header:hover {
-//   background-color: #e0e0e0;
-// }
-
-// .code-body {
-//   background-color: #272822;
-//   color: #f8f8f2;
-//   padding: 15px;
-//   font-family: "Courier New", Courier, monospace;
-//   white-space: pre;
-// }
 
 @import 'assets/styles/listing-pages.scss';
 </style>
