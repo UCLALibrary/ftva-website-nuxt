@@ -181,7 +181,7 @@ const parseViewSelection = computed(() => {
 
 const parseEl = computed(() => {
   // return isMobile.value ? scrollEl.value : desktopEl.value
-  return isMobile.value ? (el => (scrollEl.value = el)) : (scrollEl.value = null)
+  return isMobile.value ? el => (scrollEl.value = el) : scrollEl.value = null
 })
 
 watch(
@@ -226,7 +226,7 @@ watch(
               <SectionPagination
                 v-if="
                   totalPages
-                  !== 1"
+                    !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
