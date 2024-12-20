@@ -14,18 +14,26 @@ describe('Events Listing page', () => {
   })
 })
 
-// Sample UI test
+describe('Events Listing page', () => {
+  it('Toggles tab to calendar view', () => {
+    // Calendar is only visit at 1025px and above
+    cy.viewport(1280, 720)
 
-// describe('Events Listing page', () => {
-//   it('Tests tab toggle to calendar view', () => {
-//     cy.viewport(1280, 720)
+    cy.visit('/events')
 
-//     cy.visit('/events')
+    cy.get('.tab-list-header').should('be.visible')
 
-//     cy.get('.tab-list-header').should('be.visible')
+    cy.get('[data-test="list-view"]').should('be.visible')
 
-//     cy.get('#tab-calendar-view').click()
+    cy.getByData('tabbed-content').should('be.visible')
 
-//     cy.getByData('calendar-view').should('be.visible')
-//   })
-// })
+    cy.get('#tab-calendar-view').click()
+
+    cy.get('[data-test="calendar-view"]').should('be.visible')
+  })
+})
+
+// ToDo: Additional UI tests
+// DateFilter & FilterDropdown interactions:
+// Select date range
+// Select filters
