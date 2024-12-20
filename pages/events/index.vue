@@ -18,6 +18,7 @@ const { data, error } = await useAsyncData('event-list', async () => {
   const data = await $graphql.default.request(FTVAEventList)
   return data
 })
+
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
@@ -32,6 +33,7 @@ if (!data.value.entry) {
     fatal: true
   })
 }
+
 const heading = ref(_get(data.value, 'entry', {}))
 
 // TYPES
@@ -57,11 +59,13 @@ interface AggregationBucket {
 interface Aggregations {
   [key: string]: { buckets: AggregationBucket[] }
 }
+
 interface FilterGroup {
   name: string; // The name of the filter group (e.g., "Event Type").
   searchField: string; // The corresponding search field in Elasticsearch.
   options: string[]; // The options available for this filter group.
 }
+
 // State Management
 const desktopPage = useState<number>('desktopPage', () => 1) // Persist desktop page
 
@@ -88,7 +92,7 @@ const hasMore = ref(true) // Flag to control infinite scroll
 const { width } = useWindowSize()
 watch(width, (newWidth) => {
   const wasMobile = isMobile.value
-  isMobile.value = newWidth <= 750
+  isMobile.value = newWidth <= 1024
 
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
@@ -141,7 +145,6 @@ const parsedRemoveSearchFilters = computed(() => {
     }
   }
   // console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
-
   return removefilters
 })
 
@@ -150,21 +153,29 @@ watch(
   () => route.query,
   (newVal, oldVal) => {
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+
     userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
+
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+
     userViewSelection.value = (route.query.view as string | undefined) || 'list'
     // console.log('route.query.dates', route?.query?.dates)
+
     userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
+
     allFilters.value = parsedRemoveSearchFilters.value
     // console.log('userDateSelection.value', userDateSelection.value)
+
     isMobile.value ? mobileEvents.value = [] : desktopEvents.value = []
     hasMore.value = true
     searchES()
   }, { deep: true, immediate: true }
 )
+
 // SEARCH
 const searchFilters = ref([] as FilterGroup[])
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
+
 async function setFilters() {
   const searchAggsResponse: Aggregations = await useIndexAggregator()
   // console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
@@ -172,6 +183,7 @@ async function setFilters() {
   searchFilters.value = transformEsResponseToFilterGroups(searchAggsResponse)
   // console.log('searchFilters', searchFilters.value)
 }
+
 onMounted(async () => {
   await setFilters()
   const { allEvents } = useDateFilterQuery()
@@ -179,6 +191,7 @@ onMounted(async () => {
     'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
     'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
   } */
+
   // Logic to fetch all events startDates formated for DateFilter
   const esOutput = await allEvents('ftvaEvent', ['startDate'])
   // console.log(esOutput.hits.total.value)
@@ -234,6 +247,7 @@ async function searchES() {
     const page = currentPage.value
     const size = 10
     let results: any = {}
+
     if (!isMobile.value || userViewSelection.value === 'list') {
       const { paginatedSearchFilters } = useListSearchFilter()
       results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
@@ -265,10 +279,12 @@ async function searchES() {
     isLoading.value = false
   }
 }
+
 // Get data for Image or Carousel at top of page
 function parsedImage(obj) {
   return obj._source.imageCarousel
 }
+
 function isImageExists(obj) {
   return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
 }
@@ -322,6 +338,7 @@ const parsedInitialDates = computed(() => {
     startDate: null as Date | null,
     endDate: null as Date | null,
   }
+
   if (userDateSelection.value && userDateSelection.value.length === 1) {
     initialDates.startDate = parseISO(userDateSelection.value[0])
     initialDates.endDate = parseISO(userDateSelection.value[0])
@@ -329,6 +346,7 @@ const parsedInitialDates = computed(() => {
     initialDates.startDate = parseISO(userDateSelection.value[0])
     initialDates.endDate = parseISO(userDateSelection.value[1])
   }
+
   return initialDates
 })
 
@@ -346,25 +364,30 @@ function applyDateFilterSelectionToRouteURL(data) {
     const day = String(d.getDate()).padStart(2, '0')
     return `${year}-${month}-${day}`
   }
+
   let startDate: string = ''
   let endDate: string = ''
   // Format the dates
   // Combine into a single query parameter
   let datesParam: string = ''
+
   if (data.startDate) {
     startDate = formatDate(data.startDate)
     datesParam = startDate
   }
+
   if (data.endDate) {
     endDate = formatDate(data.endDate)
     datesParam = datesParam + ',' + endDate
   }
+
   const eventFilters = []
   for (const key in userFilterSelection.value) {
     if (userFilterSelection.value[key].length > 0) {
       eventFilters.push(`${key}:(${userFilterSelection.value[key].join(' OR ')})`)
     }
   }
+
   // Use router.push to navigate with query params
   useRouter().push({
     path: '/events',
@@ -421,6 +444,7 @@ function applyChangesToSearch() {
     }
   })
 }
+
 function handleFilterUpdate(updatedFilters) {
   allFilters.value = updatedFilters
   // console.log('Filters updated:', allFilters.value)
@@ -429,6 +453,7 @@ function handleFilterUpdate(updatedFilters) {
 const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
 })
+
 const parseFirstEventMonth = computed(() => {
   if (parsedEvents.value && parsedEvents.value.length > 0) {
     // console.log("parseFirstEventMonth", parsedEvents.value[0].startDate, typeof parsedEvents.value[0].startDate)
@@ -436,13 +461,6 @@ const parseFirstEventMonth = computed(() => {
   }
   return null
 })
-
-// remove this later
-const isOpen = ref(false)
-function toggleCode() {
-  isOpen.value = !isOpen.value
-}
-
 </script>
 
 <template>
@@ -459,25 +477,33 @@ function toggleCode() {
       />
 
       <SectionWrapper theme="paleblue">
-        <date-filter
-          :key="dateListDateFilter"
-          :event-dates="dateListDateFilter"
-          :initial-dates="parsedInitialDates"
-          @input-selected="applyDateFilterSelectionToRouteURL"
-        />
-        <filters-dropdown
-          v-model:selected-filters="userFilterSelection"
-          :filter-groups="searchFilters"
-          @update-display="applyEventFilterSelectionToRouteURL"
-        />
         <TabList
           v-if="!isMobile"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
+          <template #filters>
+            <div class="filters-wrapper">
+              <date-filter
+                :key="dateListDateFilter"
+                :event-dates="dateListDateFilter"
+                :initial-dates="parsedInitialDates"
+                data-test="date-filter"
+                @input-selected="applyDateFilterSelectionToRouteURL"
+              />
+              <filters-dropdown
+                v-model:selected-filters="userFilterSelection"
+                :filter-groups="searchFilters"
+                data-test="filters-dropdown"
+                @update-display="applyEventFilterSelectionToRouteURL"
+              />
+            </div>
+          </template>
+
           <TabItem
             title="List View"
             class="tab-content"
+            data-test="list-view"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <SectionTeaserList
@@ -485,6 +511,7 @@ function toggleCode() {
                 component-name="BlockCardThreeColumn"
                 :n-shown="10"
                 class="tabbed-event-list"
+                data-test="tabbed-content"
               />
 
               <section-pagination
@@ -512,6 +539,7 @@ function toggleCode() {
           <TabItem
             title="Calendar View"
             class="tab-content"
+            data-test="calendar-view"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <div style="display: flex;justify-content: center;">
@@ -522,20 +550,6 @@ function toggleCode() {
               </div>
               <br>
               <br>
-              <div class="code-container">
-                <button
-                  class="code-header"
-                  @click="toggleCode"
-                >
-                  {{ isOpen ? 'Click to hide ES data' : 'Click to view ES data' }}
-                </button>
-                <div
-                  v-if="isOpen"
-                  class="code-body"
-                >
-                  <pre> {{ parsedEvents }} </pre>
-                </div>
-              </div>
             </template>
             <template v-else>
               <p
@@ -558,6 +572,21 @@ function toggleCode() {
           ref="el"
           class="mobile-container"
         >
+          <div class="filters-wrapper">
+            <date-filter
+              :key="dateListDateFilter"
+              :event-dates="dateListDateFilter"
+              :initial-dates="parsedInitialDates"
+              data-test="date-filter"
+              @input-selected="applyDateFilterSelectionToRouteURL"
+            />
+            <filters-dropdown
+              v-model:selected-filters="userFilterSelection"
+              :filter-groups="searchFilters"
+              data-test="filters-dropdown"
+              @update-display="applyEventFilterSelectionToRouteURL"
+            />
+          </div>
           <section-remove-search-filter
             :filters="allFilters"
             class="mobile-remove-filters"
@@ -570,6 +599,7 @@ function toggleCode() {
             component-name="BlockCardThreeColumn"
             :n-shown="events.length"
             class="tabbed-event-list"
+            data-test="tabbed-content"
           />
           <div v-else>
             <p
@@ -591,7 +621,7 @@ function toggleCode() {
   </main>
 </template>
 
-<style scoped>
+<style lang='scss' scoped>
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -606,7 +636,6 @@ function toggleCode() {
     align-content: center;
     align-items: center;
     text-align: center;
-
     max-width: 787px;
   }
 
@@ -614,7 +643,6 @@ function toggleCode() {
     width: 100%;
     background-color: var(--pale-blue);
     margin: 0 auto;
-
   }
 
   :deep(.tab-list-body) {
@@ -628,9 +656,70 @@ function toggleCode() {
     padding: 2.5%;
   }
 
+  :deep(.tab-list.right) {
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px;
+
+    .filters {
+      flex-basis: 65%;
+    }
+  }
+
+  .filters-wrapper {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .date-filter {
+    flex: 1;
+    width: 100%;
+
+    :deep(.vue-date-picker) {
+      width: 100%;
+
+      .dp__menu {
+        min-width: unset;
+      }
+
+      .dp__outer_menu_wrap.dp--menu-wrapper {
+        left: 0 !important;
+        top: 54px !important;
+        width: 100%;
+      }
+
+      .custom-header {
+        font-size: 20px;
+
+        .custom-nav-buttons .today-button {
+          font-size: 14px;
+          width: 60px;
+        }
+      }
+    }
+  }
+
+  .filters-dropdown {
+    flex: 1;
+    width: 100%;
+
+    :deep(.mobile-button) {
+      min-width: unset;
+      height: 59px;
+    }
+
+    :deep(.button-dropdown-modal-wrapper.is-expanded) {
+      min-width: unset;
+    }
+  }
+
   .tab-content {
     min-height: 200px;
-    border-radius: 15px;
+    background-color: white;
+    border-radius: 2px;
     overflow: hidden;
 
     .empty-tab {
@@ -645,26 +734,77 @@ function toggleCode() {
     margin-top: 20px;
     margin-bottom: 20px;
   }
-}
 
-.code-header {
-  background-color: #f5f5f5;
-  padding: 10px;
-  cursor: pointer;
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-}
+  :deep(.base-calendar) {
+    max-width: 1000px;
+    padding-top: 32px;
 
-.code-header:hover {
-  background-color: #e0e0e0;
-}
+    .v-calendar-header {
+      margin-bottom: 14px;
+    }
+  }
 
-.code-body {
-  background-color: #272822;
-  color: #f8f8f2;
-  padding: 15px;
-  font-family: "Courier New", Courier, monospace;
-  white-space: pre;
+  @media(max-width: 1200px) {
+    .base-calendar {
+      max-width: 900px;
+    }
+  }
+
+  @media(max-width: 1100px) {
+    .base-calendar {
+      max-width: 800px;
+    }
+  }
+
+  @media #{$medium} {
+    .date-filter {
+      :deep(.vue-date-picker) {
+        .dp__outer_menu_wrap.dp--menu-wrapper {
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  @media #{$small} {
+
+    .date-filter {
+      :deep(.vue-date-picker) {
+        width: unset;
+
+        .dp__menu {
+          min-width: var(--dp-menu-min-width);
+        }
+
+        .custom-header {
+          font-size: 26px;
+
+          .custom-nav-buttons .today-button {
+            font-size: 16px;
+            width: 81px;
+          }
+        }
+      }
+    }
+
+    .filters-dropdown {
+      :deep(.mobile-button) {
+        height: initial;
+      }
+    }
+
+    .date-filter,
+    .filters-dropdown {
+
+      :deep(.dropdown-wrapper) {
+        width: 100%;
+
+        .mobile-button {
+          width: 100%;
+        }
+      }
+    }
+  }
 }
 
 @import 'assets/styles/listing-pages.scss';
