@@ -503,7 +503,7 @@ const parseFirstEventMonth = computed(() => {
           <TabItem
             title="List View"
             class="tab-content"
-            data-test="tab-content"
+            data-test="list-view"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <SectionTeaserList
@@ -511,6 +511,7 @@ const parseFirstEventMonth = computed(() => {
                 component-name="BlockCardThreeColumn"
                 :n-shown="10"
                 class="tabbed-event-list"
+                data-test="tabbed-content"
               />
 
               <section-pagination
@@ -538,7 +539,7 @@ const parseFirstEventMonth = computed(() => {
           <TabItem
             title="Calendar View"
             class="tab-content"
-            data-test="tab-content"
+            data-test="calendar-view"
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <div style="display: flex;justify-content: center;">
@@ -598,6 +599,7 @@ const parseFirstEventMonth = computed(() => {
             component-name="BlockCardThreeColumn"
             :n-shown="events.length"
             class="tabbed-event-list"
+            data-test="tabbed-content"
           />
           <div v-else>
             <p
