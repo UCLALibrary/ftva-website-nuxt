@@ -706,6 +706,7 @@ const parseFirstEventMonth = computed(() => {
 
     :deep(.mobile-button) {
       min-width: unset;
+      height: 59px;
     }
 
     :deep(.button-dropdown-modal-wrapper.is-expanded) {
@@ -791,6 +792,12 @@ const parseFirstEventMonth = computed(() => {
             width: 81px;
           }
         }
+      }
+    }
+
+    .filters-dropdown {
+      :deep(.mobile-button) {
+        height: initial;
       }
     }
 
