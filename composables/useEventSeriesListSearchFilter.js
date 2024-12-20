@@ -90,18 +90,26 @@ async function currentEventSeriesQuery(
             filter: [
               {
                 term: {
-                  'sectionHandle.keyword': 'ftvaEventSeries'
-                }
+                  'sectionHandle.keyword': 'ftvaEventSeries',
+                },
+              },
+            ],
+            should: [
+              {
+                term: {
+                  ongoing: true,
+                },
               },
               {
                 range: {
-                  startDate: {
-                    gte: 'now/d-8h'
-                  }
-                }
-              }
-            ]
-          },
+                  endDate: {
+                    gte: 'now/d-8h',
+                  },
+                },
+              },
+            ],
+            minimum_should_match: 1,
+          }
         },
         ...parseSort(sort, orderBy),
       }),
