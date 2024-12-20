@@ -16,7 +16,7 @@ describe('Events Listing page', () => {
 
 describe('Events Listing page', () => {
   it('Toggles tab to calendar view', () => {
-    // Calendar is only visit at 1025px and above
+    // Calendar is visible at 1025px and above
     cy.viewport(1280, 720)
 
     cy.visit('/events')
@@ -25,7 +25,7 @@ describe('Events Listing page', () => {
 
     cy.get('[data-test="list-view"]').should('be.visible')
 
-    cy.getByData('tabbed-content').should('be.visible')
+    cy.get('[data-test="tabbed-content"]').should('be.visible')
 
     cy.get('#tab-calendar-view').click()
 
