@@ -757,16 +757,6 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
-    :deep(.tab-list.right) {
-      .tab-list-header {
-        display: none;
-      }
-
-      .filters {
-        flex-basis: 100%;
-      }
-    }
-
     .date-filter {
       :deep(.vue-date-picker) {
         .dp__outer_menu_wrap.dp--menu-wrapper {
