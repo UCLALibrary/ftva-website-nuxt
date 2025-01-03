@@ -30,11 +30,13 @@ describe('Events Listing page', () => {
     cy.get('[data-test="calendar-view"]').should('be.visible')
   })
 
-  it('Shows events within selected date and clears filters', { scrollBehavior: false }, () => {
+  it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
     cy.wait('@eventData').wait('@eventData').then(() => {
-      cy.get('.block-card-three-column').should('be.visible')
+      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } }) // scroll to date filter before typing to prevent errors
+      /* eslint-disable cypress/no-unnecessary-waiting */
+      cy.wait(1000) // wait for scroll to finish, field is briefly disabled
       cy.getByData('date-filter').type('12/01/2024', { waitforAnimations: true })
       cy.get('.select-button').click()
       // expect 1 item rendered with title Mother India
@@ -46,6 +48,19 @@ describe('Events Listing page', () => {
     cy.get('.block-remove-search-filter').click()
     cy.then(() => {
       cy.get('.list').find('li').should('have.length.above', 5)
+    })
+  })
+
+  it('Shows events with selected labels and clears label filters', () => {
+    // wait for 2 fetch calls until list is visible to ensure initial render has finished
+    cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
+    cy.wait('@eventData').wait('@eventData').then(() => {
+      cy.getByData('filters-dropdown').click()
+      cy.get('.pill-label').contains('35mm').first().click()
+      cy.get('.pill-label').contains('Film').first().click()
+      cy.get('.select-button').click()
+      // expect fewer than 8 items than match both
+      cy.get('.list').find('li').should('have.length.below', 8)
     })
   })
 })
