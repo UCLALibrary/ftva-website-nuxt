@@ -26,6 +26,7 @@ const { data, error } = await useAsyncData(`collections-detail-${route.params.sl
   const data = await $graphql.default.request(FTVACollectionDetail, { slug: route.params.slug })
   return data
 })
+
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
@@ -68,6 +69,7 @@ const parsedImage = computed(() => {
   }
   return page.value.imageCarousel
 })
+
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
@@ -78,12 +80,14 @@ const parsedCarouselData = computed(() => {
     }
   })
 })
+
 // Map icon names to svg names for infoBlock
 const parsedInfoBlockIconLookup = {
   'icon-download': 'svg-call-to-action-ftva-pdf',
   'icon-info': 'svg-call-to-action-ftva-info',
   'icon-external-link': 'svg-call-to-action-ftva-external-link-dark'
 }
+
 const parsedInfoBlock = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!page.value.infoBlock || page.value.infoBlock.length === 0) {
@@ -97,6 +101,7 @@ const parsedInfoBlock = computed(() => {
     }
   })
 })
+
 const parsedRelatedCollectionsHeader = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!page.value.sectionTitle) {
@@ -104,6 +109,7 @@ const parsedRelatedCollectionsHeader = computed(() => {
   }
   return page.value.sectionTitle ? page.value.sectionTitle : 'Related Collections'
 })
+
 const parsedRelatedCollections = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!page.value.ftvaRelatedCollections) {
@@ -115,23 +121,31 @@ const parsedRelatedCollections = computed(() => {
       ...item,
       to: `/${item.uri}`,
       category: 'collection',
-      bylineOne: item.richText,
+      // Remove image tags
+      bylineOne: item.richText.replace(/<img.*?>/ig, ''),
       image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
     }
   })
   return relatedCollections
 })
+// console.log('related: ', parsedRelatedCollections.value)
+
 const parsedRelatedCollectionsText = computed(() => {
   // TODO does this fail gracefully?
   const text = _get(page.value, 'viewAllSectionLink[0].viewAllText', '')
   return text || 'View All'
 })
+
 // TODO goes to /collections/[uri] - is this correct check with UX?
 const parsedRelatedCollectionsLink = computed(() => {
   // TODO does this fail gracefully?
   const link = _get(page.value, 'viewAllSectionLink[0].viewAllLink[0].uri', '')
   return link || '/collections'
 })
+
+function stripImageTags(str) {
+
+}
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -259,10 +273,7 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 .page-collection-detail {
   position: relative;
 
