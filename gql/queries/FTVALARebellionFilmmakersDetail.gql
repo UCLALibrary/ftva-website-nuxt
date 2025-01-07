@@ -1,0 +1,42 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVALARebellionFilmmakersDetail($slug: [String!]) {
+  ftvaLARebellionIndividual: entry(section: "ftvaLARebellionIndividual", slug: $slug) {
+    id
+    typeHandle
+    sectionHandle
+    slug
+    uri
+
+    nameFirst
+    nameLast
+
+    image: ftvaImage {
+      ...Image
+    }
+
+    imageCarousel {
+      ...on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+
+    # sub query? 
+#     query test {
+#   entries(section: "vacancies", relatedToEntries({attributeHandle: "valueYouWant") {
+#     title
+#     ... on vacancies_vacancies_Entry {
+#       description
+#       organisation {
+#         title
+#         ... on organisations_organisations_Entry {
+#           organisationType
+#         }
+#       }
+#     }
+#   }
+# }
+}
