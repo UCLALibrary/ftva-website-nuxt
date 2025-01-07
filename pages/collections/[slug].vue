@@ -302,6 +302,19 @@ useHead({
 
   .related-collections-card {
     :deep(.card-meta) {
+      display: grid;
+      grid-template-rows: auto 1fr 1fr;
+      row-gap: 8px;
+
+      .category,
+      .title,
+      .byline-group {
+        margin: 0;
+      }
+
+      .title {
+        @include truncate(2);
+      }
 
       .byline-group {
         position: static;
