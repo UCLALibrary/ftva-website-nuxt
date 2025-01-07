@@ -159,6 +159,7 @@ async function searchES() {
     if (results?.hits?.hits?.length > 0) {
       const newSeries = results.hits.hits || []
       if (isMobile.value) {
+        totalPages.value = 0
         mobileSeries.value.push(...newSeries)
         hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
       } else {
@@ -168,7 +169,7 @@ async function searchES() {
       noResultsFound.value = false
     } else {
       noResultsFound.value = true
-      if (!isMobile.value) totalPages.value = 0
+      totalPages.value = 0
       hasMore.value = false
     }
   } catch (err) {
@@ -206,76 +207,6 @@ watch(
 
       <SectionWrapper theme="paleblue">
         <TabList
-          v-if="!isMobile"
-          alignment="center"
-          :initial-tab="parseViewSelection"
-        >
-          <TabItem
-            title="Past Series"
-            class="tab-content"
-          >
-            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
-              <SectionStaffArticleList :items="parsedEventSeries" />
-
-              <SectionPagination
-                v-if="
-                  totalPages
-                    !== 1"
-                class="pagination"
-                :pages="totalPages"
-                :initial-current-page="currentPage"
-              />
-            </template>
-
-            <template v-else>
-              <p
-                v-if="noResultsFound"
-                class="empty-tab"
-              >
-                There are no past event series
-              </p>
-              <p
-                v-else
-                class="empty-tab"
-              >
-                Data loading in progress ...
-              </p>
-            </template>
-          </TabItem>
-
-          <TabItem
-            title="Current and Upcoming Series"
-            class="tab-content"
-          >
-            <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
-              <SectionStaffArticleList :items="parsedEventSeries" />
-
-              <SectionPagination
-                v-if="totalPages !== 1"
-                :pages="totalPages"
-                :initial-current-page="currentPage"
-              />
-            </template>
-
-            <template v-else>
-              <p
-                v-if="noResultsFound"
-                class="empty-tab"
-              >
-                There are no current or upcoming event series
-              </p>
-              <p
-                v-else
-                class="empty-tab"
-              >
-                Data loading in progress ...
-              </p>
-            </template>
-          </TabItem>
-        </TabList>
-
-        <TabList
-          v-else
           alignment="center"
           :initial-tab="parseViewSelection"
         >
@@ -285,14 +216,14 @@ watch(
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList
-                ref="scrollElPast"
+                :ref="scrollElPast"
                 :items="parsedEventSeries"
               />
 
               <SectionPagination
                 v-if="
                   totalPages
-                    !== 1"
+                  !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
@@ -321,7 +252,7 @@ watch(
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList
-                ref="scrollElCurrent"
+                :ref="scrollElCurrent"
                 :items="parsedEventSeries"
               />
 
