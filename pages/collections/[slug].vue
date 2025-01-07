@@ -121,14 +121,13 @@ const parsedRelatedCollections = computed(() => {
       ...item,
       to: `/${item.uri}`,
       category: 'collection',
-      // Remove image tags
+      // Remove image tags inside byline rich text
       bylineOne: item.richText.replace(/<img.*?>/ig, ''),
       image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
     }
   })
   return relatedCollections
 })
-// console.log('related: ', parsedRelatedCollections.value)
 
 const parsedRelatedCollectionsText = computed(() => {
   // TODO does this fail gracefully?
@@ -302,9 +301,17 @@ useHead({
   }
 
   .related-collections-card {
+    :deep(.card-meta) {
+
+      .byline-group {
+        position: static;
+      }
+    }
+
     :deep(.byline-group) {
       @include truncate(2);
     }
+
   }
 }
 
