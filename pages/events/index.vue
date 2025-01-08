@@ -622,6 +622,12 @@ const parseFirstEventMonth = computed(() => {
 </template>
 
 <style lang='scss' scoped>
+@mixin sticky {
+  position: sticky;
+  top: 65px;
+  z-index: 100;
+}
+
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -660,6 +666,7 @@ const parseFirstEventMonth = computed(() => {
     justify-content: space-between;
     width: 100%;
     margin-bottom: 20px;
+    @include sticky;
 
     .filters {
       flex-basis: 65%;
@@ -757,6 +764,10 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
+    .filters-wrapper {
+      @include sticky;
+    }
+
     .date-filter {
       :deep(.vue-date-picker) {
         .dp__outer_menu_wrap.dp--menu-wrapper {
