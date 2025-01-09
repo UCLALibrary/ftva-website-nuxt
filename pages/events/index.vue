@@ -6,7 +6,6 @@ import { SectionWrapper } from 'ucla-library-website-components'
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
 import { useElementBounding, useWindowSize, useInfiniteScroll } from '@vueuse/core'
-import { vIntersectionObserver } from '@vueuse/components'
 
 // UTILS
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
@@ -88,18 +87,28 @@ const noResultsFound = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
 const isMobile = ref<boolean>(false)
 const hasMore = ref(true) // Flag to control infinite scroll
-const intersectionTarget = ref(null) // Pagination
+const sectionTeaserListElem = ref(null) // Intersection target to unstick filters
 const makeFiltersSticky = ref(true)
 
 // Window Size Handling
 const { width } = useWindowSize()
-watch(width, (newWidth) => {
+// Sticky Filters Handling
+const { bottom } = useElementBounding(sectionTeaserListElem)
+
+watch([width, bottom], ([newWidth, newBottom]) => {
   const wasMobile = isMobile.value
   isMobile.value = newWidth <= 1024
 
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
     handleScreenTransition()
+  }
+
+  // When bottom of SectionTeaserList hits the header-sticky bar, unstick the filters
+  if ((isMobile.value && bottom.value <= 150) || (bottom.value <= 65)) {
+    makeFiltersSticky.value = false
+  } else {
+    makeFiltersSticky.value = true
   }
 }, { immediate: true })
 
@@ -123,16 +132,6 @@ function handleScreenTransition() {
   }
   searchES()
 }
-
-//
-const { y: paginationYValue } = useElementBounding(intersectionTarget)
-watch(paginationYValue, (newPaginationYValue) => {
-  if (paginationYValue.value <= 65) {
-    makeFiltersSticky.value = false
-  } else {
-    makeFiltersSticky.value = true
-  }
-})
 
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
@@ -524,6 +523,7 @@ const parseFirstEventMonth = computed(() => {
             >
               <template v-if="parsedEvents && parsedEvents.length > 0">
                 <SectionTeaserList
+                  ref="sectionTeaserListElem"
                   :items="parsedEvents"
                   component-name="BlockCardThreeColumn"
                   :n-shown="10"
@@ -533,7 +533,6 @@ const parseFirstEventMonth = computed(() => {
 
                 <section-pagination
                   v-if="totalPages !== 1"
-                  ref="intersectionTarget"
                   :pages="totalPages"
                   :initial-current-page="currentPage"
                 />
@@ -613,6 +612,7 @@ const parseFirstEventMonth = computed(() => {
             />
             <SectionTeaserList
               v-if="parsedEvents && parsedEvents.length > 0"
+              ref="sectionTeaserListElem"
               :items="parsedEvents"
               component-name="BlockCardThreeColumn"
               :n-shown="events.length"
@@ -641,7 +641,7 @@ const parseFirstEventMonth = computed(() => {
 </template>
 
 <style lang='scss' scoped>
-@mixin sticky {
+@mixin stickyFilters {
   position: sticky;
   top: 65px;
   z-index: 100;
@@ -672,11 +672,11 @@ const parseFirstEventMonth = computed(() => {
 
   .sticky-wrapper {
     max-width: var(--ftva-container-max-width);
-  }
 
-  .sticky-wrapper.sticky {
-    :deep(.tab-list.right) {
-      @include sticky;
+    &.sticky {
+      :deep(.tab-list.right) {
+        @include stickyFilters;
+      }
     }
   }
 
@@ -697,7 +697,6 @@ const parseFirstEventMonth = computed(() => {
     justify-content: space-between;
     width: 100%;
     margin-bottom: 20px;
-    // @include sticky;
 
     .filters {
       flex-basis: 65%;
@@ -795,8 +794,10 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
-    .filters-wrapper.sticky {
-      @include sticky;
+    .sticky-wrapper.sticky {
+      .filters-wrapper {
+        @include stickyFilters;
+      }
     }
 
     .date-filter {
