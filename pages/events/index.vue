@@ -105,7 +105,7 @@ watch([width, bottom], ([newWidth, newBottom]) => {
   }
 
   // When bottom of SectionTeaserList hits the header-sticky bar, unstick the filters
-  if ((isMobile.value && bottom.value <= 150) || (bottom.value <= 65)) {
+  if ((isMobile.value && bottom.value <= 150)) {
     makeFiltersSticky.value = false
   } else {
     makeFiltersSticky.value = true
@@ -523,7 +523,6 @@ const parseFirstEventMonth = computed(() => {
             >
               <template v-if="parsedEvents && parsedEvents.length > 0">
                 <SectionTeaserList
-                  ref="sectionTeaserListElem"
                   :items="parsedEvents"
                   component-name="BlockCardThreeColumn"
                   :n-shown="10"
@@ -672,12 +671,6 @@ const parseFirstEventMonth = computed(() => {
 
   .sticky-wrapper {
     max-width: var(--ftva-container-max-width);
-
-    &.sticky {
-      :deep(.tab-list.right) {
-        @include stickyFilters;
-      }
-    }
   }
 
   :deep(.tab-list-body) {
