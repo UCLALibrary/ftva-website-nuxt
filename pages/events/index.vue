@@ -665,8 +665,6 @@ const parseFirstEventMonth = computed(() => {
 
   :deep(.tab-list-body) {
     background: none;
-    padding-left: 0;
-    padding-right: 0;
   }
 
   :deep(.section-pagination) {
