@@ -485,7 +485,6 @@ const parseFirstEventMonth = computed(() => {
         class="header"
         theme="paleblue"
         :section-title="heading.titleGeneral"
-        :section-summary="heading.summary"
       />
 
       <SectionWrapper theme="paleblue">
