@@ -6,8 +6,8 @@ query FTVALARebellionFilmmakersDetail($slug: [String!]) {
     typeHandle
     sectionHandle
     slug
-    uri
-
+    to: uri
+    richText
     nameFirst
     nameLast
 
@@ -24,19 +24,19 @@ query FTVALARebellionFilmmakersDetail($slug: [String!]) {
       }
     }
 
-    # sub query? 
-#     query test {
-#   entries(section: "vacancies", relatedToEntries({attributeHandle: "valueYouWant") {
-#     title
-#     ... on vacancies_vacancies_Entry {
-#       description
-#       organisation {
-#         title
-#         ... on organisations_organisations_Entry {
-#           organisationType
-#         }
-#       }
-#     }
-#   }
-# }
+    associatedFilms {
+      image {
+        ...Image
+      }
+      titleGeneral
+      description
+      roles
+      year
+      filmLink {
+        uri
+        slug
+      }
+    }
+
+  }
 }

@@ -2,20 +2,17 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionStaffSubjectLibrarian, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
 
 // GQL
-// import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
+import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmmakersDetail.gql'
 
 // COMPOSABLE
 import removeTags from '../utils/removeTags'
-// import { useContentIndexer } from '~/composables/useContentIndexer'
-
-// UTILS
-// import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
+import { useContentIndexer } from '~/composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
 
@@ -23,7 +20,7 @@ const route = useRoute()
 
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
-  const data = await $graphql.default.request(ftvaLARebellionIndividual, { slug: route.params.slug })
+  const data = await $graphql.default.request(FTVALARebellionFilmmakersDetail, { slug: route.params.slug })
   return data
 })
 
@@ -41,20 +38,21 @@ if (!data.value.ftvaLARebellionIndividual) {
   })
 }
 
-// This is creating an index of the main content (not related content)
-// if (data.value.ftvaEvent && import.meta.prerender) {
-//   try {
-//     // Call the composable to use the indexing function
-//     const { indexContent } = useContentIndexer()
-//     // Index the event data using the composable during static build
-//     await indexContent(data.value.ftvaEvent, route.params.slug)
-//     // console.log('Event indexed successfully during static build')
-//   } catch (error) {
-//     console.error('FAILED TO INDEX EVENT during static build:', error)
-//   }
-// }
+// This is creating an index of the content for ES search
+if (data.value.ftvaEvent && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    // Index the event data using the composable during static build
+    await indexContent(data.value.ftvaLARebellionIndividual, route.params.slug)
+    // console.log('Event indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX EVENT during static build:', error)
+  }
+}
 
 const page = ref(_get(data.value, 'ftvaLARebellionIndividual', {}))
+// TODO refactor for filmography data ? Delete if not needed
 // const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
@@ -143,88 +141,25 @@ useHead({
         <!-- <CardMeta
           data-test="text-block"
           :title="page?.title"
-        >
-          <template #linkedcategoryslot>
-            <NuxtLink :to="`/${series[0]?.to}`">
-              {{ series[0]?.title }}
-            </NuxtLink>
-          </template>
-  </CardMeta> -->
-      </template>
-
-      <template #sidebarTop>
-        <!-- <BlockEventDetail
-          data-test="event-details"
-          :start-date="page?.startDateWithTime"
-          :time="page?.startDateWithTime"
-          :locations="page?.location"
-        />
-        <ButtonDropdown
-          data-test="calendar-dropdown"
-          :title="parsedCalendarData?.title"
-          :event-description="parsedCalendarData?.eventDescription"
-          :start-date-with-time="parsedCalendarData?.startDateWithTime"
-          :location="parsedCalendarData?.location"
-          :is-event="true"
-          :debug-mode-enabled="false"
-        /> -->
-      </template>
-
-      <template #primaryMid>
-        <!-- <CardMeta
-          :guest-speaker="page?.guestSpeaker"
-          :tag-labels="parsedTagLabels"
-          :introduction="page?.introduction"
-        />
-        <RichText
-          v-if="page?.eventDescription"
-          data-test="event-description"
-          class="eventDescription"
-          :rich-text-content="page?.eventDescription"
-        />
-        <RichText
-          v-if="page?.acknowledements"
-          data-test="acknowledgements"
-          class="acknowledgements"
-          :rich-text-content="page?.acknowledements"
-        /> -->
-      </template>
-
-      <template #sidebarBottom>
-        <!-- <BlockInfo
-          v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
-          data-test="ticket-info"
-          :ftva-ticket-information="page?.ftvaTicketInformation"
-        /> -->
-      </template>
-
-      <template #primaryBottom>
-        <!-- <DividerWayFinder />
-        <SectionScreeningDetails
-          v-if="parsedFTVAEventScreeningDetails"
-          data-test="screening-details"
-          :items="parsedFTVAEventScreeningDetails"
-        /> -->
+        > -->
+        {{ page }}
       </template>
     </TwoColLayoutWStickySideBar>
 
-    <!-- <SectionWrapper
-      v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-      section-title="Upcoming events in this series"
+    <!-- TODO: add conditional render once vars exist
+     v-if="parsedFilmography && parsedFilmography.length > 0" -->
+    <SectionWrapper
+      section-title="Filmography"
       theme="paleblue"
       class="series-section-wrapper"
     >
-      <SectionTeaserCard
-        v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-        data-test="event-series"
-        :items="parsedFtvaEventSeries"
-      />
-    </SectionWrapper> -->
+      <!-- <SectionStaffSubjectLibrarian /> -->
+    </SectionWrapper>
   </main>
 </template>
 
 <style lang="scss" scoped>
-// PAGE STYLES
+// PAGE STYLES - USE OLD STYLES
 // .page-event-detail {
 //   position: relative;
 
