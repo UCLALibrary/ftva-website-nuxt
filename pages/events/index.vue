@@ -105,7 +105,7 @@ watch([width, bottom], ([newWidth, newBottom]) => {
   }
 
   // When bottom of SectionTeaserList hits the header-sticky bar, unstick the filters
-  if ((isMobile.value && bottom.value <= 150)) {
+  if ((isMobile.value && bottom.value <= 250)) {
     makeFiltersSticky.value = false
   } else {
     makeFiltersSticky.value = true
@@ -489,104 +489,104 @@ const parseFirstEventMonth = computed(() => {
       />
 
       <SectionWrapper theme="paleblue">
-        <div
-          class="sticky-wrapper"
-          :class="{ sticky: makeFiltersSticky }"
+        <TabList
+          v-if="!isMobile"
+          alignment="right"
+          :initial-tab="parseViewSelection"
         >
-          <TabList
-            v-if="!isMobile"
-            alignment="right"
-            :initial-tab="parseViewSelection"
+          <template #filters>
+            <div class="filters-wrapper">
+              <date-filter
+                :key="dateListDateFilter"
+                :event-dates="dateListDateFilter"
+                :initial-dates="parsedInitialDates"
+                data-test="date-filter"
+                @input-selected="applyDateFilterSelectionToRouteURL"
+              />
+              <filters-dropdown
+                v-model:selected-filters="userFilterSelection"
+                :filter-groups="searchFilters"
+                data-test="filters-dropdown"
+                @update-display="applyEventFilterSelectionToRouteURL"
+              />
+            </div>
+          </template>
+
+          <TabItem
+            title="List View"
+            class="tab-content"
+            data-test="list-view"
           >
-            <template #filters>
-              <div class="filters-wrapper">
-                <date-filter
-                  :key="dateListDateFilter"
-                  :event-dates="dateListDateFilter"
-                  :initial-dates="parsedInitialDates"
-                  data-test="date-filter"
-                  @input-selected="applyDateFilterSelectionToRouteURL"
-                />
-                <filters-dropdown
-                  v-model:selected-filters="userFilterSelection"
-                  :filter-groups="searchFilters"
-                  data-test="filters-dropdown"
-                  @update-display="applyEventFilterSelectionToRouteURL"
+            <template v-if="parsedEvents && parsedEvents.length > 0">
+              <SectionTeaserList
+                :items="parsedEvents"
+                component-name="BlockCardThreeColumn"
+                :n-shown="10"
+                class="tabbed-event-list"
+                data-test="tabbed-content"
+              />
+
+              <section-pagination
+                v-if="totalPages !== 1"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
+            </template>
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no upcoming events WITH THE FILTERS YOU SELECTED
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
+            </template>
+          </TabItem>
+
+          <TabItem
+            title="Calendar View"
+            class="tab-content"
+            data-test="calendar-view"
+          >
+            <template v-if="parsedEvents && parsedEvents.length > 0">
+              <div style="display: flex;justify-content: center;">
+                <base-calendar
+                  :events="parsedEvents"
+                  :first-event-month="parseFirstEventMonth"
                 />
               </div>
+              <br>
+              <br>
             </template>
-
-            <TabItem
-              title="List View"
-              class="tab-content"
-              data-test="list-view"
-            >
-              <template v-if="parsedEvents && parsedEvents.length > 0">
-                <SectionTeaserList
-                  :items="parsedEvents"
-                  component-name="BlockCardThreeColumn"
-                  :n-shown="10"
-                  class="tabbed-event-list"
-                  data-test="tabbed-content"
-                />
-
-                <section-pagination
-                  v-if="totalPages !== 1"
-                  :pages="totalPages"
-                  :initial-current-page="currentPage"
-                />
-              </template>
-              <template v-else>
-                <p
-                  v-if="noResultsFound"
-                  class="empty-tab"
-                >
-                  There are no upcoming events WITH THE FILTERS YOU SELECTED
-                </p>
-                <p
-                  v-else
-                  class="empty-tab"
-                >
-                  Data loading in progress ...
-                </p>
-              </template>
-            </TabItem>
-
-            <TabItem
-              title="Calendar View"
-              class="tab-content"
-              data-test="calendar-view"
-            >
-              <template v-if="parsedEvents && parsedEvents.length > 0">
-                <div style="display: flex;justify-content: center;">
-                  <base-calendar
-                    :events="parsedEvents"
-                    :first-event-month="parseFirstEventMonth"
-                  />
-                </div>
-                <br>
-                <br>
-              </template>
-              <template v-else>
-                <p
-                  v-if="noResultsFound"
-                  class="empty-tab"
-                >
-                  There are no events found
-                </p>
-                <p
-                  v-else
-                  class="empty-tab"
-                >
-                  Data loading in progress ...
-                </p>
-              </template>
-            </TabItem>
-          </TabList>
+            <template v-else>
+              <p
+                v-if="noResultsFound"
+                class="empty-tab"
+              >
+                There are no events found
+              </p>
+              <p
+                v-else
+                class="empty-tab"
+              >
+                Data loading in progress ...
+              </p>
+            </template>
+          </TabItem>
+        </TabList>
+        <div
+          v-else
+          ref="el"
+          class="mobile-container"
+        >
           <div
-            v-else
-            ref="el"
-            class="mobile-container"
+            class="mobile-filters-outer-wrapper"
+            :class="{ 'is-sticky': makeFiltersSticky }"
           >
             <div class="filters-wrapper">
               <date-filter
@@ -609,29 +609,29 @@ const parseFirstEventMonth = computed(() => {
               @update:filters="handleFilterUpdate"
               @remove-selected="applyChangesToSearch"
             />
-            <SectionTeaserList
-              v-if="parsedEvents && parsedEvents.length > 0"
-              ref="sectionTeaserListElem"
-              :items="parsedEvents"
-              component-name="BlockCardThreeColumn"
-              :n-shown="events.length"
-              class="tabbed-event-list"
-              data-test="tabbed-content"
-            />
-            <div v-else>
-              <p
-                v-if="noResultsFound"
-                class="empty-tab"
-              >
-                There are no events found
-              </p>
-              <p
-                v-else
-                class="empty-tab"
-              >
-                Data loading in progress ...
-              </p>
-            </div>
+          </div>
+          <SectionTeaserList
+            v-if="parsedEvents && parsedEvents.length > 0"
+            ref="sectionTeaserListElem"
+            :items="parsedEvents"
+            component-name="BlockCardThreeColumn"
+            :n-shown="events.length"
+            class="tabbed-event-list"
+            data-test="tabbed-content"
+          />
+          <div v-else>
+            <p
+              v-if="noResultsFound"
+              class="empty-tab"
+            >
+              There are no events found
+            </p>
+            <p
+              v-else
+              class="empty-tab"
+            >
+              Data loading in progress ...
+            </p>
           </div>
         </div>
       </SectionWrapper>
@@ -640,12 +640,6 @@ const parseFirstEventMonth = computed(() => {
 </template>
 
 <style lang='scss' scoped>
-@mixin stickyFilters {
-  position: sticky;
-  top: 65px;
-  z-index: 100;
-}
-
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -667,10 +661,6 @@ const parseFirstEventMonth = computed(() => {
     width: 100%;
     background-color: var(--pale-blue);
     margin: 0 auto;
-  }
-
-  .sticky-wrapper {
-    max-width: var(--ftva-container-max-width);
   }
 
   :deep(.tab-list-body) {
@@ -787,9 +777,17 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
-    .sticky-wrapper.sticky {
-      .filters-wrapper {
-        @include stickyFilters;
+    .mobile-filters-outer-wrapper.is-sticky {
+      position: sticky;
+      top: 65px;
+      z-index: 100;
+      background-color: var(--pale-blue);
+
+      .mobile-remove-filters {
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 20px;
+        padding-bottom: 20px;
       }
     }
 
