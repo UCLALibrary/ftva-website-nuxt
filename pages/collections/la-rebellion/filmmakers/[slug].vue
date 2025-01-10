@@ -6,12 +6,12 @@ import { BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGall
 
 // HELPERS
 import _get from 'lodash/get'
+import removeTags from '../utils/removeTags'
 
 // GQL
 import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmmakersDetail.gql'
 
 // COMPOSABLE
-import removeTags from '../utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
