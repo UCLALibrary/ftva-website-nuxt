@@ -509,6 +509,12 @@ const parseFirstEventMonth = computed(() => {
                 @update-display="applyEventFilterSelectionToRouteURL"
               />
             </div>
+            <section-remove-search-filter
+              :filters="allFilters"
+              class="remove-filters"
+              @update:filters="handleFilterUpdate"
+              @remove-selected="applyChangesToSearch"
+            />
           </template>
 
           <TabItem
@@ -604,7 +610,7 @@ const parseFirstEventMonth = computed(() => {
             </div>
             <section-remove-search-filter
               :filters="allFilters"
-              class="mobile-remove-filters"
+              class="remove-filters"
               @update:filters="handleFilterUpdate"
               @remove-selected="applyChangesToSearch"
             />
@@ -662,15 +668,12 @@ const parseFirstEventMonth = computed(() => {
     margin: 0 auto;
   }
 
-  :deep(.tab-list-body) {
-    background: none;
+  :deep(.tab-list-header) {
+    align-self: self-start;
   }
 
-  :deep(.section-pagination) {
-    /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
-    background-color: white;
-    max-width: unset;
-    padding: 2.5%;
+  :deep(.tab-list-body) {
+    background: none;
   }
 
   :deep(.tab-list.right) {
@@ -733,6 +736,12 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
+  .remove-filters {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 20px;
+  }
+
   .tab-content {
     min-height: 200px;
     background-color: white;
@@ -747,11 +756,6 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
-  .mobile-remove-filters {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
   :deep(.base-calendar) {
     max-width: 1000px;
     padding-top: 32px;
@@ -759,6 +763,13 @@ const parseFirstEventMonth = computed(() => {
     .v-calendar-header {
       margin-bottom: 14px;
     }
+  }
+
+  :deep(.section-pagination) {
+    /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
+    background-color: white;
+    max-width: unset;
+    padding: 2.5%;
   }
 
   @media(max-width: 1200px) {
@@ -780,10 +791,7 @@ const parseFirstEventMonth = computed(() => {
       z-index: 100;
       background-color: var(--pale-blue);
 
-      .mobile-remove-filters {
-        margin-top: 0;
-        margin-bottom: 0;
-        padding-top: 20px;
+      .remove-filters {
         padding-bottom: 20px;
       }
     }
