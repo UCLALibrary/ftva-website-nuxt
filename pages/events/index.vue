@@ -87,7 +87,7 @@ const noResultsFound = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
 const isMobile = ref<boolean>(false)
 const hasMore = ref(true) // Flag to control infinite scroll
-const sectionTeaserListElem = ref(null) // Intersection target to unstick filters
+const sectionTeaserListElem = ref(null) // Element intersection target to unstick filters
 const makeFiltersSticky = ref(true)
 
 // Window Size Handling
@@ -104,7 +104,8 @@ watch([width, bottom], ([newWidth, newBottom]) => {
     handleScreenTransition()
   }
 
-  // When bottom of SectionTeaserList hits the header-sticky bar, unstick the filters
+  /* On mobile, when bottom of SectionTeaserList is less than 250px away
+  from the top edge of the viewport, unstick the filters */
   if ((isMobile.value && bottom.value <= 250)) {
     makeFiltersSticky.value = false
   } else {
