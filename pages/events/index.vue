@@ -788,15 +788,13 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
-    .mobile-filters-outer-wrapper.is-sticky {
-      position: sticky;
+    .mobile-filters-outer-wrapper {
+      margin-bottom: 20px;
+
+      &.is-sticky position: sticky;
       top: 65px;
       z-index: 100;
       background-color: var(--pale-blue);
-
-      .remove-filters {
-        padding-bottom: 20px;
-      }
     }
 
     .date-filter {
