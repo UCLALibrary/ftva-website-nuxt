@@ -796,7 +796,7 @@ const parseFirstEventMonth = computed(() => {
 
   @media #{$medium} {
     .mobile-filters-outer-wrapper {
-      margin-bottom: 20px;
+      padding-bottom: 20px;
 
       &.is-sticky {
         position: sticky;
