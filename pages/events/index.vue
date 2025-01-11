@@ -460,8 +460,9 @@ function applyChangesToSearch() {
 
 function handleFilterUpdate(updatedFilters) {
   allFilters.value = updatedFilters
-  // console.log('Filters updated:', allFilters.value)
+  console.log('Filters updated:', allFilters.value)
 }
+// console.log('Filters updated:', Object.keys(allFilters.value).length)
 
 const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
@@ -511,6 +512,7 @@ const parseFirstEventMonth = computed(() => {
               />
             </div>
             <section-remove-search-filter
+              v-if="Object.keys(allFilters).length > 0"
               :filters="allFilters"
               class="remove-filters"
               @update:filters="handleFilterUpdate"
@@ -610,6 +612,7 @@ const parseFirstEventMonth = computed(() => {
               />
             </div>
             <section-remove-search-filter
+              v-if="Object.keys(allFilters).length > 0"
               :filters="allFilters"
               class="remove-filters"
               @update:filters="handleFilterUpdate"
