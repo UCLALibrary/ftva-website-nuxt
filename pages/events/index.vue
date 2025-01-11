@@ -627,7 +627,10 @@ const parseFirstEventMonth = computed(() => {
             class="tabbed-event-list"
             data-test="tabbed-content"
           />
-          <div v-else>
+          <div
+            v-else
+            class="tab-content"
+          >
             <p
               v-if="noResultsFound"
               class="empty-tab"
