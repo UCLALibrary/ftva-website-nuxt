@@ -460,9 +460,8 @@ function applyChangesToSearch() {
 
 function handleFilterUpdate(updatedFilters) {
   allFilters.value = updatedFilters
-  console.log('Filters updated:', allFilters.value)
+  // console.log('Filters updated:', allFilters.value)
 }
-// console.log('Filters updated:', Object.keys(allFilters.value).length)
 
 const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
