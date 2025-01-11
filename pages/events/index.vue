@@ -714,6 +714,10 @@ const parseFirstEventMonth = computed(() => {
         width: 100%;
       }
 
+      .dp__input {
+        height: 52px;
+      }
+
       .custom-header {
         font-size: 20px;
 
@@ -731,7 +735,7 @@ const parseFirstEventMonth = computed(() => {
 
     :deep(.mobile-button) {
       min-width: unset;
-      height: 59px;
+      height: 52px;
     }
 
     :deep(.button-dropdown-modal-wrapper.is-expanded) {
@@ -791,10 +795,12 @@ const parseFirstEventMonth = computed(() => {
     .mobile-filters-outer-wrapper {
       margin-bottom: 20px;
 
-      &.is-sticky position: sticky;
-      top: 65px;
-      z-index: 100;
-      background-color: var(--pale-blue);
+      &.is-sticky {
+        position: sticky;
+        top: 65px;
+        z-index: 100;
+        background-color: var(--pale-blue);
+      }
     }
 
     .date-filter {
