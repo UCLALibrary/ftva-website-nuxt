@@ -1,0 +1,42 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVALARebellionFilmmakersDetail($slug: [String!]) {
+  ftvaLARebellionIndividual: entry(section: "ftvaLARebellionIndividual", slug: $slug) {
+    id
+    typeHandle
+    sectionHandle
+    slug
+    to: uri
+    richText
+    nameFirst
+    nameLast
+
+    image: ftvaImage {
+      ...Image
+    }
+
+    imageCarousel {
+      ...on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+
+    associatedFilms {
+      image {
+        ...Image
+      }
+      titleGeneral
+      description
+      roles
+      year
+      filmLink {
+        uri
+        slug
+      }
+    }
+
+  }
+}
