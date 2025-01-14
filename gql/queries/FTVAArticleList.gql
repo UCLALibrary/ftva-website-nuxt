@@ -1,9 +1,50 @@
-query FTVAArticleList {
-  entries(section: ["ftvaArticle"], orderBy: "postDate") {
+#import "../gql/fragments/Image.gql"
+
+query FTVAArticleList($slug: [String!]) {
+  entry(section: ["ftvaListingArticles"], slug: $slug) {
+    id
+    typeHandle
+    sectionHandle
+    titleGeneral
+    summary
+    ftvaFeaturedArticles {
+      title
+      postDate
+      ftvaHomepageDescription
+      uri
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+  entries(section: ["ftvaArticle"], orderBy: "postDate DESC") {
     typeHandle
     id
     title
-    to: slug
-    text: summary
+    postDate
+    ftvaHomepageDescription
+    uri
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+      }
+    }
   }
 }
+
+fragment Image on AssetInterface {
+  id
+  src: url(transform: "fullscreen")
+  height(transform: "fullscreen")
+  width(transform: "fullscreen")
+  srcset(sizes: ["375", "960", "1280", "1920", "2560"])
+  alt: altText
+  focalPoint
+}
+
