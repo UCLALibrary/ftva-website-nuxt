@@ -5,7 +5,7 @@ query FTVAArticleList($slug: [String!]) {
     id
     typeHandle
     sectionHandle
-    titleGeneral
+    title: titleGeneral
     summary
     ftvaFeaturedArticles {
       title
@@ -36,15 +36,5 @@ query FTVAArticleList($slug: [String!]) {
       }
     }
   }
-}
-
-fragment Image on AssetInterface {
-  id
-  src: url(transform: "fullscreen")
-  height(transform: "fullscreen")
-  width(transform: "fullscreen")
-  srcset(sizes: ["375", "960", "1280", "1920", "2560"])
-  alt: altText
-  focalPoint
 }
 
