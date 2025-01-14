@@ -5,7 +5,7 @@ import { SectionWrapper } from 'ucla-library-website-components'
 // HELPERS
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
-import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
+import { useElementBounding, useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // UTILS
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
@@ -87,16 +87,29 @@ const noResultsFound = ref<boolean>(false)
 const isLoading = ref<boolean>(false)
 const isMobile = ref<boolean>(false)
 const hasMore = ref(true) // Flag to control infinite scroll
+const sectionTeaserListElem = ref(null) // Element intersection target to unstick filters
+const makeFiltersSticky = ref(true)
 
 // Window Size Handling
 const { width } = useWindowSize()
-watch(width, (newWidth) => {
+// Sticky Filters Handling
+const { bottom } = useElementBounding(sectionTeaserListElem)
+
+watch([width, bottom], ([newWidth, newBottom]) => {
   const wasMobile = isMobile.value
   isMobile.value = newWidth <= 1024
 
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
     handleScreenTransition()
+  }
+
+  /* On mobile, when bottom of SectionTeaserList is less than 250px away
+  from the top edge of the viewport, unstick the filters */
+  if ((isMobile.value && bottom.value <= 250)) {
+    makeFiltersSticky.value = false
+  } else {
+    makeFiltersSticky.value = true
   }
 }, { immediate: true })
 
@@ -473,7 +486,6 @@ const parseFirstEventMonth = computed(() => {
         class="header"
         theme="paleblue"
         :section-title="heading.titleGeneral"
-        :section-summary="heading.summary"
       />
 
       <SectionWrapper theme="paleblue">
@@ -498,6 +510,13 @@ const parseFirstEventMonth = computed(() => {
                 @update-display="applyEventFilterSelectionToRouteURL"
               />
             </div>
+            <section-remove-search-filter
+              v-if="Object.keys(allFilters).length > 0"
+              :filters="allFilters"
+              class="remove-filters"
+              @update:filters="handleFilterUpdate"
+              @remove-selected="applyChangesToSearch"
+            />
           </template>
 
           <TabItem
@@ -572,36 +591,46 @@ const parseFirstEventMonth = computed(() => {
           ref="el"
           class="mobile-container"
         >
-          <div class="filters-wrapper">
-            <date-filter
-              :key="dateListDateFilter"
-              :event-dates="dateListDateFilter"
-              :initial-dates="parsedInitialDates"
-              data-test="date-filter"
-              @input-selected="applyDateFilterSelectionToRouteURL"
-            />
-            <filters-dropdown
-              v-model:selected-filters="userFilterSelection"
-              :filter-groups="searchFilters"
-              data-test="filters-dropdown"
-              @update-display="applyEventFilterSelectionToRouteURL"
+          <div
+            class="mobile-filters-outer-wrapper"
+            :class="{ 'is-sticky': makeFiltersSticky }"
+          >
+            <div class="filters-wrapper">
+              <date-filter
+                :key="dateListDateFilter"
+                :event-dates="dateListDateFilter"
+                :initial-dates="parsedInitialDates"
+                data-test="date-filter"
+                @input-selected="applyDateFilterSelectionToRouteURL"
+              />
+              <filters-dropdown
+                v-model:selected-filters="userFilterSelection"
+                :filter-groups="searchFilters"
+                data-test="filters-dropdown"
+                @update-display="applyEventFilterSelectionToRouteURL"
+              />
+            </div>
+            <section-remove-search-filter
+              v-if="Object.keys(allFilters).length > 0"
+              :filters="allFilters"
+              class="remove-filters"
+              @update:filters="handleFilterUpdate"
+              @remove-selected="applyChangesToSearch"
             />
           </div>
-          <section-remove-search-filter
-            :filters="allFilters"
-            class="mobile-remove-filters"
-            @update:filters="handleFilterUpdate"
-            @remove-selected="applyChangesToSearch"
-          />
           <SectionTeaserList
             v-if="parsedEvents && parsedEvents.length > 0"
+            ref="sectionTeaserListElem"
             :items="parsedEvents"
             component-name="BlockCardThreeColumn"
             :n-shown="events.length"
             class="tabbed-event-list"
             data-test="tabbed-content"
           />
-          <div v-else>
+          <div
+            v-else
+            class="tab-content"
+          >
             <p
               v-if="noResultsFound"
               class="empty-tab"
@@ -645,15 +674,12 @@ const parseFirstEventMonth = computed(() => {
     margin: 0 auto;
   }
 
-  :deep(.tab-list-body) {
-    background: none;
+  :deep(.tab-list-header) {
+    align-self: self-start;
   }
 
-  :deep(.section-pagination) {
-    /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
-    background-color: white;
-    max-width: unset;
-    padding: 2.5%;
+  :deep(.tab-list-body) {
+    background: none;
   }
 
   :deep(.tab-list.right) {
@@ -691,6 +717,10 @@ const parseFirstEventMonth = computed(() => {
         width: 100%;
       }
 
+      .dp__input {
+        height: 52px;
+      }
+
       .custom-header {
         font-size: 20px;
 
@@ -708,12 +738,18 @@ const parseFirstEventMonth = computed(() => {
 
     :deep(.mobile-button) {
       min-width: unset;
-      height: 59px;
+      height: 52px;
     }
 
     :deep(.button-dropdown-modal-wrapper.is-expanded) {
       min-width: unset;
     }
+  }
+
+  .remove-filters {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 20px;
   }
 
   .tab-content {
@@ -730,11 +766,6 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
-  .mobile-remove-filters {
-    margin-top: 20px;
-    margin-bottom: 20px;
-  }
-
   :deep(.base-calendar) {
     max-width: 1000px;
     padding-top: 32px;
@@ -742,6 +773,13 @@ const parseFirstEventMonth = computed(() => {
     .v-calendar-header {
       margin-bottom: 14px;
     }
+  }
+
+  :deep(.section-pagination) {
+    /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
+    background-color: white;
+    max-width: unset;
+    padding: 2.5%;
   }
 
   @media(max-width: 1200px) {
@@ -757,6 +795,17 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
+    .mobile-filters-outer-wrapper {
+      padding-bottom: 20px;
+
+      &.is-sticky {
+        position: sticky;
+        top: 65px;
+        z-index: 100;
+        background-color: var(--pale-blue);
+      }
+    }
+
     .date-filter {
       :deep(.vue-date-picker) {
         .dp__outer_menu_wrap.dp--menu-wrapper {
