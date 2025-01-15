@@ -12,12 +12,8 @@ query FTVAArticleList($slug: [String!]) {
       postDate
       ftvaHomepageDescription
       uri
-      imageCarousel {
-        ... on imageCarousel_imageCarousel_BlockType {
-          image {
-            ...Image
-          }
-        }
+      ftvaImage {
+        ...Image
       }
     }
   }
@@ -28,12 +24,8 @@ query FTVAArticleList($slug: [String!]) {
     postDate
     ftvaHomepageDescription
     uri
-    imageCarousel {
-      ... on imageCarousel_imageCarousel_BlockType {
-        image {
-          ...Image
-        }
-      }
+    ftvaImage {
+      ...Image
     }
   }
 }
