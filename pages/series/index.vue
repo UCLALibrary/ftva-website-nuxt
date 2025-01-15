@@ -161,15 +161,14 @@ async function searchES() {
       ])
 
       // Combine results with current series first, ongoing series last
-      const currentSeries = currentSeriesResult?.hits?.hits || [];
-      const ongoingSeries = ongoingSeriesResult?.hits?.hits || [];
+      const currentSeries = currentSeriesResult?.hits?.hits || []
+      const ongoingSeries = ongoingSeriesResult?.hits?.hits || []
       results = {
         hits: {
           hits: [...currentSeries, ...ongoingSeries],
           total: { value: currentSeries.length + ongoingSeries.length },
         },
-      };
-
+      }
     } else {
       results = await pastEventSeriesQuery(currentPage.value,
         documentsPerPage,
@@ -242,7 +241,7 @@ watch(
               <SectionPagination
                 v-if="
                   totalPages
-                  !== 1"
+                    !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
@@ -314,7 +313,7 @@ watch(
               <SectionPagination
                 v-if="
                   totalPages
-                  !== 1"
+                    !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
