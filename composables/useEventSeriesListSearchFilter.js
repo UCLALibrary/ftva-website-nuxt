@@ -183,15 +183,3 @@ function parseSort(sortField, orderBy = 'asc') {
 
   return parseQuery
 }
-
-function parseSort2(sortField, orderBy = 'asc') {
-  if (!sortField || sortField === '') return {}
-  const parseQuery = {}
-  parseQuery.sort = []
-  parseQuery.sort[0] = {}
-  parseQuery.sort[0][sortField] = {
-    order: orderBy
-  }
-
-  return parseQuery
-}
