@@ -98,7 +98,6 @@ const { bottom } = useElementBounding(sectionTeaserListElem)
 watch([width, bottom], ([newWidth, newBottom]) => {
   const wasMobile = isMobile.value
   isMobile.value = newWidth <= 1024
-  console.log('isMobile', isMobile.value)
 
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
@@ -214,16 +213,10 @@ onMounted(async () => {
 })
 
 const el = ref<HTMLElement | null>(null)
-watch(el, (newVal) => {
-  console.log('scrollElPast:', newVal);
-});
 const { reset } = useInfiniteScroll(
   el,
   async () => {
     if (isMobile.value && hasMore.value && !isLoading.value) {
-      console.log("isMobile.value", isMobile.value)
-      console.log("hasMore.value", hasMore.value)
-      console.log("isLoading.value", isLoading.value)
       currentPage.value++
       await searchES()
     }
@@ -292,7 +285,6 @@ async function searchES() {
       if (!isMobile.value) totalPages.value = 0
       hasMore.value = false
     }
-    console.log("mobileEvents.value", mobileEvents.value)
   } catch (error) {
     console.error('Error fetching data:', error)
     hasMore.value = false
@@ -495,38 +487,40 @@ const parseFirstEventMonth = computed(() => {
         theme="paleblue"
         :section-title="heading.titleGeneral"
       />
-      {{ events.length }}
       <SectionWrapper
         theme="paleblue"
         ref="el"
       >
         <TabList
+          :class="{ 'is-sticky': makeFiltersSticky }"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
           <template #filters>
-            <div class="filters-wrapper sticky-filters">
-              <date-filter
-                :key="dateListDateFilter"
-                :event-dates="dateListDateFilter"
-                :initial-dates="parsedInitialDates"
-                data-test="date-filter"
-                @input-selected="applyDateFilterSelectionToRouteURL"
-              />
-              <filters-dropdown
-                v-model:selected-filters="userFilterSelection"
-                :filter-groups="searchFilters"
-                data-test="filters-dropdown"
-                @update-display="applyEventFilterSelectionToRouteURL"
+            <div>
+              <div class="filters-wrapper">
+                <date-filter
+                  :key="dateListDateFilter"
+                  :event-dates="dateListDateFilter"
+                  :initial-dates="parsedInitialDates"
+                  data-test="date-filter"
+                  @input-selected="applyDateFilterSelectionToRouteURL"
+                />
+                <filters-dropdown
+                  v-model:selected-filters="userFilterSelection"
+                  :filter-groups="searchFilters"
+                  data-test="filters-dropdown"
+                  @update-display="applyEventFilterSelectionToRouteURL"
+                />
+              </div>
+              <section-remove-search-filter
+                v-if="Object.keys(allFilters).length > 0"
+                :filters="allFilters"
+                class="remove-filters"
+                @update:filters="handleFilterUpdate"
+                @remove-selected="applyChangesToSearch"
               />
             </div>
-            <section-remove-search-filter
-              v-if="Object.keys(allFilters).length > 0"
-              :filters="allFilters"
-              class="remove-filters"
-              @update:filters="handleFilterUpdate"
-              @remove-selected="applyChangesToSearch"
-            />
           </template>
 
           <TabItem
@@ -537,6 +531,7 @@ const parseFirstEventMonth = computed(() => {
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <SectionTeaserList
                 :items="parsedEvents"
+                ref="sectionTeaserListElem"
                 component-name="BlockCardThreeColumn"
                 :n-shown="parsedEvents.length"
                 class="tabbed-event-list"
@@ -592,65 +587,6 @@ const parseFirstEventMonth = computed(() => {
             </template>
           </TabItem>
         </TabList>
-        <!--div
-          v-else
-          ref="el"
-          class="mobile-container"
-        >
-          <div
-            class="mobile-filters-outer-wrapper"
-            :class="{ 'is-sticky': makeFiltersSticky }"
-          >
-            <div class="filters-wrapper">
-              <date-filter
-                :key="dateListDateFilter"
-                :event-dates="dateListDateFilter"
-                :initial-dates="parsedInitialDates"
-                data-test="date-filter"
-                @input-selected="applyDateFilterSelectionToRouteURL"
-              />
-              <filters-dropdown
-                v-model:selected-filters="userFilterSelection"
-                :filter-groups="searchFilters"
-                data-test="filters-dropdown"
-                @update-display="applyEventFilterSelectionToRouteURL"
-              />
-            </div>
-            <section-remove-search-filter
-              v-if="Object.keys(allFilters).length > 0"
-              :filters="allFilters"
-              class="remove-filters"
-              @update:filters="handleFilterUpdate"
-              @remove-selected="applyChangesToSearch"
-            />
-          </div>
-          <SectionTeaserList
-            v-if="parsedEvents && parsedEvents.length > 0"
-            ref="sectionTeaserListElem"
-            :items="parsedEvents"
-            component-name="BlockCardThreeColumn"
-            :n-shown="events.length"
-            class="tabbed-event-list"
-            data-test="tabbed-content"
-          />
-          <div
-            v-else
-            class="tab-content"
-          >
-            <p
-              v-if="noResultsFound"
-              class="empty-tab"
-            >
-              There are no events found
-            </p>
-            <p
-              v-else
-              class="empty-tab"
-            >
-              Data loading in progress ...
-            </p>
-          </div>
-        </div-->
         <section-pagination
           v-if="totalPages !== 1 && !isMobile"
           :pages="totalPages"
@@ -811,13 +747,12 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
-    .sticky-filters {
+    .is-sticky {
       position: -webkit-sticky;
       /* For Safari */
       position: sticky;
-      position: sticky;
       top: 65px;
-      z-index: 100;
+      z-index: 1000;
       background-color: var(--pale-blue);
     }
 
