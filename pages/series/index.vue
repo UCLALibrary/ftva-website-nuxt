@@ -132,22 +132,111 @@ const parsedEventSeries = computed(() => {
 })
 
 // ES FUNCTION
+// async function searchES() {
+//   if (isLoading.value || !hasMore.value) return
+
+//   isLoading.value = true
+//   // COMPOSABLE
+//   const { currentEventSeriesQueryCurrent, currentEventSeriesQueryOngoing, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
+
+//   try {
+//     let results
+
+//     if (currentView.value === 'current') {
+//       // const currentSeries = results.hits.hits || []
+
+//       const currentSeries = await currentEventSeriesQueryCurrent(currentPage.value,
+//         documentsPerPage,
+//         'startDate',
+//         'asc',
+//         ['*'],)
+
+//       const ongoingSeries = await currentEventSeriesQueryOngoing(currentPage.value,
+//         documentsPerPage,
+//         'startDate',
+//         'asc',
+//         ['*'],)
+
+
+
+//       // results = await currentEventSeriesQueryCurrent(currentPage.value,
+//       //   documentsPerPage,
+//       //   'startDate',
+//       //   'asc',
+//       //   ['*'],)
+//       // results = ongoingSeries;
+
+//       //const eventSeries = currentSeries.concat(ongoingSeries);
+//       //const eventSeries = await [...currentSeries, ...ongoingSeries]
+//       results = ongoingSeries;
+//     } else {
+//       results = await pastEventSeriesQuery(currentPage.value,
+//         documentsPerPage,
+//         'startDate',
+//         'desc',
+//         ['*'])
+//     }
+
+//     if (results?.hits?.hits?.length > 0) {
+//       const newSeries = results.hits.hits || []
+//       if (isMobile.value) {
+//         mobileSeries.value.push(...newSeries)
+//         hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+//       } else {
+//         desktopSeries.value = newSeries
+//         totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+//       }
+//       noResultsFound.value = false
+//     } else {
+//       noResultsFound.value = true
+//       if (!isMobile.value) totalPages.value = 0
+//       hasMore.value = false
+//     }
+//   } catch (err) {
+//     noResultsFound.value = true
+//   } finally {
+//     isLoading.value = false
+//   }
+// }
+
 async function searchES() {
   if (isLoading.value || !hasMore.value) return
 
   isLoading.value = true
   // COMPOSABLE
-  const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
+  const { currentEventSeriesQueryCurrent, currentEventSeriesQueryOngoing, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
 
   try {
     let results
 
     if (currentView.value === 'current') {
-      results = await currentEventSeriesQuery(currentPage.value,
-        documentsPerPage,
-        'startDate',
-        'asc',
-        ['*'],)
+      const [currentSeriesResult, ongoingSeriesResult] = await Promise.all([
+        currentEventSeriesQueryCurrent(
+          currentPage.value,
+          documentsPerPage,
+          'startDate',
+          'asc',
+          ['*']
+        ),
+        currentEventSeriesQueryOngoing(
+          currentPage.value,
+          documentsPerPage,
+          'startDate',
+          'asc',
+          ['*']
+        )
+      ])
+
+      // Combine results with current series first, ongoing series last
+      const currentSeries = currentSeriesResult?.hits?.hits || [];
+      const ongoingSeries = ongoingSeriesResult?.hits?.hits || [];
+      results = {
+        hits: {
+          hits: [...currentSeries, ...ongoingSeries],
+          total: { value: currentSeries.length + ongoingSeries.length },
+        },
+      };
+
     } else {
       results = await pastEventSeriesQuery(currentPage.value,
         documentsPerPage,
@@ -220,7 +309,7 @@ watch(
               <SectionPagination
                 v-if="
                   totalPages
-                    !== 1"
+                  !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
@@ -292,7 +381,7 @@ watch(
               <SectionPagination
                 v-if="
                   totalPages
-                    !== 1"
+                  !== 1"
                 class="pagination"
                 :pages="totalPages"
                 :initial-current-page="currentPage"
