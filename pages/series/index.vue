@@ -47,21 +47,11 @@ const route = useRoute()
 const isLoading = ref(false)
 const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
-const scrollElPast = ref(null)
-const scrollElCurrent = ref(null)
+const scrollEl = ref(null)
+
 // const desktopEl = ref(null)
-const pastScroll = useInfiniteScroll(
-  scrollElPast,
-  async () => {
-    if (isMobile.value && hasMore.value && !isLoading.value) {
-      currentPage.value++
-      await searchES()
-    }
-  },
-  { distance: 100 }
-)
-const currentScroll = useInfiniteScroll(
-  scrollElCurrent,
+const scrollAll = useInfiniteScroll(
+  scrollEl,
   async () => {
     if (isMobile.value && hasMore.value && !isLoading.value) {
       currentPage.value++
@@ -76,7 +66,6 @@ const { width } = useWindowSize()
 watch(width, (newWidth) => {
   const wasMobile = isMobile.value
   isMobile.value = newWidth <= 750
-
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
     handleScreenTransition()
@@ -203,6 +192,7 @@ watch(
         :section-title="heading.titleGeneral"
         :section-summary="heading.summary"
         theme="paleblue"
+        ref="scrollEl"
       />
 
       <SectionWrapper theme="paleblue">
@@ -215,19 +205,9 @@ watch(
             class="tab-content"
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
-              <SectionStaffArticleList
-                :ref="scrollElPast"
-                :items="parsedEventSeries"
-              />
+              <SectionStaffArticleList :items="parsedEventSeries" />
 
-              <SectionPagination
-                v-if="
-                  totalPages
-                  !== 1"
-                class="pagination"
-                :pages="totalPages"
-                :initial-current-page="currentPage"
-              />
+
             </template>
 
             <template v-else>
@@ -251,16 +231,7 @@ watch(
             class="tab-content"
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
-              <SectionStaffArticleList
-                :ref="scrollElCurrent"
-                :items="parsedEventSeries"
-              />
-
-              <SectionPagination
-                v-if="totalPages !== 1"
-                :pages="totalPages"
-                :initial-current-page="currentPage"
-              />
+              <SectionStaffArticleList :items="parsedEventSeries" />
             </template>
 
             <template v-else>
@@ -279,6 +250,14 @@ watch(
             </template>
           </TabItem>
         </TabList>
+        <SectionPagination
+          v-if="
+            totalPages
+            !== 1 && !isMobile"
+          class="pagination"
+          :pages="totalPages"
+          :initial-current-page="currentPage"
+        />
       </SectionWrapper>
     </div>
   </div>

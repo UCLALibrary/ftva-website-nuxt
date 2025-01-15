@@ -98,6 +98,7 @@ const { bottom } = useElementBounding(sectionTeaserListElem)
 watch([width, bottom], ([newWidth, newBottom]) => {
   const wasMobile = isMobile.value
   isMobile.value = newWidth <= 1024
+  console.log('isMobile', isMobile.value)
 
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
@@ -213,10 +214,16 @@ onMounted(async () => {
 })
 
 const el = ref<HTMLElement | null>(null)
+watch(el, (newVal) => {
+  console.log('scrollElPast:', newVal);
+});
 const { reset } = useInfiniteScroll(
   el,
   async () => {
     if (isMobile.value && hasMore.value && !isLoading.value) {
+      console.log("isMobile.value", isMobile.value)
+      console.log("hasMore.value", hasMore.value)
+      console.log("isLoading.value", isLoading.value)
       currentPage.value++
       await searchES()
     }
@@ -261,7 +268,7 @@ async function searchES() {
     const size = 10
     let results: any = {}
 
-    if (!isMobile.value || userViewSelection.value === 'list') {
+    if (userViewSelection.value === 'list') {
       const { paginatedSearchFilters } = useListSearchFilter()
       results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
     } else {
@@ -285,6 +292,7 @@ async function searchES() {
       if (!isMobile.value) totalPages.value = 0
       hasMore.value = false
     }
+    console.log("mobileEvents.value", mobileEvents.value)
   } catch (error) {
     console.error('Error fetching data:', error)
     hasMore.value = false
@@ -487,15 +495,17 @@ const parseFirstEventMonth = computed(() => {
         theme="paleblue"
         :section-title="heading.titleGeneral"
       />
-
-      <SectionWrapper theme="paleblue">
+      {{ events.length }}
+      <SectionWrapper
+        theme="paleblue"
+        ref="el"
+      >
         <TabList
-          v-if="!isMobile"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
           <template #filters>
-            <div class="filters-wrapper">
+            <div class="filters-wrapper sticky-filters">
               <date-filter
                 :key="dateListDateFilter"
                 :event-dates="dateListDateFilter"
@@ -528,16 +538,12 @@ const parseFirstEventMonth = computed(() => {
               <SectionTeaserList
                 :items="parsedEvents"
                 component-name="BlockCardThreeColumn"
-                :n-shown="10"
+                :n-shown="parsedEvents.length"
                 class="tabbed-event-list"
                 data-test="tabbed-content"
               />
 
-              <section-pagination
-                v-if="totalPages !== 1"
-                :pages="totalPages"
-                :initial-current-page="currentPage"
-              />
+
             </template>
             <template v-else>
               <p
@@ -560,7 +566,7 @@ const parseFirstEventMonth = computed(() => {
             class="tab-content"
             data-test="calendar-view"
           >
-            <template v-if="parsedEvents && parsedEvents.length > 0">
+            <template v-if="!isMobile && parsedEvents && parsedEvents.length > 0">
               <div style="display: flex;justify-content: center;">
                 <base-calendar
                   :events="parsedEvents"
@@ -586,7 +592,7 @@ const parseFirstEventMonth = computed(() => {
             </template>
           </TabItem>
         </TabList>
-        <div
+        <!--div
           v-else
           ref="el"
           class="mobile-container"
@@ -644,7 +650,12 @@ const parseFirstEventMonth = computed(() => {
               Data loading in progress ...
             </p>
           </div>
-        </div>
+        </div-->
+        <section-pagination
+          v-if="totalPages !== 1 && !isMobile"
+          :pages="totalPages"
+          :initial-current-page="currentPage"
+        />
       </SectionWrapper>
     </div>
   </main>
@@ -690,6 +701,11 @@ const parseFirstEventMonth = computed(() => {
     .filters {
       flex-basis: 65%;
     }
+  }
+
+  .sticky-filters {
+    position: static;
+    /* Default position */
   }
 
   .filters-wrapper {
@@ -795,15 +811,26 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
-    .mobile-filters-outer-wrapper {
-      padding-bottom: 20px;
+    .sticky-filters {
+      position: -webkit-sticky;
+      /* For Safari */
+      position: sticky;
+      position: sticky;
+      top: 65px;
+      z-index: 100;
+      background-color: var(--pale-blue);
+    }
 
-      &.is-sticky {
-        position: sticky;
-        top: 65px;
-        z-index: 100;
-        background-color: var(--pale-blue);
-      }
+    .tab-content {
+      overflow: unset;
+    }
+
+    :deep(.tab-list-header) {
+      display: none;
+    }
+
+    :deep(.tab-list.right .filters) {
+      flex-basis: 100%;
     }
 
     .date-filter {
@@ -816,7 +843,6 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$small} {
-
     .date-filter {
       :deep(.vue-date-picker) {
         width: unset;
