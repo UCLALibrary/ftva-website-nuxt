@@ -46,10 +46,28 @@ if (data.value.entry && import.meta.prerender) {
   }
 }
 
+// DATA
 const page = ref(_get(data.value, 'entry', {}))
 const featuredArticles = page.value.ftvaFeaturedArticles
 const articleList = ref(_get(data.value, 'entries', {}))
-console.log(data.value)
+console.log('Data: ', data.value)
+
+const currentPage = ref(1)
+const documentsPerPage = 10
+
+// TEST
+const { paginatedArticlesQuery } = useArticlesListSearch()
+
+onMounted(async () => {
+  const esOutput = await paginatedArticlesQuery(
+    currentPage.value,
+    documentsPerPage,
+    'postDate',
+    'asc'
+  )
+
+  console.log('ES output total hits: ', esOutput.hits.total.value) // 445
+})
 
 useHead({
   title: page.value ? page.value.title : '... loading',
