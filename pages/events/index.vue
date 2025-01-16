@@ -541,6 +541,11 @@ const parseFirstEventMonth = computed(() => {
                 class="tabbed-event-list"
                 data-test="tabbed-content"
               />
+              <section-pagination
+                v-if="totalPages !== 1 && !isMobile"
+                :pages="totalPages"
+                :initial-current-page="currentPage"
+              />
             </template>
             <template v-else>
               <p
@@ -589,11 +594,6 @@ const parseFirstEventMonth = computed(() => {
             </template>
           </TabItem>
         </TabList>
-        <section-pagination
-          v-if="totalPages !== 1 && !isMobile"
-          :pages="totalPages"
-          :initial-current-page="currentPage"
-        />
       </SectionWrapper>
     </div>
   </main>
