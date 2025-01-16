@@ -629,12 +629,13 @@ const parseFirstEventMonth = computed(() => {
 
   :deep(.tab-list-body) {
     background: none;
+    margin-top: 0;
   }
 
   :deep(.tab-list.right) {
     justify-content: space-between;
     width: 100%;
-    margin-bottom: 20px;
+    padding-bottom: 20px;
 
     .filters {
       flex-basis: 65%;
