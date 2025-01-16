@@ -62,7 +62,7 @@ onMounted(async () => {
   const esOutput = await paginatedArticlesQuery(
     currentPage.value,
     documentsPerPage,
-    'startDate',
+    'postDate',
     'asc'
   )
 
