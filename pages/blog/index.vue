@@ -54,6 +54,7 @@ console.log('Data: ', data.value)
 
 const currentPage = ref(1)
 const documentsPerPage = 10
+const isLoading = ref(false)
 
 // TEST
 const { paginatedArticlesQuery } = useArticlesListSearch()
@@ -68,6 +69,31 @@ onMounted(async () => {
 
   console.log('ES output total hits: ', esOutput.hits.total.value) // 445
 })
+
+// ES FUNCTION
+async function searchES() {
+  if (isLoading.value) return
+
+  isLoading.value = true
+  // COMPOSABLE
+  const { paginatedArticlesQuery } = useArticlesListSearch()
+
+  try {
+    const results = await paginatedArticlesQuery(
+      currentPage.value,
+      documentsPerPage,
+      'postDate',
+      'asc'
+    )
+
+    // Then do what?
+  } catch (err) {
+    // What happens here?
+    noResultsFound.value = true
+  } finally {
+    isLoading.value = false
+  }
+}
 
 useHead({
   title: page.value ? page.value.title : '... loading',
