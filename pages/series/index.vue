@@ -126,17 +126,38 @@ async function searchES() {
 
   isLoading.value = true
   // COMPOSABLE
-  const { currentEventSeriesQuery, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
+  const { currentEventSeriesQueryCurrent, currentEventSeriesQueryOngoing, pastEventSeriesQuery } = useEventSeriesListSearchFilter()
 
   try {
     let results
 
     if (currentView.value === 'current') {
-      results = await currentEventSeriesQuery(currentPage.value,
-        documentsPerPage,
-        'startDate',
-        'asc',
-        ['*'],)
+      const [currentSeriesResult, ongoingSeriesResult] = await Promise.all([
+        currentEventSeriesQueryCurrent(
+          currentPage.value,
+          documentsPerPage,
+          'startDate',
+          'asc',
+          ['*']
+        ),
+        currentEventSeriesQueryOngoing(
+          currentPage.value,
+          documentsPerPage,
+          'startDate',
+          'asc',
+          ['*']
+        )
+      ])
+
+      // Combine results with current series first, ongoing series last
+      const currentSeries = currentSeriesResult?.hits?.hits || []
+      const ongoingSeries = ongoingSeriesResult?.hits?.hits || []
+      results = {
+        hits: {
+          hits: [...currentSeries, ...ongoingSeries],
+          total: { value: currentSeries.length + ongoingSeries.length },
+        },
+      }
     } else {
       results = await pastEventSeriesQuery(currentPage.value,
         documentsPerPage,

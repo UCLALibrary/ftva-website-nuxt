@@ -11,6 +11,10 @@ query FTVAArticleDetail($slug: [String!]) {
     title
     uri
 
+    ftvaImage {
+      ...Image
+    }
+
     imageCarousel {
       ... on imageCarousel_imageCarousel_BlockType {
         image {
