@@ -188,11 +188,11 @@ watch(
   <div class="page page-event-series">
     <div class="full-width">
       <SectionWrapper
+        ref="scrollEl"
         class="header"
         :section-title="heading.titleGeneral"
         :section-summary="heading.summary"
         theme="paleblue"
-        ref="scrollEl"
       />
 
       <SectionWrapper theme="paleblue">
@@ -206,8 +206,6 @@ watch(
           >
             <template v-if="parsedEventSeries && parsedEventSeries.length > 0">
               <SectionStaffArticleList :items="parsedEventSeries" />
-
-
             </template>
 
             <template v-else>
@@ -253,7 +251,7 @@ watch(
         <SectionPagination
           v-if="
             totalPages
-            !== 1 && !isMobile"
+              !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"

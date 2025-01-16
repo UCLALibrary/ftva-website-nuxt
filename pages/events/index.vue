@@ -88,7 +88,7 @@ const isLoading = ref<boolean>(false)
 const isMobile = ref<boolean>(false)
 const hasMore = ref(true) // Flag to control infinite scroll
 const sectionTeaserListElem = ref(null) // Element intersection target to unstick filters
-const makeFiltersSticky = ref(true)
+const makeFiltersSticky = ref(false)
 
 // Window Size Handling
 const { width } = useWindowSize()
@@ -108,10 +108,16 @@ watch([width, bottom], ([newWidth, newBottom]) => {
   from the top edge of the viewport, unstick the filters */
   if ((isMobile.value && bottom.value <= 250)) {
     makeFiltersSticky.value = false
-  } else {
+  } else if (isMobile.value) {
     makeFiltersSticky.value = true
+  } else {
+    makeFiltersSticky.value = false
   }
 }, { immediate: true })
+
+const stickyClass = computed(() => {
+  return makeFiltersSticky.value ? 'is-sticky' : ''
+})
 
 // Handle screen transitions
 function handleScreenTransition() {
@@ -488,39 +494,37 @@ const parseFirstEventMonth = computed(() => {
         :section-title="heading.titleGeneral"
       />
       <SectionWrapper
-        theme="paleblue"
         ref="el"
+        theme="paleblue"
       >
         <TabList
-          :class="{ 'is-sticky': makeFiltersSticky }"
+          :class="stickyClass"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
           <template #filters>
-            <div>
-              <div class="filters-wrapper">
-                <date-filter
-                  :key="dateListDateFilter"
-                  :event-dates="dateListDateFilter"
-                  :initial-dates="parsedInitialDates"
-                  data-test="date-filter"
-                  @input-selected="applyDateFilterSelectionToRouteURL"
-                />
-                <filters-dropdown
-                  v-model:selected-filters="userFilterSelection"
-                  :filter-groups="searchFilters"
-                  data-test="filters-dropdown"
-                  @update-display="applyEventFilterSelectionToRouteURL"
-                />
-              </div>
-              <section-remove-search-filter
-                v-if="Object.keys(allFilters).length > 0"
-                :filters="allFilters"
-                class="remove-filters"
-                @update:filters="handleFilterUpdate"
-                @remove-selected="applyChangesToSearch"
+            <div class="filters-wrapper">
+              <date-filter
+                :key="dateListDateFilter"
+                :event-dates="dateListDateFilter"
+                :initial-dates="parsedInitialDates"
+                data-test="date-filter"
+                @input-selected="applyDateFilterSelectionToRouteURL"
+              />
+              <filters-dropdown
+                v-model:selected-filters="userFilterSelection"
+                :filter-groups="searchFilters"
+                data-test="filters-dropdown"
+                @update-display="applyEventFilterSelectionToRouteURL"
               />
             </div>
+            <section-remove-search-filter
+              v-if="Object.keys(allFilters).length > 0"
+              :filters="allFilters"
+              class="remove-filters"
+              @update:filters="handleFilterUpdate"
+              @remove-selected="applyChangesToSearch"
+            />
           </template>
 
           <TabItem
@@ -530,15 +534,13 @@ const parseFirstEventMonth = computed(() => {
           >
             <template v-if="parsedEvents && parsedEvents.length > 0">
               <SectionTeaserList
-                :items="parsedEvents"
                 ref="sectionTeaserListElem"
+                :items="parsedEvents"
                 component-name="BlockCardThreeColumn"
                 :n-shown="parsedEvents.length"
                 class="tabbed-event-list"
                 data-test="tabbed-content"
               />
-
-
             </template>
             <template v-else>
               <p
@@ -639,9 +641,11 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
-  .sticky-filters {
-    position: static;
-    /* Default position */
+  :deep(.tab-list) {
+    &.is-sticky {
+      position: static;
+      /* Default position */
+    }
   }
 
   .filters-wrapper {
@@ -747,13 +751,15 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$medium} {
-    .is-sticky {
-      position: -webkit-sticky;
-      /* For Safari */
-      position: sticky;
-      top: 65px;
-      z-index: 1000;
-      background-color: var(--pale-blue);
+    :deep(.tab-list) {
+      &.is-sticky {
+        position: -webkit-sticky;
+        /* For Safari */
+        position: sticky;
+        top: 65px;
+        z-index: 1000;
+        background-color: var(--pale-blue);
+      }
     }
 
     .tab-content {
