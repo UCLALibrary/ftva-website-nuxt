@@ -132,10 +132,6 @@ export default defineNuxtConfig({
     },
   },
 
-  build: {
-    transpile: ['vuetify'], // Transpile Vuetify for proper handling of CSS
-  },
-
   /*
      ** Global CSS
      */
@@ -158,8 +154,9 @@ export default defineNuxtConfig({
     },
   ], 'nuxt-graphql-request', '@nuxtjs/sitemap', '@zadigetvoltaire/nuxt-gtm'],
 
+  // Transpile Vuetify for proper handling of CSS
   build: {
-    transpile: ['nuxt-graphql-request', 'ucla-library-website-components'],
+    transpile: ['nuxt-graphql-request', 'ucla-library-website-components', 'vuetify'],
   },
 
   site: {
