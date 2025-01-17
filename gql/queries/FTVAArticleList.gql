@@ -8,6 +8,9 @@ query FTVAArticleList($slug: [String!]) {
     title: titleGeneral
     summary
     ftvaFeaturedArticles {
+      articleCategories {
+        title
+      }
       title
       postDate
       ftvaHomepageDescription
