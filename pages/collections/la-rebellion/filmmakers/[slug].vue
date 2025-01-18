@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionStaffSubjectLibrarian, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionStaffSubjectLibrarian, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -77,6 +77,9 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+// Filmography Data
+const tableHeaders = ['', 'Film', 'Role', 'Year']
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -92,7 +95,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-event-detail"
+    class="page page-detail page-filmmaker-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -138,69 +141,68 @@ useHead({
       class="two-column"
     >
       <template #primaryTop>
-        <!-- <CardMeta
+        <CardMeta
           data-test="text-block"
+          category="L.A. Rebellion"
           :title="page?.title"
-        > -->
-        {{ page }}
+        >
+          <template #sharebutton>
+            <ButtonDropdown
+              data-test="share-button"
+              button-title="Share"
+              :has-icon="true"
+              :dropdown-list="socialList.dropdownList"
+            />
+          </template>
+        </CardMeta>
+        <RichText :rich-text-content="page?.richText" />
       </template>
     </TwoColLayoutWStickySideBar>
 
     <!-- TODO: add conditional render once vars exist
-     v-if="parsedFilmography && parsedFilmography.length > 0" -->
+     v-if="page.value.associatedFilms && page.value.associatedFilms.length > 0" -->
     <SectionWrapper
+      v-if="page.associatedFilms && page.associatedFilms.length > 0"
       section-title="Filmography"
       theme="paleblue"
-      class="series-section-wrapper"
+      class="filmography-section-wrapper"
     >
-      <!-- <SectionStaffSubjectLibrarian /> -->
+      <section-staff-subject-librarian
+        :items="page.associatedFilms"
+        :table-headers="tableHeaders"
+      />
     </SectionWrapper>
   </main>
 </template>
 
 <style lang="scss" scoped>
-// PAGE STYLES - USE OLD STYLES
-// .page-event-detail {
-//   position: relative;
-
-//   .two-column {
-
-//     .ftva.button-dropdown {
-//       margin-top: 30px;
-//     }
-
-//     .ftva.block-info {
-//       margin-top: 48px;
-//     }
-
-//     // SECTION SCREENING DETAILS
-//     // TODO when component is patched, remove styles?
-//     :deep(figure.responsive-video:not(:has(.video-embed))) {
-//       display: none;
-//     }
-//   }
-
-//   /* makes all EventSeries same height */
-//   :deep(.card) {
-//     min-height: 350px;
-//   }
-
-//   @media (max-width: 1200px) {
-//     :deep(.primary-column) {
-//       width: 65%;
-//     }
-//   }
-
-//   @media (max-width: 899px) {
-//     :deep(.primary-column) {
-//       width: inherit;
-//     }
-
-//     :deep(.block-tags) {
-//       padding-top: 30px;
-//     }
-//   }
-// }
-
 @import 'assets/styles/slug-pages.scss';
+.page-filmmaker-detail {
+  position: relative;
+
+  .two-column {
+
+    .ftva.button-dropdown {
+      margin-top: 30px;
+    }
+
+    .ftva.block-info {
+      margin-top: 48px;
+    }
+
+    // fix button scrolling over header
+    :deep(.sharebutton-slot) {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  // change filmography section title color
+  :deep(.section-header) {
+    .section-title {
+      color: #2f2f2f;
+    }
+    font-weight: 800;
+  }
+}
 </style>
