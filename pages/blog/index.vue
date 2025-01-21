@@ -153,7 +153,7 @@ async function searchES() {
       currentPage.value,
       documentsPerPage,
       'postDate',
-      'asc',
+      'desc',
       ['*']
     )
 
@@ -169,16 +169,12 @@ async function searchES() {
         desktopArticles.value = newArticles
         totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
       }
-
-      // noResultsFound.value = false
     } else {
-      // noResultsFound.value = true
       totalPages.value = 0
       hasMore.value = false
     }
   } catch (err) {
-    // noResultsFound.value = true
-    console.log(err)
+    // console.log(err)
   } finally {
     isLoading.value = false
   }
@@ -196,12 +192,24 @@ watch(
 )
 
 // GET DATA FOR IMAGE
-function parsedImage(obj) {
+function parsedCarouselImage(obj) {
   return obj._source.imageCarousel
 }
 
+function parsedFTVAImage(obj) {
+  return obj._source.ftvaImage
+}
+
 function isImageExists(obj) {
-  return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
+  // Use FTVA Image
+  if (parsedFTVAImage(obj) && parsedFTVAImage(obj).length === 1) {
+    return parsedFTVAImage(obj)[0]
+  } else if (parsedCarouselImage(obj) && parsedCarouselImage(obj).length >= 1) {
+    // Use ImageCarousel
+    return parsedCarouselImage(obj)[0]
+  } else {
+    return null
+  }
 }
 
 // FORMATTED COMPUTED EVENTS
@@ -214,13 +222,14 @@ const parsedArticles = computed(() => {
       ...obj._source,
       to: `/${obj._source.uri}`,
       title: obj._source.title,
+      category: obj._source.articleCategories.join(', '),
       description: obj._source.aboutTheAuthor,
       startDate: obj._source.postDate,
-      image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
+      endDate: obj._source.postDate,
+      image: isImageExists(obj)
     }
   })
 })
-console.log('parsedArticles.value: ', parsedArticles.value)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -243,25 +252,28 @@ useHead({
       theme="paleblue"
     />
 
-    <DividerWayFinder />
+    <div class="dividers">
+      <DividerWayFinder />
+    </div>
 
     <SectionWrapper
       section-title="Featured Blogs"
-      class="blog-section"
+      class="blog-section-title"
       theme="paleblue"
     >
-      <h3>Featured Articles</h3>
-      <pre>{{ featuredArticles }}</pre>
-      <DividerWayFinder />
+      <!-- <pre>{{ featuredArticles }}</pre> -->
     </SectionWrapper>
+
+    <div class="dividers">
+      <DividerWayFinder />
+    </div>
 
     <SectionWrapper
       section-title="Latest Blogs"
-      class="blog-section"
+      class="blog-section-title"
       theme="paleblue"
     >
       <div class="articles-list-wrapper">
-        <!--<pre> {{ articleList.slice(0, 15) }}</pre>-->
         <SectionStaffArticleList :items="parsedArticles" />
 
         <SectionPagination
@@ -274,7 +286,7 @@ useHead({
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
 
 .page-article-list {
@@ -291,25 +303,29 @@ useHead({
     max-width: 787px;
   }
 
+  .dividers {
+    max-width: var(--ftva-container-max-width);
+
+    .divider-way-finder {
+      margin: 0;
+    }
+  }
+
+  .blog-section-title {
+    :deep(.section-header .section-title) {
+      font-size: 38px;
+      color: #2f2f2f;
+    }
+  }
+
   .articles-list-wrapper {
     background-color: var(--color-white);
   }
 
   .ftva.section-pagination {
     margin-inline: auto;
-    padding-bottom: 32px;
+    padding: 2.5%;
   }
 
 }
 </style>
-
-<!--<div
-        v-for="article in data.entries"
-        :key="article?.id"
-      >
-        <NuxtLink :to="`/blog/${article?.to}`">
-          {{ article?.title }}
-        </NuxtLink>
-
-        <divider-general />
-      </div>-->
