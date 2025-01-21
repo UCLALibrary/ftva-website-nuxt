@@ -39,7 +39,7 @@ if (!data.value.ftvaLARebellionIndividual) {
 }
 
 // This is creating an index of the content for ES search
-if (data.value.ftvaEvent && import.meta.prerender) {
+if (data.value.ftvaLARebellionIndividual && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
@@ -52,13 +52,10 @@ if (data.value.ftvaEvent && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'ftvaLARebellionIndividual', {}))
-// TODO refactor for filmography data ? Delete if not needed
-// const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaLARebellionIndividual', {})
-  // series.value = _get(newVal, 'ftvaEventSeries', {})
 })
 
 // Get data for Image or Carousel at top of page
@@ -76,9 +73,6 @@ const parsedCarouselData = computed(() => {
     }
   })
 })
-
-// Filmography Data
-const tableHeaders = ['', 'Film', 'Role', 'Year']
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -159,8 +153,6 @@ useHead({
       </template>
     </TwoColLayoutWStickySideBar>
 
-    <!-- TODO: add conditional render once vars exist
-     v-if="page.value.associatedFilms && page.value.associatedFilms.length > 0" -->
     <SectionWrapper
       v-if="page.associatedFilms && page.associatedFilms.length > 0"
       section-title="Filmography"
@@ -169,7 +161,7 @@ useHead({
     >
       <section-staff-subject-librarian
         :items="page.associatedFilms"
-        :table-headers="tableHeaders"
+        :table-headers="['', 'Film', 'Role', 'Year']"
       />
     </SectionWrapper>
   </main>
