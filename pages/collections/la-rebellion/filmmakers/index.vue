@@ -6,7 +6,7 @@ import { DividerGeneral, SectionWrapper } from 'ucla-library-website-components'
 import _get from 'lodash/get'
 
 // GQL
-// TODO 
+// TODO
 
 const { $graphql } = useNuxtApp()
 
