@@ -3,8 +3,9 @@
 import { DividerGeneral, SectionWrapper, RichText } from 'ucla-library-website-components'
 import { computed } from 'vue'
 
-// HELPERS
+// HELPERS & UTILS
 import _get from 'lodash/get'
+import removeTags from '~/utils/removeTags'
 
 // GQL
 import FTVALARebellionFilmmakersList from '~/gql/queries/FTVALARebellionFilmmakersList.gql'
@@ -13,7 +14,7 @@ const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('la-rebellion-filmmakers', async () => {
   const data = await $graphql.default.request(FTVALARebellionFilmmakersList)
-  console.log('data', data)
+  // console.log('data', data)
   return data
 })
 
@@ -32,13 +33,56 @@ if (!data.value.entries) {
   })
 }
 
-const page = ref(_get(data.value, 'entry', {}))
+// TODO This is creating an index of the content for ES search
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    // Index the event data using the composable during static build
+    await indexContent(data.value.entry, route.params.slug)
 
+    // TODO index entries as well?
+    // await indexContent(data.value.entries, route.params.slug)
+
+    // console.log('Article indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX ARTICLES during static build:', error)
+  }
+}
+
+const page = ref(_get(data.value, 'entry', {}))
+const filmmakers = ref(_get(data.value, 'entries', []))
+
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'entry', {})
+  filmmakers.value = _get(newVal, 'entries', [])
+})
+
+// TODO remove if links are changed in craft
+const parsedFilmmakers = computed(() => {
+  if (filmmakers.value.length === 0) return []
+
+  return filmmakers.value.map((obj) => {
+    const newLink = obj.to.split('/').toSpliced(2, 0, 'filmmakers').join('/')
+    return {
+      ...obj,
+      to: newLink
+    }
+  })
+})
 const showSummary = computed(() => {
   return page.value?.summary && page.value?.displaySummary === 'yes'
 })
 useHead({
   title: page.value?.title || '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.summary)
+    }
+  ]
 })
 </script>
 
@@ -52,10 +96,10 @@ useHead({
         <RichText :rich-text-content="page.summary" />
       </template>
       <div
-        v-for="filmmaker in data.entries"
+        v-for="filmmaker in parsedFilmmakers"
         :key="filmmaker?.id"
       >
-        <NuxtLink :to="`${filmmaker?.to}`">
+        <NuxtLink :to="`/${filmmaker?.to}`">
           {{ filmmaker?.title }}
         </NuxtLink> <br>
         <h4>to: <code>{{ filmmaker?.to }}</code></h4>
@@ -64,7 +108,7 @@ useHead({
         <divider-general />
       </div>
 
-      <code><strong>PAGE</strong> {{ page }}</code>
+      <!-- <code><strong>PAGE</strong> {{ page }}</code> -->
     </section-wrapper>
   </div>
 </template>
