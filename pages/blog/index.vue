@@ -56,13 +56,9 @@ const featuredArticles = page.value.ftvaFeaturedArticles
 // const articleList = ref(_get(data.value, 'entries', {}))
 // console.log('Data: ', data.value)
 
-watch(data, (newVal, oldVal) => {
-  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = _get(newVal.single, 'entry', {})
-  // events.value = _get(newVal.data, 'events', [])
-  // series.value = _get(newVal.data, 'series', [])
-  // exhibitions.value = _get(newVal.data, 'exhibitions', [])
-})
+// watch(data, (newVal, oldVal) => {
+//  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+// })
 
 //
 const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
@@ -96,6 +92,7 @@ const { width } = useWindowSize()
 
 watch(width, (newWidth) => {
   const wasMobile = isMobile.value
+
   isMobile.value = newWidth <= 750
   // Reinitialize only when transitioning between mobile and desktop
   if (wasMobile !== isMobile.value) {
@@ -113,31 +110,17 @@ function handleScreenTransition() {
     mobileArticles.value = []
     hasMore.value = true
     const { page, ...remainingQuery } = route.query
-    useRouter().push({ query: { ...remainingQuery, view: currentView.value } })
+    useRouter().push({ query: { ...remainingQuery } })
   } else {
     // Switching to desktop: restore query param
     if (totalPages.value === 1)
       desktopPage.value = 1
     const restoredPage = desktopPage.value || 1
-    useRouter().push({ query: { ...route.query, page: restoredPage.toString(), view: currentView.value } })
+    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
     currentPage.value = restoredPage
     desktopArticles.value = []
   }
 }
-
-// TEST
-// const { paginatedArticlesQuery } = useArticlesListSearch()
-
-// onMounted(async () => {
-//   const esOutput = await paginatedArticlesQuery(
-//     currentPage.value,
-//     documentsPerPage,
-//     'postDate',
-//     'asc'
-//   )
-
-//   console.log('ES output total hits: ', esOutput.hits.total.value) // 445
-// })
 
 // ES FUNCTION
 async function searchES() {
@@ -191,7 +174,7 @@ watch(
   }, { deep: true, immediate: true }
 )
 
-// GET DATA FOR IMAGE
+// GET IMAGE
 function parsedCarouselImage(obj) {
   return obj._source.imageCarousel
 }
@@ -212,7 +195,14 @@ function isImageExists(obj) {
   }
 }
 
-// FORMATTED COMPUTED EVENTS
+// GET ARTICLE CATEGORIES
+function parseArticleCategories(arr) {
+  if (arr.length === 0) return null
+
+  return arr.map(obj => obj.title).join(', ')
+}
+
+// FORMATTED COMPUTED ARTICLES
 const parsedArticles = computed(() => {
   if (articles.value.length === 0) return []
 
@@ -222,7 +212,7 @@ const parsedArticles = computed(() => {
       ...obj._source,
       to: `/${obj._source.uri}`,
       title: obj._source.title,
-      category: obj._source.articleCategories.join(', '),
+      category: parseArticleCategories(obj._source.articleCategories),
       description: obj._source.aboutTheAuthor,
       startDate: obj._source.postDate,
       endDate: obj._source.postDate,
