@@ -26,8 +26,10 @@ query FTVALARebellionFilmmakersDetail($slug: [String!]) {
     }
 
     associatedFilms {
-      image {
-        ...Image
+      ... on associatedFilms_film_BlockType {
+        image {
+          ...Image
+        }
       }
       titleGeneral
       description
