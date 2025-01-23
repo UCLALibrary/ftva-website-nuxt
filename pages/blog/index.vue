@@ -50,18 +50,13 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 // DATA
+// console.log('Data: ', data.value)
 const page = ref(_get(data.value, 'entry', {}))
 const pageSummary = page.value.summary
 const featuredArticles = page.value.ftvaFeaturedArticles
 // console.log('featured articles: ', featuredArticles)
-// const articleList = ref(_get(data.value, 'entries', {}))
-// console.log('Data: ', data.value)
 
-// watch(data, (newVal, oldVal) => {
-//  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-// })
-
-//
+// "STATE"
 const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
 const desktopArticles = ref([]) // Desktop articles list
 const mobileArticles = ref([]) // Mobile articles list
@@ -75,8 +70,8 @@ const totalPages = ref(0)
 const isLoading = ref(false)
 const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
-const scrollElem = ref(null)
 
+const scrollElem = ref(null)
 const { reset } = useInfiniteScroll(
   scrollElem,
   async () => {
@@ -90,7 +85,6 @@ const { reset } = useInfiniteScroll(
 
 // WINDOW SIZE HANDLING
 const { width } = useWindowSize()
-
 watch(width, (newWidth) => {
   const wasMobile = isMobile.value
 
@@ -111,7 +105,6 @@ function handleScreenTransition() {
     mobileArticles.value = []
     hasMore.value = true
     const { page, ...remainingQuery } = route.query
-    console.log('remaining query: ', { ...remainingQuery })
     useRouter().push({ query: { ...remainingQuery } })
   } else {
     // Switching to desktop: restore query param
@@ -144,30 +137,28 @@ async function searchES() {
     )
 
     if (results && results.hits && results?.hits?.hits?.length > 0) {
-      console.log('results.hits: ', results.hits)
-      // console.log('hits: ', results.hits.hits)
       const newArticles = results.hits.hits || []
-      console.log('newArticles array: ', newArticles)
 
       if (isMobile.value) {
         totalPages.value = 0
+
         mobileArticles.value.push(...newArticles)
-        console.log('mobileArticles.value: ', mobileArticles.value)
-        console.log('currentPage.value: ', currentPage.value)
-        console.log('calc: ', Math.ceil(results.hits.total.value / documentsPerPage))
+
         hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
-        console.log('hasMore: ', hasMore.value)
       } else {
         desktopArticles.value = newArticles
+
         totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
-        console.log('totalPages (desktop): ', totalPages.value)
       }
     } else {
       totalPages.value = 0
+
       hasMore.value = false
     }
   } catch (err) {
-    // console.log(err)
+    // eslint-disable-next-line no-console
+    console.error('Error fetching data:', error)
+    hasMore.value = false
   } finally {
     isLoading.value = false
   }
@@ -216,8 +207,6 @@ function parseArticleCategories(arr) {
 const parsedArticles = computed(() => {
   if (articles.value.length === 0) return []
 
-  console.log('articles length: ', articles.value.length)
-  console.log('articles: ', articles.value)
   return articles.value.map((obj) => {
     return {
       ...obj._source,
@@ -268,7 +257,7 @@ useHead({
       class="blog-section-title"
       theme="paleblue"
     >
-      <BlockCardWithImage
+      <!-- <BlockCardWithImage
         :image="featuredArticles[0].ftvaImage[0]"
         :to="featuredArticles[0].uri"
         :category="featuredArticles[0].category"
@@ -276,7 +265,7 @@ useHead({
         :image-aspect-ratio="Number(60)"
         :text="featuredArticles[0].ftvaHomepageDescription"
         :date-created="featuredArticles[0].postDate"
-      />
+      /> -->
       <!-- <pre>{{ featuredArticles }}</pre> -->
     </SectionWrapper>
 
