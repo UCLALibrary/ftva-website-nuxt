@@ -53,6 +53,7 @@ if (data.value.entry && import.meta.prerender) {
 const page = ref(_get(data.value, 'entry', {}))
 const pageSummary = page.value.summary
 const featuredArticles = page.value.ftvaFeaturedArticles
+// console.log('featured articles: ', featuredArticles)
 // const articleList = ref(_get(data.value, 'entries', {}))
 // console.log('Data: ', data.value)
 
@@ -74,10 +75,10 @@ const totalPages = ref(0)
 const isLoading = ref(false)
 const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
-const scrollEl = ref(null)
+const scrollElem = ref(null)
 
-const scrollAll = useInfiniteScroll(
-  scrollEl,
+const { reset } = useInfiniteScroll(
+  scrollElem,
   async () => {
     if (isMobile.value && hasMore.value && !isLoading.value) {
       currentPage.value++
@@ -110,6 +111,7 @@ function handleScreenTransition() {
     mobileArticles.value = []
     hasMore.value = true
     const { page, ...remainingQuery } = route.query
+    console.log('remaining query: ', { ...remainingQuery })
     useRouter().push({ query: { ...remainingQuery } })
   } else {
     // Switching to desktop: restore query param
@@ -120,6 +122,7 @@ function handleScreenTransition() {
     currentPage.value = restoredPage
     desktopArticles.value = []
   }
+  searchES()
 }
 
 // ES FUNCTION
@@ -140,17 +143,24 @@ async function searchES() {
       ['*']
     )
 
-    if (results?.hits?.hits?.length > 0) {
-      console.log('hits: ', results.hits.hits)
+    if (results && results.hits && results?.hits?.hits?.length > 0) {
+      console.log('results.hits: ', results.hits)
+      // console.log('hits: ', results.hits.hits)
       const newArticles = results.hits.hits || []
+      console.log('newArticles array: ', newArticles)
 
       if (isMobile.value) {
         totalPages.value = 0
         mobileArticles.value.push(...newArticles)
+        console.log('mobileArticles.value: ', mobileArticles.value)
+        console.log('currentPage.value: ', currentPage.value)
+        console.log('calc: ', Math.ceil(results.hits.total.value / documentsPerPage))
         hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+        console.log('hasMore: ', hasMore.value)
       } else {
         desktopArticles.value = newArticles
         totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+        console.log('totalPages (desktop): ', totalPages.value)
       }
     } else {
       totalPages.value = 0
@@ -202,11 +212,12 @@ function parseArticleCategories(arr) {
   return arr.map(obj => obj.title).join(', ')
 }
 
-// FORMATTED COMPUTED ARTICLES
+// PARSED ARTICLE LIST
 const parsedArticles = computed(() => {
   if (articles.value.length === 0) return []
 
-  console.log('articles.value: ', articles.value)
+  console.log('articles length: ', articles.value.length)
+  console.log('articles: ', articles.value)
   return articles.value.map((obj) => {
     return {
       ...obj._source,
@@ -220,6 +231,8 @@ const parsedArticles = computed(() => {
     }
   })
 })
+
+// PARSED FEATURED ARTICLES
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -236,27 +249,43 @@ useHead({
 <template>
   <div class="page page-article-list">
     <SectionWrapper
+      ref="scrollElem"
       section-title="Archive Blog"
       :section-summary="pageSummary"
       class="header"
       theme="paleblue"
     />
 
-    <div class="dividers">
+    <SectionWrapper
+      class="dividers"
+      theme="paleblue"
+    >
       <DividerWayFinder />
-    </div>
+    </SectionWrapper>
 
     <SectionWrapper
       section-title="Featured Blogs"
       class="blog-section-title"
       theme="paleblue"
     >
+      <BlockCardWithImage
+        :image="featuredArticles[0].ftvaImage[0]"
+        :to="featuredArticles[0].uri"
+        :category="featuredArticles[0].category"
+        :title="featuredArticles[0].title"
+        :image-aspect-ratio="Number(60)"
+        :text="featuredArticles[0].ftvaHomepageDescription"
+        :date-created="featuredArticles[0].postDate"
+      />
       <!-- <pre>{{ featuredArticles }}</pre> -->
     </SectionWrapper>
 
-    <div class="dividers">
+    <SectionWrapper
+      class="dividers"
+      theme="paleblue"
+    >
       <DividerWayFinder />
-    </div>
+    </SectionWrapper>
 
     <SectionWrapper
       section-title="Latest Blogs"
@@ -294,10 +323,10 @@ useHead({
   }
 
   .dividers {
-    max-width: var(--ftva-container-max-width);
+    padding-block: 0;
 
     .divider-way-finder {
-      margin: 0;
+      margin-block: 0;
     }
   }
 
