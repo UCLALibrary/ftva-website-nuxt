@@ -60,17 +60,17 @@ watch(data, (newVal, oldVal) => {
 })
 
 // TODO remove if links are changed in craft
-const parsedFilmmakers = computed(() => {
-  if (filmmakers.value.length === 0) return []
+// const parsedFilmmakers = computed(() => {
+//   if (filmmakers.value.length === 0) return []
 
-  return filmmakers.value.map((obj) => {
-    const newLink = obj.to.split('/').toSpliced(2, 0, 'filmmakers').join('/')
-    return {
-      ...obj,
-      to: newLink
-    }
-  })
-})
+//   return filmmakers.value.map((obj) => {
+//     const newLink = obj.to.split('/').toSpliced(2, 0, 'filmmakers').join('/')
+//     return {
+//       ...obj,
+//       to: newLink
+//     }
+//   })
+// })
 const showSummary = computed(() => {
   return page.value?.summary && page.value?.displaySummary === 'yes'
 })
@@ -96,7 +96,7 @@ useHead({
         <RichText :rich-text-content="page.summary" />
       </template>
       <div
-        v-for="filmmaker in parsedFilmmakers"
+        v-for="filmmaker in filmmakers"
         :key="filmmaker?.id"
       >
         <NuxtLink :to="`/${filmmaker?.to}`">

@@ -169,6 +169,7 @@ useHead({
 
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
+
 .page-filmmaker-detail {
   position: relative;
 
@@ -194,6 +195,7 @@ useHead({
     .section-title {
       color: #2f2f2f;
     }
+
     font-weight: 800;
   }
 }
