@@ -50,7 +50,7 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 // DATA
-// console.log('Data: ', data.value)
+console.log('Data: ', data.value)
 const page = ref(_get(data.value, 'entry', {}))
 const pageSummary = page.value.summary
 const featuredArticles = page.value.ftvaFeaturedArticles
@@ -243,6 +243,7 @@ useHead({
       :section-summary="pageSummary"
       class="header"
       theme="paleblue"
+      data-test="blog-page-title"
     />
 
     <SectionWrapper
