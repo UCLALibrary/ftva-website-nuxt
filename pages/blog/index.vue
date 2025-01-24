@@ -175,6 +175,13 @@ watch(
   }, { deep: true, immediate: true }
 )
 
+// PAGE SUMMARY
+const showPageSummary = computed(() => {
+  return page.value?.summary && page.value?.displaySummary === 'yes'
+})
+
+// PARSED FEATURED ARTICLES
+
 // GET IMAGE
 function parsedCarouselImage(obj) {
   return obj._source.imageCarousel
@@ -221,8 +228,6 @@ const parsedArticles = computed(() => {
   })
 })
 
-// PARSED FEATURED ARTICLES
-
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -240,11 +245,14 @@ useHead({
     <SectionWrapper
       ref="scrollElem"
       section-title="Archive Blog"
-      :section-summary="pageSummary"
       class="header"
       theme="paleblue"
       data-test="blog-page-title"
-    />
+    >
+      <template v-if="showPageSummary">
+        <RichText :rich-text-content="pageSummary" />
+      </template>
+    </SectionWrapper>
 
     <SectionWrapper
       class="dividers"
