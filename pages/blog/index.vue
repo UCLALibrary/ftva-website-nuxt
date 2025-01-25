@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { SectionWrapper, BlockCardWithImage, RichText } from 'ucla-library-website-components'
+import { SectionWrapper } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -54,7 +54,6 @@ console.log('Data: ', data.value)
 const page = ref(_get(data.value, 'entry', {}))
 const pageSummary = page.value.summary
 const featuredArticles = page.value.ftvaFeaturedArticles
-// console.log('featured articles: ', featuredArticles)
 
 // "STATE"
 const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
@@ -182,12 +181,11 @@ const showPageSummary = computed(() => {
 
 // PARSED FEATURED ARTICLES
 const parsedFeaturedArticles = computed(() => {
-
   if (featuredArticles.length === 0) {
     return
   }
 
-  return featuredArticles.map(obj => {
+  return featuredArticles.map((obj) => {
     return {
       image: obj.ftvaImage[0],
       to: obj.uri,
@@ -197,11 +195,6 @@ const parsedFeaturedArticles = computed(() => {
       dateCreated: obj.postDate
     }
   })
-
-  // const mainArticle = parsedArticles[0]
-  // const subArticles = parsedArticles.slice(1)
-
-  // return { mainArticle, subArticles }
 })
 
 // GET IMAGE
@@ -228,7 +221,6 @@ function isImageExists(obj) {
 // GET ARTICLE CATEGORIES
 function parseArticleCategories(arr) {
   if (arr.length === 0) return null
-
   return arr.map(obj => obj.title).join(', ')
 }
 
@@ -291,6 +283,7 @@ useHead({
       <div class="featured-articles-wrapper">
         <BlockCardWithImage
           v-for="article in parsedFeaturedArticles"
+          :key="article.title"
           :image="article.image"
           :to="article.to"
           :date-created="article.dateCreated"
@@ -298,17 +291,15 @@ useHead({
           class="featured-article"
         >
           <template #title>
-            <RichText v-html="article.title" />
+            <RichText :rich-text-content="article.title" />
           </template>
           <template #description>
-            <RichText v-html="article.text" />
+            <RichText :rich-text-content="article.text" />
           </template>
         </BlockCardWithImage>
       </div>
 
-      <SectionTeaserCard>
-
-      </SectionTeaserCard>
+      <SectionTeaserCard />
     </SectionWrapper>
 
     <SectionWrapper
@@ -407,9 +398,7 @@ useHead({
     padding: 2.5%;
   }
 
-
   @media #{$small} {
-
     .featured-articles-wrapper {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr;
