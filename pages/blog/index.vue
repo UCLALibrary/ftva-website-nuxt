@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { SectionWrapper } from 'ucla-library-website-components'
+import { SectionWrapper, BlockCardWithImage, RichText } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -181,6 +181,28 @@ const showPageSummary = computed(() => {
 })
 
 // PARSED FEATURED ARTICLES
+const parsedFeaturedArticles = computed(() => {
+
+  if (featuredArticles.length === 0) {
+    return
+  }
+
+  return featuredArticles.map(obj => {
+    return {
+      image: obj.ftvaImage[0],
+      to: obj.uri,
+      title: obj.title,
+      category: obj.category,
+      text: obj.ftvaHomepageDescription,
+      dateCreated: obj.postDate
+    }
+  })
+
+  // const mainArticle = parsedArticles[0]
+  // const subArticles = parsedArticles.slice(1)
+
+  // return { mainArticle, subArticles }
+})
 
 // GET IMAGE
 function parsedCarouselImage(obj) {
@@ -266,16 +288,27 @@ useHead({
       class="blog-section-title"
       theme="paleblue"
     >
-      <!-- <BlockCardWithImage
-        :image="featuredArticles[0].ftvaImage[0]"
-        :to="featuredArticles[0].uri"
-        :category="featuredArticles[0].category"
-        :title="featuredArticles[0].title"
-        :image-aspect-ratio="Number(60)"
-        :text="featuredArticles[0].ftvaHomepageDescription"
-        :date-created="featuredArticles[0].postDate"
-      /> -->
-      <!-- <pre>{{ featuredArticles }}</pre> -->
+      <div class="featured-articles-wrapper">
+        <BlockCardWithImage
+          v-for="article in parsedFeaturedArticles"
+          :image="article.image"
+          :to="article.to"
+          :date-created="article.dateCreated"
+          :category="article.category"
+          class="featured-article"
+        >
+          <template #title>
+            <RichText v-html="article.title" />
+          </template>
+          <template #description>
+            <RichText v-html="article.text" />
+          </template>
+        </BlockCardWithImage>
+      </div>
+
+      <SectionTeaserCard>
+
+      </SectionTeaserCard>
     </SectionWrapper>
 
     <SectionWrapper
@@ -328,6 +361,36 @@ useHead({
     }
   }
 
+  .featured-articles-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    row-gap: 2.5rem;
+    column-gap: 1.75rem;
+  }
+
+  .featured-article {
+    background-color: var(--color-white);
+  }
+
+  .featured-article:nth-of-type(1) {
+    grid-column: 1 / 3;
+    grid-row: 1;
+  }
+
+  .featured-article:nth-of-type(2) {
+    grid-column: 1 / 2;
+  }
+
+  .featured-article:nth-of-type(3) {
+    grid-column: 2 / 3;
+  }
+
+  .featured-article:nth-of-type(2),
+  .featured-article:nth-of-type(3) {
+    grid-row: 2;
+  }
+
   .blog-section-title {
     :deep(.section-header .section-title) {
       font-size: 38px;
@@ -344,5 +407,20 @@ useHead({
     padding: 2.5%;
   }
 
+
+  @media #{$small} {
+
+    .featured-articles-wrapper {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
+      row-gap: unset;
+      column-gap: unset;
+    }
+
+    .featured-article:nth-of-type(2),
+    .featured-article:nth-of-type(3) {
+      display: none;
+    }
+  }
 }
 </style>
