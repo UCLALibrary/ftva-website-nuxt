@@ -344,6 +344,10 @@ useHead({
     max-width: 787px;
   }
 
+  .header>:deep(.section-header) {
+    margin-bottom: 0;
+  }
+
   .dividers {
     padding-block: 0;
 
@@ -382,6 +386,13 @@ useHead({
     grid-row: 2;
   }
 
+  :deep(.custom-title),
+  :deep(.custom-description) {
+    .parsed-content {
+      margin-bottom: 0;
+    }
+  }
+
   .blog-section-title {
     :deep(.section-header .section-title) {
       font-size: 38px;
@@ -409,6 +420,12 @@ useHead({
     .featured-article:nth-of-type(2),
     .featured-article:nth-of-type(3) {
       display: none;
+    }
+
+    .blog-section-title {
+      :deep(.section-header .section-title) {
+        font-size: 28px;
+      }
     }
   }
 }
