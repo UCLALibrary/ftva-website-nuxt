@@ -282,13 +282,14 @@ useHead({
     >
       <div class="featured-articles-wrapper">
         <BlockCardWithImage
-          v-for="article in parsedFeaturedArticles"
+          v-for="article, index in parsedFeaturedArticles"
           :key="article.title"
           :image="article.image"
           :to="article.to"
           :date-created="article.dateCreated"
           :category="article.category"
           class="featured-article"
+          :data-test="`featured-blog-${index}`"
         >
           <template #title>
             <RichText :rich-text-content="article.title" />
@@ -315,7 +316,10 @@ useHead({
       theme="paleblue"
     >
       <div class="articles-list-wrapper">
-        <SectionStaffArticleList :items="parsedArticles" />
+        <SectionStaffArticleList
+          :items="parsedArticles"
+          data-test="latest-blogs"
+        />
 
         <SectionPagination
           v-if="totalPages !== 1 && !isMobile"
