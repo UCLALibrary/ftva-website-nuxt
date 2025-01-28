@@ -62,7 +62,7 @@ export function useContentIndexer() {
           // console.log('Create a new document in ES:', await response.text())
         }
       } else {
-        //console.warn('not indexing anything')
+        // console.warn('not indexing anything')
       }
     } catch (e) {
       // console.error('skip indexing if connection times out  during builds in the mean time: ' + e.message)
