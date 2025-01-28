@@ -392,6 +392,10 @@ useHead({
 
   :deep(.custom-title),
   :deep(.custom-description) {
+    .rich-text {
+      padding-right: 0;
+    }
+
     .parsed-content {
       margin-bottom: 0;
     }
