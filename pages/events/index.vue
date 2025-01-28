@@ -11,6 +11,7 @@ import { useElementBounding, useWindowSize, useInfiniteScroll } from '@vueuse/co
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import parseFilters from '@/utils/parseFilters'
 import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
+import removeTags from '~/utils/removeTags'
 
 // GQL
 const { $graphql } = useNuxtApp()
@@ -34,7 +35,33 @@ if (!data.value.entry) {
   })
 }
 
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.titleGeneral,
+      uri: '/events'
+    }
+    // Index the event series data using the composable during static build
+    await indexContent(doc, 'event-listing')
+    // console.log('Event series indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX EVENT listing during static build:', error)
+  }
+}
+
 const heading = ref(_get(data.value, 'entry', {}))
+
+useHead({
+  title: heading.value ? heading.value.titleGeneral : '... Loading'
+})
+
+// preview watcher
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  heading.value = _get(newVal, 'entry', {})
+})
 
 // TYPES
 interface FilterItem {
