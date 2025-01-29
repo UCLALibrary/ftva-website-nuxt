@@ -66,7 +66,7 @@ const parsedImage = computed(() => {
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
-  return pars.value.map((rawItem, index) => {
+  return parsedImage.value.map((rawItem, index) => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
