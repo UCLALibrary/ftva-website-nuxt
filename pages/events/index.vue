@@ -270,6 +270,7 @@ async function searchES() {
     if (userViewSelection.value === 'list') {
       const { paginatedSearchFilters } = useListSearchFilter()
       results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+      console.log('results: ', results)
     } else {
       //  Calendar View code
       const { paginatedSearchFilters } = useCalendarSearchFilter()
