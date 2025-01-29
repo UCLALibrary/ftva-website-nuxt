@@ -66,10 +66,37 @@ const parsedImage = computed(() => {
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
-  return parsedImage.value.map((rawItem, index) => {
+  return pars.value.map((rawItem, index) => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
+    }
+  })
+})
+
+const parsedAssociatedFilms = computed(() => {
+  if (page.value.associatedFilms.length === 0) return []
+  return page.value.associatedFilms.map((obj) => {
+    // console.log('obj link', obj.filmLink)
+    const newFilmLink = ['/', obj.filmLink[0].uri].join('')
+    // console.log('newFilmLink', newFilmLink)
+    // console.log('new obj', {
+    //   ...obj,
+    //   filmLink: [
+    //     {
+    //       ...obj.filmLink[0],
+    //       uri: newFilmLink
+    //     }
+    //   ]
+    // })
+    return {
+      ...obj,
+      filmLink: [
+        {
+          ...obj.filmLink[0],
+          uri: newFilmLink
+        }
+      ]
     }
   })
 })
@@ -80,7 +107,7 @@ useHead({
     {
       hid: 'description',
       name: 'description',
-      content: removeTags(page.value.text)
+      content: removeTags(page.value.richText)
     }
   ]
 })
@@ -154,7 +181,7 @@ useHead({
     </TwoColLayoutWStickySideBar>
 
     <SectionWrapper
-      v-if="page.associatedFilms && page.associatedFilms.length > 0"
+      v-if="parsedAssociatedFilms && parsedAssociatedFilms.length > 0"
       section-title="Filmography"
       theme="paleblue"
       class="filmography-section-wrapper"
