@@ -189,12 +189,36 @@ const parsedFeaturedArticles = computed(() => {
       image: obj.ftvaImage[0],
       to: obj.uri,
       title: obj.title,
-      category: obj.category,
+      category: parseArticleCategories(obj.articleCategories),
       text: obj.ftvaHomepageDescription,
       dateCreated: obj.postDate
     }
   })
 })
+
+// PARSED ARTICLE LIST
+const parsedArticles = computed(() => {
+  if (articles.value.length === 0) return []
+
+  return articles.value.map((obj) => {
+    return {
+      ...obj._source,
+      to: `/${obj._source.uri}`,
+      title: obj._source.title,
+      category: parseArticleCategories(obj._source.articleCategories),
+      description: obj._source.aboutTheAuthor,
+      startDate: obj._source.postDate,
+      endDate: obj._source.postDate,
+      image: isImageExists(obj)
+    }
+  })
+})
+
+// GET ARTICLE CATEGORIES
+function parseArticleCategories(arr) {
+  if (arr.length === 0) return
+  return arr.map(obj => obj.title).join(', ')
+}
 
 // GET IMAGE
 function parsedCarouselImage(obj) {
@@ -216,30 +240,6 @@ function isImageExists(obj) {
     return null
   }
 }
-
-// GET ARTICLE CATEGORIES
-function parseArticleCategories(arr) {
-  if (arr.length === 0) return null
-  return arr.map(obj => obj.title).join(', ')
-}
-
-// PARSED ARTICLE LIST
-const parsedArticles = computed(() => {
-  if (articles.value.length === 0) return []
-
-  return articles.value.map((obj) => {
-    return {
-      ...obj._source,
-      to: `/${obj._source.uri}`,
-      title: obj._source.title,
-      category: parseArticleCategories(obj._source.articleCategories),
-      description: obj._source.aboutTheAuthor,
-      startDate: obj._source.postDate,
-      endDate: obj._source.postDate,
-      image: isImageExists(obj)
-    }
-  })
-})
 
 useHead({
   title: page.value ? page.value.title : '... loading',
