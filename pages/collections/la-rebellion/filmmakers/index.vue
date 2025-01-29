@@ -59,18 +59,6 @@ watch(data, (newVal, oldVal) => {
   filmmakers.value = _get(newVal, 'entries', [])
 })
 
-// TODO remove if links are changed in craft
-// const parsedFilmmakers = computed(() => {
-//   if (filmmakers.value.length === 0) return []
-
-//   return filmmakers.value.map((obj) => {
-//     const newLink = obj.to.split('/').toSpliced(2, 0, 'filmmakers').join('/')
-//     return {
-//       ...obj,
-//       to: newLink
-//     }
-//   })
-// })
 const showSummary = computed(() => {
   return page.value?.summary && page.value?.displaySummary === 'yes'
 })
@@ -107,8 +95,6 @@ useHead({
         <h4>associatedFilms: <code>{{ filmmaker?.associatedFilms }}</code></h4>
         <divider-general />
       </div>
-
-      <!-- <code><strong>PAGE</strong> {{ page }}</code> -->
     </section-wrapper>
   </div>
 </template>
