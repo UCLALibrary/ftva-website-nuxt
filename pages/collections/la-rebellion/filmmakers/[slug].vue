@@ -183,6 +183,12 @@ useHead({
       margin-top: 48px;
     }
 
+    // when two-column div is not followed by a filmography section
+    &:last-child {
+      // add 8px of space between the last element in the two-column div and the footer
+      padding-bottom: 8px;
+    }
+
     // fix button scrolling over header
     :deep(.sharebutton-slot) {
       position: relative;
@@ -192,6 +198,12 @@ useHead({
 
   // change filmography section title color
   :deep(.section-header) {
+
+    // reduce space below title by 12px on desktop (was 40px)
+    @media #{$large} {
+      margin-bottom: 28px;
+    }
+
     .section-title {
       color: #2f2f2f;
     }
