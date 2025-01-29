@@ -275,10 +275,14 @@ useHead({
     </SectionWrapper>
 
     <SectionWrapper
-      section-title="Featured Blogs"
       class="blog-section-title"
       theme="paleblue"
+      level="3"
     >
+      <SectionHeader level="3">
+        Featured Blogs
+      </SectionHeader>
+
       <div class="featured-articles-wrapper">
         <BlockCardWithImage
           v-for="article, index in parsedFeaturedArticles"
@@ -298,8 +302,6 @@ useHead({
           </template>
         </BlockCardWithImage>
       </div>
-
-      <SectionTeaserCard />
     </SectionWrapper>
 
     <SectionWrapper
@@ -310,10 +312,14 @@ useHead({
     </SectionWrapper>
 
     <SectionWrapper
-      section-title="Latest Blogs"
       class="blog-section-title"
       theme="paleblue"
+      level="3"
     >
+      <SectionHeader level="3">
+        Latest Blogs
+      </SectionHeader>
+
       <div class="articles-list-wrapper">
         <SectionStaffArticleList
           :items="parsedArticles"
@@ -407,9 +413,10 @@ useHead({
   }
 
   .blog-section-title {
-    :deep(.section-header .section-title) {
+    :deep(.section-header) {
       font-size: 38px;
-      color: #2f2f2f;
+      margin-bottom: 48px;
+      color: $heading-grey;
     }
   }
 
@@ -442,8 +449,9 @@ useHead({
     }
 
     .blog-section-title {
-      :deep(.section-header .section-title) {
+      :deep(.section-header) {
         font-size: 28px;
+        margin-bottom: 16px;
       }
     }
   }
