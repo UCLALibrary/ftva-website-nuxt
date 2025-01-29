@@ -11,6 +11,9 @@ query FTVAArticleList($slug: [String!]) {
     ftvaFeaturedArticles {
       title
       postDate
+      articleCategories {
+        title
+      }
       ftvaHomepageDescription
       uri
       ftvaImage {
