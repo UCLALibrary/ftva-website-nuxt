@@ -10,6 +10,7 @@ query FTVAArticleList($slug: [String!]) {
     displaySummary
     ftvaFeaturedArticles {
       title
+      ftvaAlternativeTitle
       postDate
       articleCategories {
         title
@@ -19,17 +20,6 @@ query FTVAArticleList($slug: [String!]) {
       ftvaImage {
         ...Image
       }
-    }
-  }
-  entries(section: ["ftvaArticle"], orderBy: "postDate DESC") {
-    typeHandle
-    id
-    title
-    postDate
-    ftvaHomepageDescription
-    uri
-    ftvaImage {
-      ...Image
     }
   }
 }
