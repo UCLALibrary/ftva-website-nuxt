@@ -280,7 +280,7 @@ useHead({
       level="3"
     >
       <SectionHeader level="3">
-        Featured Blogs
+        {{ isMobile ? 'Featured Blog' : 'Featured Blogs' }}
       </SectionHeader>
 
       <div class="featured-articles-wrapper">
