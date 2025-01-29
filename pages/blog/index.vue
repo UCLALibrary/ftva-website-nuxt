@@ -423,11 +423,6 @@ useHead({
   .articles-list-wrapper {
     background-color: var(--color-white);
     margin-bottom: 20px;
-
-    .block-staff-article-item .image {
-      width: unset;
-      height: unset;
-    }
   }
 
   .ftva.section-pagination {
