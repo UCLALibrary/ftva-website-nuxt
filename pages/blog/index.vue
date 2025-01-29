@@ -348,7 +348,13 @@ useHead({
   }
 
   .header>:deep(.section-header) {
-    margin-bottom: 0;
+    margin-top: 20px;
+    margin-bottom: 0px;
+
+    h2.section-title {
+      color: $heading-grey;
+    }
+
   }
 
   .dividers {
@@ -409,6 +415,12 @@ useHead({
 
   .articles-list-wrapper {
     background-color: var(--color-white);
+    margin-bottom: 20px;
+
+    .block-staff-article-item .image {
+      width: unset;
+      height: unset;
+    }
   }
 
   .ftva.section-pagination {
