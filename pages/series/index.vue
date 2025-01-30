@@ -20,7 +20,7 @@ if (error.value) {
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })
 }
-if (!data.value.entries) {
+if (!data.value.entry) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -28,7 +28,33 @@ if (!data.value.entries) {
   })
 }
 
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.titleGeneral,
+      uri: '/series'
+    }
+    // Index the Series data using the composable during static build
+    await indexContent(doc, 'series-listing')
+    // console.log('Series indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX SERIES listing during static build:', error)
+  }
+}
+
 const heading = ref(_get(data.value, 'entry', {}))
+
+useHead({
+  title: heading.value ? heading.value.titleGeneral : '... Loading'
+})
+
+// PREVIEW WATCHER
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  heading.value = _get(newVal, 'entry', {})
+})
 // GQL - End
 
 // STATE MANAGEMENT
@@ -272,7 +298,7 @@ watch(
         <SectionPagination
           v-if="
             totalPages
-              !== 1 && !isMobile"
+            !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"

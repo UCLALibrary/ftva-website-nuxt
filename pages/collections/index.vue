@@ -21,7 +21,7 @@ if (error.value) {
   })
 }
 
-if (!data.value.entries) {
+if (!data.value.entry) {
   // console.log('no data')
   throw createError({
     statusCode: 404,
@@ -30,10 +30,35 @@ if (!data.value.entries) {
   })
 }
 
-const page = ref(_get(data.value, 'entries[0]', {}))
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entries.titleGeneral,
+      uri: '/collections'
+    }
+    // Index the collections data using the composable during static build
+    await indexContent(doc, 'collection-listing')
+    // console.log('Collections indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX COLLECTION listing during static build:', error)
+  }
+}
+
+const heading = ref(_get(data.value, 'entry', {}))
+
 useHead({
-  title: page.value?.title || '... loading',
+  title: heading.value ? heading.value.titleGeneral : '... Loading'
 })
+
+// PREVIEW WATCHER
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  heading.value = _get(newVal, 'entry', {})
+})
+
+const page = ref(_get(data.value, 'entries[0]', {}))
 </script>
 
 <template>
@@ -42,6 +67,7 @@ useHead({
     style="padding: 25px 100px;"
   >
     <section-wrapper section-title="Collections">
+      <h1>HEADING {{ data }}</h1>
       <h2>SEACHBAR</h2>
 
       <div

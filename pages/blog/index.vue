@@ -66,7 +66,7 @@ onMounted(async () => {
     'asc'
   )
 
-  console.log('ES output total hits: ', esOutput.hits.total.value) // 445
+  // console.log('ES output total hits: ', esOutput.hits.total.value) // 445
 })
 
 useHead({

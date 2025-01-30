@@ -8,12 +8,13 @@ import { parseISO } from 'date-fns'
 import { useElementBounding, useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // UTILS
-import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import parseFilters from '@/utils/parseFilters'
 import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
 import removeTags from '~/utils/removeTags'
 
 // GQL
+import FTVAEventList from '../gql/queries/FTVAEventList.gql'
+
 const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('event-list', async () => {
   const data = await $graphql.default.request(FTVAEventList)
@@ -57,7 +58,7 @@ useHead({
   title: heading.value ? heading.value.titleGeneral : '... Loading'
 })
 
-// preview watcher
+// PREVIEW WATCHER
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   heading.value = _get(newVal, 'entry', {})
@@ -524,6 +525,7 @@ const parseFirstEventMonth = computed(() => {
         ref="el"
         theme="paleblue"
       >
+        <h1>{{ heading }}</h1>
         <TabList
           :class="stickyClass"
           alignment="right"
