@@ -9,6 +9,9 @@ import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 // GQL - start
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
+// UTILS
+import parseImage from '@/utils/parseImage'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {
@@ -96,35 +99,6 @@ function handleScreenTransition() {
   }
 }
 
-// GET DATA FOR IMAGE
-// function parsedImage(obj) {
-//   return obj._source.imageCarousel
-// }
-
-// function isImageExists(obj) {
-//   return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
-// }
-
-function parsedCarouselImage(obj) {
-  return obj._source.imageCarousel
-}
-
-function parsedListingImage(obj) {
-  return obj._source.image
-}
-
-function isImageExists(obj) {
-  // Use Listing Image
-  if (parsedListingImage(obj) && parsedListingImage(obj).length === 1) {
-    return parsedListingImage(obj)[0]
-  } else if (parsedCarouselImage(obj) && parsedCarouselImage(obj).length >= 1) {
-    // Use ImageCarousel
-    return parsedCarouselImage(obj)[0]
-  } else {
-    return null
-  }
-}
-
 // FORMATTED COMPUTED EVENTS
 const parsedEventSeries = computed(() => {
   if (series.value.length === 0) return []
@@ -137,8 +111,7 @@ const parsedEventSeries = computed(() => {
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
       ongoing: obj._source.ongoing,
-      image: isImageExists(obj)
-      // image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
+      image: parseImage(obj)
     }
   })
 })

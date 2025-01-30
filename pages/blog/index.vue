@@ -9,6 +9,9 @@ import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 // GQL
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 
+// UTILS
+import parseImage from '@/utils/parseImage'
+
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
@@ -198,7 +201,6 @@ const parsedFeaturedArticles = computed(() => {
     const parsedTitle = parseRichTextTitle(obj)
 
     return {
-      // image: obj.ftvaImage[0],
       image: obj.image[0],
       to: obj.uri,
       title: parsedTitle,
@@ -222,7 +224,7 @@ const parsedArticles = computed(() => {
       description: obj._source.aboutTheAuthor,
       startDate: obj._source.postDate,
       endDate: obj._source.postDate,
-      image: isImageExists(obj)
+      image: parseImage(obj)
     }
   })
 })
@@ -236,27 +238,6 @@ function parseRichTextTitle(obj) {
 function parseArticleCategories(arr) {
   if (arr.length === 0) return
   return arr.map(obj => obj.title).join(', ')
-}
-
-// GET IMAGE
-function parsedCarouselImage(obj) {
-  return obj._source.imageCarousel
-}
-
-function parsedListingImage(obj) {
-  return obj._source.image
-}
-
-function isImageExists(obj) {
-  // Use Listing Image
-  if (parsedListingImage(obj) && parsedListingImage(obj).length === 1) {
-    return parsedListingImage(obj)[0]
-  } else if (parsedCarouselImage(obj) && parsedCarouselImage(obj).length >= 1) {
-    // Use ImageCarousel
-    return parsedCarouselImage(obj)[0]
-  } else {
-    return null
-  }
 }
 
 useHead({

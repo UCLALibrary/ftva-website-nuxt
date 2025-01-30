@@ -9,8 +9,9 @@ import { useElementBounding, useWindowSize, useInfiniteScroll } from '@vueuse/co
 
 // UTILS
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
+import getEventFilterLabels from '@/utils/getEventFilterLabels'
 import parseFilters from '@/utils/parseFilters'
-import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
+import parseImage from '@/utils/parseImage'
 
 // GQL
 const { $graphql } = useNuxtApp()
@@ -270,7 +271,6 @@ async function searchES() {
     if (userViewSelection.value === 'list') {
       const { paginatedSearchFilters } = useListSearchFilter()
       results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-      console.log('results: ', results)
     } else {
       //  Calendar View code
       const { paginatedSearchFilters } = useCalendarSearchFilter()
@@ -300,35 +300,6 @@ async function searchES() {
   }
 }
 
-// Get data for Image or Carousel at top of page
-// function parsedImage(obj) {
-//   return obj._source.imageCarousel
-// }
-
-// function isImageExists(obj) {
-//   return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
-// }
-
-function parsedCarouselImage(obj) {
-  return obj._source.imageCarousel
-}
-
-function parsedListingImage(obj) {
-  return obj._source.image
-}
-
-function isImageExists(obj) {
-  // Use Listing Image
-  if (parsedListingImage(obj) && parsedListingImage(obj).length === 1) {
-    return parsedListingImage(obj)[0]
-  } else if (parsedCarouselImage(obj) && parsedCarouselImage(obj).length >= 1) {
-    // Use ImageCarousel
-    return parsedCarouselImage(obj)[0]
-  } else {
-    return null
-  }
-}
-
 const parsedEvents = computed(() => {
   if (events.value.length === 0) return []
   return events.value.map((obj) => {
@@ -336,8 +307,7 @@ const parsedEvents = computed(() => {
       ...obj._source,
       tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
-      image: isImageExists(obj)
-      // image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
+      image: parseImage(obj)
     }
   })
 })
