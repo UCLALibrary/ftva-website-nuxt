@@ -1,0 +1,21 @@
+query FTVALARebellionFilmmakersList {
+  entry(section: ["ftvaListingLaRebellionFilmmakers"]) {
+    id
+    typeHandle
+    sectionHandle
+    titleGeneral
+    summary
+    displaySummary
+  }
+  entries(section: ["ftvaLARebellionIndividual"], orderBy: "postDate DESC") {
+    id
+    to: uri
+    typeHandle
+    sectionHandle
+    title
+    richText
+    associatedFilms {
+      titleGeneral
+    }
+  }
+}
