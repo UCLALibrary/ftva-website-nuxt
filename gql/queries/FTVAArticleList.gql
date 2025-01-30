@@ -7,25 +7,19 @@ query FTVAArticleList($slug: [String!]) {
     sectionHandle
     title: titleGeneral
     summary
+    displaySummary
     ftvaFeaturedArticles {
       title
+      ftvaAlternativeTitle
       postDate
+      articleCategories {
+        title
+      }
       ftvaHomepageDescription
       uri
       ftvaImage {
         ...Image
       }
-    }
-  }
-  entries(section: ["ftvaArticle"], orderBy: "postDate DESC") {
-    typeHandle
-    id
-    title
-    postDate
-    ftvaHomepageDescription
-    uri
-    ftvaImage {
-      ...Image
     }
   }
 }
