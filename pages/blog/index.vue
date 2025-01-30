@@ -27,7 +27,7 @@ if (error.value) {
   })
 }
 
-if (!data.value.entries) {
+if (!data.value.entry) {
   // console.log('no data')
   throw createError({
     statusCode: 404,
@@ -51,8 +51,17 @@ if (data.value.entry && import.meta.prerender) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
+const pageTitle = page.value.title
 const pageSummary = page.value.summary
 const featuredArticles = page.value.ftvaFeaturedArticles
+
+// PREVIEW WATCHER FOR CRAFT CONTENT
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'entry', {})
+  pageSummary.value = page.value.summary
+  featuredArticles.value = page.value.ftvaFeaturedArticles
+})
 
 // "STATE"
 const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
@@ -81,7 +90,7 @@ const { reset } = useInfiniteScroll(
   { distance: 100 }
 )
 
-// WINDOW SIZE HANDLING
+// HANDLE WINDOW SIZING
 const { width } = useWindowSize()
 watch(width, (newWidth) => {
   const wasMobile = isMobile.value
@@ -116,7 +125,7 @@ function handleScreenTransition() {
   searchES()
 }
 
-// ES FUNCTION
+// ELASTIC SEARCH
 async function searchES() {
   if (isLoading.value || !hasMore.value) return
 
@@ -185,10 +194,12 @@ const parsedFeaturedArticles = computed(() => {
   }
 
   return featuredArticles.map((obj) => {
+    const parsedTitle = parseRichTextTitle(obj)
+
     return {
       image: obj.ftvaImage[0],
       to: obj.uri,
-      title: obj.title,
+      title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),
       text: obj.ftvaHomepageDescription,
       dateCreated: obj.postDate
@@ -213,6 +224,11 @@ const parsedArticles = computed(() => {
     }
   })
 })
+
+// GET FEATURED ARTICLES RICH TEXT TITLE
+function parseRichTextTitle(obj) {
+  return !obj.ftvaAlternativeTitle ? obj.title : obj.ftvaAlternativeTitle
+}
 
 // GET ARTICLE CATEGORIES
 function parseArticleCategories(arr) {
@@ -257,7 +273,7 @@ useHead({
   <div class="page page-article-list">
     <SectionWrapper
       ref="scrollElem"
-      section-title="Archive Blog"
+      :section-title="pageTitle"
       class="header"
       theme="paleblue"
       data-test="blog-page-title"
@@ -277,9 +293,9 @@ useHead({
     <SectionWrapper
       class="blog-section-title"
       theme="paleblue"
-      level="3"
+      :level="3"
     >
-      <SectionHeader level="3">
+      <SectionHeader :level="3">
         {{ isMobile ? 'Featured Blog' : 'Featured Blogs' }}
       </SectionHeader>
 
@@ -314,9 +330,9 @@ useHead({
     <SectionWrapper
       class="blog-section-title"
       theme="paleblue"
-      level="3"
+      :level="3"
     >
-      <SectionHeader level="3">
+      <SectionHeader :level="3">
         Latest Blogs
       </SectionHeader>
 
