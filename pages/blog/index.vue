@@ -198,7 +198,8 @@ const parsedFeaturedArticles = computed(() => {
     const parsedTitle = parseRichTextTitle(obj)
 
     return {
-      image: obj.ftvaImage[0],
+      // image: obj.ftvaImage[0],
+      image: obj.image[0],
       to: obj.uri,
       title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),
@@ -242,14 +243,14 @@ function parsedCarouselImage(obj) {
   return obj._source.imageCarousel
 }
 
-function parsedFTVAImage(obj) {
-  return obj._source.ftvaImage
+function parsedListingImage(obj) {
+  return obj._source.image
 }
 
 function isImageExists(obj) {
-  // Use FTVA Image
-  if (parsedFTVAImage(obj) && parsedFTVAImage(obj).length === 1) {
-    return parsedFTVAImage(obj)[0]
+  // Use Listing Image
+  if (parsedListingImage(obj) && parsedListingImage(obj).length === 1) {
+    return parsedListingImage(obj)[0]
   } else if (parsedCarouselImage(obj) && parsedCarouselImage(obj).length >= 1) {
     // Use ImageCarousel
     return parsedCarouselImage(obj)[0]

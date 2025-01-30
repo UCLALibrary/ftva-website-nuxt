@@ -301,12 +301,32 @@ async function searchES() {
 }
 
 // Get data for Image or Carousel at top of page
-function parsedImage(obj) {
+// function parsedImage(obj) {
+//   return obj._source.imageCarousel
+// }
+
+// function isImageExists(obj) {
+//   return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
+// }
+
+function parsedCarouselImage(obj) {
   return obj._source.imageCarousel
 }
 
+function parsedListingImage(obj) {
+  return obj._source.image
+}
+
 function isImageExists(obj) {
-  return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
+  // Use Listing Image
+  if (parsedListingImage(obj) && parsedListingImage(obj).length === 1) {
+    return parsedListingImage(obj)[0]
+  } else if (parsedCarouselImage(obj) && parsedCarouselImage(obj).length >= 1) {
+    // Use ImageCarousel
+    return parsedCarouselImage(obj)[0]
+  } else {
+    return null
+  }
 }
 
 const parsedEvents = computed(() => {
@@ -316,7 +336,8 @@ const parsedEvents = computed(() => {
       ...obj._source,
       tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
-      image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
+      image: isImageExists(obj)
+      // image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
     }
   })
 })
