@@ -312,19 +312,12 @@ useHead({
           :data-test="`featured-blog-${index}`"
         >
           <template #customTitle>
-            <RichText v-html="article.title" />
+            <RichText :rich-text-content="article.title" />
           </template>
 
           <template #customDescription>
-            <RichText v-html="article.text" />
-          </template>
-
-          <!-- <template #title>
-            <RichText :rich-text-content="article.title" />
-          </template>
-          <template #description>
             <RichText :rich-text-content="article.text" />
-          </template> -->
+          </template>
         </BlockCardWithImage>
       </div>
     </SectionWrapper>
@@ -425,6 +418,7 @@ useHead({
     grid-row: 2;
   }
 
+  /*
   :deep(.custom-title),
   :deep(.custom-description) {
     .rich-text {
@@ -435,7 +429,7 @@ useHead({
       margin-bottom: 0;
     }
   }
-
+*/
   .blog-section-title {
     :deep(.section-header) {
       font-size: 38px;
