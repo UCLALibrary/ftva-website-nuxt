@@ -311,11 +311,12 @@ useHead({
           class="featured-article"
           :data-test="`featured-blog-${index}`"
         >
-          <template #title>
-            <RichText :rich-text-content="article.title" />
+          <template #customTitle>
+            <RichText v-html="article.title" />
           </template>
-          <template #description>
-            <RichText :rich-text-content="article.text" />
+
+          <template #customDescription>
+            <RichText v-html="article.text" />
           </template>
         </BlockCardWithImage>
       </div>
