@@ -5,7 +5,7 @@ export default function parseImage(obj) {
 
   if (listingImage !== undefined && listingImage.length === 1) {
     // Use Listing Image
-    return listingImage[0].image[0]
+    return listingImage[0]
   } else if (carouselImage !== undefined && carouselImage.length >= 1) {
     // Use ImageCarousel
     return carouselImage[0].image[0]
