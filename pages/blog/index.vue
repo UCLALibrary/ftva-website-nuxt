@@ -318,6 +318,13 @@ useHead({
           <template #customDescription>
             <RichText v-html="article.text" />
           </template>
+
+          <!-- <template #title>
+            <RichText :rich-text-content="article.title" />
+          </template>
+          <template #description>
+            <RichText :rich-text-content="article.text" />
+          </template> -->
         </BlockCardWithImage>
       </div>
     </SectionWrapper>
@@ -378,7 +385,6 @@ useHead({
     h2.section-title {
       color: $heading-grey;
     }
-
   }
 
   .dividers {
