@@ -45,7 +45,7 @@ if (data.value.entry && import.meta.prerender) {
     await indexContent(data.value.entry, route.params.slug)
     // console.log('Article indexed successfully during static build')
   } catch (error) {
-    console.error('FAILED TO INDEX ARTICLES during static build:', error)
+    // console.error('FAILED TO INDEX ARTICLES during static build:', error)
   }
 }
 
@@ -426,6 +426,14 @@ useHead({
 
     .parsed-content {
       margin-bottom: 0;
+    }
+  }
+
+  .blog-section-title {
+    :deep(.section-header) {
+      font-size: 38px;
+      margin-bottom: 48px;
+      color: $heading-grey;
     }
   }
 
