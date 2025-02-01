@@ -199,7 +199,7 @@ const parsedFeaturedArticles = computed(() => {
 
     return {
       image: obj.ftvaImage[0],
-      to: obj.uri,
+      to: `/${obj.uri}`,
       title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),
       text: obj.ftvaHomepageDescription,
@@ -418,7 +418,6 @@ useHead({
     grid-row: 2;
   }
 
-  /*
   :deep(.custom-title),
   :deep(.custom-description) {
     .rich-text {
@@ -427,14 +426,6 @@ useHead({
 
     .parsed-content {
       margin-bottom: 0;
-    }
-  }
-*/
-  .blog-section-title {
-    :deep(.section-header) {
-      font-size: 38px;
-      margin-bottom: 48px;
-      color: $heading-grey;
     }
   }
 
