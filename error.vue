@@ -3,10 +3,13 @@ import type { NuxtError } from '#app'
 import { SectionWrapper } from 'ucla-library-website-components'
 
 const props = defineProps({
-  error: Object as () => NuxtError
+  error: {
+    type: Object as () => NuxtError,
+    default: () => ({ statusCode: 500, message: 'An unexpected error occurred' }),
+  },
 })
-const isDevelopment = computed(() => import.meta.dev)
 
+const isDevelopment = computed(() => import.meta.dev)
 </script>
 
 <template>
@@ -52,10 +55,8 @@ const isDevelopment = computed(() => import.meta.dev)
 
         <divider-way-finder />
 
-        <rich-text
-          class="
-        error-text"
-        >
+        <rich-text class="
+        error-text">
           <h1
             v-if="error?.statusCode === 404"
             class="error-title"
