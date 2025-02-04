@@ -45,7 +45,7 @@ if (data.value.entry && import.meta.prerender) {
     await indexContent(data.value.entry, route.params.slug)
     // console.log('Article indexed successfully during static build')
   } catch (error) {
-    console.error('FAILED TO INDEX ARTICLES during static build:', error)
+    // console.error('FAILED TO INDEX ARTICLES during static build:', error)
   }
 }
 
@@ -199,7 +199,7 @@ const parsedFeaturedArticles = computed(() => {
 
     return {
       image: obj.ftvaImage[0],
-      to: obj.uri,
+      to: `/${obj.uri}`,
       title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),
       text: obj.ftvaHomepageDescription,
@@ -311,10 +311,11 @@ useHead({
           class="featured-article"
           :data-test="`featured-blog-${index}`"
         >
-          <template #title>
+          <template #customTitle>
             <RichText :rich-text-content="article.title" />
           </template>
-          <template #description>
+
+          <template #customDescription>
             <RichText :rich-text-content="article.text" />
           </template>
         </BlockCardWithImage>
@@ -377,7 +378,6 @@ useHead({
     h2.section-title {
       color: $heading-grey;
     }
-
   }
 
   .dividers {
