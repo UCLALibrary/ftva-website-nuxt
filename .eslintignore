@@ -4,4 +4,5 @@ node_modules/
 storybook-static/
 .output
 dist
-
+// eslint-disable-next-line no-console
+console.error and console.warn
