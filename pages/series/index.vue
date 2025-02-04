@@ -33,6 +33,7 @@ if (!data.value.entries) {
   })
 }
 
+// METADATA INFO
 if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
@@ -61,7 +62,8 @@ if (data.value.entry && import.meta.prerender) {
       }
     ]
   })
-  // preview watcher
+
+  // PREVIEW WATCHER
   watch(data, (newVal, oldVal) => {
     // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
     heading.value = _get(newVal, 'entry', {})
