@@ -15,7 +15,7 @@ import removeTags from '../utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // UTILS
-import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
+import getEventFilterLabels from '~/utils/getEventFilterLabels'
 
 const { $graphql } = useNuxtApp()
 

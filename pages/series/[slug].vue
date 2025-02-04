@@ -11,7 +11,7 @@ import _get from 'lodash/get'
 import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 // UTIL
-import { getEventFilterLabels } from '~/utils/getEventFilterLabels'
+import getEventFilterLabels from '~/utils/getEventFilterLabels'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'

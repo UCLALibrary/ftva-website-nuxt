@@ -6,7 +6,7 @@ ftvaEventTypeFilters) and return as a single array
  * @returns {Array}
  */
 
-export function getEventFilterLabels(obj) {
+export default function getEventFilterLabels(obj) {
   if (!obj) return []
   if (!obj.ftvaEventTypeFilters && !obj.ftvaScreeningFormatFilters) {
     return []
