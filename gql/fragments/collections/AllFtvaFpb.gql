@@ -10,7 +10,6 @@
 #import "../gql/fragments/BlockPullQuoteFragment.gql"
 #import "../gql/fragments/BlockRichTextFragment.gql"
 #import "../gql/fragments/BlockSimpleCardsFragment.gql"
-#import "../gql/fragments/BlockTextColumnsFragment.gql"
 
 fragment AllFtvaFpb on ElementInterface {
     blocks: allFtvaFpb {
@@ -46,9 +45,6 @@ fragment AllFtvaFpb on ElementInterface {
         }
         ...on allFtvaFpb_simpleCards_BlockType {
             ...BlockSimpleCardsFragment
-        }
-        ...on allFtvaFpb_textColumns_BlockType {
-            ...BlockTextColumnsFragment
         }
     }
 }
