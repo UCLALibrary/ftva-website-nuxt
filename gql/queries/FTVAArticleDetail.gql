@@ -11,7 +11,7 @@ query FTVAArticleDetail($slug: [String!]) {
     title
     uri
 
-    ftvaImage {
+    image: ftvaImage {
       ...Image
     }
 

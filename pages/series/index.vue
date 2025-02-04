@@ -9,17 +9,22 @@ import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 // GQL - start
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
+// UTILS
+import parseImage from '@/utils/parseImage'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {
   const data = await $graphql.default.request(FTVAEventSeriesList)
   return data
 })
+
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })
 }
+
 if (!data.value.entries) {
   throw createError({
     statusCode: 404,
@@ -94,15 +99,6 @@ function handleScreenTransition() {
   }
 }
 
-// GET DATA FOR IMAGE
-function parsedImage(obj) {
-  return obj._source.imageCarousel
-}
-
-function isImageExists(obj) {
-  return !!(parsedImage(obj) && parsedImage(obj).length === 1 && parsedImage(obj)[0]?.image && parsedImage(obj)[0]?.image?.length === 1)
-}
-
 // FORMATTED COMPUTED EVENTS
 const parsedEventSeries = computed(() => {
   if (series.value.length === 0) return []
@@ -115,7 +111,7 @@ const parsedEventSeries = computed(() => {
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
       ongoing: obj._source.ongoing,
-      image: isImageExists(obj) ? parsedImage(obj)[0]?.image[0] : null
+      image: parseImage(obj)
     }
   })
 })

@@ -9,6 +9,9 @@ import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 // GQL
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 
+// UTILS
+import parseImage from '@/utils/parseImage'
+
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
@@ -45,7 +48,8 @@ if (data.value.entry && import.meta.prerender) {
     await indexContent(data.value.entry, route.params.slug)
     // console.log('Article indexed successfully during static build')
   } catch (error) {
-    // console.error('FAILED TO INDEX ARTICLES during static build:', error)
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX ARTICLES during static build:', error)
   }
 }
 
@@ -198,7 +202,7 @@ const parsedFeaturedArticles = computed(() => {
     const parsedTitle = parseRichTextTitle(obj)
 
     return {
-      image: obj.ftvaImage[0],
+      image: obj.image[0],
       to: `/${obj.uri}`,
       title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),
@@ -221,7 +225,7 @@ const parsedArticles = computed(() => {
       description: obj._source.aboutTheAuthor,
       startDate: obj._source.postDate,
       endDate: obj._source.postDate,
-      image: isImageExists(obj)
+      image: parseImage(obj)
     }
   })
 })
@@ -235,27 +239,6 @@ function parseRichTextTitle(obj) {
 function parseArticleCategories(arr) {
   if (arr.length === 0) return
   return arr.map(obj => obj.title).join(', ')
-}
-
-// GET IMAGE
-function parsedCarouselImage(obj) {
-  return obj._source.imageCarousel
-}
-
-function parsedFTVAImage(obj) {
-  return obj._source.ftvaImage
-}
-
-function isImageExists(obj) {
-  // Use FTVA Image
-  if (parsedFTVAImage(obj) && parsedFTVAImage(obj).length === 1) {
-    return parsedFTVAImage(obj)[0]
-  } else if (parsedCarouselImage(obj) && parsedCarouselImage(obj).length >= 1) {
-    // Use ImageCarousel
-    return parsedCarouselImage(obj)[0]
-  } else {
-    return null
-  }
 }
 
 useHead({

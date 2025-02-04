@@ -17,7 +17,7 @@ query FTVAArticleList($slug: [String!]) {
       }
       ftvaHomepageDescription
       uri
-      ftvaImage {
+      image: ftvaImage {
         ...Image
       }
     }

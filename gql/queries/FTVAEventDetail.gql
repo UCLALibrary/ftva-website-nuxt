@@ -8,6 +8,10 @@ query FTVAEventDetail($slug: [String!]) {
     slug
     uri
 
+    image: ftvaImage {
+      ...Image
+    }
+
     imageCarousel {
       ...on imageCarousel_imageCarousel_BlockType {
         image {
