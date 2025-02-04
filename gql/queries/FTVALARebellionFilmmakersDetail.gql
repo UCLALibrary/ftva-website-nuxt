@@ -3,6 +3,7 @@
 query FTVALARebellionFilmmakersDetail($slug: [String!]) {
   ftvaLARebellionIndividual: entry(section: "ftvaLARebellionIndividual", slug: $slug) {
     id
+    title
     typeHandle
     sectionHandle
     slug
@@ -25,8 +26,10 @@ query FTVALARebellionFilmmakersDetail($slug: [String!]) {
     }
 
     associatedFilms {
-      image {
-        ...Image
+      ... on associatedFilms_film_BlockType {
+        image {
+          ...Image
+        }
       }
       titleGeneral
       description

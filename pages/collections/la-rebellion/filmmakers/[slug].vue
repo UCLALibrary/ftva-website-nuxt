@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionStaffSubjectLibrarian, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { BlockTag, ButtonDropdown, CardMeta, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionStaffSubjectLibrarian, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -39,7 +39,7 @@ if (!data.value.ftvaLARebellionIndividual) {
 }
 
 // This is creating an index of the content for ES search
-if (data.value.ftvaEvent && import.meta.prerender) {
+if (data.value.ftvaLARebellionIndividual && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
@@ -52,13 +52,10 @@ if (data.value.ftvaEvent && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'ftvaLARebellionIndividual', {}))
-// TODO refactor for filmography data ? Delete if not needed
-// const series = ref(_get(data.value, 'ftvaEventSeries', {}))
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaLARebellionIndividual', {})
-  // series.value = _get(newVal, 'ftvaEventSeries', {})
 })
 
 // Get data for Image or Carousel at top of page
@@ -77,13 +74,40 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+const parsedAssociatedFilms = computed(() => {
+  if (page.value.associatedFilms.length === 0) return []
+  return page.value.associatedFilms.map((obj) => {
+    // console.log('obj link', obj.filmLink)
+    const newFilmLink = ['/', obj.filmLink[0].uri].join('')
+    // console.log('newFilmLink', newFilmLink)
+    // console.log('new obj', {
+    //   ...obj,
+    //   filmLink: [
+    //     {
+    //       ...obj.filmLink[0],
+    //       uri: newFilmLink
+    //     }
+    //   ]
+    // })
+    return {
+      ...obj,
+      filmLink: [
+        {
+          ...obj.filmLink[0],
+          uri: newFilmLink
+        }
+      ]
+    }
+  })
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
     {
       hid: 'description',
       name: 'description',
-      content: removeTags(page.value.text)
+      content: removeTags(page.value.richText)
     }
   ]
 })
@@ -92,7 +116,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-event-detail"
+    class="page page-detail page-filmmaker-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -138,69 +162,80 @@ useHead({
       class="two-column"
     >
       <template #primaryTop>
-        <!-- <CardMeta
+        <CardMeta
           data-test="text-block"
+          category="L.A. Rebellion"
           :title="page?.title"
-        > -->
-        {{ page }}
+        >
+          <template #sharebutton>
+            <ButtonDropdown
+              data-test="share-button"
+              button-title="Share"
+              :has-icon="true"
+              :dropdown-list="socialList.dropdownList"
+            />
+          </template>
+        </CardMeta>
+        <RichText :rich-text-content="page?.richText" />
       </template>
     </TwoColLayoutWStickySideBar>
 
-    <!-- TODO: add conditional render once vars exist
-     v-if="parsedFilmography && parsedFilmography.length > 0" -->
     <SectionWrapper
+      v-if="parsedAssociatedFilms && parsedAssociatedFilms.length > 0"
       section-title="Filmography"
       theme="paleblue"
-      class="series-section-wrapper"
+      class="filmography-section-wrapper"
     >
-      <!-- <SectionStaffSubjectLibrarian /> -->
+      <section-staff-subject-librarian
+        :items="page.associatedFilms"
+        :table-headers="['', 'Film', 'Role', 'Year']"
+      />
     </SectionWrapper>
   </main>
 </template>
 
 <style lang="scss" scoped>
-// PAGE STYLES - USE OLD STYLES
-// .page-event-detail {
-//   position: relative;
-
-//   .two-column {
-
-//     .ftva.button-dropdown {
-//       margin-top: 30px;
-//     }
-
-//     .ftva.block-info {
-//       margin-top: 48px;
-//     }
-
-//     // SECTION SCREENING DETAILS
-//     // TODO when component is patched, remove styles?
-//     :deep(figure.responsive-video:not(:has(.video-embed))) {
-//       display: none;
-//     }
-//   }
-
-//   /* makes all EventSeries same height */
-//   :deep(.card) {
-//     min-height: 350px;
-//   }
-
-//   @media (max-width: 1200px) {
-//     :deep(.primary-column) {
-//       width: 65%;
-//     }
-//   }
-
-//   @media (max-width: 899px) {
-//     :deep(.primary-column) {
-//       width: inherit;
-//     }
-
-//     :deep(.block-tags) {
-//       padding-top: 30px;
-//     }
-//   }
-// }
-
 @import 'assets/styles/slug-pages.scss';
+
+.page-filmmaker-detail {
+  position: relative;
+
+  .two-column {
+
+    .ftva.button-dropdown {
+      margin-top: 30px;
+    }
+
+    .ftva.block-info {
+      margin-top: 48px;
+    }
+
+    // when two-column div is not followed by a filmography section
+    &:last-child {
+      // add 8px of space between the last element in the two-column div and the footer
+      padding-bottom: 8px;
+    }
+
+    // fix button scrolling over header
+    :deep(.sharebutton-slot) {
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  // change filmography section title color
+  :deep(.section-header) {
+
+    // reduce space below title by 12px on desktop (was 40px)
+    @media #{$large} {
+      margin-bottom: 28px;
+    }
+
+    .section-title {
+      color: #2f2f2f;
+    }
+
+    font-weight: 800;
+  }
+}
 </style>
