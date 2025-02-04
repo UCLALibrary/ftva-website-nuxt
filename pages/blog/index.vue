@@ -45,7 +45,8 @@ if (data.value.entry && import.meta.prerender) {
     await indexContent(data.value.entry, route.params.slug)
     // console.log('Article indexed successfully during static build')
   } catch (error) {
-    // console.error('FAILED TO INDEX ARTICLES during static build:', error)
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX ARTICLES during static build:', error)
   }
 }
 
