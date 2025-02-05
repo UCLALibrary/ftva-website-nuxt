@@ -251,12 +251,6 @@ useHead({
     }
   ]
 })
-
-// PREVIEW WATCHER
-watch(data, (newVal, oldVal) => {
-  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  heading.value = _get(newVal, 'entry', {})
-})
 </script>
 
 <template>

@@ -223,8 +223,7 @@ if (data.value.entry && import.meta.prerender) {
     return currentView.value === 'current' ? 1 : 0
   })
 
-  watch(
-    () => route.query,
+  watch(() => route.query,
     (newVal, oldVal) => {
       isLoading.value = false
       currentPage.value = route.query.page ? parseInt(route.query.page) : 1
