@@ -293,6 +293,7 @@ async function searchES() {
       hasMore.value = false
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Error fetching data:', error)
     hasMore.value = false
   } finally {

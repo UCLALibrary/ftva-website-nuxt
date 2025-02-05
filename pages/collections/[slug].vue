@@ -50,6 +50,7 @@ if (data.value.ftvaCollection && import.meta.prerender) {
     await indexContent(data.value.ftvaCollection, route.params.slug)
     // console.log('Collection indexed successfully during static build')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX COLLECTION during static build:', error)
   }
 }

@@ -46,6 +46,7 @@ if (data.value.entry && import.meta.prerender) {
 
     // console.log('Article indexed successfully during static build')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX ARTICLES during static build:', error)
   }
 }
