@@ -51,6 +51,7 @@ if (data.value.ftvaArticle && import.meta.prerender) {
     await indexContent(data.value.ftvaArticle, route.params.slug)
     // console.log('Article indexed successfully during static build')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX ARTICLE during static build:', error)
   }
 }
@@ -228,10 +229,7 @@ useHead({
   </main>
 </template>
 
-<style
-  lang="scss"
-  scoped
->
+<style lang="scss" scoped>
 // PAGE STYLES
 .page-article-detail {
   position: relative;

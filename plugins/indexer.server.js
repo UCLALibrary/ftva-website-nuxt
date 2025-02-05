@@ -64,10 +64,13 @@ export default defineNuxtPlugin((nuxtApp) => {
           // console.log('Create a new document in ES:', await response.text())
         }
       } else {
+        // eslint-disable-next-line no-console
         console.warn('not indexing anything')
       }
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.error('skip indexing if connection times out  during builds in the mean time: ' + e.message)
+      // eslint-disable-next-line no-console
       console.warn('skip indexing if connection times out  during builds in the mean time: ' + e.message)
       throw new Error('Elastic Search Indexing failed ' + e) // TODO uncomment when cause is clear
     }

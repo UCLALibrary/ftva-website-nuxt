@@ -50,6 +50,7 @@ if (data.value.ftvaEventSeries && import.meta.prerender) {
     await indexContent(data.value.ftvaEventSeries, route.params.slug)
     // console.log('Event series indexed successfully during static build')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX EVENT SERIES during static build:', error)
   }
 }

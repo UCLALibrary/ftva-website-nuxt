@@ -47,6 +47,7 @@ if (data.value.ftvaLARebellionIndividual && import.meta.prerender) {
     await indexContent(data.value.ftvaLARebellionIndividual, route.params.slug)
     // console.log('Event indexed successfully during static build')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX EVENT during static build:', error)
   }
 }
