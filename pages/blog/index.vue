@@ -241,6 +241,26 @@ function parseArticleCategories(arr) {
   return arr.map(obj => obj.title).join(', ')
 }
 
+// METADATA INFO
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.titleGeneral,
+      text: data.value.entry.summary,
+      uri: '/series'
+    }
+    // Index the event series data using the composable during static build
+    await indexContent(doc, 'series-listing')
+    // console.log('Event series indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX EVENT SERIES listing during static build:', error)
+  }
+}
+
+const heading = ref(_get(data.value, 'entry', {}))
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -250,6 +270,12 @@ useHead({
       content: removeTags(page.value.summary)
     }
   ]
+})
+
+// PREVIEW WATCHER
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  heading.value = _get(newVal, 'entry', {})
 })
 </script>
 
@@ -271,6 +297,7 @@ useHead({
       class="dividers"
       theme="paleblue"
     >
+      <h1>{{ data.entry }}</h1>
       <DividerWayFinder />
     </SectionWrapper>
 
