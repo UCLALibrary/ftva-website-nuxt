@@ -297,7 +297,6 @@ watch(data, (newVal, oldVal) => {
       class="dividers"
       theme="paleblue"
     >
-      <h1>{{ data.entry }}</h1>
       <DividerWayFinder />
     </SectionWrapper>
 
