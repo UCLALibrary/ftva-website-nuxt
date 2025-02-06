@@ -5,6 +5,7 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
     id
     title
     slug
+    uri
     sectionHandle
     ftvaAssociatedCollections {
       id
@@ -55,9 +56,11 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
       }
     }
   }
-  entries(section: "ftvaItemInCollection", relatedToEntries:{section:"ftvaCollection", slug:$collectionSlug}, orderBy: "random()", limit: 3) {
+  entries(section: "ftvaItemInCollection", relatedToEntries:{section:"ftvaCollection", slug:$collectionSlug}, orderBy: "random()", limit: 4) {
+    id
     title
     slug
+    uri
     ftvaImage {
       ...Image
     }
