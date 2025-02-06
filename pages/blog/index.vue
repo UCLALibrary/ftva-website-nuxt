@@ -249,7 +249,7 @@ if (data.value.entry && import.meta.prerender) {
     const doc = {
       title: data.value.entry.titleGeneral,
       text: data.value.entry.summary,
-      uri: '/series'
+      uri: '/blog'
     }
     // Index the articles data using the composable during static build
     await indexContent(doc, 'article-listing')
