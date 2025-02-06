@@ -45,11 +45,11 @@ if (data.value.entry && import.meta.prerender) {
       text: data.value.entry.summary,
       uri: '/events'
     }
-    // Index the event series data using the composable during static build
-    await indexContent(doc, 'series-listing')
-    // console.log('Event series indexed successfully during static build')
+    // Index the events data using the composable during static build
+    await indexContent(doc, 'event-listing')
+    // console.log('Events indexed successfully during static build')
   } catch (error) {
-    console.error('FAILED TO INDEX EVENT SERIES listing during static build:', error)
+    console.error('FAILED TO INDEX EVENT LISTING during static build:', error)
   }
 }
 

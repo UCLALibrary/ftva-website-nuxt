@@ -251,12 +251,12 @@ if (data.value.entry && import.meta.prerender) {
       text: data.value.entry.summary,
       uri: '/series'
     }
-    // Index the event series data using the composable during static build
-    await indexContent(doc, 'series-listing')
-    // console.log('Event series indexed successfully during static build')
+    // Index the articles data using the composable during static build
+    await indexContent(doc, 'article-listing')
+    // console.log('Articles indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('FAILED TO INDEX EVENT SERIES listing during static build:', error)
+    console.error('FAILED TO INDEX EVENT ARTICLE LISTING during static build:', error)
   }
 }
 
