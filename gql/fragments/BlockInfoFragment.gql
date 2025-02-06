@@ -1,0 +1,10 @@
+fragment BlockInfoFragment on ElementInterface {
+    id
+    typeHandle
+    infoBlock {
+      ... on infoBlock_infoBlock_BlockType {
+        icon
+        text
+      }
+    }
+}
