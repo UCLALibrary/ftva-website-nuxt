@@ -35,7 +35,43 @@ if (!data.value.entry) {
   })
 }
 
+// METADATA INFO
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.titleGeneral,
+      text: data.value.entry.summary,
+      uri: '/events'
+    }
+    // Index the event series data using the composable during static build
+    await indexContent(doc, 'series-listing')
+    // console.log('Event series indexed successfully during static build')
+  } catch (error) {
+    console.error('FAILED TO INDEX EVENT SERIES listing during static build:', error)
+  }
+}
+
 const heading = ref(_get(data.value, 'entry', {}))
+
+useHead({
+  title: heading.value ? heading.value.titleGeneral : '... Loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(heading.value.summary)
+    }
+  ]
+})
+
+// PREVIEW WATCHER
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  heading.value = _get(newVal, 'entry', {})
+})
+// GQL - End
 
 // TYPES
 interface FilterItem {
