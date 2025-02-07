@@ -12,6 +12,8 @@ const { $graphql } = useNuxtApp()
 
 const route = useRoute()
 
+// const { collectionSlug, slug } = route.params;
+
 // DATA
 const { data, error } = await useAsyncData(`collection-item-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVACollectionItem, { slug: route.params.slug })
@@ -50,7 +52,7 @@ console.log('Data: ', data.value)
 const page = ref(_get(data.value, 'entry', {}))
 const relatedContent = ref(_get(data.value, 'entries', {}))
 
-// Entries query returns 4 random articles; main article might be included in the randomized return; if so, filter out the main article and use the remaining three in the related section
+// Entries query returns 4 random articles; main article might be included in the randomized return; to prevent duplication, filter out the main article; use remaining content in the related section.
 const parsedRelatedContent = computed(() => {
   const mainContentId = page.value.id
 
@@ -87,9 +89,9 @@ useHead({
         :key="item.id"
       >
         <NuxtLink :to="`/${item.uri}`">
-          {{ item.title }}
+          <h4>Title-Link: {{ item.title }}</h4>
         </NuxtLink>
-        <br>
+        <p>uri: {{ item.uri }}</p>
         <p>id: {{ item.id }}</p>
         <p>image: {{ item.ftvaImage[0].src }}</p>
 
