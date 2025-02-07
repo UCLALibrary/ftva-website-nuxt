@@ -39,7 +39,7 @@ if (data.value.entry && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     const doc = {
-      title: data.value.entry.titleGeneral,
+      title: data.value.entry.title,
       text: data.value.entry.summary,
       uri: '/blog'
     }
