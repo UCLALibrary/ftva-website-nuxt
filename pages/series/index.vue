@@ -7,6 +7,7 @@ import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // COMPOSABLE
+import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // UTILS
@@ -14,7 +15,6 @@ import parseImage from '@/utils/parseImage'
 import removeTags from '~/utils/removeTags'
 
 // GQL - start
-import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 const { $graphql } = useNuxtApp()
 
@@ -308,7 +308,7 @@ watch(() => route.query,
         <SectionPagination
           v-if="
             totalPages
-            !== 1 && !isMobile"
+              !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"

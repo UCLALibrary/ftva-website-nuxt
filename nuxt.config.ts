@@ -77,7 +77,7 @@ export default defineNuxtConfig({
           routes.add('/help')
           routes.add('/about/status-updates') */
         }
-            // eslint-disable-next-line no-console
+        // eslint-disable-next-line no-console
         console.log('prerender:routes ctx.routes', routes)
       }
     },
