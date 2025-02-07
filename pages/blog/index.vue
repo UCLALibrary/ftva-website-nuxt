@@ -11,10 +11,6 @@ import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 
 // UTILS
 import parseImage from '@/utils/parseImage'
-import removeTags from '~/utils/removeTags'
-
-// COMPOSABLE
-import { useContentIndexer } from '~/composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
 
@@ -25,7 +21,7 @@ const { data, error } = await useAsyncData('article-list', async () => {
   return data
 })
 
-if (error & error.value) {
+if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })
@@ -41,16 +37,35 @@ if (!data.value.entry) {
 }
 
 // This is creating an index of the content for ES search
+// if (data.value.entry && import.meta.prerender) {
+//   try {
+//     // Call the composable to use the indexing function
+//     const { indexContent } = useContentIndexer()
+//     // Index the event data using the composable during static build
+//     await indexContent(data.value.entry, route.params.slug)
+//     // console.log('Article indexed successfully during static build')
+//   } catch (error) {
+//     // eslint-disable-next-line no-console
+//     console.error('FAILED TO INDEX ARTICLES during static build:', error)
+//   }
+// }
+
+// METADATA INFO
 if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
-    // Index the event data using the composable during static build
-    await indexContent(data.value.entry, route.params.slug)
-    // console.log('Article indexed successfully during static build')
+    const doc = {
+      title: data.value.entry.titleGeneral,
+      text: data.value.entry.summary,
+      uri: '/blog'
+    }
+    // Index the articles data using the composable during static build
+    await indexContent(doc, 'article-listing')
+    // console.log('Articles indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('FAILED TO INDEX ARTICLES during static build:', error)
+    console.error('FAILED TO INDEX EVENT ARTICLE LISTING during static build:', error)
   }
 }
 
@@ -242,27 +257,6 @@ function parseArticleCategories(arr) {
   return arr.map(obj => obj.title).join(', ')
 }
 
-// METADATA INFO
-if (data.value.entry && import.meta.prerender) {
-  try {
-    // Call the composable to use the indexing function
-    const { indexContent } = useContentIndexer()
-    const doc = {
-      title: data.value.entry.titleGeneral,
-      text: data.value.entry.summary,
-      uri: '/blog'
-    }
-    // Index the articles data using the composable during static build
-    await indexContent(doc, 'article-listing')
-    // console.log('Articles indexed successfully during static build')
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('FAILED TO INDEX EVENT ARTICLE LISTING during static build:', error)
-  }
-}
-
-const heading = ref(_get(data.value, 'entry', {}))
-
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -277,7 +271,7 @@ useHead({
 // PREVIEW WATCHER
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  heading.value = _get(newVal, 'entry', {})
+  page.value = _get(newVal, 'entry', {})
 })
 </script>
 
