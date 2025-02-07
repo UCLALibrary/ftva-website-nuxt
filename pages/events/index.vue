@@ -49,6 +49,7 @@ if (data.value.entry && import.meta.prerender) {
     await indexContent(doc, 'event-listing')
     // console.log('Events indexed successfully during static build')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX EVENT LISTING during static build:', error)
   }
 }

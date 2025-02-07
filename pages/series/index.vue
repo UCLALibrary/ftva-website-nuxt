@@ -47,6 +47,7 @@ if (data.value.entry && import.meta.prerender) {
     await indexContent(doc, 'series-listing')
     // console.log('Event series indexed successfully during static build')
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX EVENT SERIES listing during static build:', error)
   }
 }
@@ -299,6 +300,7 @@ watch(() => route.query,
             </template>
           </TabItem>
         </TabList>
+
         <SectionPagination
           v-if="
             totalPages
