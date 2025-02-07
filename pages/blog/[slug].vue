@@ -28,7 +28,7 @@ const { data, error } = await useAsyncData(`blog-${route.params.slug}`, async ()
   const data = await $graphql.default.request(FTVAArticleDetail, { slug: route.params.slug })
   return data
 })
-if (error.value) {
+if (error & error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })

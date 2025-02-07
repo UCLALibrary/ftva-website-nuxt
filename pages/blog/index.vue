@@ -25,7 +25,7 @@ const { data, error } = await useAsyncData('article-list', async () => {
   return data
 })
 
-if (error.value) {
+if (error & error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })
