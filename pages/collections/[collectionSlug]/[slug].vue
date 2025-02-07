@@ -12,11 +12,11 @@ const { $graphql } = useNuxtApp()
 
 const route = useRoute()
 
-// const { collectionSlug, slug } = route.params;
+const { collectionSlug, slug } = route.params
 
 // DATA
-const { data, error } = await useAsyncData(`collection-item-${route.params.slug}`, async () => {
-  const data = await $graphql.default.request(FTVACollectionItem, { slug: route.params.slug })
+const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
+  const data = await $graphql.default.request(FTVACollectionItem, { slug, collectionSlug })
   return data
 })
 
@@ -40,7 +40,7 @@ if (data.value.entry && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     // Index the data using the composable during static build
-    await indexContent(data.value.entry, route.params.slug)
+    await indexContent(data.value.entry, slug)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX COLLECTION ITEM during static build:', error)
@@ -93,8 +93,7 @@ useHead({
         </NuxtLink>
         <p>uri: {{ item.uri }}</p>
         <p>id: {{ item.id }}</p>
-        <p>image: {{ item.ftvaImage[0].src }}</p>
-
+        <p>image: {{ item.ftvaImage[0] }}</p>
         <divider-general />
       </div>
     </section-wrapper>
