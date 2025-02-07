@@ -1,5 +1,5 @@
 #import "../gql/fragments/Image.gql"
-#import "../gql/fragments/collections/AllFTVAFpb.gql"
+#import "../gql/fragments/collections/AllFFpb.gql"
 
 query FTVAGeneralContent {
   entry(section: "ftvaGeneralContentPage") {
