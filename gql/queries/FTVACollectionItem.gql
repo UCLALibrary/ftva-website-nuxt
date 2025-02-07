@@ -1,0 +1,70 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
+  entry(section: "ftvaItemInCollection", slug:$slug ) {
+    id
+    title
+    slug
+    uri
+    sectionHandle
+    ftvaAssociatedCollections {
+      id
+      title
+    }
+    ftvaImage {
+      ...Image
+    }
+    videoEmbed
+    richText
+    externalResourceUrl
+
+    ftvaDate
+    releaseDate
+    episodeAirDate
+    episodeTitle
+    episodeSeason
+    episodeNumber
+    ftvaCollectionGroup {
+      ... on ftvaCollectionGroup_Category {
+      	id
+        title
+      }
+    }
+    ftvaCollectionTags {
+      ... on ftvaCollectionTags_Tag {
+        id
+        title
+      }
+    }
+    director {
+      ... on ftvaLARebellionIndividual_ftvaLARebellionIndividual_Entry {
+        nameFirst
+        nameLast
+      }
+    }
+    year
+    country
+    runtime
+    associatedIndividuals {
+      ... on associatedIndividuals_individual_BlockType {
+        individual {
+          id
+          nameFirst
+          nameLast
+        }
+        roles
+      }
+    }
+  }
+  entries(section: "ftvaItemInCollection", relatedToEntries:{section:"ftvaCollection", slug:$collectionSlug}, orderBy: "random()", limit: 4) {
+    id
+    title
+    slug
+    uri
+    ftvaImage {
+      ...Image
+    }
+     videoEmbed
+  }
+}
+
