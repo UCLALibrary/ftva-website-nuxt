@@ -11,6 +11,7 @@ import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 // UTILS
 import parseImage from '@/utils/parseImage'
+import removeTags from '~/utils/removeTags'
 
 const { $graphql } = useNuxtApp()
 

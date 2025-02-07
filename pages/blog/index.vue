@@ -11,6 +11,7 @@ import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 
 // UTILS
 import parseImage from '@/utils/parseImage'
+import removeTags from '~/utils/removeTags'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'

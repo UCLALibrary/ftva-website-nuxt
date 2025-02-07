@@ -12,6 +12,7 @@ import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import getEventFilterLabels from '@/utils/getEventFilterLabels'
 import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
+import removeTags from '~/utils/removeTags'
 
 // GQL
 const { $graphql } = useNuxtApp()
