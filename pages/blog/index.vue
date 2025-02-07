@@ -9,9 +9,6 @@ import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 // GQL
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 
-// UTILS
-import parseImage from '@/utils/parseImage'
-
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -35,20 +32,6 @@ if (!data.value.entry) {
     fatal: true
   })
 }
-
-// This is creating an index of the content for ES search
-// if (data.value.entry && import.meta.prerender) {
-//   try {
-//     // Call the composable to use the indexing function
-//     const { indexContent } = useContentIndexer()
-//     // Index the event data using the composable during static build
-//     await indexContent(data.value.entry, route.params.slug)
-//     // console.log('Article indexed successfully during static build')
-//   } catch (error) {
-//     // eslint-disable-next-line no-console
-//     console.error('FAILED TO INDEX ARTICLES during static build:', error)
-//   }
-// }
 
 // METADATA INFO
 if (data.value.entry && import.meta.prerender) {
@@ -266,12 +249,6 @@ useHead({
       content: removeTags(page.value.summary)
     }
   ]
-})
-
-// PREVIEW WATCHER
-watch(data, (newVal, oldVal) => {
-  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-  page.value = _get(newVal, 'entry', {})
 })
 </script>
 

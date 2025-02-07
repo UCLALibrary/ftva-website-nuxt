@@ -7,12 +7,7 @@ import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // GQL - start
-// UTILS
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
-import parseImage from '@/utils/parseImage'
-
-// COMPOSABLE
-import { useContentIndexer } from '~/composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
 
