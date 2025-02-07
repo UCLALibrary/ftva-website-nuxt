@@ -6,12 +6,10 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination, TabItem, 
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
+// GQL - start
 // UTILS
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 import parseImage from '@/utils/parseImage'
-import removeTags from '~/utils/removeTags'
-
-// GQL - start
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
@@ -308,7 +306,7 @@ watch(() => route.query,
         <SectionPagination
           v-if="
             totalPages
-              !== 1 && !isMobile"
+            !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
