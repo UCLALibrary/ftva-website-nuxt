@@ -6,15 +6,15 @@ import { DividerWayFinder, SectionStaffArticleList, SectionPagination, TabItem, 
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
-// COMPOSABLE
-import { useContentIndexer } from '~/composables/useContentIndexer'
-
 // UTILS
 import parseImage from '@/utils/parseImage'
 import removeTags from '~/utils/removeTags'
 
 // GQL - start
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
+
+// COMPOSABLE
+import { useContentIndexer } from '~/composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
 
