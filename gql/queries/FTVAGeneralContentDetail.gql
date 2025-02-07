@@ -1,35 +1,18 @@
 #import "../gql/fragments/Image.gql"
-#import "../gql/fragments/collections/AllFpb.gql"
+#import "../gql/fragments/collections/AllFTVAFpb.gql"
 
-query GeneralContentDetail($path: [String!]) {
-    entry(section: "generalContentPage", uri: $path) {
-        ... on generalContentPage_generalContentPage_Entry {
-            id
-            title
-            slug
-            uri
-            button: buttonUrl {
-                ... on buttonUrl_button_BlockType {
-                    id
-                    buttonText
-                    buttonUrl
-                }
-            }
-            summary
-            heroImage {
-                ... on heroImage_heroImage_BlockType {
-                    id
-                    image {
-                        ...Image
-                    }
-                }
-            }
+query FTVAGeneralContent {
+  entry(section: "ftvaGeneralContentPage") {
+    title
+    formattedTitle
+    imageCarousel {
+      ...on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
         }
-        parent {
-            slug
-            title
-            uri
-        }
-        ...AllFpb
+        creditText
+      }
     }
+    ...AllFtvaFpb
+  }
 }

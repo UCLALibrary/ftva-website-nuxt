@@ -3,7 +3,7 @@
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import {
-  BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, PageAnchor, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar
+  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, RichText, PageAnchor, FlexibleBlocks, SectionWrapper,
 } from 'ucla-library-website-components'
 
 import { onMounted } from 'vue'
@@ -112,6 +112,7 @@ onMounted(() => {
 
     <section-wrapper class="section-banner">
       <code>{{ page }}</code>
+      JEN JEN JEN
       <banner-header
         v-if="page && page.heroImage && page.heroImage.length == 1"
         :media="page.heroImage[0].image[0]"
