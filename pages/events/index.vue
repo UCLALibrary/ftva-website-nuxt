@@ -12,10 +12,6 @@ import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import getEventFilterLabels from '@/utils/getEventFilterLabels'
 import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
-import removeTags from '~/utils/removeTags'
-
-// COMPOSABLE
-import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // GQL
 const { $graphql } = useNuxtApp()
@@ -24,7 +20,7 @@ const { data, error } = await useAsyncData('event-list', async () => {
   return data
 })
 
-if (error & error.value) {
+if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
   })
