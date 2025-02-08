@@ -13,8 +13,8 @@ function getHeadersMethod() {
     }
   })
 
-  // console.log('The plugin has been mounted!')
-  // console.log('h2Array:', h2Array)
+  console.log('The plugin has been mounted!')
+  console.log('h2Array:', h2Array)
 
   return h2Array
 }
