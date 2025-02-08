@@ -12,8 +12,9 @@ function getHeadersMethod() {
       h2Array.push(element.textContent)
     }
   })
-
+  // eslint-disable-next-line no-console
   console.log('The plugin has been mounted!')
+  // eslint-disable-next-line no-console
   console.log('h2Array:', h2Array)
 
   return h2Array
