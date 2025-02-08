@@ -3,7 +3,7 @@
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import {
-  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, RichText, PageAnchor, FlexibleBlocks, SectionWrapper,
+  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, CardMeta, RichText, PageAnchor, FlexibleBlocks, SectionWrapper,
 } from 'ucla-library-website-components'
 
 import { onMounted } from 'vue'
@@ -73,12 +73,11 @@ const parseParentTitle = computed(() => {
   return 'Home'
 })
 
-const parsedButtonText = computed(() => {
-  return _get(page.value, 'button[0].buttonText', '')
-})
-
-const parsedButtonTo = computed(() => {
-  return _get(page.value, 'button[0].buttonUrl', '')
+const parseTitle = computed(() => {
+  if (page.value.formattedTitle)
+    return page.value.formattedTitle
+  else
+    return page.value.title
 })
 
 onMounted(() => {
@@ -100,44 +99,33 @@ onMounted(() => {
       :parent-title="parseParentTitle"
     />
 
-    <banner-text
-      v-if="page && (!page.heroImage || page.heroImage.length == 0)"
-      class="banner-text"
-      :category="page.format"
-      :title="page.title"
-      :text="page.summary"
-      :button-text="parsedButtonText"
-      :to="parsedButtonTo"
-    />
+    <TwoColLayoutWStickySideBar>
+      <template #primaryTop>
+        <CardMeta
+          data-test="text-block"
+          category="Scategory"
+          :title="parseTitle"
+        >
+          <template #customDescription>
+            <rich-text :rich-text-content="page.text" />
+          </template>
+        </CardMeta>
 
-    <section-wrapper class="section-banner">
-      <code>{{ page }}</code>
-      JEN JEN JEN
-      <banner-header
-        v-if="page && page.heroImage && page.heroImage.length == 1"
-        :media="page.heroImage[0].image[0]"
-        :category="page.format"
-        :title="page.title"
-        :text="page.summary"
-        :to="parsedButtonTo"
-        :prompt="parsedButtonText"
-      />
-    </section-wrapper>
+        <DividerWayFinder class="remove-top-margin" />
 
-    <section-wrapper theme="divider">
-      <divider-way-finder class="divider-way-finder" />
-    </section-wrapper>
+        <FlexibleBlocks
+          class="flexible-content"
+          :blocks="page.blocks"
+        />
+      </template>
+      <template #sidebarTop />
+    </TwoColLayoutWStickySideBar>
 
     <page-anchor
       v-if="h2Array.length >= 3"
       :section-titles="h2Array"
     />
 
-    <flexible-blocks
-      v-if="page"
-      class="flexible-content"
-      :blocks="page.blocks"
-    />
   </main>
 </template>
 
