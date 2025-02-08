@@ -91,13 +91,15 @@ onMounted(() => {
     id="main"
     class="page page-general-content"
   >
-    <nav-breadcrumb
+    <NavBreadcrumb
       v-if="page"
       :title="page.title"
       class="breadcrumb"
       :to="parseParentPageURL"
       :parent-title="parseParentTitle"
     />
+
+    <code>{{ page }}</code>
 
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
@@ -129,9 +131,5 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.page-general-content {
-  .section-banner {
-    margin-top: 0;
-  }
-}
+.page-general-content {}
 </style>
