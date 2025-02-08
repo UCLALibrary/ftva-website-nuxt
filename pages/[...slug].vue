@@ -125,7 +125,6 @@ onMounted(() => {
       v-if="h2Array.length >= 3"
       :section-titles="h2Array"
     />
-
   </main>
 </template>
 
