@@ -17,7 +17,7 @@ import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // UTILS
 import removeTags from '~/utils/removeTags'
-import socialList from '~/utils/socialList'
+import { socialList } from '~/utils/socialList'
 
 const { $graphql } = useNuxtApp()
 
