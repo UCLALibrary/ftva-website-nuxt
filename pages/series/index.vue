@@ -9,9 +9,6 @@ import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 // GQL - start
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
-// UTILS
-import parseImage from '@/utils/parseImage'
-
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('series-list', async () => {
@@ -33,7 +30,43 @@ if (!data.value.entries) {
   })
 }
 
+// METADATA INFO
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.titleGeneral,
+      text: data.value.entry.summary,
+      uri: '/series'
+    }
+    // Index the event series data using the composable during static build
+    await indexContent(doc, 'series-listing')
+    // console.log('Event series indexed successfully during static build')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX EVENT SERIES listing during static build:', error)
+  }
+}
+
 const heading = ref(_get(data.value, 'entry', {}))
+
+useHead({
+  title: heading.value ? heading.value.titleGeneral : '... Loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(heading.value.summary)
+    }
+  ]
+})
+
+// PREVIEW WATCHER
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  heading.value = _get(newVal, 'entry', {})
+})
 // GQL - End
 
 // STATE MANAGEMENT
@@ -189,8 +222,7 @@ const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
 })
 
-watch(
-  () => route.query,
+watch(() => route.query,
   (newVal, oldVal) => {
     isLoading.value = false
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
@@ -265,10 +297,11 @@ watch(
             </template>
           </TabItem>
         </TabList>
+
         <SectionPagination
           v-if="
             totalPages
-              !== 1 && !isMobile"
+            !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
