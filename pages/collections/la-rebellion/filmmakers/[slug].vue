@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockTag, ButtonDropdown, CardMeta, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionStaffSubjectLibrarian, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { BlockTag, ButtonDropdown, CardMeta, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -187,10 +187,43 @@ useHead({
       theme="paleblue"
       class="filmography-section-wrapper"
     >
-      <section-staff-subject-librarian
-        :items="page.associatedFilms"
+      <TableComponent
         :table-headers="['', 'Film', 'Role', 'Year']"
-      />
+        :table-caption="'Filmography'"
+      >
+        <TableRow
+          v-for="item, index in parsedAssociatedFilms"
+          :key="index"
+          :num-cells="4"
+        >
+          <template #column1>
+            <div class="responsive-image">
+              <ResponsiveImage :media="item.image[0]" />
+            </div>
+          </template>
+          <template #column2>
+            <h1>
+              <SmartLink
+                class="film-title"
+                :to="item.filmLink[0].uri"
+              >
+                {{ item.titleGeneral }}
+              </SmartLink>
+            </h1>
+            <RichText :rich-text-content="item.description" />
+          </template>
+          <template #column3>
+            <p class="subtitle">
+              {{ item.roles }}
+            </p>
+          </template>
+          <template #column4>
+            <p class="subtitle">
+              {{ item.year }}
+            </p>
+          </template>
+        </TableRow>
+      </TableComponent>
     </SectionWrapper>
   </main>
 </template>
