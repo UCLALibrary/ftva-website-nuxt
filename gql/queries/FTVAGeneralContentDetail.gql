@@ -2,7 +2,7 @@
 #import "../gql/fragments/collections/AllFtvaFpb.gql"
 
 query FTVAGeneralContent($path: [String!]) {
-  entry(section: "ftvaGeneralContentPage") {
+  entry(section: "ftvaGeneralContentPage", uri: $path) {
     id
     uri
     title
