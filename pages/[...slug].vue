@@ -42,7 +42,7 @@ if (!data.value.entry) {
   })
 }
 
-if (data.value.entry.slug && process.server) {
+if (data.value.entry && import.meta.prerender) {
   const { $elasticsearchplugin } = useNuxtApp()
   await $elasticsearchplugin.index(data.value.entry, path.replaceAll('/', '--'))
 }
