@@ -3,7 +3,6 @@
 
 #import "../gql/fragments/BlockAssociatedTopicCardsFragment.gql"
 #import "../gql/fragments/BlockCallToActionFragment.gql"
-#import "../gql/fragments/BlockContactInfoFragment.gql"
 #import "../gql/fragments/BlockFormFragment.gql"
 #import "../gql/fragments/BlockHorizontalDividerFragment.gql"
 #import "../gql/fragments/BlockInfoFragment.gql"
@@ -19,14 +18,11 @@ fragment AllFtvaFpb on ElementInterface {
         id
         typeHandle
 
-        ... on allFpb_associatedTopicCards_BlockType {
+        ... on allFpb_associatedTopics_BlockType {
             ...BlockAssociatedTopicCardsFragment
         }
         ... on allFtvaFpb_callToAction_BlockType {
             ...BlockCallToActionFragment
-        }
-        ... on allFtvaFpb_contactInfo_BlockType {
-            ...BlockContactInfoFragment
         }
         ... on allFtvaFpb_form_BlockType {
             ...BlockFormFragment
