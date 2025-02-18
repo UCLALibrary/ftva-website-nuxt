@@ -20,10 +20,13 @@ const route = useRoute()
 
 const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final slashes
 
-const variables = { path }
-
+// Because we gencontent page uses ftva / in the uri to differentiate between the lib and meat websites the GQL query will need the slug instead of the uri
 const { data, error } = await useAsyncData(`general-content-${path}`, async () => {
-  const data = await $graphql.default.request(FTVA_GENERAL_CONTENT_DETAIL, variables)
+  const data = await $graphql.default.request(FTVA_GENERAL_CONTENT_DETAIL, {
+    slug: path.substring(
+      path.lastIndexOf("/") + 1
+    ),
+  })
   return data
 })
 
@@ -133,7 +136,5 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.page-general-content {
-  background-color: aqua;
-}
+.page-general-content {}
 </style>

@@ -1,21 +1,17 @@
-#import "../gql/fragments/Image.gql"
 #import "../gql/fragments/collections/AllFtvaFpb.gql"
 
-query FTVAGeneralContent {
-  entry(section: "ftvaGeneralContentPage") {
-    id
-    uri
-    title
-    formattedTitle
-    text: ftvaHomepageDescription
-    imageCarousel {
-      ...on imageCarousel_imageCarousel_BlockType {
-        image {
-          ...Image
-        }
-        creditText
-      }
+query FTVAGeneralContent($slug: [String!]) {
+  entry(section: "ftvaGeneralContentPage", slug: $slug) {
+    ... on ftvaGeneralContentPage_generalContentPage_Entry {
+      id
+      uri
+      slug
+      title
+      formattedTitle
+      ftvaHomepageDescription
+      ...AllFtvaFpb
     }
-    ...AllFtvaFpb
   }
 }
+
+# Because we gencontent page uses ftva/ in the uri to differentiate it between the lib and meat websites the GQL query will need the slug instead of the uri
