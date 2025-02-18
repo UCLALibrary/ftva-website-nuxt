@@ -101,7 +101,7 @@ onMounted(() => {
       :parent-title="parseParentTitle"
     />
 
-    <code>{{ page }}</code>
+    <code><strong>DATA:</strong> {{ page }}</code>
 
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
@@ -133,5 +133,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.page-general-content {}
+.page-general-content {
+  background-color: aqua;
+}
 </style>
