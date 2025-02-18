@@ -1,7 +1,3 @@
-
-#import "../gql/fragments/MediaAsset.gql"
-
-
 #import "../gql/fragments/BlockAssociatedTopicCardsFragment.gql"
 #import "../gql/fragments/BlockCallToActionFragment.gql"
 #import "../gql/fragments/BlockFormFragment.gql"
