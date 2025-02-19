@@ -6,7 +6,7 @@ import {
   TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, CardMeta, RichText, PageAnchor, FlexibleBlocks, SectionWrapper,
 } from 'ucla-library-website-components'
 
-import { onMounted } from 'vue'
+import { onMounted, nextTick } from 'vue'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -68,8 +68,12 @@ useHead({
 })
 
 onMounted(() => {
-  // Call the plugin method to get the .section-header2 and .section-header3 elements
-  h2Array.value = getHeadersMethod()
+  if (process.client) {
+    setTimeout(async () => {
+      await nextTick()
+      h2Array.value = getHeaders()
+    }, 1500) // Delay ensures DOM is fully updated
+  }
 })
 </script>
 
@@ -81,18 +85,26 @@ onMounted(() => {
     <NavBreadcrumb data-test="breadcrumb" />
 
     <code><strong>DATA:</strong> {{ page }}</code>
+    <hr />
+    <code>HEADERS for the PageAnchors: {{ getHeaders() }}</code>
 
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
-        <CardMeta data-test="text-block">
-          <template #customtitle>
-            <rich-text :rich-text-content="page.formattedTitle || page.title" />
-          </template>
+        <!-- <CardMeta data-test="text-block">
+              <template #customtitle>
+                <rich-text :rich-text-content="page.formattedTitle || page.title" />
+              </template>
 
-          <!-- <template #customDescription>
-            <rich-text :rich-text-content="page.text" />
-          </template> -->
-        </CardMeta>
+<template #customDescription>
+                <rich-text :rich-text-content="page.text" />
+              </template>
+</CardMeta> -->
+
+        <!-- TITLE -->
+        <rich-text
+          class="title"
+          :rich-text-content="page.formattedTitle || page.title"
+        />
 
         <DividerWayFinder class="remove-top-margin" />
 
@@ -112,5 +124,11 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.page-general-content {}
+.page-general-content {
+  .title {
+    @include ftva-h2;
+    color: $heading-grey;
+    margin: 0 0 24px;
+  }
+}
 </style>

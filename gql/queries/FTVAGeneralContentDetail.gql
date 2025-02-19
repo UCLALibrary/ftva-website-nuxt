@@ -1,4 +1,5 @@
 #import "../gql/fragments/collections/AllFtvaFpb.gql"
+#import "../gql/fragments/Image.gql"
 
 query FTVAGeneralContent($slug: [String!]) {
   entry(section: "ftvaGeneralContentPage", slug: $slug) {
@@ -9,6 +10,14 @@ query FTVAGeneralContent($slug: [String!]) {
       title
       formattedTitle
       ftvaHomepageDescription
+      imageCarousel {
+      ...on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
       ...AllFtvaFpb
     }
   }
