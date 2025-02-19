@@ -65,13 +65,6 @@ useHead({
   title: page.value ? page.value.title : '... loading'
 })
 
-const parseTitle = computed(() => {
-  if (page.value.formattedTitle)
-    return page.value.formattedTitle
-  else
-    return page.value.title
-})
-
 onMounted(() => {
   // Call the plugin method to get the .section-header2 and .section-header3 elements
   h2Array.value = getHeadersMethod()
