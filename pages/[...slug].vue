@@ -82,10 +82,11 @@ onMounted(() => {
 
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
-        <CardMeta
-          data-test="text-block"
-          :title="page.formattedTitle || page.title"
-        >
+        <CardMeta data-test="text-block">
+          <template #customtitle>
+            <rich-text :rich-text-content="page.formattedTitle || page.title" />
+          </template>
+
           <!-- <template #customDescription>
             <rich-text :rich-text-content="page.text" />
           </template> -->
