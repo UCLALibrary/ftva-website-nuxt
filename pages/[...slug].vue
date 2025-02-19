@@ -14,9 +14,6 @@ import _get from 'lodash/get'
 // GQL
 import FTVA_GENERAL_CONTENT_DETAIL from '../gql/queries/FTVAGeneralContentDetail.gql'
 
-// UTILS
-import getHeaders from '~/utils/getHeaders'
-
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
