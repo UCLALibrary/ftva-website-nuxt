@@ -52,6 +52,14 @@ console.log('Data: ', data.value)
 const page = ref(_get(data.value, 'entry', {}))
 const relatedContent = ref(_get(data.value, 'entries', {}))
 
+console.log('Page: ', page.value)
+
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'entry', {})
+  relatedContent.value = _get(newVal, 'entries', {})
+})
+
 // Entries query returns 4 random articles; main article might be included in the randomized return; to prevent duplication, filter out the main article; use remaining content in the related section.
 const parsedRelatedContent = computed(() => {
   const mainContentId = page.value.id
