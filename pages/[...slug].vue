@@ -11,10 +11,13 @@ import { onMounted } from 'vue'
 // HELPERS
 import _get from 'lodash/get'
 
+// UTILS
+import getHeaders from '~/utils/getHeaders'
+
 // GQL
 import FTVA_GENERAL_CONTENT_DETAIL from '../gql/queries/FTVAGeneralContentDetail.gql'
 
-const { $graphql, $getHeaders } = useNuxtApp()
+const { $graphql } = useNuxtApp()
 
 const route = useRoute()
 
@@ -46,8 +49,9 @@ if (!data.value.entry) {
 }
 
 if (data.value.entry && import.meta.prerender) {
-  const { $elasticsearchplugin } = useNuxtApp()
-  await $elasticsearchplugin.index(data.value.entry, path.replaceAll('/', '--'))
+  // Call the composable to use the indexing function
+  const { indexContent } = useContentIndexer()
+  await indexContent(data.value.entry, path.replaceAll('/', '--'))
 }
 
 const page = ref(_get(data.value, 'entry', {}))
@@ -80,7 +84,7 @@ const parseTitle = computed(() => {
 
 onMounted(() => {
   // Call the plugin method to get the .section-header2 and .section-header3 elements
-  h2Array.value = $getHeaders.getHeadersMethod()
+  h2Array.value = getHeadersMethod()
 })
 </script>
 
