@@ -20,7 +20,9 @@ const route = useRoute()
 
 const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final slashes
 
-// Because we gencontent page uses ftva / in the uri to differentiate between the lib and meat websites the GQL query will need the slug instead of the uri
+// Because the generalcontent page uses ftva / in the uri
+// to differentiate between the library and meap websites
+// the GQL query will need the slug instead of the uri
 const { data, error } = await useAsyncData(`general-content-${path}`, async () => {
   const data = await $graphql.default.request(FTVA_GENERAL_CONTENT_DETAIL, {
     slug: path.substring(
