@@ -64,13 +64,6 @@ useHead({
   title: page.value ? page.value.title : '... loading'
 })
 
-const parseParentPageURL = computed(() => {
-  if (page.value.parent && page.value.parent.uri)
-    return `/${page.value.parent.uri}`
-
-  return '/'
-})
-
 const parseParentTitle = computed(() => {
   if (page.value.parent && page.value.parent.title)
     return page.value.parent.title
@@ -96,13 +89,8 @@ onMounted(() => {
     id="main"
     class="page page-general-content"
   >
-    <NavBreadcrumb
-      v-if="page"
-      :title="page.title"
-      class="breadcrumb"
-      :to="parseParentPageURL"
-      :parent-title="parseParentTitle"
-    />
+
+    <NavBreadcrumb data-test="breadcrumb" />
 
     <code><strong>DATA:</strong> {{ page }}</code>
 
@@ -110,12 +98,11 @@ onMounted(() => {
       <template #primaryTop>
         <CardMeta
           data-test="text-block"
-          category="Scategory"
-          :title="parseTitle"
+          :title="page.formattedTitle || page.title"
         >
-          <template #customDescription>
+          <!-- <template #customDescription>
             <rich-text :rich-text-content="page.text" />
-          </template>
+          </template> -->
         </CardMeta>
 
         <DividerWayFinder class="remove-top-margin" />
