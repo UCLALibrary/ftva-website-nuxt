@@ -65,7 +65,7 @@ export default defineNuxtConfig({
         const postPages = await response.json()
         // console.log('All pages', JSON.stringify(postPages.data.entries))
         if (postPages && postPages.data && postPages.data.entries) {
-          const postWithoutPayloadRoutes = postPages.data.entries.filter(item => item.sectionHandle.includes('ftva')).map(entry => '/' + entry.uri)
+          const postWithoutPayloadRoutes = postPages.data.entries.filter(item => item.sectionHandle.includes('ftva')).map(entry => '/' + entry.uri.replace(/^ftva\//, ''))
           allRoutes.push(...postWithoutPayloadRoutes)
         }
 
