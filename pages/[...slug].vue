@@ -68,13 +68,6 @@ useHead({
   title: page.value ? page.value.title : '... loading'
 })
 
-const parseParentTitle = computed(() => {
-  if (page.value.parent && page.value.parent.title)
-    return page.value.parent.title
-
-  return 'Home'
-})
-
 const parseTitle = computed(() => {
   if (page.value.formattedTitle)
     return page.value.formattedTitle
