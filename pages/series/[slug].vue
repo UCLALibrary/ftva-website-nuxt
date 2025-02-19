@@ -183,7 +183,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-event-series-detail"
+    class="page page-detail page-detail--paleblue page-event-series-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
