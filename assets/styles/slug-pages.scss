@@ -4,12 +4,23 @@
   &:before {
     content: '';
     position: absolute;
-    background-color: var(--pale-blue);
     aspect-ratio: 1440 / 520;
     max-height: 518px; //prevent overflow on large screens
     min-height: 225px; //prevent too much shrinking on small screens
     width: 100%;
     z-index: -1;
+  }
+
+  &--paleblue {
+    &:before {
+      background-color: var(--pale-blue);
+    }
+  }
+
+  &--white {
+    &:before {
+      background-color: var(--color-white);
+    }
   }
 
   .one-column {
