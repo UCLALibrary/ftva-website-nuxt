@@ -24,7 +24,7 @@ const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final sla
 const { data, error } = await useAsyncData(`general-content-${path}`, async () => {
   const data = await $graphql.default.request(FTVA_GENERAL_CONTENT_DETAIL, {
     slug: path.substring(
-      path.lastIndexOf("/") + 1
+      path.lastIndexOf('/') + 1
     ),
   })
   return data
@@ -89,7 +89,6 @@ onMounted(() => {
     id="main"
     class="page page-general-content"
   >
-
     <NavBreadcrumb data-test="breadcrumb" />
 
     <code><strong>DATA:</strong> {{ page }}</code>
