@@ -11,11 +11,11 @@ import { onMounted } from 'vue'
 // HELPERS
 import _get from 'lodash/get'
 
-// UTILS
-import getHeaders from '~/utils/getHeaders'
-
 // GQL
 import FTVA_GENERAL_CONTENT_DETAIL from '../gql/queries/FTVAGeneralContentDetail.gql'
+
+// UTILS
+import getHeaders from '~/utils/getHeaders'
 
 const { $graphql } = useNuxtApp()
 
