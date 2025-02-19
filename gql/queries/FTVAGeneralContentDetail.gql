@@ -14,4 +14,6 @@ query FTVAGeneralContent($slug: [String!]) {
   }
 }
 
-# Because we gencontent page uses ftva/ in the uri to differentiate between the lib and meat websites the GQL query will need the slug instead of the uri
+# Because the generalcontent page uses ftva/ in the uri
+# to differentiate between the library and meap websites
+# the GQL query will need the slug instead of the uri
