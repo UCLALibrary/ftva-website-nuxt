@@ -8,7 +8,7 @@ export default function getHeaders() {
     return []
   }
 
-  const elements = document.querySelectorAll('.section-header2, .section-header3')
+  const elements = document.querySelectorAll('.section-title, .section-header2, .section-header3, section-header4')
 
   if (!elements.length) {
     console.warn('No header elements found. getHeaders() is running too early.')

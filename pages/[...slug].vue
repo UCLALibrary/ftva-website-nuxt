@@ -63,6 +63,22 @@ watch(data, (newVal, oldVal) => {
 
 const h2Array = ref([]) // anchor tags
 
+// Get data for Image or Carousel at top of page
+const parsedImage = computed(() => {
+  return page.value.imageCarousel
+})
+
+// Transform data for Carousel
+const parsedCarouselData = computed(() => {
+  // map image to item, map creditText to credit
+  return parsedImage.value.map((rawItem, index) => {
+    return {
+      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
+      credit: rawItem?.creditText,
+    }
+  })
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading'
 })
@@ -80,55 +96,97 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
-    class="page page-general-content"
+    class="page page-detail page-general-content"
   >
-    <NavBreadcrumb data-test="breadcrumb" />
+    <div class="one-column">
+      <NavBreadcrumb data-test="breadcrumb" />
 
-    <code><strong>DATA:</strong> {{ page }}</code>
-    <hr />
-    <code>HEADERS for the PageAnchors: {{ getHeaders() }}</code>
+      <ResponsiveImage
+        v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
+        data-test="single-image"
+        :media="parsedImage[0]?.image[0]"
+        :aspect-ratio="43.103"
+      ></ResponsiveImage>
 
-    <TwoColLayoutWStickySideBar>
+      <div
+        v-else
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox
+          data-test="image-carousel"
+          :items="parsedCarouselData"
+          inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag
+              data-test="credit-text"
+              :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
+            />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
+    </div>
+
+    <TwoColLayoutWStickySideBar
+      data-test="second-column"
+      class="two-column"
+    >
       <template #primaryTop>
-        <!-- <CardMeta data-test="text-block">
-              <template #customtitle>
-                <rich-text :rich-text-content="page.formattedTitle || page.title" />
-              </template>
+        <div v-if="page.formattedTitle">
+          <h3>
+            <rich-text :rich-text-content="page.formattedTitle" />
+          </h3>
+        </div>
 
-<template #customDescription>
-                <rich-text :rich-text-content="page.text" />
-              </template>
-</CardMeta> -->
+        <div v-else>
+          <h3 class="page-title">
+            hihihi{{ page.title }}
+          </h3>
+        </div>
+      </template>
 
-        <!-- TITLE -->
-        <rich-text
-          class="title"
-          :rich-text-content="page.formattedTitle || page.title"
-        />
-
-        <DividerWayFinder class="remove-top-margin" />
-
+      <template #primaryMid>
         <FlexibleBlocks
           class="flexible-content"
           :blocks="page.blocks"
         />
       </template>
-      <template #sidebarTop />
+
+      <template #sidebarTop>
+        <PageAnchor
+          v-if="h2Array.length >= 3"
+          :section-titles="h2Array"
+        />
+      </template>
     </TwoColLayoutWStickySideBar>
 
-    <PageAnchor
-      v-if="h2Array.length >= 3"
-      :section-titles="h2Array"
-    />
+    <SectionWrapper section-title="HEADERS for the PageAnchors">
+      <code> {{ getHeaders() }}</code>
+    </SectionWrapper>
+
+    <SectionWrapper section-title="PAGE DATA">
+      <code>{{ page }}</code>
+    </SectionWrapper>
   </main>
 </template>
 
 <style lang="scss" scoped>
 .page-general-content {
-  .title {
+  position: relative;
+
+  .page-title {
+    @include card-clickable-area;
+    display: block;
+
+    .translation {
+      display: block;
+    }
+
     @include ftva-h2;
     color: $heading-grey;
     margin: 0 0 24px;
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>
