@@ -18,7 +18,7 @@ export default function getHeaders() {
       h2Array.push(element.textContent.trim())
     }
   })
-  console.log('HEY HEY HEY HEADER ARRAY:', h2Array)
+  // console.log('HEY HEY HEY HEADER ARRAY:', h2Array)
   return h2Array
 }
 
