@@ -7,6 +7,7 @@ export default function getHeaders() {
   const elements = document.querySelectorAll('.section-title, .section-header2, .section-header3, section-header4')
 
   if (!elements.length) {
+    // eslint-disable-next-line no-console
     console.warn('No header elements found. getHeaders() is running too early.')
     return []
   }
