@@ -1,10 +1,11 @@
 <script setup>
-import { CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
+import { CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
 
 // GQL
+import { vi } from 'vuetify/locale'
 import FTVACollectionItem from '../gql/queries/FTVACollectionItem.gql'
 
 // COMPOSABLE
@@ -49,6 +50,8 @@ if (data.value.entry && import.meta.prerender) {
   }
 }
 
+console.log('Route: ', route)
+
 console.log('Data: ', data.value)
 
 const page = ref(_get(data.value, 'entry', {}))
@@ -62,11 +65,7 @@ watch(data, (newVal, oldVal) => {
   relatedContent.value = _get(newVal, 'entries', {})
 })
 
-const parsedMainContent = computed(() => {
-
-})
-
-const parsedMediaContent = computed(() => {
+const parsedCollectionItemMedia = computed(() => {
   if (!page.videoEmbed) {
     return null
   }
@@ -100,7 +99,6 @@ const parsedCredits = computed(() => {
 
   return credits
 })
-
 console.log('Parsed Credits: ', parsedCredits.value)
 
 // Entries query returns 4 random articles; main article might be included in the randomized return; to prevent duplication, filter out the main article; use remaining content in the related section.
@@ -109,8 +107,25 @@ const parsedRelatedContent = computed(() => {
 
   const filteredRelatedContent = relatedContent.value.filter(obj => obj.id !== mainContentId)
 
-  return filteredRelatedContent.slice(0, 3)
+  return filteredRelatedContent.slice(0, 3).map((obj) => {
+    return {
+      image: obj.ftvaImage[0],
+      title: obj.title,
+      to: obj.slug,
+      videoEmbed: obj.videoEmbed
+    }
+  })
 })
+console.log('Parsed Related Content: ', parsedRelatedContent.value)
+
+const parsedParentRoute = computed(() => {
+  const parentRoute = route.path.replace(`/${slug}`, '')
+
+  const parentRouteTitle = collectionSlug.replaceAll('-', ' ').toUpperCase()
+
+  return { parentRoute, parentRouteTitle }
+})
+console.log('Parsed Parent Route: ', parsedParentRoute.value)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -130,11 +145,8 @@ useHead({
     id="main"
     class="page page-detail page-detail--white page-collection-item-detail"
   >
-    <div class="header">
-      <NavBreadcrumb
-        class="breadcrumb"
-        :title="page?.title"
-      />
+    <div class="collection-item-header">
+      <NavBreadcrumb :title="page?.title" />
     </div>
 
     <TwoColLayoutWStickySideBar
@@ -145,24 +157,18 @@ useHead({
         <CardMeta
           :title="page?.title"
           category="LA Rebellion"
-        >
-          <!-- <template #linkedcategoryslot>
-            <NuxtLink :to="">
-              {{ page?.title }}
-            </NuxtLink>
-          </template> -->
-        </CardMeta>
+        />
       </template>
 
       <template #primaryMid>
         <ResponsiveVideo
-          v-if="parsedMediaContent"
+          v-if="parsedCollectionItemMedia"
           :aspect-ratio="56.9"
           :controls="true"
         >
           <template #default>
             <VideoEmbed
-              :trailer="parsedMediaContent"
+              :trailer="parsedCollectionItemMedia"
               :poster-image="page.ftvaImage[0]"
             />
           </template>
@@ -171,12 +177,12 @@ useHead({
           v-else
           :media="page.ftvaImage[0]"
         />
-        <h2
+        <h3
           v-if="page?.richText"
-          class=""
+          class="collection-item-subtitle synopsis"
         >
           Sypnosis
-        </h2>
+        </h3>
         <RichText
           v-if="page?.richText"
           class="eventDescription"
@@ -189,29 +195,50 @@ useHead({
         #primaryBottom
       >
         <DividerWayFinder />
-        <pre>{{ parsedCredits }}</pre>
+
+        <h3 class="collection-item-subtitle credits">
+          Credits
+        </h3>
+
+        <TableComponent
+          :table-headers="['Name', 'Role']"
+          table-caption="Credits"
+          color-scheme="paleblue"
+        >
+          <TableRow
+            v-for="item, index in parsedCredits"
+            :key="index"
+            :num-cells="2"
+          >
+            <template #column1>
+              <span class="credit-table__name">
+                {{ item.name }}
+              </span>
+            </template>
+          </TableRow>
+        </TableComponent>
       </template>
     </TwoColLayoutWStickySideBar>
 
-    <SectionWrapper />
-    <!-- <section-wrapper>
-      <h2>Collection Item</h2>
-      <pre>{{ page }}</pre>
-      <divider-general />
-      <h2>Related Content</h2>
-      <div
-        v-for="item in parsedRelatedContent"
-        :key="item.id"
-      >
-        <NuxtLink :to="`/${item.uri}`">
-          <h4>Title-Link: {{ item.title }}</h4>
-        </NuxtLink>
-        <p>uri: {{ item.uri }}</p>
-        <p>id: {{ item.id }}</p>
-        <p>image: {{ item.ftvaImage[0] }}</p>
-        <divider-general />
-      </div>
-    </section-wrapper> -->
+    <SectionWrapper
+      v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
+      section-title="More from this Topic"
+      theme="paleblue"
+      class="collection-item-section-wrapper"
+    >
+      <template #top-right>
+        <nuxt-link :to="`${parsedParentRoute.parentRoute}`">
+          Back to {{ parsedParentRoute.parentRouteTitle }}<span style="font-size:1.5em;">
+            &#8250;</span>
+        </nuxt-link>
+      </template>
+
+      <SectionTeaserCard
+        v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
+        data-test="related-content"
+        :items="parsedRelatedContent"
+      />
+    </SectionWrapper>
   </main>
 </template>
 
@@ -219,10 +246,30 @@ useHead({
 .page-collection-item-detail {
   position: relative;
 
-  .header {
+  .collection-item-header {
     background-color: var(--pale-blue);
     padding-block: 0.5rem;
   }
+
+  .collection-item-subtitle {
+    color: $heading-grey;
+    font-size: 40px;
+    font-weight: 800;
+
+    &.synopsis {
+      margin-top: var(--space-m);
+    }
+
+    &.synopsis,
+    &.credits {
+      margin-bottom: var(--space-s);
+    }
+  }
+
+  .collection-item-section-wrapper {
+    margin-top: var(--space-l);
+  }
+
 }
 
 @import 'assets/styles/slug-pages.scss';
