@@ -175,7 +175,6 @@ onMounted(() => {
   position: relative;
 
   .page-title {
-    @include card-clickable-area;
     display: block;
 
     .translation {
