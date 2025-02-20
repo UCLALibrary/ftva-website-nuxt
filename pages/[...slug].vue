@@ -106,7 +106,7 @@ onMounted(() => {
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
-      ></ResponsiveImage>
+      />
 
       <div
         v-else

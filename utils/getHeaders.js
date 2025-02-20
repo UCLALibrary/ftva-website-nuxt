@@ -1,7 +1,3 @@
-// Find all elements with class name "section-header2" or "section-header3"
-// Loop through each section-header element and push it into the array
-// Excludes the section-header2 More Information which is a visually-hidden element above the divider-way-finder in the Flexible Block component
-
 export default function getHeaders() {
   if (typeof document === 'undefined') {
     console.warn('getHeaders() called on server-side. Skipping execution.')
@@ -25,6 +21,11 @@ export default function getHeaders() {
   console.log('HEY HEY HEY HEADER ARRAY:', h2Array)
   return h2Array
 }
+
+// This Function
+// Finds all elements with class name "section-header2" or "section-header3"
+// Loop through each section-header element and push it into the array
+// Excludes the section-header2 More Information which is a visually-hidden element above the divider-way-finder in the Flexible Block component
 
 // This Function along with the onMounted function on the page
 // Prevents getHeaders() from running during SSR (Server-Side Rendering).
