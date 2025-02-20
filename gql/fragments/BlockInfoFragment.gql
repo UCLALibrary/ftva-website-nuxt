@@ -1,0 +1,18 @@
+fragment BlockInfoFragment on ElementInterface {
+  id
+  typeHandle
+  infoBlock {
+    ... on infoBlock_infoBlock_BlockType {
+      typeHandle
+      icon
+      heading
+      text
+    }
+    ... on infoBlock_contactInfoBlock_BlockType {
+      typeHandle
+      email
+      phone
+      address
+    }
+  }
+}
