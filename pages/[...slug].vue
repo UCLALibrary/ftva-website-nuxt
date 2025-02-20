@@ -133,7 +133,7 @@ onMounted(() => {
     >
       <template #primaryTop>
         <div v-if="page.formattedTitle">
-          <h3>
+          <h3 class="page-title">
             <rich-text :rich-text-content="page.formattedTitle" />
           </h3>
         </div>
