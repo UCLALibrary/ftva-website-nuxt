@@ -140,7 +140,7 @@ onMounted(() => {
 
         <div v-else>
           <h3 class="page-title">
-            hihihi{{ page.title }}
+            {{ page.title }}
           </h3>
         </div>
       </template>
