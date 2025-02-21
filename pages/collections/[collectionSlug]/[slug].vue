@@ -1,5 +1,5 @@
 <script setup>
-import { CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
+import { CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -85,6 +85,7 @@ const parsedCollectionItemCredits = computed(() => {
     return {
       name: fullname,
       roles: obj.roles,
+      uri: obj.individual[0]?.uri
     }
   })
 
@@ -187,15 +188,14 @@ useHead({
         <h2>Metadata Column</h2>
       </template>
 
-      <template #primaryMid>
-        <h3
-          v-if="page?.richText"
-          class="collection-item-subtitle synopsis"
-        >
+      <template
+        v-if="page?.richText"
+        #primaryMid
+      >
+        <h3 class="collection-item-subtitle synopsis">
           Sypnosis
         </h3>
         <RichText
-          v-if="page?.richText"
           class="eventDescription"
           :rich-text-content="page?.richText"
         />
@@ -222,7 +222,17 @@ useHead({
             :num-cells="2"
           >
             <template #column1>
-              <span class="credit-table__name">
+              <SmartLink
+                v-if="item.uri"
+                class="credit-table__name"
+                :to="`/${item.uri}`"
+              >
+                {{ item.name }}
+              </SmartLink>
+              <span
+                v-else
+                class="credit-table__name"
+              >
                 {{ item.name }}
               </span>
             </template>
@@ -332,6 +342,7 @@ useHead({
 
   .credit-table__name {
     font-size: 30px;
+    color: $accent-blue;
   }
 
   @media(max-width: 1200px) {
