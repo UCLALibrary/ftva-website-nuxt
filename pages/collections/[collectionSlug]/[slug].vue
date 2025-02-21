@@ -143,11 +143,12 @@ useHead({
       <NavBreadcrumb
         :title="page?.title"
         class="breadcrumb"
+        data-test="breadcrumb"
       />
     </div>
 
     <TwoColLayoutWStickySideBar
-      data-test=""
+      data-test="page-title"
       class="two-col-layout__title"
     >
       <template #primaryTop>
