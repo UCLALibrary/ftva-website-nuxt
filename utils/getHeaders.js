@@ -1,5 +1,6 @@
 export default function getHeaders() {
   if (typeof document === 'undefined') {
+    // eslint-disable-next-line no-console
     console.warn('getHeaders() called on server-side. Skipping execution.')
     return []
   }
@@ -35,10 +36,8 @@ export default function getHeaders() {
 
 // See the [...slug].vue page around line 70
 // onMounted(() => {
-//   if (process.client) {
-//     setTimeout(async () => {
-//       await nextTick()
-//       h2Array.value = getHeaders()
-//     }, 500) // Delay ensures DOM is fully updated
+//   if (import.meta.client) {
+//     // Directly access headers assuming the DOM is ready
+//     h2Array.value = getHeaders()
 //   }
 // })
