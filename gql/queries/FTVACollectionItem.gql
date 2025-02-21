@@ -51,6 +51,7 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
           id
           nameFirst
           nameLast
+          uri
         }
         roles
       }
