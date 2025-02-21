@@ -336,7 +336,8 @@ useHead({
     }
   }
 
-  .ftva.table-row {
+  .table-component :deep(thead) tr,
+  .table-component .table-row {
     gap: 0;
   }
 
