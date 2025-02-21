@@ -5,7 +5,6 @@ import { CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveV
 import _get from 'lodash/get'
 
 // GQL
-import { vi } from 'vuetify/locale'
 import FTVACollectionItem from '../gql/queries/FTVACollectionItem.gql'
 
 // COMPOSABLE
@@ -65,15 +64,7 @@ watch(data, (newVal, oldVal) => {
   relatedContent.value = _get(newVal, 'entries', {})
 })
 
-const parsedCollectionItemMedia = computed(() => {
-  if (!page.videoEmbed) {
-    return null
-  }
-
-  // return '<figure><iframe width="560" height="315" src="https://www.youtube.com/embed/uYr_SvIKKuI?si=ihenbmyE91KqyXK5" title="YouTube video player" frameborder="0"></iframe></figure>'
-})
-
-const parsedCredits = computed(() => {
+const parsedCollectionItemCredits = computed(() => {
   if (page.value.associatedIndividuals.length === 0) {
     return null
   }
@@ -93,13 +84,13 @@ const parsedCredits = computed(() => {
 
     return {
       name: fullname,
-      role: obj.roles,
+      roles: obj.roles,
     }
   })
 
   return credits
 })
-console.log('Parsed Credits: ', parsedCredits.value)
+console.log('Parsed Collection Item Credits: ', parsedCollectionItemCredits.value)
 
 // Entries query returns 4 random articles; main article might be included in the randomized return; to prevent duplication, filter out the main article; use remaining content in the related section.
 const parsedRelatedContent = computed(() => {
@@ -173,13 +164,13 @@ useHead({
     >
       <template #primaryTop>
         <ResponsiveVideo
-          v-if="parsedCollectionItemMedia"
+          v-if="page.videoEmbed"
           :aspect-ratio="56.9"
           :controls="true"
         >
           <template #default>
             <VideoEmbed
-              :trailer="parsedCollectionItemMedia"
+              :trailer="page.videoEmbed"
               :poster-image="page.ftvaImage[0]"
             />
           </template>
@@ -209,7 +200,7 @@ useHead({
       </template>
 
       <template
-        v-if="parsedCredits"
+        v-if="parsedCollectionItemCredits"
         #primaryBottom
       >
         <DividerWayFinder />
@@ -224,13 +215,18 @@ useHead({
           color-scheme="paleblue"
         >
           <TableRow
-            v-for="item, index in parsedCredits"
+            v-for="item, index in parsedCollectionItemCredits"
             :key="index"
             :num-cells="2"
           >
             <template #column1>
               <span class="credit-table__name">
                 {{ item.name }}
+              </span>
+            </template>
+            <template #column2>
+              <span>
+                {{ item.roles }}
               </span>
             </template>
           </TableRow>
@@ -280,7 +276,8 @@ useHead({
       margin-bottom: var(--space-l);
     }
 
-    :deep(.title-no-link) {
+    :deep(.title-no-link),
+    :deep(.linked-category) {
       margin: 0;
     }
 
@@ -334,6 +331,15 @@ useHead({
   @media(max-width: 1200px) {
     .collection-item-header .breadcrumb {
       padding-left: var(--unit-gutter);
+    }
+  }
+
+  @media(max-width: 899px) {
+    .two-col-layout__title {
+
+      :deep(.primary-section-wrapper) {
+        margin-bottom: 0;
+      }
     }
   }
 }
