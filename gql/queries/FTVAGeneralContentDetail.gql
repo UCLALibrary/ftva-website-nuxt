@@ -1,0 +1,28 @@
+#import "../gql/fragments/collections/AllFtvaFpb.gql"
+#import "../gql/fragments/Image.gql"
+
+query FTVAGeneralContent($slug: [String!]) {
+  entry(section: "ftvaGeneralContentPage", slug: $slug) {
+    ... on ftvaGeneralContentPage_generalContentPage_Entry {
+      id
+      uri
+      slug
+      title
+      formattedTitle
+      ftvaHomepageDescription
+      imageCarousel {
+      ...on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+      ...AllFtvaFpb
+    }
+  }
+}
+
+# Because the generalcontent page uses ftva/ in the uri
+# to differentiate between the library and meap websites
+# the GQL query will need the slug instead of the uri
