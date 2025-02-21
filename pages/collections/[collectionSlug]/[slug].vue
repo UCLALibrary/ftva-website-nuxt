@@ -289,9 +289,18 @@ useHead({
       margin-bottom: var(--space-l);
     }
 
-    :deep(.title-no-link),
-    :deep(.linked-category) {
+    :deep(.linked-category),
+    :deep(.title-no-link) {
       margin: 0;
+      color: var(--heading-grey);
+    }
+
+    :deep(.linked-category) {
+      @include ftva-subtitle-1;
+    }
+
+    :deep(.title-no-link) {
+      @include ftva-h2;
     }
 
     :deep(.sidebar-column) {
@@ -318,14 +327,9 @@ useHead({
     margin-top: var(--space-l);
   }
 
-  .ftva.card-meta :deep(.category) {
-    color: var(--subtitle-grey);
-  }
-
   .collection-item-subtitle {
+    @include ftva-h3;
     color: $heading-grey;
-    font-size: 40px;
-    font-weight: 800;
 
     &.synopsis {
       margin-top: var(--space-m);
@@ -355,7 +359,6 @@ useHead({
 
   @media(max-width: 899px) {
     .two-col-layout__title {
-
       :deep(.primary-section-wrapper) {
         margin-bottom: 0;
       }
