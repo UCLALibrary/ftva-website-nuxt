@@ -1,4 +1,6 @@
 <script setup>
+import { CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
+
 // HELPERS
 import _get from 'lodash/get'
 
@@ -47,10 +49,51 @@ if (data.value.entry && import.meta.prerender) {
   }
 }
 
+console.log('Route: ', route)
+
 console.log('Data: ', data.value)
 
 const page = ref(_get(data.value, 'entry', {}))
 const relatedContent = ref(_get(data.value, 'entries', {}))
+
+console.log('Page: ', page.value)
+
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'entry', {})
+  relatedContent.value = _get(newVal, 'entries', {})
+})
+
+const parsedCollectionItemCredits = computed(() => {
+  if (page.value.associatedIndividuals.length === 0) {
+    return null
+  }
+
+  const credits = page.value.associatedIndividuals.map((obj) => {
+    const firstname = obj.individual[0]?.nameFirst
+    const lastname = obj.individual[0]?.nameLast
+    let fullname
+
+    if (!lastname) {
+      fullname = firstname
+    } else if (!firstname) {
+      fullname = lastname
+    } else if (firstname && lastname) {
+      fullname = `${firstname} ${lastname}`
+    }
+
+    return {
+      name: fullname,
+      roles: obj.roles,
+      uri: obj.individual[0]?.uri
+    }
+  })
+
+  const creditsWithNames = credits.filter(obj => obj.name !== null && obj.name !== undefined)
+
+  return creditsWithNames.length > 0 ? creditsWithNames : null
+})
+console.log('Parsed Collection Item Credits: ', parsedCollectionItemCredits.value)
 
 // Entries query returns 4 random articles; main article might be included in the randomized return; to prevent duplication, filter out the main article; use remaining content in the related section.
 const parsedRelatedContent = computed(() => {
@@ -58,8 +101,25 @@ const parsedRelatedContent = computed(() => {
 
   const filteredRelatedContent = relatedContent.value.filter(obj => obj.id !== mainContentId)
 
-  return filteredRelatedContent.slice(0, 3)
+  return filteredRelatedContent.slice(0, 3).map((obj) => {
+    return {
+      image: obj.ftvaImage[0],
+      title: obj.title,
+      to: obj.slug,
+      videoEmbed: obj.videoEmbed
+    }
+  })
 })
+console.log('Parsed Related Content: ', parsedRelatedContent.value)
+
+const parsedParentRoute = computed(() => {
+  const parentRoute = route.path.replace(`/${slug}`, '')
+
+  const parentRouteTitle = collectionSlug.replaceAll('-', ' ').toUpperCase()
+
+  return { parentRoute, parentRouteTitle }
+})
+console.log('Parsed Parent Route: ', parsedParentRoute.value)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -76,28 +136,235 @@ useHead({
 
 <template>
   <main
-    class="page page-collection-item-detail"
-    style="padding: 25px 100px;"
+    id="main"
+    class="page page-detail page-detail--white page-collection-item-detail"
   >
-    <section-wrapper>
-      <h2>Collection Item</h2>
-      <pre>{{ page }}</pre>
-      <divider-general />
-      <h2>Related Content</h2>
-      <div
-        v-for="item in parsedRelatedContent"
-        :key="item.id"
+    <div class="collection-item-header">
+      <NavBreadcrumb
+        :title="page?.title"
+        class="breadcrumb"
+        data-test="breadcrumb"
+      />
+    </div>
+
+    <TwoColLayoutWStickySideBar
+      data-test="page-title"
+      class="two-col-layout__title"
+    >
+      <template #primaryTop>
+        <CardMeta :title="page?.title">
+          <template #linkedcategoryslot>
+            <NuxtLink :to="`${parsedParentRoute.parentRoute}`">
+              {{ parsedParentRoute.parentRouteTitle }}
+            </NuxtLink>
+          </template>
+        </CardMeta>
+      </template>
+    </TwoColLayoutWStickySideBar>
+
+    <TwoColLayoutWStickySideBar
+      data-test=""
+      class="two-col-layout__body"
+    >
+      <template #primaryTop>
+        <ResponsiveVideo
+          v-if="page.videoEmbed"
+          :aspect-ratio="56.9"
+          :controls="true"
+        >
+          <template #default>
+            <VideoEmbed
+              :trailer="page.videoEmbed"
+              :poster-image="page.ftvaImage[0]"
+            />
+          </template>
+        </ResponsiveVideo>
+        <ResponsiveImage
+          v-else
+          :media="page.ftvaImage[0]"
+        />
+      </template>
+
+      <template #sidebarTop>
+        <h2>Metadata Column</h2>
+      </template>
+
+      <template
+        v-if="page?.richText"
+        #primaryMid
       >
-        <NuxtLink :to="`/${item.uri}`">
-          <h4>Title-Link: {{ item.title }}</h4>
+        <h3 class="collection-item-subtitle synopsis">
+          Sypnosis
+        </h3>
+        <RichText
+          class="eventDescription"
+          :rich-text-content="page?.richText"
+        />
+      </template>
+
+      <template
+        v-if="parsedCollectionItemCredits"
+        #primaryBottom
+      >
+        <DividerWayFinder />
+
+        <h3 class="collection-item-subtitle credits">
+          Credits
+        </h3>
+
+        <TableComponent
+          :table-headers="['Name', 'Role']"
+          table-caption="Credits"
+          color-scheme="paleblue"
+        >
+          <TableRow
+            v-for="item, index in parsedCollectionItemCredits"
+            :key="index"
+            :num-cells="2"
+          >
+            <template #column1>
+              <SmartLink
+                v-if="item.uri"
+                class="credit-table__name"
+                :to="`/${item.uri}`"
+              >
+                {{ item.name }}
+              </SmartLink>
+              <span
+                v-else
+                class="credit-table__name"
+              >
+                {{ item.name }}
+              </span>
+            </template>
+            <template #column2>
+              <span>
+                {{ item.roles }}
+              </span>
+            </template>
+          </TableRow>
+        </TableComponent>
+      </template>
+    </TwoColLayoutWStickySideBar>
+
+    <SectionWrapper
+      v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
+      section-title="More from this topic"
+      theme="paleblue"
+      class="collection-item-section-wrapper"
+    >
+      <template #top-right>
+        <NuxtLink :to="`${parsedParentRoute.parentRoute}`">
+          Back to {{ parsedParentRoute.parentRouteTitle }}<span style="font-size:1.5em;">
+            &#8250;</span>
         </NuxtLink>
-        <p>uri: {{ item.uri }}</p>
-        <p>id: {{ item.id }}</p>
-        <p>image: {{ item.ftvaImage[0] }}</p>
-        <divider-general />
-      </div>
-    </section-wrapper>
+      </template>
+
+      <SectionTeaserCard
+        v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
+        data-test="related-content"
+        :items="parsedRelatedContent"
+      />
+    </SectionWrapper>
   </main>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.page-collection-item-detail {
+  position: relative;
+
+  .collection-item-header {
+    background-color: var(--pale-blue);
+    padding-block: 0.5rem;
+
+    .breadcrumb {
+      padding: 0;
+      max-width: var(--ftva-container-max-width)
+    }
+  }
+
+  .two-col-layout__title {
+
+    :deep(.primary-section-wrapper) {
+      margin-bottom: var(--space-l);
+    }
+
+    :deep(.linked-category),
+    :deep(.title-no-link) {
+      margin: 0;
+      color: var(--heading-grey);
+    }
+
+    :deep(.linked-category) {
+      @include ftva-subtitle-1;
+    }
+
+    :deep(.title-no-link) {
+      @include ftva-h2;
+    }
+
+    :deep(.sidebar-column) {
+      display: none;
+    }
+  }
+
+  .two-col-layout__body {
+    :deep(.primary-section-wrapper) {
+      margin-top: 0;
+    }
+
+    :deep(.sidebar-column) {
+      padding-top: 0;
+    }
+
+    :deep(.sidebar-content-wrapper) {
+      position: static;
+      will-change: unset;
+    }
+  }
+
+  .collection-item-section-wrapper {
+    margin-top: var(--space-l);
+  }
+
+  .collection-item-subtitle {
+    @include ftva-h3;
+    color: $heading-grey;
+
+    &.synopsis {
+      margin-top: var(--space-m);
+    }
+
+    &.synopsis,
+    &.credits {
+      margin-bottom: var(--space-s);
+    }
+  }
+
+  .table-component :deep(thead) tr,
+  .table-component .table-row {
+    gap: 0;
+  }
+
+  .credit-table__name {
+    font-size: 30px;
+    color: $accent-blue;
+  }
+
+  @media(max-width: 1200px) {
+    .collection-item-header .breadcrumb {
+      padding-left: var(--unit-gutter);
+    }
+  }
+
+  @media(max-width: 899px) {
+    .two-col-layout__title {
+      :deep(.primary-section-wrapper) {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+@import 'assets/styles/slug-pages.scss';
+</style>
