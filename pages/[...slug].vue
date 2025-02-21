@@ -84,8 +84,7 @@ useHead({
 })
 
 onMounted(() => {
-  if (import.meta.browser) {
-    // Directly access headers assuming the DOM is ready
+  if (process.client) {
     h2Array.value = getHeaders()
   }
 })
