@@ -154,14 +154,32 @@ useHead({
 
     <TwoColLayoutWStickySideBar
       data-test=""
-      class="two-column"
+      class="two-column__title"
     >
       <template #primaryTop>
-        <CardMeta
-          :title="page?.title"
-          :category="parsedParentRoute.parentRouteTitle"
-        />
+        <CardMeta :title="page?.title">
+          <template #linkedcategoryslot>
+            <NuxtLink :to="`${parsedParentRoute.parentRoute}`">
+              {{ parsedParentRoute.parentRouteTitle }}
+            </NuxtLink>
+          </template>
+        </CardMeta>
       </template>
+    </TwoColLayoutWStickySideBar>
+
+    <TwoColLayoutWStickySideBar
+      data-test=""
+      class="two-column__body"
+    >
+      <!-- <template #primaryTop>
+        <CardMeta :title="page?.title">
+          <template #linkedcategoryslot>
+            <NuxtLink :to="`${parsedParentRoute.parentRoute}`">
+              {{ parsedParentRoute.parentRouteTitle }}
+            </NuxtLink>
+          </template>
+        </CardMeta>
+      </template> -->
 
       <template #sidebarTop>
         <h2>Metadata Column</h2>
@@ -234,10 +252,10 @@ useHead({
       class="collection-item-section-wrapper"
     >
       <template #top-right>
-        <nuxt-link :to="`${parsedParentRoute.parentRoute}`">
+        <Nuxtlink :to="`${parsedParentRoute.parentRoute}`">
           Back to {{ parsedParentRoute.parentRouteTitle }}<span style="font-size:1.5em;">
             &#8250;</span>
-        </nuxt-link>
+        </Nuxtlink>
       </template>
 
       <SectionTeaserCard
@@ -260,6 +278,36 @@ useHead({
     .breadcrumb {
       padding: 0;
       max-width: var(--ftva-container-max-width)
+    }
+  }
+
+  .two-column__title {
+
+    :deep(.primary-section-wrapper) {
+      margin-bottom: var(--space-l);
+    }
+
+    :deep(.title-no-link) {
+      margin: 0;
+    }
+
+    :deep(.sidebar-column) {
+      display: none;
+    }
+  }
+
+  .two-column__body {
+    :deep(.primary-section-wrapper) {
+      margin-top: 0;
+    }
+
+    :deep(.sidebar-column) {
+      padding-top: 0;
+    }
+
+    :deep(.sidebar-content-wrapper) {
+      position: static;
+      will-change: unset;
     }
   }
 
@@ -288,7 +336,7 @@ useHead({
 
   .credit-table__name {
     font-size: 30px;
-    color: $accent-blue;
+    // color: $accent-blue;
   }
 
   @media(max-width: 1200px) {
