@@ -146,7 +146,10 @@ useHead({
     class="page page-detail page-detail--white page-collection-item-detail"
   >
     <div class="collection-item-header">
-      <NavBreadcrumb :title="page?.title" />
+      <NavBreadcrumb
+        :title="page?.title"
+        class="breadcrumb"
+      />
     </div>
 
     <TwoColLayoutWStickySideBar
@@ -156,8 +159,12 @@ useHead({
       <template #primaryTop>
         <CardMeta
           :title="page?.title"
-          category="LA Rebellion"
+          :category="parsedParentRoute.parentRouteTitle"
         />
+      </template>
+
+      <template #sidebarTop>
+        <h2>Metadata Column</h2>
       </template>
 
       <template #primaryMid>
@@ -222,7 +229,7 @@ useHead({
 
     <SectionWrapper
       v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
-      section-title="More from this Topic"
+      section-title="More from this topic"
       theme="paleblue"
       class="collection-item-section-wrapper"
     >
@@ -249,6 +256,15 @@ useHead({
   .collection-item-header {
     background-color: var(--pale-blue);
     padding-block: 0.5rem;
+
+    .breadcrumb {
+      padding: 0;
+      max-width: var(--ftva-container-max-width)
+    }
+  }
+
+  .ftva.card-meta :deep(.category) {
+    color: var(--subtitle-grey);
   }
 
   .collection-item-subtitle {
@@ -270,6 +286,16 @@ useHead({
     margin-top: var(--space-l);
   }
 
+  .credit-table__name {
+    font-size: 30px;
+    color: $accent-blue;
+  }
+
+  @media(max-width: 1200px) {
+    .collection-item-header .breadcrumb {
+      padding-left: var(--unit-gutter);
+    }
+  }
 }
 
 @import 'assets/styles/slug-pages.scss';
