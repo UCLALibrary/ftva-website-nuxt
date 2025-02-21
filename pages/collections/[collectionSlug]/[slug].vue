@@ -154,7 +154,7 @@ useHead({
 
     <TwoColLayoutWStickySideBar
       data-test=""
-      class="two-column__title"
+      class="two-col-layout__title"
     >
       <template #primaryTop>
         <CardMeta :title="page?.title">
@@ -169,23 +169,9 @@ useHead({
 
     <TwoColLayoutWStickySideBar
       data-test=""
-      class="two-column__body"
+      class="two-col-layout__body"
     >
-      <!-- <template #primaryTop>
-        <CardMeta :title="page?.title">
-          <template #linkedcategoryslot>
-            <NuxtLink :to="`${parsedParentRoute.parentRoute}`">
-              {{ parsedParentRoute.parentRouteTitle }}
-            </NuxtLink>
-          </template>
-        </CardMeta>
-      </template> -->
-
-      <template #sidebarTop>
-        <h2>Metadata Column</h2>
-      </template>
-
-      <template #primaryMid>
+      <template #primaryTop>
         <ResponsiveVideo
           v-if="parsedCollectionItemMedia"
           :aspect-ratio="56.9"
@@ -202,6 +188,13 @@ useHead({
           v-else
           :media="page.ftvaImage[0]"
         />
+      </template>
+
+      <template #sidebarTop>
+        <h2>Metadata Column</h2>
+      </template>
+
+      <template #primaryMid>
         <h3
           v-if="page?.richText"
           class="collection-item-subtitle synopsis"
@@ -281,7 +274,7 @@ useHead({
     }
   }
 
-  .two-column__title {
+  .two-col-layout__title {
 
     :deep(.primary-section-wrapper) {
       margin-bottom: var(--space-l);
@@ -296,7 +289,7 @@ useHead({
     }
   }
 
-  .two-column__body {
+  .two-col-layout__body {
     :deep(.primary-section-wrapper) {
       margin-top: 0;
     }
@@ -336,7 +329,6 @@ useHead({
 
   .credit-table__name {
     font-size: 30px;
-    // color: $accent-blue;
   }
 
   @media(max-width: 1200px) {
