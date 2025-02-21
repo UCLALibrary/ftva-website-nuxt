@@ -85,10 +85,7 @@ useHead({
 
 onMounted(() => {
   if (process.client) {
-    setTimeout(async () => {
-      await nextTick()
-      h2Array.value = getHeaders()
-    }, 1500) // Delay ensures DOM is fully updated
+    h2Array.value = getHeaders()
   }
 })
 </script>
