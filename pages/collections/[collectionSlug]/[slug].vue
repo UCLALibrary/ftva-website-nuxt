@@ -70,15 +70,15 @@ const parsedCollectionItemCredits = computed(() => {
   }
 
   const credits = page.value.associatedIndividuals.map((obj) => {
-    const firstname = obj.individual[0].nameFirst
-    const lastname = obj.individual[0].nameLast
+    const firstname = obj.individual[0]?.nameFirst
+    const lastname = obj.individual[0]?.nameLast
     let fullname
 
     if (!lastname) {
       fullname = firstname
     } else if (!firstname) {
       fullname = lastname
-    } else {
+    } else if (firstname && lastname) {
       fullname = `${firstname} ${lastname}`
     }
 
@@ -88,7 +88,9 @@ const parsedCollectionItemCredits = computed(() => {
     }
   })
 
-  return credits
+  const creditsWithNames = credits.filter(obj => obj.name !== null && obj.name !== undefined)
+
+  return creditsWithNames.length > 0 ? creditsWithNames : null
 })
 console.log('Parsed Collection Item Credits: ', parsedCollectionItemCredits.value)
 
@@ -241,10 +243,10 @@ useHead({
       class="collection-item-section-wrapper"
     >
       <template #top-right>
-        <Nuxtlink :to="`${parsedParentRoute.parentRoute}`">
+        <NuxtLink :to="`${parsedParentRoute.parentRoute}`">
           Back to {{ parsedParentRoute.parentRouteTitle }}<span style="font-size:1.5em;">
             &#8250;</span>
-        </Nuxtlink>
+        </NuxtLink>
       </template>
 
       <SectionTeaserCard
@@ -301,6 +303,10 @@ useHead({
     }
   }
 
+  .collection-item-section-wrapper {
+    margin-top: var(--space-l);
+  }
+
   .ftva.card-meta :deep(.category) {
     color: var(--subtitle-grey);
   }
@@ -320,8 +326,8 @@ useHead({
     }
   }
 
-  .collection-item-section-wrapper {
-    margin-top: var(--space-l);
+  .ftva.table-row {
+    gap: 0;
   }
 
   .credit-table__name {
