@@ -235,7 +235,10 @@ useHead({
       </template>
 
       <template #sidebarTop>
-        <DefinitionList :meta-data-object="parsedMetadataList">
+        <DefinitionList
+          :meta-data-object="parsedMetadataList"
+          data-test="metadata"
+        >
           <!-- slot name must match field name in parsed metadata, case sensitive -->
           <template #definition-Director>
             <SmartLink
