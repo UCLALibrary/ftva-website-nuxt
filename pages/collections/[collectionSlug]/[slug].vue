@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { ButtonLink, CardMeta, DefinitionList, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
 
 // HELPERS
@@ -58,7 +58,28 @@ watch(data, (newVal, oldVal) => {
   relatedContent.value = _get(newVal, 'entries', {})
 })
 
-const parsedMetadataList = computed(() => {
+// TYPES
+interface LinkedIndividual {
+  name: string
+  uri: string
+}
+
+interface Metadata {
+  Date?: string
+  'Release Date'?: string
+  'Episode Air Date'?: string
+  'Episode Title'?: string
+  'Episode Season'?: string
+  'Episode Number'?: string
+  'Collection Group'?: string[]
+  Tags?: string[]
+  Director?: LinkedIndividual[],
+  Year?: string
+  Country?: string
+  Runtime?: string
+}
+
+const parsedMetadataList = computed((): Metadata => {
   // Metadata comes through as individual fields that have to be consolidated
   const collectedMetadata = {
     Date: page.value.ftvaDate,
@@ -89,7 +110,7 @@ const parsedMetadataList = computed(() => {
 
 // METADATA HELPERS
 // Determine if object's value is null, undefined, empty
-function isNonNull(value) {
+function isNonNull(value: any): boolean {
   if (value === null || value === undefined) return false
   if (Array.isArray(value) && value.length < 1) return false
   if (typeof value === 'object' && Object.keys(value).length === 0) return false
@@ -97,7 +118,7 @@ function isNonNull(value) {
 }
 
 // Loop through array of objects, return values for a target/specified key as an array list
-function getObjectValue(arr, key) {
+function getObjectValue(arr: {}[], key: string): string[] {
   if (arr.length === 0) return
 
   const keysList = arr.filter(obj => Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== null)
@@ -106,11 +127,17 @@ function getObjectValue(arr, key) {
 }
 
 // Helper to reformat metadata for Director and AssociatedIndividuals
-function getLinkedIndividual(arr) {
+interface Individual {
+  nameFirst?: string;
+  nameLast?: string;
+  uri?: string;
+}
+
+function getLinkedIndividual(arr: Individual[]) {
   const parsedPersonObj = arr.map((personObj) => {
     const firstname = personObj.nameFirst
     const lastname = personObj.nameLast
-    let fullname
+    let fullname: string
 
     if (!lastname) {
       fullname = firstname
@@ -165,7 +192,7 @@ const parsedRelatedContent = computed(() => {
 const parsedParentRoute = computed(() => {
   const parentRoute = route.path.replace(`/${slug}`, '')
 
-  const parentRouteTitle = collectionSlug.replaceAll('-', ' ').toUpperCase()
+  const parentRouteTitle = (collectionSlug as string).replace(/-/g, ' ').toUpperCase()
 
   return { parentRoute, parentRouteTitle }
 })
@@ -242,7 +269,7 @@ useHead({
           <!-- slot name must match field name in parsed metadata, case sensitive -->
           <template #definition-Director>
             <SmartLink
-              :key="parsedMetadataList.Director[0]"
+              :key="parsedMetadataList.Director[0]?.name"
               :to="`/${parsedMetadataList.Director[0].uri}`"
               class="director-link"
             >
