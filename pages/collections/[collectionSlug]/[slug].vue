@@ -269,7 +269,7 @@ useHead({
           <!-- slot name must match field name in parsed metadata, case sensitive -->
           <template #definition-Director>
             <SmartLink
-              :key="parsedMetadataList.Director[0]?.name"
+              :key="parsedMetadataList.Director[0].name"
               :to="`/${parsedMetadataList.Director[0].uri}`"
               class="director-link"
             >
@@ -427,6 +427,10 @@ useHead({
 
   .collection-item-section-wrapper {
     margin-top: var(--space-l);
+
+    :deep(.section-title) {
+      @include ftva-h4;
+    }
   }
 
   .collection-item-subtitle {
@@ -441,6 +445,10 @@ useHead({
     &.credits {
       margin-bottom: var(--space-s);
     }
+  }
+
+  :deep(.definition-list-item-wrapper):is(:first-of-type) dt {
+    padding-top: 0;
   }
 
   :deep(.definition-list-item-wrapper):not(:last-of-type) {
