@@ -1,5 +1,5 @@
 <script setup>
-import { CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
+import { ButtonLink, CardMeta, DefinitionList, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -64,6 +64,76 @@ watch(data, (newVal, oldVal) => {
   relatedContent.value = _get(newVal, 'entries', {})
 })
 
+const parsedMetadataList = computed(() => {
+  const collectedMetadata = {
+    Date: page.value.ftvaDate,
+    'Release Date': page.value.releaseDate,
+    'Episode Air Date': page.value.episodeAirDate,
+    'Episode Title': page.value.episodeTitle,
+    'Episode Season': page.value.episodeSeason,
+    'Episode Number': page.value.episodeNumber,
+    'Collection Group': getObjectValue(page.value.ftvaCollectionGroup, 'title'),
+    Tags: getObjectValue(page.value.ftvaCollectionTags, 'title'),
+    Director: getLinkedIndividual(page.value.director),
+    Year: page.value.year,
+    Country: page.value.country,
+    Runtime: page.value.runtime,
+  }
+
+  let nonNullMetadata = {}
+
+  // Filter out fields with null/undefined value, empty array/object
+  Object.entries(collectedMetadata).forEach(([key, value]) => {
+    if (isNonNull(value)) {
+      nonNullMetadata = { [key]: value, ...nonNullMetadata }
+    }
+  })
+
+  return nonNullMetadata
+})
+
+console.log('metadata: ', parsedMetadataList.value)
+
+function isNonNull(value) {
+  if (value === null || value === undefined) return false
+  if (Array.isArray(value) && value.length < 1) return false
+  if (typeof value === 'object' && Object.keys(value).length === 0) return false
+  return true
+}
+
+// Loop through array of objects, return values for target/specified key
+function getObjectValue(arr, key) {
+  if (arr.length === 0) return
+
+  const keysList = arr.filter(obj => Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== null)
+
+  return keysList.map(obj => obj[key])
+}
+
+// Metadata ...
+function getLinkedIndividual(arr) {
+  const data = arr.map((obj) => {
+    const firstname = obj.nameFirst
+    const lastname = obj.nameLast
+    let fullname
+
+    if (!lastname) {
+      fullname = firstname
+    } else if (!firstname) {
+      fullname = lastname
+    } else if (firstname && lastname) {
+      fullname = `${firstname} ${lastname}`
+    }
+
+    return {
+      name: fullname,
+      uri: obj.uri
+    }
+  })
+
+  return data
+}
+
 const parsedCollectionItemCredits = computed(() => {
   if (page.value.associatedIndividuals.length === 0) {
     return null
@@ -93,7 +163,6 @@ const parsedCollectionItemCredits = computed(() => {
 
   return creditsWithNames.length > 0 ? creditsWithNames : null
 })
-console.log('Parsed Collection Item Credits: ', parsedCollectionItemCredits.value)
 
 // Entries query returns 4 random articles; main article might be included in the randomized return; to prevent duplication, filter out the main article; use remaining content in the related section.
 const parsedRelatedContent = computed(() => {
@@ -110,7 +179,6 @@ const parsedRelatedContent = computed(() => {
     }
   })
 })
-console.log('Parsed Related Content: ', parsedRelatedContent.value)
 
 const parsedParentRoute = computed(() => {
   const parentRoute = route.path.replace(`/${slug}`, '')
@@ -119,7 +187,6 @@ const parsedParentRoute = computed(() => {
 
   return { parentRoute, parentRouteTitle }
 })
-console.log('Parsed Parent Route: ', parsedParentRoute.value)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -186,7 +253,30 @@ useHead({
       </template>
 
       <template #sidebarTop>
-        <h2>Metadata Column</h2>
+        <DefinitionList :meta-data-object="parsedMetadataList">
+          <!-- slot name must match field name in parsed metadata, case sensitive -->
+          <template #definition-Director>
+            <SmartLink
+              :key="parsedMetadataList.Director[0]"
+              :to="`/${parsedMetadataList.Director[0].uri}`"
+              class="director-link"
+            >
+              {{ parsedMetadataList.Director[0].name }}
+            </SmartLink>
+          </template>
+          <template
+            v-if="page.externalResourceUrl"
+            #list-bottom
+          >
+            <ButtonLink
+              label="View Catalog Record"
+              :to="page.externalResourceUrl"
+              :is-secondary="true"
+              icon-name="none"
+              class="centered-button"
+            />
+          </template>
+        </DefinitionList>
       </template>
 
       <template
@@ -338,6 +428,26 @@ useHead({
     &.synopsis,
     &.credits {
       margin-bottom: var(--space-s);
+    }
+  }
+
+  :deep(.definition-list-item-wrapper):not(:last-of-type) {
+    margin-bottom: 16px;
+  }
+
+  .list-bottom-wrapper .button-link {
+    width: 100%;
+  }
+
+  .director-link {
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-decoration-color: #abbfd6;
+    text-underline-offset: 4px;
+
+    &:hover {
+      text-decoration-color: #2c91ff;
     }
   }
 
