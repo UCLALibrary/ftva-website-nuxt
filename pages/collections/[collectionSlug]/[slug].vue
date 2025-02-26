@@ -49,14 +49,8 @@ if (data.value.entry && import.meta.prerender) {
   }
 }
 
-console.log('Route: ', route)
-
-console.log('Data: ', data.value)
-
 const page = ref(_get(data.value, 'entry', {}))
 const relatedContent = ref(_get(data.value, 'entries', {}))
-
-console.log('Page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -65,6 +59,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 const parsedMetadataList = computed(() => {
+  // Metadata comes through as individual fields that have to be consolidated
   const collectedMetadata = {
     Date: page.value.ftvaDate,
     'Release Date': page.value.releaseDate,
@@ -83,7 +78,7 @@ const parsedMetadataList = computed(() => {
   let nonNullMetadata = {}
 
   // Filter out fields with null/undefined value, empty array/object
-  Object.entries(collectedMetadata).forEach(([key, value]) => {
+  Object.entries(collectedMetadata).reverse().forEach(([key, value]) => {
     if (isNonNull(value)) {
       nonNullMetadata = { [key]: value, ...nonNullMetadata }
     }
@@ -92,8 +87,8 @@ const parsedMetadataList = computed(() => {
   return nonNullMetadata
 })
 
-console.log('metadata: ', parsedMetadataList.value)
-
+// METADATA HELPERS
+// Determine if object's value is null, undefined, empty
 function isNonNull(value) {
   if (value === null || value === undefined) return false
   if (Array.isArray(value) && value.length < 1) return false
@@ -101,7 +96,7 @@ function isNonNull(value) {
   return true
 }
 
-// Loop through array of objects, return values for target/specified key
+// Loop through array of objects, return values for a target/specified key as an array list
 function getObjectValue(arr, key) {
   if (arr.length === 0) return
 
@@ -110,11 +105,11 @@ function getObjectValue(arr, key) {
   return keysList.map(obj => obj[key])
 }
 
-// Metadata ...
+// Helper to reformat metadata for Director and AssociatedIndividuals
 function getLinkedIndividual(arr) {
-  const data = arr.map((obj) => {
-    const firstname = obj.nameFirst
-    const lastname = obj.nameLast
+  const parsedPersonObj = arr.map((personObj) => {
+    const firstname = personObj.nameFirst
+    const lastname = personObj.nameLast
     let fullname
 
     if (!lastname) {
@@ -127,36 +122,23 @@ function getLinkedIndividual(arr) {
 
     return {
       name: fullname,
-      uri: obj.uri
+      uri: personObj.uri
     }
   })
 
-  return data
+  return parsedPersonObj
 }
 
 const parsedCollectionItemCredits = computed(() => {
-  if (page.value.associatedIndividuals.length === 0) {
+  const individuals = page.value.associatedIndividuals
+
+  if (individuals.length === 0) {
     return null
   }
 
-  const credits = page.value.associatedIndividuals.map((obj) => {
-    const firstname = obj.individual[0]?.nameFirst
-    const lastname = obj.individual[0]?.nameLast
-    let fullname
-
-    if (!lastname) {
-      fullname = firstname
-    } else if (!firstname) {
-      fullname = lastname
-    } else if (firstname && lastname) {
-      fullname = `${firstname} ${lastname}`
-    }
-
-    return {
-      name: fullname,
-      roles: obj.roles,
-      uri: obj.individual[0]?.uri
-    }
+  const credits = individuals.map((item) => {
+    const parsedNameAndUri = getLinkedIndividual(item.individual)[0]
+    return { ...parsedNameAndUri, roles: item.roles }
   })
 
   const creditsWithNames = credits.filter(obj => obj.name !== null && obj.name !== undefined)
