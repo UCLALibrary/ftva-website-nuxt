@@ -76,8 +76,8 @@ importers:
         specifier: ^1.66.1
         version: 1.80.3
       ucla-library-design-tokens:
-        specifier: ^5.28.0
-        version: 5.28.0
+        specifier: ^5.29.0
+        version: 5.29.0
       ucla-library-website-components:
         specifier: 3.51.0
         version: 3.51.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
@@ -4456,8 +4456,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  ucla-library-design-tokens@5.28.0:
-    resolution: {integrity: sha512-qgxGlK3/m0VwYGumzLZTTB/ae03DY41+80vFhm4+gukzh8XiqUsN71cg3ijk23Dl9awyicoELbRgnUV4nj3e0g==}
+  ucla-library-design-tokens@5.29.0:
+    resolution: {integrity: sha512-jKHo5fQU7rz1nxzi8in5MyTF05mI5Rctmp49xQyXzNNHxsQx0l23MueKbvWbD23ePa8P+rHjhlqf9Vg0LgfGrQ==}
 
   ucla-library-website-components@3.51.0:
     resolution: {integrity: sha512-XPl0/tSUDtU3Pl8QqSEb7E99qOQg1GWlr7MIzmLb/Iv4S/VlpCO1ZUeJyvTBA7aER9egCCGQfCxTNw9cwFccLQ==}
@@ -9999,7 +9999,7 @@ snapshots:
 
   typescript@5.6.3: {}
 
-  ucla-library-design-tokens@5.28.0: {}
+  ucla-library-design-tokens@5.29.0: {}
 
   ucla-library-website-components@3.51.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))):
     dependencies:
