@@ -217,7 +217,7 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     sharedPrerenderData: true
   } */
- experimental: {
+  experimental: {
     sharedPrerenderData: true,
   },
 })
