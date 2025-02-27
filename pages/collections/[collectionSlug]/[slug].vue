@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ButtonLink, CardMeta, DefinitionList, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
+import { ButtonLink, CardMeta, DefinitionList, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -268,13 +268,13 @@ useHead({
         >
           <!-- slot name must match field name in parsed metadata, case sensitive -->
           <template #definition-Director>
-            <SmartLink
+            <NuxtLink
               :key="parsedMetadataList.Director[0].name"
               :to="`/${parsedMetadataList.Director[0].uri}`"
               class="director-link"
             >
               {{ parsedMetadataList.Director[0].name }}
-            </SmartLink>
+            </NuxtLink>
           </template>
           <template
             v-if="page.externalResourceUrl"
@@ -325,13 +325,13 @@ useHead({
             :num-cells="2"
           >
             <template #column1>
-              <SmartLink
+              <NuxtLink
                 v-if="item.uri"
                 class="credit-table__name"
                 :to="`/${item.uri}`"
               >
                 {{ item.name }}
-              </SmartLink>
+              </NuxtLink>
               <span
                 v-else
                 class="credit-table__name"
