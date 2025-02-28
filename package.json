@@ -4,7 +4,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "node --max-old-space-size=16384 node_modules/nuxi/bin/nuxi.mjs generate",
+    "generate": "node --inspect --max-old-space-size=16384 node_modules/nuxi/bin/nuxi.mjs generate",
     "prerender": "node --max-old-space-size=16384 node_modules/nuxi/bin/nuxi.mjs build --prerender --log-level verbose",
     "start": "pnpm dlx serve .output/public",
     "preview": "nuxt preview",
@@ -46,5 +46,6 @@
   },
   "engines": {
     "pnpm": "^9.12.1"
-  }
+  },
+  "packageManager": "pnpm@9.12.1"
 }
