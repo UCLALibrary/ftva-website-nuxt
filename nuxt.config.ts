@@ -36,11 +36,11 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      crawlLinks: true,
+      crawlLinks: false,
       failOnError: false,
       concurrency: 50,
       interval: 1000,
-      // routes: ['/', '/404.html', '/200.html'],
+      routes: ['/'],
     },
     hooks: {
       'prerender:generate'(route) {
