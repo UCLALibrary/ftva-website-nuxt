@@ -41,14 +41,13 @@ fragment BlockCardWithImageFragment on ElementInterface {
           title
           to: uri
         }
-        heroImage {
-          ... on heroImage_heroImage_BlockType {
-            id
-            image {
-              ...Image
+        imageCarousel {
+            ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                ...Image
+                }
+                creditText
             }
-            altText
-          }
         }
       }
     }
