@@ -255,9 +255,35 @@ useHead({
       <template #sidebarBottom>
         <BlockInfo
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+          color-scheme="paleblue"
           data-test="ticket-info"
-          :ftva-ticket-information="page?.ftvaTicketInformation"
-        />
+          class="ticket-info"
+        >
+          <template #block-info-top>
+            <h3 class="block-info-header">
+              Ticket Info
+            </h3>
+          </template>
+          <template #block-info-mid>
+            <ul class="block-info-list">
+              <li
+                v-for="(item, index) in page?.ftvaTicketInformation"
+                :key="`${item}-${index}`"
+              >
+                {{ item.title }}
+              </li>
+            </ul>
+          </template>
+          <template #block-info-end>
+            <ButtonLink
+              label="Plan Your Visit"
+              to="/plan-your-visit"
+              class="button"
+              :is-secondary="true"
+              icon-name="none"
+            />
+          </template>
+        </BlockInfo>
       </template>
     </TwoColLayoutWStickySideBar>
 

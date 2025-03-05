@@ -40,3 +40,39 @@
     }
   }
 }
+
+.block-info.ticket-info {
+  padding: 20px;
+
+  .block-info-header {
+    @include ftva-subtitle-1;
+    text-align: center;
+    color: $heading-grey;
+    border-bottom: 1px solid $grey-blue;
+    padding: 8px 0;
+  }
+
+  .block-info-list {
+    padding: 16px 0 16px 20px;
+
+    li {
+      @include ftva-body-2;
+      color: $body-grey;
+
+      &::marker {
+        color: $body-grey;
+      }
+    }
+  }
+
+  :deep(.block-info-end-wrapper) {
+    margin: 0 auto;
+  }
+
+  .button-link {
+    font-size: 18px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin: 10px auto;
+  }
+}
