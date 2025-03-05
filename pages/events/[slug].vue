@@ -253,13 +253,13 @@ useHead({
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
           color-scheme="paleblue"
           data-test="ticket-info"
+          class="ticket-info"
         >
           <template #block-info-top>
             <h3 class="block-info-header">
               Ticket Info
             </h3>
           </template>
-
           <template #block-info-mid>
             <ul class="block-info-list">
               <li
@@ -270,7 +270,6 @@ useHead({
               </li>
             </ul>
           </template>
-
           <template #block-info-end>
             <ButtonLink
               label="Plan Your Visit"
@@ -309,56 +308,17 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-// PAGE STYLES
 .page-event-detail {
   position: relative;
 
   .two-column {
 
-    .ftva.button-dropdown {
+    .button-dropdown {
       margin-top: 30px;
     }
 
-    .ftva.block-info {
-      // margin-top: 48px;
-    }
-
-    // Refactor to shared filed
     .block-info {
       margin-top: 48px;
-      padding: 20px;
-
-      :deep(.block-info-end-wrapper) {
-        margin: 0 auto;
-      }
-
-      :deep(.block-info-header) {
-        @include ftva-subtitle-1;
-        text-align: center;
-        color: $heading-grey;
-        border-bottom: 1px solid $grey-blue;
-        padding: 8px 0;
-      }
-
-      :deep(.block-info-list) {
-        padding: 16px 0 16px 20px;
-
-        li {
-          @include ftva-body-2;
-          color: $body-grey;
-
-          &::marker {
-            color: $body-grey;
-          }
-        }
-      }
-
-      :deep(.button-link) {
-        font-size: 18px;
-        padding-left: 16px;
-        padding-right: 16px;
-        margin: 10px auto;
-      }
     }
 
     // SECTION SCREENING DETAILS
