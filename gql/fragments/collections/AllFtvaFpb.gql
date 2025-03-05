@@ -1,4 +1,5 @@
 #import "../gql/fragments/BlockCallToActionFragment.gql"
+#import "../gql/fragments/BlockCardWithImageFragment.gql"
 #import "../gql/fragments/BlockFormFragment.gql"
 #import "../gql/fragments/BlockHorizontalDividerFragment.gql"
 #import "../gql/fragments/BlockImpactNumberCardsFragment.gql"
@@ -14,9 +15,11 @@ fragment AllFtvaFpb on ElementInterface {
         id
         typeHandle
 
-
         ... on allFtvaFpb_callToAction_BlockType {
             ...BlockCallToActionFragment
+        }
+        ... on allFtvaFpb_cardWithImage_BlockType {
+            ...BlockCardWithImageFragment
         }
         ... on allFtvaFpb_form_BlockType {
             ...BlockFormFragment
