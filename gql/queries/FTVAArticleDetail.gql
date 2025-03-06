@@ -1,5 +1,5 @@
 #import "../gql/fragments/Image.gql"
-
+#import "../gql/fragments/collections/AllFtvaFpb.gql"
 
 query FTVAArticleDetail($slug: [String!]) {
   ftvaArticle: entry(section: "ftvaArticle", slug: $slug)  {
@@ -42,7 +42,7 @@ query FTVAArticleDetail($slug: [String!]) {
     aboutTheAuthor
 
     # FTVA Flexible Page Block Collection (FPBs)
-
+    ...AllFtvaFpb
   }
   # SectionTeaserCard (Recent posts)
   # page only displays 3 but we query 4 in case the list includes the current article
