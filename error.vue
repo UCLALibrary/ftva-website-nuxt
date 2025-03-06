@@ -55,8 +55,10 @@ const isDevelopment = computed(() => import.meta.dev)
 
         <divider-way-finder />
 
-        <rich-text class="
-        error-text">
+        <rich-text
+          class="
+        error-text"
+        >
           <h1
             v-if="error?.statusCode === 404"
             class="error-title"
