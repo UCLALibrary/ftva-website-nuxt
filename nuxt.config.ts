@@ -140,8 +140,7 @@ export default defineNuxtConfig({
     // 'ucla-library-design-tokens/scss/fonts.scss',
     'ucla-library-design-tokens/scss/app-global.scss',
     '~/assets/styles/global.scss',
-    // use the following line when using pnpm link --global ucla-library-website-components-vue
-    'ucla-library-website-components/dist/style.css',
+    '@ucla-library-monorepo/ucla-library-website-components/style.css',
   ],
 
   typescript: {
@@ -157,7 +156,7 @@ export default defineNuxtConfig({
 
   // Transpile Vuetify for proper handling of CSS
   build: {
-    transpile: ['nuxt-graphql-request', 'ucla-library-website-components', 'vuetify'],
+    transpile: ['nuxt-graphql-request', '@ucla-library-monorepo/ucla-library-website-components', 'vuetify'],
   },
 
   site: {

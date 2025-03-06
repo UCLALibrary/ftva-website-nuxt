@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
-import { SectionWrapper } from 'ucla-library-website-components'
+import { SectionWrapper, RichText, DividerWayFinder } from '@ucla-library-monorepo/ucla-library-website-components'
 
 const props = defineProps({
   error: {
@@ -55,10 +55,8 @@ const isDevelopment = computed(() => import.meta.dev)
 
         <divider-way-finder />
 
-        <rich-text
-          class="
-        error-text"
-        >
+        <rich-text class="
+        error-text">
           <h1
             v-if="error?.statusCode === 404"
             class="error-title"

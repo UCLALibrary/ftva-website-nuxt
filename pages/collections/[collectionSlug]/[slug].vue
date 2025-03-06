@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ButtonLink, CardMeta, DefinitionList, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
+import { ButtonLink, CardMeta, DefinitionList, DividerWayFinder, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'

@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { SectionWrapper } from 'ucla-library-website-components'
+import { SectionWrapper, SectionHeader, SectionStaffArticleList, RichText, DividerWayFinder, BlockCardWithImage } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'

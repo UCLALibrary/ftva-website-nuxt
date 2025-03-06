@@ -1,5 +1,6 @@
 <script setup>
 import { provideTheme } from '@/composables/provideTheme'
+import { SiteBrandBar, HeaderSticky, FooterMain } from '@ucla-library-monorepo/ucla-library-website-components'
 provideTheme()
 const { enabled, state } = usePreviewMode()
 // console.log('App.vue', enabled.value, state.token)
