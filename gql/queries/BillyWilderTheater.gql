@@ -1,0 +1,87 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVABillyWilder {
+  entry(section: "ftvaBillyWiderTheater") {
+    id
+    slug
+    uri
+    sectionHandle
+    title
+    titleGeneral
+    summary
+    displaySummary
+    image: ftvaImage {
+      ...Image
+    }
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+    sectionTitle
+    richText
+    ftvaAdmissions {
+      title
+      sectionTitle
+      description
+    }
+    ftvaParkingAndDirections
+    ... on ftvaBillyWiderTheater_ftvaBillyWiderTheater_Entry {
+      id
+      ftvaAdmissions {
+        ... on ftvaAdmissions_titleGeneral_BlockType {
+          id
+        }
+        ... on ftvaAdmissions_description_BlockType {
+          id
+          title
+          richText
+        }
+        ... on ftvaAdmissions_textBlocks_BlockType {
+          id
+          title
+          admissionsHeadingAndTextBlock {
+            ... on admissionsHeadingAndTextBlock_headingAndTextBlock_BlockType {
+              id
+              titleGeneral
+              text
+            }
+          }
+        }
+      }
+      ftvaParkingAndDirections {
+        ... on ftvaParkingAndDirections_titleGeneral_BlockType {
+          id
+          sectionTitle
+        }
+        ... on ftvaParkingAndDirections_googleMapEmbed_BlockType {
+          id
+          ftvaGoogleMapsEmbed {
+            ... on ftvaGoogleMapsEmbed_mapEmbed_BlockType {
+              id
+              locationName
+              locationNotes
+              addressLine1
+              addressLine2
+              googleMapsEmbed
+            }
+          }
+        }
+        ... on ftvaParkingAndDirections_textBlocks_BlockType {
+          id
+          parkingDirectionsHeadingAndTextBlock {
+            ... on parkingDirectionsHeadingAndTextBlock_headingAndTextBlock_BlockType {
+              id
+              title
+              titleGeneral
+              text
+            }
+          }
+        }
+      }
+    }
+  }
+}
