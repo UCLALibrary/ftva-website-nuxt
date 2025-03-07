@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-// import { SectionWrapper } from 'ucla-library-website-components'
+import { SectionWrapper, DividerGeneral } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -16,7 +16,7 @@ const { $graphql } = useNuxtApp()
 // const route = useRoute()
 
 const { data, error } = await useAsyncData('billy-wilder-theater', async () => {
-  const data = await $graphql.default.request(BillyWilderTheater) // ???
+  const data = await $graphql.default.request(BillyWilderTheater)
   return data
 })
 
@@ -26,27 +26,27 @@ if (error.value) {
   })
 }
 
-if (!data.value.entry) {
-  // console.log('no data')
-  throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
-    fatal: true
-  })
-}
+// if (!data.value.entry) {
+//   // console.log('no data')
+//   throw createError({
+//     statusCode: 404,
+//     statusMessage: 'Page Not Found',
+//     fatal: true
+//   })
+// }
 
 // This is creating an index of the main content (not related content)
-if (data.value.entry && import.meta.prerender) {
-  try {
-    // Call the composable to use the indexing function
-    const { indexContent } = useContentIndexer()
-    // Index the data using the composable during static build
-    await indexContent(data.value.entry, slug)
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('FAILED TO INDEX BILLY WILDER THEATER during static build:', error)
-  }
-}
+// if (data.value.entry && import.meta.prerender) {
+//   try {
+//     // Call the composable to use the indexing function
+//     const { indexContent } = useContentIndexer()
+//     // Index the data using the composable during static build
+//     await indexContent(data.value.entry, slug)
+//   } catch (error) {
+//     // eslint-disable-next-line no-console
+//     console.error('FAILED TO INDEX BILLY WILDER THEATER during static build:', error)
+//   }
+// }
 
 console.log('Data: ', data.value)
 
@@ -70,7 +70,7 @@ console.log('Data: ', data.value)
 // }
 
 // DATA
-const page = ref(_get(data.value, 'entry', {}))
+// const page = ref(_get(data.value, 'entry', {}))
 // const pageTitle = page.value.title
 // const pageSummary = page.value.summary
 // const featuredArticles = page.value.ftvaFeaturedArticles
@@ -84,22 +84,29 @@ const page = ref(_get(data.value, 'entry', {}))
 //   featuredArticles.value = page.value.ftvaFeaturedArticles
 // })
 
-useHead({
-  title: page.value ? page.value.title : '... loading',
-  meta: [
-    {
-      hid: 'description',
-      name: 'description',
-      content: removeTags(page.value.summary)
-    }
-  ]
-})
+// useHead({
+// title: page.value ? page.value.title : '... loading',
+// meta: [
+// {
+// hid: 'description',
+// name: 'description',
+// content: removeTags(page.value.summary)
+// }
+// ]
+// })
 </script>
 
 <template>
-  <div class="">
-    <h2>Billy Wilder Theater</h2>
-  </div>
+  <main
+    class="page page-billy-wilder-theater"
+    style="padding: 25px 100px;"
+  >
+    <SectionWrapper>
+      <h2>Plan Your Visit</h2>
+      <!-- <pre>{{ page }}</pre> -->
+      <divider-general />
+    </SectionWrapper>
+  </main>
 </template>
 
 <style lang="scss" scoped></style>
