@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockTag, ButtonDropdown, CardMeta, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { BlockTag, ButtonDropdown, CardMeta, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -117,7 +117,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-filmmaker-detail"
+    class="page page-detail page-detail--paleblue page-filmmaker-detail"
   >
     <div class="one-column">
       <NavBreadcrumb

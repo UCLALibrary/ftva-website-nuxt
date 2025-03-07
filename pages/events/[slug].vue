@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockEventDetail, BlockInfo, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { BlockEventDetail, BlockInfo, ButtonLink, BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -152,7 +152,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-event-detail"
+    class="page page-detail page-detail--paleblue page-event-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -251,9 +251,35 @@ useHead({
       <template #sidebarBottom>
         <BlockInfo
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+          color-scheme="paleblue"
           data-test="ticket-info"
-          :ftva-ticket-information="page?.ftvaTicketInformation"
-        />
+          class="ticket-info"
+        >
+          <template #block-info-top>
+            <h3 class="block-info-header">
+              Ticket Info
+            </h3>
+          </template>
+          <template #block-info-mid>
+            <ul class="block-info-list">
+              <li
+                v-for="(item, index) in page?.ftvaTicketInformation"
+                :key="`${item}-${index}`"
+              >
+                {{ item.title }}
+              </li>
+            </ul>
+          </template>
+          <template #block-info-end>
+            <ButtonLink
+              label="Plan Your Visit"
+              to="/plan-your-visit"
+              class="button"
+              :is-secondary="true"
+              icon-name="none"
+            />
+          </template>
+        </BlockInfo>
       </template>
 
       <template #primaryBottom>
@@ -282,17 +308,16 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-// PAGE STYLES
 .page-event-detail {
   position: relative;
 
   .two-column {
 
-    .ftva.button-dropdown {
+    .button-dropdown {
       margin-top: 30px;
     }
 
-    .ftva.block-info {
+    .block-info {
       margin-top: 48px;
     }
 

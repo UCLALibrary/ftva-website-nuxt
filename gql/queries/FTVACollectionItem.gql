@@ -40,6 +40,7 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
       ... on ftvaLARebellionIndividual_ftvaLARebellionIndividual_Entry {
         nameFirst
         nameLast
+        uri
       }
     }
     year
@@ -51,6 +52,7 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
           id
           nameFirst
           nameLast
+          uri
         }
         roles
       }

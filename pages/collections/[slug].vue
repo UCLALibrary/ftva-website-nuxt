@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockCallToAction, CardMeta, DividerWayFinder, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar, VideoEmbed } from 'ucla-library-website-components'
+import { BlockCallToAction, CardMeta, ButtonDropdown, DividerWayFinder, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar, VideoEmbed } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -161,7 +161,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-collection-detail"
+    class="page page-detail page-detail--paleblue page-collection-detail"
   >
     <div class="one-column">
       <NavBreadcrumb

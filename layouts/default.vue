@@ -1,7 +1,7 @@
 <script setup>
 
 // This layout is only used for error.vue page, for the rest of the page templates we have layout added to app.vue
-
+import { SiteBrandBar, HeaderSticky, FooterMain } from '@ucla-library-monorepo/ucla-library-website-components'
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 

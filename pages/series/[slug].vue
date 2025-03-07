@@ -2,7 +2,7 @@
 // COMPONENT RE-IMPORTS
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockCardThreeColumn, BlockEventDetail, BlockInfo, BlockTag, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionTeaserList, SectionWrapper, TabItem, TabList, TwoColLayoutWStickySideBar } from 'ucla-library-website-components'
+import { ButtonLink, BlockEventDetail, BlockInfo, BlockTag, CardMeta, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionScreeningDetails, SectionTeaserCard, SectionTeaserList, SectionWrapper, TabItem, TabList, TwoColLayoutWStickySideBar } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -183,7 +183,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-event-series-detail"
+    class="page page-detail page-detail--paleblue page-event-series-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -255,9 +255,35 @@ useHead({
       <template #sidebarBottom>
         <BlockInfo
           v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+          color-scheme="paleblue"
           data-test="ticket-info"
-          :ftva-ticket-information="page?.ftvaTicketInformation"
-        />
+          class="ticket-info"
+        >
+          <template #block-info-top>
+            <h3 class="block-info-header">
+              Ticket Info
+            </h3>
+          </template>
+          <template #block-info-mid>
+            <ul class="block-info-list">
+              <li
+                v-for="(item, index) in page?.ftvaTicketInformation"
+                :key="`${item}-${index}`"
+              >
+                {{ item.title }}
+              </li>
+            </ul>
+          </template>
+          <template #block-info-end>
+            <ButtonLink
+              label="Plan Your Visit"
+              to="/plan-your-visit"
+              class="button"
+              :is-secondary="true"
+              icon-name="none"
+            />
+          </template>
+        </BlockInfo>
       </template>
     </TwoColLayoutWStickySideBar>
 

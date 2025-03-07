@@ -4,12 +4,23 @@
   &:before {
     content: '';
     position: absolute;
-    background-color: var(--pale-blue);
     aspect-ratio: 1440 / 520;
     max-height: 518px; //prevent overflow on large screens
     min-height: 225px; //prevent too much shrinking on small screens
     width: 100%;
     z-index: -1;
+  }
+
+  &--paleblue {
+    &:before {
+      background-color: var(--pale-blue);
+    }
+  }
+
+  &--white {
+    &:before {
+      background-color: var(--color-white);
+    }
   }
 
   .one-column {
@@ -27,5 +38,41 @@
       padding-left: var(--unit-gutter);
       padding-right: var(--unit-gutter);
     }
+  }
+}
+
+.block-info.ticket-info {
+  padding: 20px;
+
+  .block-info-header {
+    @include ftva-subtitle-1;
+    text-align: center;
+    color: $heading-grey;
+    border-bottom: 1px solid $grey-blue;
+    padding: 8px 0;
+  }
+
+  .block-info-list {
+    padding: 16px 0 16px 20px;
+
+    li {
+      @include ftva-body-2;
+      color: $body-grey;
+
+      &::marker {
+        color: $body-grey;
+      }
+    }
+  }
+
+  :deep(.block-info-end-wrapper) {
+    margin: 0 auto;
+  }
+
+  .button-link {
+    font-size: 18px;
+    padding-left: 16px;
+    padding-right: 16px;
+    margin: 10px auto;
   }
 }

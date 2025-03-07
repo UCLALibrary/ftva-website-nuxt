@@ -4,7 +4,7 @@
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import {
   BlockTag, ButtonDropdown, CardMeta, DividerWayFinder, FlexibleMediaGalleryNewLightbox, FlexibleBlocks, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar
-} from 'ucla-library-website-components'
+} from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -129,7 +129,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-article-detail"
+    class="page page-detail page-detail--paleblue page-article-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
