@@ -1,4 +1,5 @@
 <script setup>
+import { SiteBrandBar, HeaderSticky, FooterMain } from '@ucla-library-monorepo/ucla-library-website-components'
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 const { enabled, state } = usePreviewMode()

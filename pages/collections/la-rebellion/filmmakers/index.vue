@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { DividerGeneral, SectionWrapper, RichText } from 'ucla-library-website-components'
+import { DividerGeneral, SectionWrapper, RichText } from '@ucla-library-monorepo/ucla-library-website-components'
 import { computed } from 'vue'
 
 // HELPERS & UTILS

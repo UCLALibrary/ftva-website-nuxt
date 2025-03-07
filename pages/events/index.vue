@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // COMPONENTS
-import { SectionWrapper } from 'ucla-library-website-components'
+import { SectionWrapper, TabList, TabItem, SectionTeaserList, SectionPagination, BaseCalendar, SectionRemoveSearchFilter, DateFilter, FiltersDropdown } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
