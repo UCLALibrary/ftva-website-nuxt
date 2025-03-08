@@ -171,7 +171,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page-general-content {
 
-
   .page-title {
     display: block;
 
