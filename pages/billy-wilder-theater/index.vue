@@ -13,8 +13,6 @@ import { useContentIndexer } from '~/composables/useContentIndexer'
 
 const { $graphql } = useNuxtApp()
 
-// const route = useRoute()
-
 const { data, error } = await useAsyncData('billy-wilder-theater', async () => {
   const data = await $graphql.default.request(BillyWilderTheater)
   return data
@@ -26,74 +24,54 @@ if (error.value) {
   })
 }
 
-// if (!data.value.entry) {
-//   // console.log('no data')
-//   throw createError({
-//     statusCode: 404,
-//     statusMessage: 'Page Not Found',
-//     fatal: true
-//   })
-// }
-
-// This is creating an index of the main content (not related content)
-// if (data.value.entry && import.meta.prerender) {
-//   try {
-//     // Call the composable to use the indexing function
-//     const { indexContent } = useContentIndexer()
-//     // Index the data using the composable during static build
-//     await indexContent(data.value.entry, slug)
-//   } catch (error) {
-//     // eslint-disable-next-line no-console
-//     console.error('FAILED TO INDEX BILLY WILDER THEATER during static build:', error)
-//   }
-// }
+if (!data.value.entry) {
+  // console.log('no data')
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+    fatal: true
+  })
+}
 
 console.log('Data: ', data.value)
 
 // METADATA INFO
-// if (data.value.entry && import.meta.prerender) {
-//   try {
-//     // Call the composable to use the indexing function
-//     const { indexContent } = useContentIndexer()
-//     const doc = {
-//       title: data.value.entry.title,
-//       text: data.value.entry.summary,
-//       uri: '/blog'
-//     }
-//     // Index the articles data using the composable during static build
-//     await indexContent(doc, 'billy-wilder-theater')
-//     // console.log('Articles indexed successfully during static build')
-//   } catch (error) {
-//     // eslint-disable-next-line no-console
-//     console.error('FAILED TO INDEX EVENT ARTICLE LISTING during static build:', error)
-//   }
-// }
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.titleGeneral,
+      text: data.value.entry.summary,
+    }
+    // Index the data using the composable during static build
+    await indexContent(doc, 'billy-wilder-theater')
+    // console.log('Billy Wilder Theater content indexed successfully during static build')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX BILLY WILDER THEATER CONTENT during static build:', error)
+  }
+}
 
 // DATA
-// const page = ref(_get(data.value, 'entry', {}))
-// const pageTitle = page.value.title
-// const pageSummary = page.value.summary
-// const featuredArticles = page.value.ftvaFeaturedArticles
+const page = ref(_get(data.value, 'entry', {}))
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
-// watch(data, (newVal, oldVal) => {
-//   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
-//   page.value = _get(newVal, 'entry', {})
-//   pageTitle.value = page.value.title
-//   pageSummary.value = page.value.summary
-//   featuredArticles.value = page.value.ftvaFeaturedArticles
-// })
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'entry', {})
+})
 
-// useHead({
-// title: page.value ? page.value.title : '... loading',
-// meta: [
-// {
-// hid: 'description',
-// name: 'description',
-// content: removeTags(page.value.summary)
-// }
-// ]
-// })
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.summary)
+    }
+  ]
+})
 </script>
 
 <template>
@@ -103,7 +81,7 @@ console.log('Data: ', data.value)
   >
     <SectionWrapper>
       <h2>Plan Your Visit</h2>
-      <!-- <pre>{{ page }}</pre> -->
+      <pre>{{ page }}</pre>
       <divider-general />
     </SectionWrapper>
   </main>
