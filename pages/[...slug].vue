@@ -170,7 +170,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .page-general-content {
-  position: relative;
+
 
   .page-title {
     display: block;
