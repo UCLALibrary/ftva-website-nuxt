@@ -1,0 +1,30 @@
+#import "../gql/fragments/collections/AllFtvaFpb.gql"
+#import "../gql/fragments/Image.gql"
+
+query FTVAARSCIMCS($section: [String!]) {
+  entry(section: $section) {
+    id
+    typeHandle
+    sectionHandle
+    title: titleGeneral
+    summary
+    displaySummary
+    ftvaAlternativeTitle
+    ftvaHomepageDescription
+
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+
+    ftvaImage {
+      ...Image
+    }
+
+    ...AllFtvaFpb
+  }
+}
