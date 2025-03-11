@@ -59,13 +59,19 @@ export default defineNuxtConfig({
             'Content-Type': 'application/json'
           },
           method: 'POST',
-          body: JSON.stringify({ query: 'query AllPages { entries { uri, sectionHandle } }' })
+          body: JSON.stringify({ query: 'query AllPages { entries(section: "ftva*") { uri, sectionHandle } }' })
         })
 
         const postPages = await response.json()
         // console.log('All pages', JSON.stringify(postPages.data.entries))
         if (postPages && postPages.data && postPages.data.entries) {
-          const postWithoutPayloadRoutes = postPages.data.entries.filter(item => item.sectionHandle.includes('ftva')).map(entry => '/' + entry.uri.replace(/^ftva\//, ''))
+          /*
+          * {
+          *    "uri": null,
+          *    "sectionHandle": "ftvaBillyWiderTheater"
+          *  },
+          */
+          const postWithoutPayloadRoutes = postPages.data.entries.map(entry => '/' + entry.uri?.replace(/^ftva\//, ''))
           allRoutes.push(...postWithoutPayloadRoutes)
         }
 
