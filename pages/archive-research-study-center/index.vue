@@ -38,47 +38,13 @@ if (!data.value.entry) {
   })
 }
 
-// METADATA INFO
-// if (data.value.entry && import.meta.prerender) {
-//   try {
-//     // Call the composable to use the indexing function
-//     const { indexContent } = useContentIndexer()
-//     const doc = {
-//       title: data.value.entry.title,
-//       text: data.value.entry.summary,
-//       uri: '/blog'
-//     }
-//     // Index the articles data using the composable during static build
-//     await indexContent(doc, 'article-listing')
-//     // console.log('Articles indexed successfully during static build')
-//   } catch (error) {
-//     // eslint-disable-next-line no-console
-//     console.error('FAILED TO INDEX EVENT ARTICLE LISTING during static build:', error)
-//   }
-// }
-
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-// const pageTitle = page.value.title
-// const pageSummary = page.value.summary
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
-  // pageTitle.value = page.value.title
-  // pageSummary.value = page.value.summary
 })
-
-// watch(
-//   () => route.query,
-//   (newVal, oldVal) => {
-//     isLoading.value = false
-//     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-//     isMobile.value ? mobileArticles.value = [] : desktopArticles.value = []
-//     hasMore.value = true
-//     searchES()
-//   }, { deep: true, immediate: true }
-// )
 
 // PAGE SUMMARY
 const showPageSummary = computed(() => {
