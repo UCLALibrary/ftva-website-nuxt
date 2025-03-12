@@ -4,10 +4,8 @@ import { SectionWrapper, SectionHeader, SectionStaffArticleList, RichText, Divid
 
 // HELPERS
 import _get from 'lodash/get'
-// import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // GQL
-// import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import FTVAARSCIMCS from '../gql/queries/FTVAEntryARSCIMCS.gql'
 
 const { $graphql } = useNuxtApp()
@@ -18,7 +16,7 @@ const routeNameToSectionMap = {
   '/archive-research-study-center': 'ftvaArchiveResearchAndStudyCenter',
   '/instructional-media-collections-services': 'ftvaInstructionalMediaCollectionsAndServices'
 }
-const { data, error } = await useAsyncData('page-data', async () => {
+const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap
   const data = await $graphql.default.request(FTVAARSCIMCS, { section: routeNameToSectionMap[route.path] })
   return data
@@ -70,7 +68,7 @@ useHead({
 </script>
 
 <template>
-  <!-- todo write in page route.name dynamically ? need some specific class -->
+  <!-- todo write in page route.name dynamically in class? need some specific class -->
   <div class="page">
     <SectionWrapper
       :section-title="page.title"
