@@ -1,6 +1,6 @@
 <script setup>
 // COMPONENTS
-import { SectionWrapper, DividerGeneral } from '@ucla-library-monorepo/ucla-library-website-components'
+import { BlockInfo, DividerWayFinder, ResponsiveImage, RichText, SectionHeader, SectionWrapper } from '@ucla-library-monorepo/ucla-library-website-components'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -62,6 +62,15 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+const parsedImage = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.image) {
+    return []
+  }
+  return page.value.image
+})
+// console.log('image: ', parsedImage.value)
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -77,15 +86,124 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-billy-wilder-theater"
-    style="padding: 25px 100px;"
+    class="page page-detail page-detail--paleblue page-billy-wilder-theater"
   >
+    <div class="one-column">
+      <!-- <SectionWrapper theme="paleblue"> -->
+      <!-- <div class="one-column"> -->
+      <ResponsiveImage
+        v-if="parsedImage.length === 1"
+        :media="parsedImage[0]"
+        :aspect-ratio="43.103"
+      />
+      <!-- </div> -->
+      <!-- </SectionWrapper> -->
+    </div>
     <SectionWrapper>
-      <h2>Plan Your Visit</h2>
-      <pre style="text-wrap: auto;">{{ page }}</pre>
-      <divider-general />
+      <SectionHeader
+        :level="1"
+        class="page-heading"
+      >
+        {{ page.title }}
+      </SectionHeader>
+
+      <DividerWayFinder />
+
+      <SectionHeader
+        :level="3"
+        class="section-headings"
+      >
+        {{ page.ftvaAdmissions[0].sectionTitle }}
+      </SectionHeader>
+
+      <BlockInfo
+        color-scheme="paleblue"
+        class="block-info--blue"
+      >
+        <template #block-info-top>
+          <RichText :rich-text-content="page.ftvaAdmissions[1].richText" />
+        </template>
+      </BlockInfo>
+
+      <div class="block-info--flex">
+        <BlockInfo
+          v-for="item, index in page.ftvaAdmissions[2].admissionsHeadingAndTextBlock"
+          :key="index"
+          color-scheme="paleblue"
+        >
+          <template #block-info-top>
+            <RichText :rich-text-content="item.title" />
+          </template>
+          <template #block-info-mid>
+            <RichText :rich-text-content="item.text" />
+          </template>
+        </BlockInfo>
+      </div>
+
+      <DividerWayFinder />
+
+      <SectionHeader
+        :level="3"
+        class="section-headings"
+      >
+        Parking and Directions
+      </SectionHeader>
+
+      <DividerWayFinder />
+
+      <SectionHeader
+        :level="3"
+        class="section-headings"
+      >
+        About the Billy Wilder Theater
+      </SectionHeader>
+
+      <RichText :rich-text-content="page.richText" />
     </SectionWrapper>
   </main>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.page-billy-wilder-theater {
+  .one-column {
+    padding-top: 80px;
+  }
+
+  .page-heading {
+    @include ftva-h2;
+    color: $heading-grey;
+  }
+
+  .section-headings {
+    @include ftva-h4;
+    color: $heading-grey;
+    margin-bottom: 20px;
+  }
+
+  .block-info--blue {
+    padding: 32px 32px 0 32px;
+    margin-bottom: 60px;
+  }
+
+  .block-info--flex {
+    display: flex;
+    justify-content: space-evenly;
+    gap: 60px;
+
+    >* {
+      flex: 1;
+      padding: 0;
+    }
+
+    :deep(.parsed-content) {
+      margin-bottom: 0;
+    }
+  }
+
+  .rich-text {
+    padding-right: 0;
+  }
+}
+
+@import 'assets/styles/slug-pages.scss';
+</style>
