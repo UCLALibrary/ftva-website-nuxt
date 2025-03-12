@@ -79,9 +79,8 @@ export default defineNuxtConfig({
           for (const route of allRoutes) {
             routes.add(route)
           }
-          /* routes.add('/about/reports')
-          routes.add('/help')
-          routes.add('/about/status-updates') */
+          routes.add('/instructional-media-collections-services')
+          routes.add('/archive-research-study-center')
         }
         // eslint-disable-next-line no-console
         console.log('prerender:routes ctx.routes', routes)
