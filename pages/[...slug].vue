@@ -3,10 +3,8 @@
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import {
-  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, CardMeta, RichText, PageAnchor, FlexibleBlocks, SectionWrapper,
+  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, RichText, PageAnchor, FlexibleBlocks, SectionWrapper,
 } from '@ucla-library-monorepo/ucla-library-website-components'
-
-import { onMounted, nextTick } from 'vue'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -157,14 +155,6 @@ onMounted(() => {
         />
       </template>
     </TwoColLayoutWStickySideBar>
-
-    <SectionWrapper section-title="HEADERS for the PageAnchors">
-      <code> {{ getHeaders() }}</code>
-    </SectionWrapper>
-
-    <SectionWrapper section-title="PAGE DATA">
-      <code>{{ page }}</code>
-    </SectionWrapper>
   </main>
 </template>
 

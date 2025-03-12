@@ -8,9 +8,8 @@ export function useContentIndexer() {
     try {
       if (data && slug && esIndex) {
         // eslint-disable-next-line no-console
-        console.log(
-          'this is the elasticsearch plugin: ' + JSON.stringify(data)
-        )
+        console.log('this is the elasticsearch plugin: ',JSON.stringify(Object.keys(data).length), slug)
+
         // eslint-disable-next-line no-console
         console.log(`Requesting URL: ${esURL}/${esIndex}/_doc/${slug}`)
         const docExists = await fetch(
