@@ -76,6 +76,7 @@ useHead({
 
 <template>
   <main
+    id="main"
     class="page page-billy-wilder-theater"
     style="padding: 25px 100px;"
   >

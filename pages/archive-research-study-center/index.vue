@@ -69,7 +69,10 @@ useHead({
 
 <template>
   <!-- todo write in page route.name dynamically in class? need some specific class -->
-  <div class="page">
+  <main
+    id="main"
+    class="page"
+  >
     <SectionWrapper
       :section-title="page.title"
       class="header"
@@ -82,5 +85,5 @@ useHead({
     <SectionWrapper>
       {{ page }}
     </SectionWrapper>
-  </div>
+  </main>
 </template>
