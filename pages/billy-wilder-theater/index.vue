@@ -82,13 +82,21 @@ const parsedAdmissions = computed(() => {
 
 const parsedParking = computed(() => {
   const data = page.value.ftvaParkingAndDirections
+
+  const regex = /<iframe[^>]*\s+src="([^"]*)"/
+  const address = data[1].ftvaGoogleMapsEmbed[0]
+  const mapEmbedSrc = address.googleMapsEmbed.match(regex)
+
   const parking = {
     title: data[0].sectionTitle,
-    map: data[1].ftvaGoogleMapsEmbed[0],
+    address,
+    map: mapEmbedSrc[1],
     blocks: data[2].parkingDirectionsHeadingAndTextBlock
   }
   return parking
 })
+
+console.log(parsedParking.value.map)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -131,16 +139,13 @@ useHead({
         {{ parsedAdmissions.title }}
       </SectionHeader>
 
-      <BlockInfo
-        color-scheme="paleblue"
-        class="block-info--paleblue"
-      >
+      <BlockInfo color-scheme="paleblue">
         <template #block-info-top>
           <RichText :rich-text-content="parsedAdmissions.description" />
         </template>
       </BlockInfo>
 
-      <div class="block-info--flex admissions">
+      <div class="block-info-wrapper--flex admissions">
         <BlockInfo
           v-for="block in parsedAdmissions.blocks"
           :key="block.title"
@@ -168,7 +173,44 @@ useHead({
         {{ parsedParking.title }}
       </SectionHeader>
 
-      <div class="block-info--flex parking">
+      <div class="block-info-wrapper--flex directions">
+        <BlockInfo
+          color-scheme="paleblue"
+          class="address"
+        >
+          <template #block-info-top>
+            <p class="map-title">
+              {{ parsedParking.address.locationName }}
+            </p>
+            <p class="map-note">
+              {{ parsedParking.address.locationNotes }}
+            </p>
+          </template>
+
+          <template #block-info-end>
+            <p class="map-address">
+              {{ parsedParking.address.addressLine1 }}
+            </p>
+            <p class="map-address">
+              {{ parsedParking.address.addressLine2 }}
+            </p>
+          </template>
+        </BlockInfo>
+        <div class="iframe-hover">
+          <div class="iframe-wrapper">
+            <iframe
+              :src="parsedParking.map"
+              title="Billy Wilder Theater directions"
+              class="iframe"
+              width="100%"
+              height="100%"
+              allowfullscreen
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="block-info-wrapper--flex parking">
         <BlockInfo
           v-for="block in parsedParking.blocks"
           :key="block.title"
@@ -210,29 +252,26 @@ useHead({
 
   .page-heading {
     @include ftva-h2;
-    color: $heading-grey;
   }
 
   .section-heading {
     @include ftva-h4;
-    color: $heading-grey;
     margin-bottom: 20px;
   }
 
   .section-subtitle {
     @include ftva-emphasized-subtitle;
     font-size: 28px;
-    color: $heading-grey;
     font-weight: 600;
     margin-bottom: 8px;
   }
 
-  .block-info--paleblue {
+  .block-info.paleblue {
     padding: 36px 36px 6px 36px;
     margin-bottom: 60px;
   }
 
-  .block-info--flex {
+  .block-info-wrapper--flex {
     display: flex;
     flex-wrap: wrap;
 
@@ -278,6 +317,23 @@ useHead({
       }
     }
 
+    &.directions {
+      border-radius: 10px;
+      margin-bottom: 60px;
+      overflow: hidden;
+
+      .block-info.paleblue {
+        padding: 40px 0 36px 36px;
+        justify-content: space-between;
+        margin-bottom: 0;
+        border-radius: 0;
+      }
+
+      .address {
+        flex-basis: 40%;
+      }
+    }
+
     &.parking {
       justify-content: space-between;
       gap: 40px 80px;
@@ -289,20 +345,82 @@ useHead({
     }
   }
 
+  .map-title {
+    @include ftva-h5;
+  }
+
+  .map-note {
+    font-size: 16px;
+    text-transform: uppercase;
+  }
+
+  .map-address {
+    @include ftva-emphasized-subtitle;
+    color: $accent-blue;
+  }
+
+  .iframe-hover {
+    position: relative;
+    flex-basis: 60%;
+  }
+
+  .iframe-wrapper {
+    overflow: hidden;
+    padding-top: 56.25%;
+    position: relative;
+  }
+
+  .iframe {
+    border: 0;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    position: absolute;
+    z-index: 10;
+  }
+
   .rich-text {
     padding-right: 0;
   }
 
+  .page-heading,
+  .section-heading,
+  .section-subtitle,
+  .map-title,
+  .map-note {
+    color: $heading-grey;
+  }
+
   @media #{$medium} {
-    .block-info--flex {
+    .block-info-wrapper--flex {
 
       &.admissions,
       &.parking {
         gap: 20px 0;
       }
 
-      &.admissions {
+      &.admissions,
+      &.directions {
         flex-direction: column;
+      }
+
+      &.directions {
+        margin-bottom: 32px;
+
+        .block-info.paleblue {
+          padding: 20px;
+        }
+
+        .address {
+          row-gap: 32px;
+          flex-basis: 100%;
+        }
+
+        .iframe-hover {
+          flex-basis: 100%;
+          min-height: 249px;
+        }
       }
 
       &.parking {
