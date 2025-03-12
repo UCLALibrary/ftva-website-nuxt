@@ -210,6 +210,7 @@ useHead({
         class="lightbox-container"
       >
         <FlexibleMediaGalleryNewLightbox
+          v-if="parsedCarouselData && parsedCarouselData.length > 0"
           :items="parsedCarouselData"
           inline="true"
         >
