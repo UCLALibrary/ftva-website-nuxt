@@ -8,7 +8,6 @@ query FTVABillyWilder {
     sectionHandle
     title: titleGeneral
     summary
-    displaySummary
     image: ftvaImage {
       ...Image
     }
@@ -21,14 +20,14 @@ query FTVABillyWilder {
       }
     }
     sectionTitle
-    richText
+    description: richText
     ftvaAdmissions {
       title
       sectionTitle
       ... on ftvaAdmissions_description_BlockType {
         id
         title
-        richText
+        text: richText
       }
       ... on ftvaAdmissions_textBlocks_BlockType {
         admissionsHeadingAndTextBlock {

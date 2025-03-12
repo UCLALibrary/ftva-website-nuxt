@@ -69,7 +69,26 @@ const parsedImage = computed(() => {
   }
   return page.value.image
 })
-// console.log('image: ', parsedImage.value)
+
+const parsedAdmissions = computed(() => {
+  const data = page.value.ftvaAdmissions
+  const admissions = {
+    title: data[0].sectionTitle,
+    description: data[1].text,
+    blocks: data[2].admissionsHeadingAndTextBlock
+  }
+  return admissions
+})
+
+const parsedParking = computed(() => {
+  const data = page.value.ftvaParkingAndDirections
+  const parking = {
+    title: data[0].sectionTitle,
+    map: data[1].ftvaGoogleMapsEmbed[0],
+    blocks: data[2].parkingDirectionsHeadingAndTextBlock
+  }
+  return parking
+})
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -89,15 +108,11 @@ useHead({
     class="page page-detail page-detail--paleblue page-billy-wilder-theater"
   >
     <div class="one-column">
-      <!-- <SectionWrapper theme="paleblue"> -->
-      <!-- <div class="one-column"> -->
       <ResponsiveImage
         v-if="parsedImage.length === 1"
         :media="parsedImage[0]"
         :aspect-ratio="43.103"
       />
-      <!-- </div> -->
-      <!-- </SectionWrapper> -->
     </div>
     <SectionWrapper>
       <SectionHeader
@@ -111,31 +126,35 @@ useHead({
 
       <SectionHeader
         :level="3"
-        class="section-headings"
+        class="section-heading"
       >
-        {{ page.ftvaAdmissions[0].sectionTitle }}
+        {{ parsedAdmissions.title }}
       </SectionHeader>
 
       <BlockInfo
         color-scheme="paleblue"
-        class="block-info--blue"
+        class="block-info--paleblue"
       >
         <template #block-info-top>
-          <RichText :rich-text-content="page.ftvaAdmissions[1].richText" />
+          <RichText :rich-text-content="parsedAdmissions.description" />
         </template>
       </BlockInfo>
 
-      <div class="block-info--flex">
+      <div class="block-info--flex admissions">
         <BlockInfo
-          v-for="item, index in page.ftvaAdmissions[2].admissionsHeadingAndTextBlock"
-          :key="index"
-          color-scheme="paleblue"
+          v-for="block in parsedAdmissions.blocks"
+          :key="block.title"
         >
           <template #block-info-top>
-            <RichText :rich-text-content="item.title" />
+            <SectionHeader
+              :level="4"
+              class="section-subtitle"
+            >
+              {{ block.title }}
+            </SectionHeader>
           </template>
           <template #block-info-mid>
-            <RichText :rich-text-content="item.text" />
+            <RichText :rich-text-content="block.text" />
           </template>
         </BlockInfo>
       </div>
@@ -144,21 +163,41 @@ useHead({
 
       <SectionHeader
         :level="3"
-        class="section-headings"
+        class="section-heading"
       >
-        Parking and Directions
+        {{ parsedParking.title }}
       </SectionHeader>
+
+      <div class="block-info--flex parking">
+        <BlockInfo
+          v-for="block in parsedParking.blocks"
+          :key="block.title"
+          class="parking-topic"
+        >
+          <template #block-info-top>
+            <SectionHeader
+              :level="4"
+              class="section-subtitle"
+            >
+              {{ block.title }}
+            </SectionHeader>
+          </template>
+          <template #block-info-mid>
+            <RichText :rich-text-content="block.text" />
+          </template>
+        </BlockInfo>
+      </div>
 
       <DividerWayFinder />
 
       <SectionHeader
         :level="3"
-        class="section-headings"
+        class="section-heading"
       >
-        About the Billy Wilder Theater
+        {{ page.sectionTitle }}
       </SectionHeader>
 
-      <RichText :rich-text-content="page.richText" />
+      <RichText :rich-text-content="page.description" />
     </SectionWrapper>
   </main>
 </template>
@@ -174,34 +213,106 @@ useHead({
     color: $heading-grey;
   }
 
-  .section-headings {
+  .section-heading {
     @include ftva-h4;
     color: $heading-grey;
     margin-bottom: 20px;
   }
 
-  .block-info--blue {
-    padding: 32px 32px 0 32px;
+  .section-subtitle {
+    @include ftva-emphasized-subtitle;
+    font-size: 28px;
+    color: $heading-grey;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .block-info--paleblue {
+    padding: 36px 36px 6px 36px;
     margin-bottom: 60px;
   }
 
   .block-info--flex {
     display: flex;
-    justify-content: space-evenly;
-    gap: 60px;
+    flex-wrap: wrap;
 
     >* {
-      flex: 1;
       padding: 0;
     }
 
-    :deep(.parsed-content) {
-      margin-bottom: 0;
+    :deep(.rich-text) {
+
+      .parsed-content {
+        margin-bottom: 0;
+
+        p {
+          margin-bottom: 12px;
+        }
+
+        ul,
+        li {
+          margin: 0
+        }
+
+        li:last-of-type {
+          margin-bottom: 16px;
+        }
+
+        ul {
+          list-style: disc;
+          list-style-position: inside;
+        }
+
+        li::before {
+          display: none;
+        }
+      }
+    }
+
+    &.admissions {
+      justify-content: space-evenly;
+      gap: 0 60px;
+
+      >* {
+        flex: 1;
+      }
+    }
+
+    &.parking {
+      justify-content: space-between;
+      gap: 40px 80px;
+
+      .parking-topic:nth-of-type(3),
+      .parking-topic:nth-of-type(4) {
+        flex-basis: 45%;
+      }
     }
   }
 
   .rich-text {
     padding-right: 0;
+  }
+
+  @media #{$medium} {
+    .block-info--flex {
+
+      &.admissions,
+      &.parking {
+        gap: 20px 0;
+      }
+
+      &.admissions {
+        flex-direction: column;
+      }
+
+      &.parking {
+
+        .parking-topic:nth-of-type(3),
+        .parking-topic:nth-of-type(4) {
+          flex-basis: 100%;
+        }
+      }
+    }
   }
 }
 
