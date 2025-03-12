@@ -33,8 +33,6 @@ if (!data.value.entry) {
   })
 }
 
-console.log('Data: ', data.value)
-
 // METADATA INFO
 if (data.value.entry && import.meta.prerender) {
   try {
@@ -63,7 +61,6 @@ watch(data, (newVal, oldVal) => {
 })
 
 const parsedImage = computed(() => {
-  // fail gracefully if data does not exist (server-side)
   if (!page.value.image) {
     return []
   }
@@ -95,8 +92,6 @@ const parsedParking = computed(() => {
   }
   return parking
 })
-
-console.log(parsedParking.value.map)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -133,7 +128,7 @@ useHead({
       <DividerWayFinder />
 
       <SectionHeader
-        :level="3"
+        :level="2"
         class="section-heading"
       >
         {{ parsedAdmissions.title }}
@@ -152,7 +147,7 @@ useHead({
         >
           <template #block-info-top>
             <SectionHeader
-              :level="4"
+              :level="3"
               class="section-subtitle"
             >
               {{ block.title }}
@@ -167,7 +162,7 @@ useHead({
       <DividerWayFinder />
 
       <SectionHeader
-        :level="3"
+        :level="2"
         class="section-heading"
       >
         {{ parsedParking.title }}
@@ -196,17 +191,15 @@ useHead({
             </p>
           </template>
         </BlockInfo>
-        <div class="iframe-hover">
-          <div class="iframe-wrapper">
-            <iframe
-              :src="parsedParking.map"
-              title="Billy Wilder Theater directions"
-              class="iframe"
-              width="100%"
-              height="100%"
-              allowfullscreen
-            />
-          </div>
+        <div class="iframe-wrapper">
+          <iframe
+            :src="parsedParking.map"
+            title="Billy Wilder Theater directions"
+            class="iframe"
+            width="100%"
+            height="100%"
+            allowfullscreen
+          />
         </div>
       </div>
 
@@ -218,7 +211,7 @@ useHead({
         >
           <template #block-info-top>
             <SectionHeader
-              :level="4"
+              :level="3"
               class="section-subtitle"
             >
               {{ block.title }}
@@ -233,7 +226,7 @@ useHead({
       <DividerWayFinder />
 
       <SectionHeader
-        :level="3"
+        :level="2"
         class="section-heading"
       >
         {{ page.sectionTitle }}
@@ -359,15 +352,10 @@ useHead({
     color: $accent-blue;
   }
 
-  .iframe-hover {
-    position: relative;
-    flex-basis: 60%;
-  }
-
   .iframe-wrapper {
-    overflow: hidden;
-    padding-top: 56.25%;
     position: relative;
+    min-height: 400px;
+    flex-basis: 60%;
   }
 
   .iframe {
@@ -393,6 +381,10 @@ useHead({
   }
 
   @media #{$medium} {
+    .one-column {
+      padding-top: 60px;
+    }
+
     .block-info-wrapper--flex {
 
       &.admissions,
@@ -417,9 +409,9 @@ useHead({
           flex-basis: 100%;
         }
 
-        .iframe-hover {
+        .iframe-wrapper {
           flex-basis: 100%;
-          min-height: 249px;
+          min-height: 350px;
         }
       }
 
