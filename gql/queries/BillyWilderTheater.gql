@@ -6,8 +6,7 @@ query FTVABillyWilder {
     slug
     uri
     sectionHandle
-    title
-    titleGeneral
+    title: titleGeneral
     summary
     displaySummary
     image: ftvaImage {
@@ -34,7 +33,7 @@ query FTVABillyWilder {
       ... on ftvaAdmissions_textBlocks_BlockType {
         admissionsHeadingAndTextBlock {
           ... on admissionsHeadingAndTextBlock_headingAndTextBlock_BlockType {
-            titleGeneral
+            title: titleGeneral
             text
           }
         }
@@ -63,8 +62,7 @@ query FTVABillyWilder {
         parkingDirectionsHeadingAndTextBlock {
           ... on parkingDirectionsHeadingAndTextBlock_headingAndTextBlock_BlockType {
             id
-            title
-            titleGeneral
+            title: titleGeneral
             text
           }
         }
