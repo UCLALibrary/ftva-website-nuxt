@@ -259,6 +259,10 @@ useHead({
     padding-top: 80px;
   }
 
+  .section-wrapper.section-wrapper2 {
+    margin-bottom: 100px;
+  }
+
   .page-heading {
     @include ftva-h2;
   }
