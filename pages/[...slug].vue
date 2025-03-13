@@ -3,10 +3,8 @@
 // TODO: remove when we have implemented component library as a module
 // https://nuxt.com/docs/guide/directory-structure/components#library-authors
 import {
-  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, CardMeta, RichText, PageAnchor, FlexibleBlocks, SectionWrapper,
+  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, RichText, PageAnchor, FlexibleBlocks, FlexibleMediaGalleryNewLightbox,
 } from '@ucla-library-monorepo/ucla-library-website-components'
-
-import { onMounted, nextTick } from 'vue'
 
 // HELPERS
 import _get from 'lodash/get'
@@ -23,7 +21,7 @@ const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final sla
 // Because the generalcontent page uses ftva / in the uri
 // to differentiate between the library and meap websites
 // the GQL query will need the slug instead of the uri
-const { data, error } = await useAsyncData(`general-content-${path}`, async () => {
+const { data, error } = await useAsyncData(`general-content-${path.replaceAll('/', '--')}`, async () => {
   const data = await $graphql.default.request(FTVA_GENERAL_CONTENT_DETAIL, {
     slug: path.substring(
       path.lastIndexOf('/') + 1
@@ -111,6 +109,7 @@ onMounted(() => {
         class="lightbox-container"
       >
         <FlexibleMediaGalleryNewLightbox
+          v-if="parsedCarouselData && parsedCarouselData.length > 0"
           data-test="image-carousel"
           :items="parsedCarouselData"
           inline="true"
@@ -157,20 +156,11 @@ onMounted(() => {
         />
       </template>
     </TwoColLayoutWStickySideBar>
-
-    <SectionWrapper section-title="HEADERS for the PageAnchors">
-      <code> {{ getHeaders() }}</code>
-    </SectionWrapper>
-
-    <SectionWrapper section-title="PAGE DATA">
-      <code>{{ page }}</code>
-    </SectionWrapper>
   </main>
 </template>
 
 <style lang="scss" scoped>
 .page-general-content {
-  position: relative;
 
   .page-title {
     display: block;
