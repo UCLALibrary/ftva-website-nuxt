@@ -70,9 +70,9 @@ const parsedImage = computed(() => {
 const parsedAdmissions = computed(() => {
   const data = page.value.ftvaAdmissions
   const admissions = {
-    title: data[0].sectionTitle,
-    description: data[1].text,
-    blocks: data[2].admissionsHeadingAndTextBlock
+    title: data[0]?.sectionTitle || '',
+    description: data[1]?.text || '',
+    blocks: data[2]?.admissionsHeadingAndTextBlock || []
   }
   return admissions
 })
@@ -81,14 +81,14 @@ const parsedParking = computed(() => {
   const data = page.value.ftvaParkingAndDirections
 
   const regex = /<iframe[^>]*\s+src="([^"]*)"/
-  const address = data[1].ftvaGoogleMapsEmbed[0]
-  const mapEmbedSrc = address.googleMapsEmbed.match(regex)
+  const address = data[1]?.ftvaGoogleMapsEmbed[0] || {}
+  const mapEmbedSrc = address.googleMapsEmbed ? address.googleMapsEmbed.match(regex) : null
 
   const parking = {
-    title: data[0].sectionTitle,
+    title: data[0]?.sectionTitle || '',
     address,
-    map: mapEmbedSrc[1],
-    blocks: data[2].parkingDirectionsHeadingAndTextBlock
+    map: mapEmbedSrc ? mapEmbedSrc[1] : '',
+    blocks: data[2]?.parkingDirectionsHeadingAndTextBlock || []
   }
   return parking
 })
@@ -130,13 +130,14 @@ useHead({
       <DividerWayFinder />
 
       <SectionHeader
+        v-if="parsedAdmissions.title"
         :level="2"
         class="section-heading"
       >
         {{ parsedAdmissions.title }}
       </SectionHeader>
 
-      <BlockInfo color-scheme="paleblue">
+      <BlockInfo v-if="parsedAdmissions.description" color-scheme="paleblue">
         <template #block-info-top>
           <RichText
             :rich-text-content="parsedAdmissions.description"
@@ -147,7 +148,7 @@ useHead({
 
       <div class="block-info-wrapper--flex admissions">
         <BlockInfo
-          v-for="block in parsedAdmissions.blocks"
+          v-for="block in parsedAdmissions?.blocks"
           :key="block.title"
         >
           <template #block-info-top>
@@ -184,7 +185,7 @@ useHead({
         >
           <template #block-info-top>
             <p class="map-title">
-              {{ parsedParking.address.locationName }}
+              {{ parsedParking?.address?.locationName }}
             </p>
             <p class="map-note">
               {{ parsedParking.address.locationNotes }}
