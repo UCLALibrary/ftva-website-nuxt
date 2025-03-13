@@ -115,12 +115,14 @@ useHead({
         v-if="parsedImage.length === 1"
         :media="parsedImage[0]"
         :aspect-ratio="43.103"
+        data-test="hero-image"
       />
     </div>
     <SectionWrapper>
       <SectionHeader
         :level="1"
         class="page-heading"
+        data-test="page-heading"
       >
         {{ page.title }}
       </SectionHeader>
@@ -136,7 +138,10 @@ useHead({
 
       <BlockInfo color-scheme="paleblue">
         <template #block-info-top>
-          <RichText :rich-text-content="parsedAdmissions.description" />
+          <RichText
+            :rich-text-content="parsedAdmissions.description"
+            data-test="admissions-intro"
+          />
         </template>
       </BlockInfo>
 
@@ -154,7 +159,10 @@ useHead({
             </SectionHeader>
           </template>
           <template #block-info-mid>
-            <RichText :rich-text-content="block.text" />
+            <RichText
+              :rich-text-content="block.text"
+              data-test="admissions-info"
+            />
           </template>
         </BlockInfo>
       </div>
@@ -172,6 +180,7 @@ useHead({
         <BlockInfo
           color-scheme="paleblue"
           class="address"
+          data-test="theater-address"
         >
           <template #block-info-top>
             <p class="map-title">
@@ -199,6 +208,7 @@ useHead({
             width="100%"
             height="100%"
             allowfullscreen
+            data-test="theater-map"
           />
         </div>
       </div>
@@ -218,7 +228,10 @@ useHead({
             </SectionHeader>
           </template>
           <template #block-info-mid>
-            <RichText :rich-text-content="block.text" />
+            <RichText
+              :rich-text-content="block.text"
+              data-test="parking-info"
+            />
           </template>
         </BlockInfo>
       </div>
@@ -232,7 +245,10 @@ useHead({
         {{ page.sectionTitle }}
       </SectionHeader>
 
-      <RichText :rich-text-content="page.description" />
+      <RichText
+        :rich-text-content="page.description"
+        data-test="page-description"
+      />
     </SectionWrapper>
   </main>
 </template>
