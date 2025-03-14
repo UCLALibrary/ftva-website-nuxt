@@ -1,7 +1,4 @@
 <script setup>
-// COMPONENTS
-import { SectionWrapper, SectionHeader, SectionStaffArticleList, RichText, DividerWayFinder, BlockCardWithImage } from '@ucla-library-monorepo/ucla-library-website-components'
-
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'

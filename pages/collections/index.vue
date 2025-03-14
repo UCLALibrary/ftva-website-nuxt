@@ -1,7 +1,4 @@
 <script setup>
-// COMPONENTS
-import { DividerGeneral, SectionWrapper } from '@ucla-library-monorepo/ucla-library-website-components'
-
 // HELPERS
 import _get from 'lodash/get'
 

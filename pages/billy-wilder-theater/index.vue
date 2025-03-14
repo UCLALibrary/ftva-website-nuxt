@@ -1,7 +1,4 @@
 <script setup>
-// COMPONENTS
-import { BlockInfo, DividerWayFinder, ResponsiveImage, RichText, SectionHeader, SectionWrapper } from '@ucla-library-monorepo/ucla-library-website-components'
-
 // HELPERS
 import _get from 'lodash/get'
 
@@ -137,7 +134,10 @@ useHead({
         {{ parsedAdmissions.title }}
       </SectionHeader>
 
-      <BlockInfo v-if="parsedAdmissions.description" color-scheme="paleblue">
+      <BlockInfo
+        v-if="parsedAdmissions.description"
+        color-scheme="paleblue"
+      >
         <template #block-info-top>
           <RichText
             :rich-text-content="parsedAdmissions.description"

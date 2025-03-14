@@ -1,5 +1,4 @@
 <script setup>
-import { SiteBrandBar, HeaderSticky, FooterMain } from '@ucla-library-monorepo/ucla-library-website-components'
 import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 const { enabled, state } = usePreviewMode()
@@ -35,10 +34,6 @@ onMounted(async () => {
     <NuxtLoadingIndicator
       color="#ffe800"
       :height="3"
-    />
-    <VueSkipTo
-      to="#main"
-      label="Skip to main content"
     />
     <div :class="classes">
       <site-brand-bar class="brand-bar" />
@@ -86,9 +81,5 @@ onMounted(async () => {
       display: none;
     }
   }
-}
-
-.vue-skip-to {
-  z-index: 300;
 }
 </style>
