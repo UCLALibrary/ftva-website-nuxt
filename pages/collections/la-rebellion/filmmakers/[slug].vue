@@ -1,9 +1,4 @@
 <script setup>
-// COMPONENT RE-IMPORTS
-// TODO: remove when we have implemented component library as a module
-// https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockTag, ButtonDropdown, CardMeta, FlexibleMediaGalleryNewLightbox, NavBreadcrumb, ResponsiveImage, RichText, SectionWrapper, SmartLink, TableComponent, TableRow, TwoColLayoutWStickySideBar } from '@ucla-library-monorepo/ucla-library-website-components'
-
 // HELPERS
 import _get from 'lodash/get'
 import removeTags from '../utils/removeTags'

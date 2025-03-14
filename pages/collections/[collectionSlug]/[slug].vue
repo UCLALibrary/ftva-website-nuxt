@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ButtonLink, CardMeta, DefinitionList, RichText, DividerWayFinder, SectionTeaserCard, NavBreadcrumb, ResponsiveImage, ResponsiveVideo, SectionWrapper, TableComponent, TableRow, TwoColLayoutWStickySideBar, VideoEmbed } from '@ucla-library-monorepo/ucla-library-website-components'
-
 // HELPERS
 import _get from 'lodash/get'
 

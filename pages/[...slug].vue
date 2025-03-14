@@ -1,11 +1,4 @@
 <script setup>
-// COMPONENT RE-IMPORTS
-// TODO: remove when we have implemented component library as a module
-// https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import {
-  TwoColLayoutWStickySideBar, NavBreadcrumb, ResponsiveImage, RichText, PageAnchor, FlexibleBlocks, FlexibleMediaGalleryNewLightbox,
-} from '@ucla-library-monorepo/ucla-library-website-components'
-
 // HELPERS
 import _get from 'lodash/get'
 

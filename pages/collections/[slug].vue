@@ -1,9 +1,4 @@
 <script setup>
-// COMPONENT RE-IMPORTS
-// TODO: remove when we have implemented component library as a module
-// https://nuxt.com/docs/guide/directory-structure/components#library-authors
-import { BlockCallToAction, CardMeta, ButtonDropdown, DividerWayFinder, NavBreadcrumb, ResponsiveImage, RichText, SectionTeaserCard, SectionWrapper, TwoColLayoutWStickySideBar, VideoEmbed } from '@ucla-library-monorepo/ucla-library-website-components'
-
 // HELPERS
 import _get from 'lodash/get'
 

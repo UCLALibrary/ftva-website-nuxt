@@ -36,11 +36,11 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      crawlLinks: true,
+      crawlLinks: false,
       failOnError: false,
       concurrency: 50,
       interval: 1000,
-      // routes: ['/', '/404.html', '/200.html'],
+      routes: ['/', '/events/', '/collections/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/'],
     },
     hooks: {
       'prerender:generate'(route) {
@@ -145,7 +145,7 @@ export default defineNuxtConfig({
     // 'ucla-library-design-tokens/scss/fonts.scss',
     'ucla-library-design-tokens/scss/app-global.scss',
     '~/assets/styles/global.scss',
-    '@ucla-library-monorepo/ucla-library-website-components/style.css',
+    // '@ucla-library-monorepo/ucla-library-website-components/style.css',
   ],
 
   typescript: {
@@ -157,11 +157,11 @@ export default defineNuxtConfig({
     {
       autoImports: ['defineStore', 'acceptHMRUpdate'],
     },
-  ], 'nuxt-graphql-request', '@nuxtjs/sitemap', '@zadigetvoltaire/nuxt-gtm'],
+  ], 'nuxt-graphql-request', '@nuxtjs/sitemap', '@zadigetvoltaire/nuxt-gtm', '@ucla-library/component-library-nuxt-module'],
 
   // Transpile Vuetify for proper handling of CSS
   build: {
-    transpile: ['nuxt-graphql-request', '@ucla-library-monorepo/ucla-library-website-components', 'vuetify'],
+    transpile: ['nuxt-graphql-request', 'vuetify'],
   },
 
   site: {
