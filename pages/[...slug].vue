@@ -85,7 +85,7 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
-    class="page page-detail page-general-content"
+    class="page page-detail page-detail--paleblue page-general-content"
   >
     <div class="one-column">
       <NavBreadcrumb data-test="breadcrumb" />
