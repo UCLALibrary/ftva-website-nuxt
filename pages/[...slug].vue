@@ -166,6 +166,14 @@ onMounted(() => {
     color: $heading-grey;
     margin: 0 0 24px;
   }
+
+  // Apply spacing between flexible blocks
+  // See https://github.com/UCLALibrary/ucla-library-website-components/pull/709
+  .flexible-blocks.flexible-content {
+    :deep(.section-wrapper) {
+      margin: var(--space-2xl) auto;
+    }
+  }
 }
 
 @import 'assets/styles/slug-pages.scss';
