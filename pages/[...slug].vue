@@ -179,13 +179,12 @@ onMounted(() => {
   }
 
   // Apply spacing between flexible blocks
-  // See https://github.com/UCLALibrary/ucla-library-website-components/pull/709
   .flexible-blocks.flexible-content {
     :deep(.section-wrapper) {
       margin: var(--space-2xl) auto;
     }
 
-    :deep(.section-wrapper:first-of-type){
+    :deep(.section-header + div .section-wrapper ){
       margin-top: 24px;
     }
   }
@@ -218,7 +217,7 @@ onMounted(() => {
 
   @media (max-width: 900px){
     .flexible-blocks.flexible-content {
-      :deep(.section-wrapper:first-of-type){
+      :deep(.section-header + div .section-wrapper ){
         margin-top: 0;
       }
     }
