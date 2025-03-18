@@ -85,7 +85,7 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
-    class="page page-detail page-general-content"
+    class="page page-detail page-detail--paleblue page-general-content"
   >
     <div class="one-column">
       <NavBreadcrumb data-test="breadcrumb" />
@@ -115,40 +115,38 @@ onMounted(() => {
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
+
+      <PageAnchor
+        v-if="h2Array.length >= 3"
+        :section-titles="h2Array"
+      />
+
+      <TwoColLayoutWStickySideBar
+        data-test="second-column"
+        class="two-column"
+      >
+        <template #primaryTop>
+          <div v-if="page.formattedTitle">
+            <h3 class="page-title">
+              <rich-text :rich-text-content="page.formattedTitle" />
+            </h3>
+          </div>
+
+          <div v-else>
+            <h3 class="page-title">
+              {{ page.title }}
+            </h3>
+          </div>
+        </template>
+
+        <template #primaryMid>
+          <FlexibleBlocks
+            class="flexible-content"
+            :blocks="page.blocks"
+          />
+        </template>
+      </TwoColLayoutWStickySideBar>
     </div>
-
-    <TwoColLayoutWStickySideBar
-      data-test="second-column"
-      class="two-column"
-    >
-      <template #primaryTop>
-        <div v-if="page.formattedTitle">
-          <h3 class="page-title">
-            <rich-text :rich-text-content="page.formattedTitle" />
-          </h3>
-        </div>
-
-        <div v-else>
-          <h3 class="page-title">
-            {{ page.title }}
-          </h3>
-        </div>
-      </template>
-
-      <template #primaryMid>
-        <FlexibleBlocks
-          class="flexible-content"
-          :blocks="page.blocks"
-        />
-      </template>
-
-      <template #sidebarTop>
-        <PageAnchor
-          v-if="h2Array.length >= 3"
-          :section-titles="h2Array"
-        />
-      </template>
-    </TwoColLayoutWStickySideBar>
   </main>
 </template>
 
@@ -164,7 +162,65 @@ onMounted(() => {
 
     @include ftva-h2;
     color: $heading-grey;
-    margin: 0 0 24px;
+    margin: 0;
+  }
+
+  .two-column {
+    display: block;
+    margin-top: 32px;
+
+    .sidebar-column {
+      display:none;
+    }
+
+    :deep(.primary-section-wrapper) {
+      margin-top: 0;
+    }
+  }
+
+  // Apply spacing between flexible blocks
+  .flexible-blocks.flexible-content {
+    :deep(.section-wrapper) {
+      margin: var(--space-2xl) auto;
+    }
+
+    :deep(.section-header + div .section-wrapper ){
+      margin-top: 24px;
+    }
+  }
+
+  .ftva.page-anchor {
+    margin-top: 24px;
+    float: right; // Delete after APPS-3263 is implemented
+    top: 65px; // Sticks anchor after sticky header
+  }
+
+  @media (max-width: 1200px){
+    .two-column {
+      :deep(.primary-section-wrapper) {
+        padding-left: 0;
+      }
+
+      :deep(.primary-column) {
+        width: 80%;
+      }
+    }
+  }
+
+  @media (max-width: 1024px){
+    .two-column {
+      :deep(.primary-column) {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 900px){
+    .flexible-blocks.flexible-content {
+      :deep(.section-header + div .section-wrapper ){
+        margin-top: 0;
+      }
+    }
   }
 }
 
