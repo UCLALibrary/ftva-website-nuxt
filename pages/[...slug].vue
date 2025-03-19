@@ -170,7 +170,7 @@ onMounted(() => {
     margin-top: 32px;
 
     .sidebar-column {
-      display:none;
+      display: none;
     }
 
     :deep(.primary-section-wrapper) {
@@ -184,18 +184,17 @@ onMounted(() => {
       margin: var(--space-2xl) auto;
     }
 
-    :deep(.section-header + div .section-wrapper ){
+    :deep(.section-header + div .section-wrapper) {
       margin-top: 24px;
     }
   }
 
   .ftva.page-anchor {
     margin-top: 24px;
-    float: right; // Delete after APPS-3263 is implemented
     top: 65px; // Sticks anchor after sticky header
   }
 
-  @media (max-width: 1200px){
+  @media (max-width: 1200px) {
     .two-column {
       :deep(.primary-section-wrapper) {
         padding-left: 0;
@@ -207,7 +206,7 @@ onMounted(() => {
     }
   }
 
-  @media (max-width: 1024px){
+  @media (max-width: 1024px) {
     .two-column {
       :deep(.primary-column) {
         width: 100%;
@@ -215,9 +214,9 @@ onMounted(() => {
     }
   }
 
-  @media (max-width: 900px){
+  @media (max-width: 900px) {
     .flexible-blocks.flexible-content {
-      :deep(.section-header + div .section-wrapper ){
+      :deep(.section-header + div .section-wrapper) {
         margin-top: 0;
       }
     }
