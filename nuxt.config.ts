@@ -224,4 +224,6 @@ export default defineNuxtConfig({
   experimental: {
     sharedPrerenderData: true,
   },
+
+  compatibilityDate: '2025-03-19',
 })
