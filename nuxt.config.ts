@@ -147,6 +147,9 @@ export default defineNuxtConfig({
     '~/assets/styles/global.scss',
     // '@ucla-library-monorepo/ucla-library-website-components/style.css',
   ],
+  features: {
+    inlineStyles: false
+  },
 
   typescript: {
     strict: false
