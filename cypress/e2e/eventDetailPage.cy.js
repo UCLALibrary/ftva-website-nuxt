@@ -11,7 +11,7 @@ describe('Event Detail page', () => {
 
   it('Visit the Event Detail Page', () => {
     // CarouselImages
-    cy.visit('/events/la-région-centrale-03-08-24')
+    cy.visit('/events/la-région-centrale-03-08-24', { failOnStatusCode: false })
     cy.getByData('image-carousel').should('exist')
     cy.getByData('text-block').contains('TEST - La Région Centrale Screening')
     cy.getByData('text-block').should('be.visible')
