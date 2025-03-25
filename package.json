@@ -4,8 +4,8 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "node --max-old-space-size=16384 node_modules/nuxi/bin/nuxi.mjs generate",
-    "prerender": "node --max-old-space-size=16384 node_modules/nuxi/bin/nuxi.mjs build --prerender --log-level verbose",
+    "generate": "node --max-old-space-size=16384 node_modules/nuxt/bin/nuxt.mjs generate",
+    "prerender": "node --max-old-space-size=16384 node_modules/nuxt/bin/nuxt.mjs build --prerender --log-level verbose",
     "start": "pnpm dlx serve .output/public",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -41,7 +41,7 @@
     "nuxt-graphql-request": "^7.0.5",
     "sass": "^1.66.1",
     "ucla-library-design-tokens": "^5.30.0",
-    "@ucla-library/component-library-nuxt-module": "1.1.3"
+    "@ucla-library/component-library-nuxt-module": "1.2.0"
   },
   "engines": {
     "pnpm": "^9.12.1"
