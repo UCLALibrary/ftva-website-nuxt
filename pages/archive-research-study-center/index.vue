@@ -50,15 +50,10 @@ const pageClass = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', route.name]
 })
 
-// TODO MOVE TO GLOBAL UTILS, find and remove others
-// Get data for Image or Carousel at top of page
-// TODO WHAT ABOUT ftvaimage = map to image?
 const parsedImage = computed(() => {
   return page.value.imageCarousel
-  // todo add logic to check for image field if no carousel?
 })
 
-// Transform data for Carousel
 const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
   return parsedImage.value.map((rawItem, index) => {
@@ -68,63 +63,6 @@ const parsedCarouselData = computed(() => {
     }
   })
 })
-// END TODO
-
-// TODO MOVE TO A UTIL
-// infoblocks reform
-const parsedFlexibleBlocks = computed(() => {
-  return page.value.blocks.map((block) => {
-    // check for infoblock
-    if (block.typeHandle !== 'infoBlock') {
-      return block
-    }
-
-    //if found reformat
-    // const reformat = ref({
-    //   ...block,
-    //   infoBlock: [{
-    //     ...block.infoBlock[0],
-    //     id: block.id
-    //   }]
-    // })
-    // console.log('reformat', reformat)
-    return {
-      ...block,
-      infoBlock: [{
-        ...block.infoBlock[0],
-        id: block.id
-      }]
-    }
-  })
-})
-
-// item in data currently
-const item = {
-  id: "3761992",
-  typeHandle: "infoBlock",
-  infoBlock: [{
-    typeHandle: "contactInfoBlock",
-    email: "arsc@cinema.ucla.edu",
-    phone: "+1 310-206-5388",
-    address: "<p translate=\"no\">\n<span class=\"address-line1\">University of California, Los Angeles</span><br>\n<span class=\"address-line2\">Powell Library (Room 46)</span><br>\n<span class=\"locality\">Los Angeles</span>, <span class=\"administrative-area\">CA</span> <span class=\"postal-code\">90095-1517</span><br>\n<span class=\"country\">United States</span>\n</p>"
-  }]
-}
-
-const mockContactInfoBlock = {
-  id: '3726206',
-  typeHandle: 'infoBlock',
-  infoBlock: [
-    {
-      typeHandle: 'contactInfoBlock',
-      id: '3726207',
-      email: 'archive@email.com',
-      phone: '+1 323-555-1234',
-      address: '<p translate="no">\n<span class="address-line1">722 California Ave</span><br>\n<span class="locality">Glendale</span>, <span class="administrative-area">CA</span> <span class="postal-code">90210</span><br>\n<span class="country">United States</span>\n</p>'
-    }
-  ]
-}
-//
-// { "id": "3761987", "typeHandle": "infoBlock", "infoBlock": [{ "typeHandle": "infoBlock", "icon": "icon-ftva-download", "heading": "MONDAY - FRIDAY, 9 A.M. TO 5 P.M.", "text": "<p>Hours are subject to change. Requests to view materials must be arranged in advance.</p>" }] }
 
 definePageMeta({
   layout: 'default',
@@ -180,7 +118,6 @@ useHead({
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
-      <!-- TODO END -->
     </div>
     <SectionWrapper
       :section-title="page.title"
@@ -196,7 +133,6 @@ useHead({
       class="flexible-content"
       :blocks="page.blocks"
     />
-    <!-- {{ parsedFlexibleBlocks }} -->
   </main>
 </template>
 <style lang="scss" scoped>
