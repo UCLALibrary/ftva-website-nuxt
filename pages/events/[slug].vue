@@ -6,7 +6,7 @@ import _get from 'lodash/get'
 import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 
 // COMPOSABLE
-import removeTags from '../utils/removeTags'
+import removeTags from '~/utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // UTILS
