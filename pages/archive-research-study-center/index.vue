@@ -47,7 +47,7 @@ const showPageSummary = computed(() => {
 })
 
 const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', route.name]
+  return ['page', 'page-detail', 'page-detail--paleblue', route.path.slice(1)]
 })
 
 const parsedImage = computed(() => {
