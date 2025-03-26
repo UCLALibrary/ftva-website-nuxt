@@ -102,7 +102,7 @@ useHead({
         </template>
       </ResponsiveImage>
       <div
-        v-else-if="parsedCarouselData && parsedCarouselData.length > 0 && parsedImage[0].image.length !== 0"
+        v-else-if="parsedCarouselData && parsedCarouselData.length > 0 && parsedImage[0]?.image && parsedImage[0].image.length !== 0"
         class="lightbox-container"
       >
         <FlexibleMediaGalleryNewLightbox
