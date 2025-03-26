@@ -81,7 +81,6 @@ useHead({
   ]
 })
 </script>
-
 <template>
   <main
     id="main"
