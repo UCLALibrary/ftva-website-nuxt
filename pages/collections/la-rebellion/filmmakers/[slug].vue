@@ -184,7 +184,7 @@ useHead({
       class="filmography-section-wrapper"
     >
       <TableComponent
-        :table-headers="['', 'Film', 'Role', 'Year']"
+        :table-headers="['', 'Title', 'Role', 'Year']"
         :table-caption="'Filmography'"
       >
         <TableRow
