@@ -349,7 +349,7 @@ useHead({
 
     <SectionWrapper
       v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
-      section-title="More from this topic"
+      section-title="More from this collection"
       theme="paleblue"
       class="collection-item-section-wrapper"
     >
