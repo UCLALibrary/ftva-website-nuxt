@@ -17,11 +17,6 @@ export const socialList = {
       dropdownItemUrl: 'https://www.facebook.com/sharer/sharer.php?u=',
       iconName: 'svg-icon-ftva-social-facebook',
     },
-    {
-      dropdownItemTitle: 'X',
-      dropdownItemUrl: 'https://twitter.com/share?url=',
-      iconName: 'svg-icon-ftva-social-x',
-    },
   ],
 }
 
