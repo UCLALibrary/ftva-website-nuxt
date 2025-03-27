@@ -397,6 +397,16 @@ useHead({
     grid-row: 2;
   }
 
+  :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container),
+  :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image) {
+    max-height: 400px;
+  }
+
+  :deep(.ftva.block-highlight.is-vertical .image-container),
+  :deep(.ftva.block-highlight .image) {
+    max-height: 330px;
+  }
+
   :deep(.custom-title),
   :deep(.custom-description) {
     .rich-text {
