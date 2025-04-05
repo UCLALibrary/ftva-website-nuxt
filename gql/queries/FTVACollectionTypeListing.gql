@@ -1,0 +1,43 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVACollectionsListing($section: [String!], $collectionType: [QueryArgument]) {
+  entry(section: $section) {
+    id
+    slug
+    uri
+    sectionHandle
+    title: titleGeneral
+    summary
+    sectionHeader {
+      sectionTitle
+      sectionSummary
+    }
+    associatedGeneralContentPagesFtva {
+      id
+      title
+      slug
+      uri
+      ftvaImage {
+        ...Image
+      }
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+        }
+      }
+    }
+  }
+  entries(
+    section: "ftvaCollection"
+    orderBy: "title"
+    ftvaCollectionType: $collectionType
+  ) {
+    title
+    uri
+    ftvaImage {
+      ...Image
+    }
+  }
+}
