@@ -644,6 +644,10 @@ const parseFirstEventMonth = computed(() => {
     max-width: 787px;
   }
 
+  .header :deep(.section-title) {
+    color: var(--heading-grey);
+  }
+
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
