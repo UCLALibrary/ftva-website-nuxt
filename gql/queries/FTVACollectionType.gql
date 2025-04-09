@@ -1,0 +1,7 @@
+query FTVACollectionLayoutType($slug: [String!]) {
+  ftvaCollection: entry(section: "ftvaCollection", slug: $slug) {
+    id
+    ftvaCollectionLayoutType
+    title
+  }
+}
