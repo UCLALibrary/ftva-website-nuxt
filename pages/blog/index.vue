@@ -456,5 +456,36 @@ useHead({
       }
     }
   }
+
+  /* Fix image sizing of cards on all viewports */
+
+  @media (max-width: 749px) {
+
+    :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container),
+    :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image),
+    :deep(.ftva.block-staff-article-item .image),
+    :deep(.block-staff-article-item .molecule-no-image) {
+      min-width: 100%;
+      height: 255px;
+    }
+  }
+
+  @media (min-width: 750px) {
+
+    :deep(.ftva.block-staff-article-item .image),
+    :deep(.block-staff-article-item .molecule-no-image) {
+      min-width: 284px;
+      height: 213px;
+    }
+  }
+
+  @media (min-width: 1000px) {
+
+    :deep(.ftva.block-staff-article-item .image),
+    :deep(.block-staff-article-item .molecule-no-image) {
+      min-width: 400px;
+      height: 300px;
+    }
+  }
 }
 </style>
