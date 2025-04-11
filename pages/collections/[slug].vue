@@ -264,6 +264,7 @@ useHead({
       <SectionTeaserCard
         class="related-collections-card"
         :items="parsedRelatedCollections"
+        :grid-layout="false"
       />
     </SectionWrapper>
   </main>

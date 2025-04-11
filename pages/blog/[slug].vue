@@ -218,6 +218,7 @@ useHead({
         v-if="parsedRecentPosts && parsedRecentPosts.length > 0"
         data-test="recent-posts"
         :items="parsedRecentPosts"
+        :grid-layout="false"
       />
     </SectionWrapper>
   </main>

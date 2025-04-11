@@ -364,6 +364,7 @@ useHead({
         v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
         data-test="related-content"
         :items="parsedRelatedContent"
+        :grid-layout="false"
       />
     </SectionWrapper>
   </main>

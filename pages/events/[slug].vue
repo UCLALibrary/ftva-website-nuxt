@@ -298,6 +298,7 @@ useHead({
         v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
         data-test="event-series"
         :items="parsedFtvaEventSeries"
+        :grid-layout="false"
       />
     </SectionWrapper>
   </main>
