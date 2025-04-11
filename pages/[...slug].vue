@@ -95,7 +95,14 @@ onMounted(() => {
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
-      />
+      >
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
+          {{ parsedImage[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
 
       <div
         v-else
@@ -128,7 +135,10 @@ onMounted(() => {
         <template #primaryTop>
           <div v-if="page.formattedTitle">
             <h3 class="page-title">
-              <rich-text :rich-text-content="page.formattedTitle" />
+              <rich-text
+                class="page-title-rich-text"
+                :rich-text-content="page.formattedTitle"
+              />
             </h3>
           </div>
 
@@ -163,6 +173,13 @@ onMounted(() => {
     @include ftva-h2;
     color: $heading-grey;
     margin: 0;
+
+    .page-title-rich-text {
+      :deep(.parsed-content) {
+        @include ftva-h2;
+        color: $heading-grey;
+      }
+    }
   }
 
   .two-column {
