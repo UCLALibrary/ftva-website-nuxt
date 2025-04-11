@@ -471,6 +471,35 @@ useHead({
   }
 
   @media (min-width: 750px) {
+    :deep(.ftva.block-highlight.is-vertical > .card-meta) {
+      .category {
+        margin-bottom: 12px;
+      }
+
+      .byline-group {
+        position: relative;
+        margin: 0;
+      }
+    }
+
+    :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) > .card-meta) {
+      padding: 48px 48px 32px;
+
+      .custom-title .rich-text div {
+        font-size: 48px;
+        font-weight: 700;
+      }
+    }
+
+    :deep(.ftva.block-highlight.is-vertical:nth-of-type(2) > .card-meta),
+    :deep(.ftva.block-highlight.is-vertical:nth-of-type(3) > .card-meta) {
+      padding: 36px 36px 24px;
+
+      .custom-title .rich-text div {
+        font-size: 30px;
+        font-weight: 500;
+      }
+    }
 
     :deep(.ftva.block-staff-article-item .image),
     :deep(.block-staff-article-item .molecule-no-image) {
