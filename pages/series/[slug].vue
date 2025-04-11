@@ -345,6 +345,7 @@ useHead({
       <SectionTeaserCard
         class="other-series-section"
         :items="parsedOtherSeries"
+        :grid-layout="false"
       />
     </SectionWrapper>
   </main>
