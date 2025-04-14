@@ -206,6 +206,35 @@ onMounted(() => {
     }
   }
 
+  // Flexible Blocks Rich Text Styles
+  // added during UX review of page 4/4/2025 - TODO move to FTVA FlexibleBlocks theme?
+  .flexible-blocks.flexible-content {
+
+    :deep(.section-wrapper) {
+      >a {
+        position: relative;
+        top: -70px; //offset links in the document by the height of the sticky header
+      }
+    }
+
+    :deep(figure.image--full) {
+      margin-left: 0px;
+
+      a:after {
+        position: absolute;
+        right: 0px;
+        bottom: -12px;
+      }
+
+      figcaption {
+        margin: 0px;
+        padding: 0px;
+      }
+    }
+  }
+
+  // END added rules
+
   .ftva.page-anchor {
     margin-top: 24px;
     top: 65px; // Sticks anchor after sticky header
