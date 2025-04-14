@@ -754,6 +754,15 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
+  :deep(.block-card-three-column .day) {
+    color: black;
+    font-family: var(--font-primary);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.8px;
+  }
+
   :deep(.base-calendar) {
     max-width: 1000px;
     padding-top: 32px;
