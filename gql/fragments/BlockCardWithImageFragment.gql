@@ -3,66 +3,63 @@ fragment BlockCardWithImageFragment on ElementInterface {
   typeHandle
   sectionTitle: titleGeneral
   sectionSummary: summary
-  cardWithImage :ftvaFlexiblePageBlock_cardWithImage {
+  cardWithImage: ftvaFlexiblePageBlock_cardWithImage {
     id
     ... on ftvaFlexiblePageBlock_cardWithImage_internalContent_BlockType {
       id
       typeHandle
+      sectionHandle
       contentLink {
         id
+        typeHandle
+        sectionHandle
         contentType: sectionHandle
-        to: uri
+        uri
+        slug
+        ftvaImage {
+          ...Image
+        }
+        image {
+          ...Image
+        }
+        imageCarousel {
+          ... on imageCarousel_imageCarousel_BlockType {
+            image {
+              ...Image
+            }
+            altText
+          }
+        }
+        heroImage {
+          ... on heroImage_heroImage_BlockType {
+            image {
+              ...Image
+            }
+            altText
+          }
+        }
         title
-        text: summary
-        eventDescription
-        projectCategory: format
-        articleCategory: articleCategories {
-          title
-        }
-        articleByline1: staffMember {
-          id
-          to: uri
-          title
-        }
-        articleByline2: postDate
-        ongoing
+        eventTitle
+        titleGeneral
+        formattedTitle
         startDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
         endDateWithTime @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
         startDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
         endDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
-        eventType {
-          ... on eventType_Category {
-            id
-            title
-          }
-        }
-        associatedLocations {
-          id
-          title
-          to: uri
-        }
-        imageCarousel {
-            ... on imageCarousel_imageCarousel_BlockType {
-                image {
-                ...Image
-                }
-                creditText
-            }
-        }
+        postDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+        ongoing
       }
     }
     ... on ftvaFlexiblePageBlock_cardWithImage_externalContent_BlockType {
       id
       typeHandle
-      title: titleGeneral
+      sectionHandle
+      titleGeneral
       image {
         ...Image
       }
-      byline1
-      byline2
-      category
-      text: summary
       to: externalLink
     }
+
   }
 }
