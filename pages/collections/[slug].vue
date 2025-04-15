@@ -6,9 +6,7 @@ import _get from 'lodash/get'
 import FTVACollectionLayoutType from '../gql/queries/FTVACollectionType.gql'
 
 // CHILD COMPONENTS
-import BasicCollection from '../components/BasicCollection.vue'
-import listOfItemsCollection from '../components/ListOfItemsCollection.vue'
-import storytellingCollection from '../components/StorytellingCollection.vue'
+import { BasicCollection, ListOfItemsCollection, StorytellingCollection } from '#components'
 
 const { $graphql } = useNuxtApp()
 
