@@ -35,9 +35,9 @@ if (error.value) {
 const pageType = computed(() => {
   const collectionpagetype = _get(data.value, 'ftvaCollection.ftvaCollectionLayoutType', 'basic')
   if (collectionpagetype === 'listOfItems') {
-    return listOfItemsCollection
+    return ListOfItemsCollection
   } else if (collectionpagetype === 'storytelling') {
-    return storytellingCollection
+    return StorytellingCollection
   } else {
     return BasicCollection // default to basic
   }
