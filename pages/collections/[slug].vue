@@ -46,7 +46,6 @@ const pageType = computed(() => {
 })
 </script>
 <template>
-  {{ page }}
   <component :is="pageType" />
 </template>
 <style lang="scss" scoped></style>
