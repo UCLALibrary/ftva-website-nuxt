@@ -22,7 +22,7 @@ const routeNameToSectionMap = {
   },
   '/collections/watch-listen-online': {
     sectionName: 'ftvaListingWatchAndListenOnline',
-    collection: 'watch-listen-online'
+    collection: 'watchAndListenOnline'
   }
 }
 
@@ -49,9 +49,30 @@ if (!data.value.entry) {
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 const collection = ref(_get(data.value, 'entries', {}))
+const collectionType = ref(routeNameToSectionMap[route.path].collection)
 
 console.log('page data: ', page.value)
 console.log('collection data: ', collection.value)
+
+const currentPage = ref(1)
+const documentsPerPage = 10
+
+// TESTING ES
+const { paginatedCollectionListQuery } = useCollectionListSearch()
+
+onMounted(async () => {
+  const esOutput = await paginatedCollectionListQuery(
+    collectionType.value,
+    currentPage.value,
+    documentsPerPage,
+  )
+
+  console.log('ES output total hits: ', esOutput.hits.total.value)
+
+  // Motion Picture route ==> 48
+  // Television route ==> 26
+  // Watch and Listen Online ==> 6
+})
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
