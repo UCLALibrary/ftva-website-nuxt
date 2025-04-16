@@ -52,8 +52,10 @@ console.log('Page data: ', page.value)
 
 // TESTING ES
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
+const collectionList = ref([])
 const currentPage = ref(1)
-const documentsPerPage = 10
+const documentsPerPage = 12
+const totalDocuments = ref()
 
 const { paginatedCollectionListQuery } = useCollectionListSearch()
 
@@ -64,8 +66,11 @@ onMounted(async () => {
     documentsPerPage,
   )
 
-  console.log('ES output total hits: ', esOutput.hits.total.value)
+  collectionList.value = esOutput.hits.hits
+  totalDocuments.value = esOutput.hits.total.value
 
+  // console.log('ES output: ', esOutput.hits.hits)
+  // console.log('ES output total hits: ', esOutput.hits.total.value)
   // Motion Picture route ==> 48
   // Television route ==> 26
   // Watch and Listen Online ==> 6
@@ -103,9 +108,9 @@ useHead({
       <h1>{{ page.title }}</h1>
       <pre style="text-wrap: auto;">{{ page }}</pre>
       <DividerGeneral />
-      <h2>Collection Count: ?</h2>
-      <p>Displaying first 10</p>
-      <!--<pre style="text-wrap: auto;">{{ xxx.slice(0, 10) }}</pre>-->
+      <h2>Collection Count (ES): {{ totalDocuments }}</h2>
+      <p>Returning 12 per page</p>
+      <pre style="text-wrap: auto;">{{ collectionList }}</pre>
     </SectionWrapper>
   </main>
 </template>
