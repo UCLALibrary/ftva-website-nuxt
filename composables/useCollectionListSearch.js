@@ -5,7 +5,8 @@ export default function useCollectionListSearch() {
 async function paginatedCollectionListQuery(
   collectionType,
   currentPage = 1,
-  documentsPerPage = 10,
+  documentsPerPage = 12,
+  extraFilters,
   source = ['*'],
 ) {
   const config = useRuntimeConfig()
@@ -37,6 +38,15 @@ async function paginatedCollectionListQuery(
                 }
               },
               ...parseCollectionType(collectionType)
+            ],
+            must: [
+              {
+                wildcard: {
+                  'title.keyword': {
+                    value: extraFilters
+                  }
+                }
+              }
             ]
           },
         },

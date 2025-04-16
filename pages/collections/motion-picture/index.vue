@@ -56,24 +56,30 @@ const collectionList = ref([])
 const currentPage = ref(1)
 const documentsPerPage = 12
 const totalDocuments = ref()
+const extraFilters = ref('*')
+const alphabet = ref()
 
-const { paginatedCollectionListQuery } = useCollectionListSearch()
+onMounted(() => {
+  testES()
+})
 
-onMounted(async () => {
+async function testES() {
+  const { paginatedCollectionListQuery } = useCollectionListSearch()
   const esOutput = await paginatedCollectionListQuery(
     collectionType.value,
     currentPage.value,
     documentsPerPage,
+    extraFilters.value
   )
 
+  console.log('ES search: ', extraFilters.value)
   collectionList.value = esOutput.hits.hits
   totalDocuments.value = esOutput.hits.total.value
+}
 
-  // console.log('ES output: ', esOutput.hits.hits)
-  // console.log('ES output total hits: ', esOutput.hits.total.value)
-  // Motion Picture route ==> 48
-  // Television route ==> 26
-  // Watch and Listen Online ==> 6
+watch(alphabet, (newVal, oldVal) => {
+  extraFilters.value = `${newVal.toUpperCase()}*`
+  testES()
 })
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
@@ -109,7 +115,13 @@ useHead({
       <pre style="text-wrap: auto;">{{ page }}</pre>
       <DividerGeneral />
       <h2>Collection Count (ES): {{ totalDocuments }}</h2>
-      <p>Returning 12 per page</p>
+      <h3>Test Browse By Alphabet</h3>
+      <input
+        v-model="alphabet"
+        type="text"
+        placeholder="Enter a single alphabet"
+      >
+      <p>Return 12 per page</p>
       <pre style="text-wrap: auto;">{{ collectionList }}</pre>
     </SectionWrapper>
   </main>
