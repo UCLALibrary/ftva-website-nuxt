@@ -28,7 +28,7 @@ const routeNameToSectionMap = {
 
 const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap
-  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path].sectionName, collectionType: routeNameToSectionMap[route.path].collection })
+  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path].sectionName })
   return data
 })
 
@@ -48,16 +48,13 @@ if (!data.value.entry) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-const collection = ref(_get(data.value, 'entries', {}))
+console.log('Page data: ', page.value)
+
+// TESTING ES
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
-
-console.log('page data: ', page.value)
-console.log('collection data: ', collection.value)
-
 const currentPage = ref(1)
 const documentsPerPage = 10
 
-// TESTING ES
 const { paginatedCollectionListQuery } = useCollectionListSearch()
 
 onMounted(async () => {
@@ -77,7 +74,6 @@ onMounted(async () => {
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
-  collection.value = _get(newVal, 'entries', [])
 })
 
 definePageMeta({
@@ -107,9 +103,9 @@ useHead({
       <h1>{{ page.title }}</h1>
       <pre style="text-wrap: auto;">{{ page }}</pre>
       <DividerGeneral />
-      <h2>Collection Count: {{ collection.length }}</h2>
+      <h2>Collection Count: ?</h2>
       <p>Displaying first 10</p>
-      <pre style="text-wrap: auto;">{{ collection.slice(0, 10) }}</pre>
+      <!--<pre style="text-wrap: auto;">{{ xxx.slice(0, 10) }}</pre>-->
     </SectionWrapper>
   </main>
 </template>
