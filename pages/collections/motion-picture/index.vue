@@ -72,7 +72,7 @@ async function testES() {
     extraFilters.value
   )
 
-  console.log('ES search: ', extraFilters.value)
+  console.log('Browse-by: ', extraFilters.value)
   collectionList.value = esOutput.hits.hits
   totalDocuments.value = esOutput.hits.total.value
 }
@@ -112,15 +112,21 @@ useHead({
   >
     <SectionWrapper>
       <h1>{{ page.title }}</h1>
-      <pre style="text-wrap: auto;">{{ page }}</pre>
+      <pre style="text-wrap: auto;">{{ page.summary }}</pre>
+      <DividerGeneral />
+      <h2>Associated General Content Pages (Titles)</h2>
+      <pre
+        style="text-wrap: auto;">{{page.associatedGeneralContentPagesFtva.map(page => page.title)}}</pre>
       <DividerGeneral />
       <h2>Collection Count (ES): {{ totalDocuments }}</h2>
       <h3>Test Browse By Alphabet</h3>
-      <input
-        v-model="alphabet"
-        type="text"
-        placeholder="Enter a single alphabet"
-      >
+      <div>
+        <input
+          v-model="alphabet"
+          type="text"
+          placeholder="Enter a single alphabet"
+        >
+      </div>
       <p>Return 12 per page</p>
       <pre style="text-wrap: auto;">{{ collectionList }}</pre>
     </SectionWrapper>
