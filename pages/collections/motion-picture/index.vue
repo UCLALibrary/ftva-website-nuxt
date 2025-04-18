@@ -108,27 +108,79 @@ useHead({
 <template>
   <main
     id="main"
-    class="page"
+    class="page page-collection-type"
   >
-    <SectionWrapper>
-      <h1>{{ page.title }}</h1>
-      <pre style="text-wrap: auto;">{{ page.summary }}</pre>
-      <DividerGeneral />
-      <h2>Associated General Content Pages (Titles)</h2>
-      <pre
-        style="text-wrap: auto;">{{page.associatedGeneralContentPagesFtva.map(page => page.title)}}</pre>
-      <DividerGeneral />
-      <h2>Collection Count (ES): {{ totalDocuments }}</h2>
-      <h3>Test Browse By Alphabet</h3>
-      <div>
-        <input
-          v-model="alphabet"
-          type="text"
-          placeholder="Enter a single alphabet"
-        >
+    <SectionWrapper theme="paleblue">
+      <NavBreadcrumb
+        data-test="breadcrumb"
+        :title="page?.title"
+      />
+    </SectionWrapper>
+
+    <SectionWrapper
+      section-title="pageTitle"
+      class="header"
+      theme="paleblue"
+      data-test="page-title"
+    >
+      <RichText :rich-text-content="page.summary" />
+    </SectionWrapper>
+
+    <SectionWrapper theme="paleblue">
+      <DividerWayFinder />
+
+      <p class="search-heading">
+        Browse by Alphabetical Order
+      </p>
+      <AlphabeticalBrowseBy
+        class="browse-margin"
+        :selected-letter-prop="selectedLetterProp"
+        @selected-letter="searchBySelectedLetter"
+      />
+
+      <div class="collection-type-list-wrapper">
+        <SectionTeaserCard class="collection-type-cards" />
+
+        <SectionPagination
+          v-if="totalPages !== 1 && !isMobile"
+          :pages="totalPages"
+          :initial-current-page="currentPage"
+        />
       </div>
-      <p>Return 12 per page</p>
-      <pre style="text-wrap: auto;">{{ collectionList }}</pre>
+
+      <DividerWayFinder />
+    </SectionWrapper>
+
+    <SectionWrapper
+      class=""
+      theme="paleblue"
+      :level="3"
+    >
+      <SectionHeader :level="3">
+        About Our Collections
+      </SectionHeader>
+
+      <!-- Rich Text -->
+
+      <!-- Post Cards -->
     </SectionWrapper>
   </main>
 </template>
+
+<style lang="scss" scoped>
+.page-collection-type {
+
+  position: relative;
+  background-color: var(--pale-blue);
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+    max-width: 787px;
+  }
+}
+</style>
