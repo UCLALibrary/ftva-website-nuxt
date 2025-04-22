@@ -24,14 +24,21 @@ if (error.value) {
   })
 }
 
-// if (!data.value.ftvaCollection) {
-//   throw createError({
-//     statusCode: 404,
-//     statusMessage: 'Page Not Found',
-//     fatal: true
-//   })
-// }
+if (!data.value.ftvaCollection) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+    fatal: true
+  })
+}
 
+const page = ref(_get(data.value, 'ftvaCollection', {}))
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'ftvaCollection', {})
+})
+
+// Compute layout 
 const pageType = computed(() => {
   const collectionpagetype = _get(data.value, 'ftvaCollection.ftvaCollectionLayoutType', 'basic')
   if (collectionpagetype === 'listOfItems') {
@@ -44,6 +51,10 @@ const pageType = computed(() => {
 })
 </script>
 <template>
-  <component :is="pageType" />
+  <!-- pass page as attrs so ElasticSearch powered pages don't have to fetch craftCMS page data again -->
+  <component
+    :is="pageType"
+    :page="page"
+  />
 </template>
 <style lang="scss" scoped></style>

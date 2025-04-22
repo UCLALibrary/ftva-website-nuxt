@@ -3,5 +3,6 @@ query FTVACollectionLayoutType($slug: [String!]) {
     id
     ftvaCollectionLayoutType
     title
+    ftvaHomepageDescription
   }
 }
