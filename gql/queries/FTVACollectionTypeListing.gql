@@ -1,6 +1,6 @@
 #import "../gql/fragments/Image.gql"
 
-query FTVACollectionsListing($section: [String!], $collectionType: [QueryArgument]) {
+query FTVACollectionsListing($section: [String!]) {
   entry(section: $section) {
     id
     slug
@@ -27,17 +27,6 @@ query FTVACollectionsListing($section: [String!], $collectionType: [QueryArgumen
           }
         }
       }
-    }
-  }
-  entries(
-    section: "ftvaCollection"
-    orderBy: "title"
-    ftvaCollectionType: $collectionType
-  ) {
-    title
-    uri
-    ftvaImage {
-      ...Image
     }
   }
 }

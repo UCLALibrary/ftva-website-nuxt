@@ -22,13 +22,13 @@ const routeNameToSectionMap = {
   },
   '/collections/watch-listen-online': {
     sectionName: 'ftvaListingWatchAndListenOnline',
-    collection: 'watch-listen-online'
+    collection: 'watchAndListenOnline'
   }
 }
 
 const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap
-  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path].sectionName, collectionType: routeNameToSectionMap[route.path].collection })
+  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path].sectionName })
   return data
 })
 
@@ -48,15 +48,43 @@ if (!data.value.entry) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-const collection = ref(_get(data.value, 'entries', {}))
+console.log('Page data: ', page.value)
 
-console.log('page data: ', page.value)
-console.log('collection data: ', collection.value)
+// TESTING ES
+const collectionType = ref(routeNameToSectionMap[route.path].collection)
+const collectionList = ref([])
+const currentPage = ref(1)
+const documentsPerPage = 12
+const totalDocuments = ref()
+const extraFilters = ref('*')
+const alphabet = ref()
+
+onMounted(() => {
+  testES()
+})
+
+async function testES() {
+  const { paginatedCollectionListQuery } = useCollectionListSearch()
+  const esOutput = await paginatedCollectionListQuery(
+    collectionType.value,
+    currentPage.value,
+    documentsPerPage,
+    extraFilters.value
+  )
+
+  console.log('Browse-by: ', extraFilters.value)
+  collectionList.value = esOutput.hits.hits
+  totalDocuments.value = esOutput.hits.total.value
+}
+
+watch(alphabet, (newVal, oldVal) => {
+  extraFilters.value = `${newVal.toUpperCase()}*`
+  testES()
+})
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
-  collection.value = _get(newVal, 'entries', [])
 })
 
 definePageMeta({
@@ -84,11 +112,23 @@ useHead({
   >
     <SectionWrapper>
       <h1>{{ page.title }}</h1>
-      <pre style="text-wrap: auto;">{{ page }}</pre>
+      <pre style="text-wrap: auto;">{{ page.summary }}</pre>
       <DividerGeneral />
-      <h2>Collection Count: {{ collection.length }}</h2>
-      <p>Displaying first 10</p>
-      <pre style="text-wrap: auto;">{{ collection.slice(0, 10) }}</pre>
+      <h2>Associated General Content Pages (Titles)</h2>
+      <pre
+        style="text-wrap: auto;">{{page.associatedGeneralContentPagesFtva.map(page => page.title)}}</pre>
+      <DividerGeneral />
+      <h2>Collection Count (ES): {{ totalDocuments }}</h2>
+      <h3>Test Browse By Alphabet</h3>
+      <div>
+        <input
+          v-model="alphabet"
+          type="text"
+          placeholder="Enter a single alphabet"
+        >
+      </div>
+      <p>Return 12 per page</p>
+      <pre style="text-wrap: auto;">{{ collectionList }}</pre>
     </SectionWrapper>
   </main>
 </template>
