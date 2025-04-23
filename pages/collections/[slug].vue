@@ -38,7 +38,7 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'ftvaCollection', {})
 })
 
-// Compute layout 
+// Compute layout
 const pageType = computed(() => {
   const collectionpagetype = _get(data.value, 'ftvaCollection.ftvaCollectionLayoutType', 'basic')
   if (collectionpagetype === 'listOfItems') {

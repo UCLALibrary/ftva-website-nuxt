@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
-const attrs = useAttrs();
+const attrs = useAttrs()
 const route = useRoute()
 
 // This is creating an index of the main content(not related content)
@@ -17,6 +17,17 @@ if (attrs.page && import.meta.prerender) {
   }
 }
 
+// "STATE"
+const currentPage = ref(1)
+const documentsPerPage = 15
+const totalPages = ref(3)
+const totalResults = ref(27)
+const isMobile = ref(false)
+
+const totalResultsDisplay = computed(() => {
+  return totalResults.value + ' Video Clips'
+})
+
 useHead({
   title: attrs.page ? attrs.page.title : '... loading',
   // meta: [
@@ -30,7 +41,7 @@ useHead({
 </script>
 <template>
   <main>
-    <div class="page page-article-list">
+    <div class="page page-collections-list-of-items">
       <!-- TODO scrollElem used for infinite scrolling -->
       <SectionWrapper
         ref="scrollElem"
@@ -41,28 +52,63 @@ useHead({
       >
         <RichText
           v-if="$attrs.page?.ftvaHomepageDescription"
+          class="description"
           :rich-text-content="$attrs.page.ftvaHomepageDescription"
         />
         <DividerWayFinder />
-      </SectionWrapper>
 
-      <!-- <SectionWrapper>
-        <BlockTag
-          data-test="total-results"
-          :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
-        />
-        <SectionTeaserCard />
+        <span class="search-filters">
+          some text
+          <BlockTag
+            data-test="total-results"
+            class="total-results"
+            :label="totalResultsDisplay"
+          />
+        </span>
+        <!-- <SectionTeaserCard /> -->
         <SectionPagination
           v-if="totalPages !== 1 && !isMobile"
           :pages="totalPages"
           :initial-current-page="currentPage"
         />
-      </SectionWrapper> -->
+      </SectionWrapper>
     </div>
   </main>
 </template>
 <style lang="scss" scoped>
-// .ftva.section-pagination {
-//   margin-inline: auto;
-//   padding: 2.5%;
-// }</style>
+.page-collections-list-of-items {
+
+  .section-wrapper {
+    .section-header {
+      text-align: center;
+    }
+
+    :deep(h2.section-header.section-header2.section-title) {
+      color: $heading-grey;
+      text-align: center;
+    }
+
+    div.description {
+      max-width: 964px;
+    }
+
+    .search-filters {
+      display: flex;
+      width: 100%;
+      gap: 12px;
+      justify-content: flex-start;
+      margin-bottom: 2rem;
+
+      .total-results {
+        background-color: #132941; // navyblue
+        margin-left: auto; // pins the total results to the right
+      }
+    }
+
+    .ftva.section-pagination {
+      margin-inline: auto;
+      padding: 2.5%;
+    }
+  }
+}
+</style>
