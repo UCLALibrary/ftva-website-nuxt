@@ -2,6 +2,7 @@
 
 // HELPERS
 import _get from 'lodash/get'
+import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 // GQL
 import FTVACollectionTypeListing from '../gql/queries/FTVACollectionTypeListing.gql'
@@ -61,38 +62,161 @@ watch(data, (newVal, oldVal) => {
   generalContentPages.value = page.value.associatedGeneralContentPagesFtva
 })
 
-// TESTING ES
+// "STATE"
+const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
-const collectionList = ref([])
+const desktopList = ref([])
+const mobileList = ref([])
+
+// const collectionList = ref([])
+const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
+
 const currentPage = ref(1)
 const documentsPerPage = 12
 const totalDocuments = ref()
+const totalPages = ref(0)
 const extraFilters = ref('*')
+
 const alphabet = ref()
 
-onMounted(() => {
-  testES()
-})
+// INFINITE SCROLLING
+const isLoading = ref(false)
+const isMobile = ref(false)
+const hasMore = ref(true) // Flag to control infinite scroll
 
-async function testES() {
-  const { paginatedCollectionListQuery } = useCollectionListSearch()
-  const esOutput = await paginatedCollectionListQuery(
-    collectionType.value,
-    currentPage.value,
-    documentsPerPage,
-    extraFilters.value
-  )
+const scrollElem = ref(null)
+const { reset } = useInfiniteScroll(
+  scrollElem,
+  async () => {
+    if (isMobile.value && hasMore.value && !isLoading.value) {
+      currentPage.value++
+      await searchES()
+    }
+  },
+  { distance: 100 }
+)
 
-  console.log('Browse-by: ', extraFilters.value)
-  collectionList.value = esOutput.hits.hits
-  console.log('Collection List: ', collectionList.value)
-  totalDocuments.value = esOutput.hits.total.value
+// HANDLE WINDOW SIZING
+const { width } = useWindowSize()
+watch(width, (newWidth) => {
+  const wasMobile = isMobile.value
+
+  isMobile.value = newWidth <= 750
+  // Reinitialize only when transitioning between mobile and desktop
+  if (wasMobile !== isMobile.value) {
+    handleScreenTransition()
+  }
+}, { immediate: true })
+
+// HANDLE SCREEN TRANSITIONS
+function handleScreenTransition() {
+  if (isMobile.value) {
+    // Switching to mobile: save desktop page, clear query param
+
+    desktopPage.value = currentPage.value
+    currentPage.value = 1
+    mobileList.value = []
+    hasMore.value = true
+    const { page, ...remainingQuery } = route.query
+    useRouter().push({ query: { ...remainingQuery } })
+  } else {
+    // Switching to desktop: restore query param
+    if (totalPages.value === 1)
+      desktopPage.value = 1
+    const restoredPage = desktopPage.value || 1
+    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
+    currentPage.value = restoredPage
+    desktopList.value = []
+  }
+  searchES()
 }
 
-watch(alphabet, (newVal, oldVal) => {
-  extraFilters.value = `${newVal.toUpperCase()}*`
-  testES()
-})
+// onMounted(() => {
+//   testES()
+// })
+
+async function searchES() {
+  if (isLoading.value || !hasMore.value) return
+
+  isLoading.value = true
+
+  const { paginatedCollectionListQuery } = useCollectionListSearch()
+
+  try {
+    const results = await paginatedCollectionListQuery(
+      collectionType.value,
+      currentPage.value,
+      documentsPerPage,
+      extraFilters.value
+    )
+
+    console.log('ES results: ', results)
+
+    if (results && results.hits && results?.hits?.hits?.length > 0) {
+      const newList = results.hits.hits || []
+
+      if (isMobile.value) {
+        totalPages.value = 0
+
+        mobileList.value.push(...newList)
+
+        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+      } else {
+        desktopList.value = newList
+
+        totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+      }
+    } else {
+      totalPages.value = 0
+
+      hasMore.value = false
+    }
+  }
+  catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('Error fetching data:', error)
+    hasMore.value = false
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// console.log('Browse-by: ', extraFilters.value)
+// collectionList.value = esOutput.hits.hits
+// console.log('Collection List: ', collectionList.value)
+// totalDocuments.value = esOutput.hits.total.value
+// }
+
+// async function testES() {
+//   const { paginatedCollectionListQuery } = useCollectionListSearch()
+//   const esOutput = await paginatedCollectionListQuery(
+//     collectionType.value,
+//     currentPage.value,
+//     documentsPerPage,
+//     extraFilters.value
+//   )
+
+//   console.log('Browse-by: ', extraFilters.value)
+//   collectionList.value = esOutput.hits.hits
+//   console.log('Collection List: ', collectionList.value)
+//   totalDocuments.value = esOutput.hits.total.value
+// }
+
+// watch(alphabet, (newVal, oldVal) => {
+//   extraFilters.value = `${newVal.toUpperCase()}*`
+//   testES()
+// })
+
+watch(
+  () => route.query,
+  (newVal, oldVal) => {
+    isLoading.value = false
+    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    isMobile.value ? mobileList.value = [] : desktopList.value = []
+    hasMore.value = true
+    searchES()
+  }, { deep: true, immediate: true }
+)
 
 const parsedCollectionList = computed(() => {
   if (collectionList.value.length === 0) return []
@@ -102,7 +226,7 @@ const parsedCollectionList = computed(() => {
       ...obj.source,
       to: `/${obj._source.uri}`,
       title: obj._source.title,
-      text: obj._source.richText.replace(/<img.*?>/ig, ''),
+      text: obj._source.richText?.replace(/<img.*?>/ig, ''),
       ftvaCollectionType: obj._source.ftvaCollectionType,
       image: parseImage(obj)
     }
@@ -140,6 +264,7 @@ useHead({
     </SectionWrapper>
 
     <SectionWrapper
+      ref="scrollElem"
       section-title="pageTitle"
       class="header"
       theme="paleblue"
@@ -154,11 +279,11 @@ useHead({
       <p class="search-heading">
         Browse by Alphabetical Order
       </p>
-      <AlphabeticalBrowseBy
+      <!-- <AlphabeticalBrowseBy
         class="browse-margin"
         :selected-letter-prop="selectedLetterProp"
         @selected-letter="searchBySelectedLetter"
-      />
+      /> -->
 
       <div class="collection-type-list-wrapper">
         <SectionTeaserCard :items="parsedCollectionList" />
