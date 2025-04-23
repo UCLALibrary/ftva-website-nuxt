@@ -67,7 +67,7 @@ async function setFilters() {
 
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
-    'ftvaCollectionInItem',
+    'ftvaItemInCollection',
     collectionTitle.value // change it what is being used on this page template
   )
 
@@ -111,10 +111,10 @@ onMounted(async () => {
         </option>
         <option
           v-for="option in filter.options"
-          :key="option"
-          :value="option"
+          :key="option.key"
+          :value="option.value"
         >
-          {{ option }}
+          {{ option.value }}
         </option>
       </select>
     </div>

@@ -21,7 +21,7 @@ export async function useCollectionAggregator(fields, sectionHandle, title) {
               },
               {
                 term: {
-                  'ftvaAssociatedCollections.keyword': title
+                  'ftvaAssociatedCollections.title.keyword': title
                 }
               }
             ]
