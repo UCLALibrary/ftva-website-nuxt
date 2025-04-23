@@ -29,7 +29,7 @@ const routeNameToSectionMap = {
 
 const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap
-  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path].sectionName })
+  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path]?.sectionName })
   return data
 })
 

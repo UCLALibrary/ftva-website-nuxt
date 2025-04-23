@@ -246,12 +246,14 @@ useHead({
           :aspect-ratio="56.9"
           :controls="true"
         >
-          <template #default>
+          {{ page.videoEmbed }}
+          <!-- TODO UNCOMMENT THIS AFTER THE DATA IS FIXED FOR PAGE.VIDEOEMBED IN CRAFT as we are getting 500 error-->
+          <!--template #default>
             <VideoEmbed
               :trailer="page.videoEmbed"
               :poster-image="page.ftvaImage[0]"
             />
-          </template>
+          </template-->
         </ResponsiveVideo>
         <ResponsiveImage
           v-else
