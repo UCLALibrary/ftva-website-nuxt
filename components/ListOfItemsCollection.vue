@@ -19,7 +19,7 @@ if (attrs.page && import.meta.prerender) {
 
 // "STATE"
 const currentPage = ref(1)
-const documentsPerPage = 15
+const documentsPerPage = 15 // show 15 search results at a time 
 const totalPages = ref(3)
 const totalResults = ref(27)
 const isMobile = ref(false)
@@ -30,18 +30,24 @@ const totalResultsDisplay = computed(() => {
 
 useHead({
   title: attrs.page ? attrs.page.title : '... loading',
-  // meta: [
-  //   {
-  //     hid: 'description',
-  //     name: 'description',
-  //     content: removeTags(attrs.page.text)
-  //   }
-  // ]
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(attrs.page.ftvaHomepageDescription)
+    }
+  ]
 })
 </script>
 <template>
   <main>
     <div class="page page-collections-list-of-items">
+      <NavBreadcrumb
+        data-test="breadcrumb"
+        class="breadcrumb"
+        :title="$attrs.page.title"
+        to="/collections"
+      />
       <!-- TODO scrollElem used for infinite scrolling -->
       <SectionWrapper
         ref="scrollElem"
@@ -105,10 +111,10 @@ useHead({
       }
     }
 
-    .ftva.section-pagination {
-      margin-inline: auto;
-      padding: 2.5%;
-    }
+    // :deep(.section-pagination) {
+    //   margin-inline: auto;
+    //   padding: 2.5%;
+    // }
   }
 }
 </style>
