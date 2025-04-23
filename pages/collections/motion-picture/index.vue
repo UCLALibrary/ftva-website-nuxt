@@ -49,7 +49,7 @@ if (!data.value.entry) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-// console.log('Page data: ', page.value)
+console.log('Page data: ', page.value)
 const pageTitle = page.value.title
 const pageSummary = page.value.summary
 const generalContentPagesSection = page.value.sectionHeader[0]
@@ -60,22 +60,23 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
   pageTitle.value = page.value.title
   pageSummary.value = page.value.summary
+  generalContentPagesSection.value = page.value.sectionHeader[0]
   generalContentPages.value = page.value.associatedGeneralContentPagesFtva
 })
 
 // "STATE"
 const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
-const collectionType = ref(routeNameToSectionMap[route.path].collection)
+
 const desktopList = ref([])
 const mobileList = ref([])
-
 const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
 
 const currentPage = ref(1)
 const documentsPerPage = 12
-// const totalDocuments = ref()
 const totalPages = ref(0)
-const extraFilters = ref('*')
+
+const collectionType = ref(routeNameToSectionMap[route.path].collection)
+const extraSearchFilter = ref('*')
 const selectedLetterProp = ref('')
 
 // INFINITE SCROLLING
@@ -142,22 +143,22 @@ async function searchES() {
       collectionType.value,
       currentPage.value,
       documentsPerPage,
-      extraFilters.value
+      extraSearchFilter.value
     )
 
     console.log('ES results: ', results)
 
     if (results && results.hits && results?.hits?.hits?.length > 0) {
-      const newList = results.hits.hits || []
+      const newCollectionList = results.hits.hits || []
 
       if (isMobile.value) {
         totalPages.value = 0
 
-        mobileList.value.push(...newList)
+        mobileList.value.push(...newCollectionList)
 
         hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
       } else {
-        desktopList.value = newList
+        desktopList.value = newCollectionList
 
         totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
       }
@@ -176,41 +177,29 @@ async function searchES() {
   }
 }
 
-// watch(
-//   () => route.query,
-//   (newVal, oldVal) => {
-//     isLoading.value = false
-//     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-//     isMobile.value ? mobileList.value = [] : desktopList.value = []
-//     hasMore.value = true
-//     searchES()
-//   }, { deep: true, immediate: true }
-// )
+function browseBySelectedLetter(letter) {
+  console.log('Browse by selected letter: ', letter)
+  if (letter !== 'All') {
+    extraSearchFilter.value = `${letter}*`
+  } else {
+    extraSearchFilter.value = '*'
+  }
+}
 
-watch([() => route.query, () => extraFilters.value],
+watch([() => route.query, () => extraSearchFilter.value],
   ([newRoute, newFilter], [prevRoute, prevFilter]) => {
     isLoading.value = false
     currentPage.value = newRoute.page ? parseInt(newRoute.page) : 1
     isMobile.value ? mobileList.value = [] : desktopList.value = []
     hasMore.value = true
 
-    extraFilters.value = newFilter
+    extraSearchFilter.value = newFilter
 
     searchES()
   }, { deep: true, immediate: true }
 )
 
-function searchBySelectedLetter(letter) {
-  console.log('On the page searchBySelectedLetter called')
-  console.log('Selected: ', letter)
-  if (letter !== 'All') {
-    extraFilters.value = `${letter}*`
-  } else {
-    extraFilters.value = '*'
-  }
-}
-
-const parsedGeneralContentPagesHeader = computed(() => {
+const parsedGeneralContentHeader = computed(() => {
   return {
     title: generalContentPagesSection.sectionTitle || '',
     summary: generalContentPagesSection.sectionSummary || ''
@@ -234,7 +223,6 @@ const parsedCollectionList = computed(() => {
 
   return collectionList.value.map((obj) => {
     return {
-      ...obj.source,
       to: `/${obj._source.uri}`,
       title: obj._source.title,
       text: obj._source.richText?.replace(/<img.*?>/ig, ''),
@@ -294,7 +282,7 @@ useHead({
       <AlphabeticalBrowseBy
         class="browse-margin"
         :selected-letter-prop="selectedLetterProp"
-        @selected-letter="searchBySelectedLetter"
+        @selected-letter="browseBySelectedLetter"
       />
 
       <SectionTeaserCard :items="parsedCollectionList" />
@@ -316,8 +304,8 @@ useHead({
     >
       <SectionPostSmall
         :items="parsedGeneralContentPages"
-        :section-title="parsedGeneralContentPagesHeader.title"
-        :section-summary="parsedGeneralContentPagesHeader.summary"
+        :section-title="parsedGeneralContentHeader.title"
+        :section-summary="parsedGeneralContentHeader.summary"
       />
     </SectionWrapper>
   </main>
@@ -377,17 +365,17 @@ useHead({
     max-width: unset;
   }
 
-  @media(min-width: 991px) {
-    :deep(.block-highlight) {
-      &.is-vertical.card {
-        // height: 550px;
-      }
-    }
+  // @media(min-width: 991px) {
+  //   :deep(.block-highlight) {
+  //     &.is-vertical.card {
+  //       height: 550px;
+  //     }
+  //   }
 
-    // .ftva.block-highlight.is-vertical.card {
-    //   height: 550px;
-    // }
-  }
+  //   .ftva.block-highlight.is-vertical.card {
+  //     height: 550px;
+  //   }
+  // }
 
 }
 </style>
