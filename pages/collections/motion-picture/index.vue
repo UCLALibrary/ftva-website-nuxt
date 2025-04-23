@@ -52,6 +52,7 @@ const page = ref(_get(data.value, 'entry', {}))
 console.log('Page data: ', page.value)
 const pageTitle = page.value.title
 const pageSummary = page.value.summary
+const generalContentPagesSection = page.value.sectionHeader[0]
 const generalContentPages = page.value.associatedGeneralContentPagesFtva
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
@@ -131,10 +132,6 @@ function handleScreenTransition() {
   searchES()
 }
 
-// onMounted(() => {
-//   testES()
-// })
-
 async function searchES() {
   if (isLoading.value || !hasMore.value) return
 
@@ -181,32 +178,6 @@ async function searchES() {
   }
 }
 
-// console.log('Browse-by: ', extraFilters.value)
-// collectionList.value = esOutput.hits.hits
-// console.log('Collection List: ', collectionList.value)
-// totalDocuments.value = esOutput.hits.total.value
-// }
-
-// async function testES() {
-//   const { paginatedCollectionListQuery } = useCollectionListSearch()
-//   const esOutput = await paginatedCollectionListQuery(
-//     collectionType.value,
-//     currentPage.value,
-//     documentsPerPage,
-//     extraFilters.value
-//   )
-
-//   console.log('Browse-by: ', extraFilters.value)
-//   collectionList.value = esOutput.hits.hits
-//   console.log('Collection List: ', collectionList.value)
-//   totalDocuments.value = esOutput.hits.total.value
-// }
-
-// watch(alphabet, (newVal, oldVal) => {
-//   extraFilters.value = `${newVal.toUpperCase()}*`
-//   testES()
-// })
-
 watch(
   () => route.query,
   (newVal, oldVal) => {
@@ -217,6 +188,25 @@ watch(
     searchES()
   }, { deep: true, immediate: true }
 )
+
+const parsedGeneralContentPagesHeader = computed(() => {
+  return {
+    title: generalContentPagesSection.sectionTitle || '',
+    summary: generalContentPagesSection.sectionSummary || ''
+  }
+})
+
+const parsedGeneralContentPages = computed(() => {
+  if (generalContentPages.length === 0) return []
+
+  return generalContentPages.map((obj) => {
+    return {
+      title: obj.title,
+      to: `/${obj.uri}`,
+      image: obj.ftvaImage[0]
+    }
+  })
+})
 
 const parsedCollectionList = computed(() => {
   if (collectionList.value.length === 0) return []
@@ -268,48 +258,48 @@ useHead({
       section-title="pageTitle"
       class="header"
       theme="paleblue"
-      data-test="page-title"
     >
       <RichText :rich-text-content="pageSummary" />
     </SectionWrapper>
 
     <SectionWrapper theme="paleblue">
       <DividerWayFinder />
+    </SectionWrapper>
 
-      <p class="search-heading">
+    <SectionWrapper theme="paleblue">
+      <h2 class="search-heading">
         Browse by Alphabetical Order
-      </p>
-      <!-- <AlphabeticalBrowseBy
+      </h2>
+      <AlphabeticalBrowseBy
         class="browse-margin"
         :selected-letter-prop="selectedLetterProp"
         @selected-letter="searchBySelectedLetter"
-      /> -->
+      />
 
-      <div class="collection-type-list-wrapper">
-        <SectionTeaserCard :items="parsedCollectionList" />
+      <!-- <div class="collection-type-list-wrapper"> -->
+      <SectionTeaserCard :items="parsedCollectionList" />
 
-        <SectionPagination
-          v-if="totalPages !== 1 && !isMobile"
-          :pages="totalPages"
-          :initial-current-page="currentPage"
-        />
-      </div>
+      <SectionPagination
+        v-if="totalPages !== 1 && !isMobile"
+        :pages="totalPages"
+        :initial-current-page="currentPage"
+      />
+      <!-- </div> -->
+    </SectionWrapper>
 
+    <SectionWrapper theme="paleblue">
       <DividerWayFinder />
     </SectionWrapper>
 
     <SectionWrapper
       class=""
       theme="paleblue"
-      :level="3"
     >
-      <SectionHeader :level="3">
-        About Our Collections
-      </SectionHeader>
-
-      <!-- Rich Text -->
-
-      <!-- Post Cards -->
+      <SectionPostSmall
+        :items="parsedGeneralContentPages"
+        :section-title="parsedGeneralContentPagesHeader.title"
+        :section-summary="parsedGeneralContentPagesHeader.summary"
+      />
     </SectionWrapper>
   </main>
 </template>
@@ -328,6 +318,16 @@ useHead({
     align-items: center;
     text-align: center;
     max-width: 787px;
+  }
+
+  .search-heading {
+    font-size: 16px;
+  }
+
+  :deep(.alphabet-list) {
+    .letter:first-of-type {
+      padding-left: 0;
+    }
   }
 
   :deep(.block-highlight) {
@@ -354,11 +354,21 @@ useHead({
     background-color: var(--pale-blue);
   }
 
-  // @media(min-width: 991px) {
-  //   .ftva.block-highlight.is-vertical.card {
-  //     height: 550px;
-  //   }
-  // }
+  :deep(.section-post-small .grid) {
+    max-width: unset;
+  }
+
+  @media(min-width: 991px) {
+    :deep(.block-highlight) {
+      &.is-vertical.card {
+        // height: 550px;
+      }
+    }
+
+    // .ftva.block-highlight.is-vertical.card {
+    //   height: 550px;
+    // }
+  }
 
 }
 </style>
