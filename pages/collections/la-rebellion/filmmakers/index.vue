@@ -35,6 +35,7 @@ if (!data.value.entries) {
 if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
+    console.log("Filmakers data", data.value.entry)
     const { indexContent } = useContentIndexer()
     // Index the event data using the composable during static build
     await indexContent(data.value.entry, route.params.slug)

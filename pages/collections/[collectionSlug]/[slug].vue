@@ -221,7 +221,7 @@ useHead({
       />
     </div>
 
-    <TwoColLayoutWStickySideBar
+    <!--TwoColLayoutWStickySideBar
       data-test="page-title"
       class="two-col-layout__title"
     >
@@ -232,15 +232,12 @@ useHead({
               {{ parsedParentRoute.parentRouteTitle }}
             </NuxtLink>
           </template>
-        </CardMeta>
-      </template>
-    </TwoColLayoutWStickySideBar>
+</CardMeta>
+</template>
+</TwoColLayoutWStickySideBar>
 
-    <TwoColLayoutWStickySideBar
-      data-test=""
-      class="two-col-layout__body"
-    >
-      <template #primaryTop>
+<TwoColLayoutWStickySideBar data-test="" class="two-col-layout__body">
+  <template #primaryTop>
         <ResponsiveVideo
           v-if="page.videoEmbed"
           :aspect-ratio="56.9"
@@ -252,20 +249,17 @@ useHead({
               :poster-image="page.ftvaImage[0]"
             />
           </template>
-        </ResponsiveVideo>
-        <ResponsiveImage
-          v-else
-          :media="page.ftvaImage[0]"
-        />
-      </template>
+  </ResponsiveVideo>
+  <ResponsiveImage v-else :media="page.ftvaImage[0]" />
+  </template>
 
-      <template #sidebarTop>
+  <template #sidebarTop>
         <DefinitionList
           :meta-data-object="parsedMetadataList"
           data-test="metadata"
         >
           <!-- slot name must match field name in parsed metadata, case sensitive -->
-          <template #definition-Director>
+    <!--template #definition-Director>
             <NuxtLink
               :key="parsedMetadataList.Director[0].name"
               :to="`/${parsedMetadataList.Director[0].uri}`"
@@ -274,10 +268,7 @@ useHead({
               {{ parsedMetadataList.Director[0].name }}
             </NuxtLink>
           </template>
-          <template
-            v-if="page.externalResourceUrl"
-            #list-bottom
-          >
+  <template v-if="page.externalResourceUrl" #list-bottom>
             <ButtonLink
               label="View Catalog Record"
               :to="page.externalResourceUrl"
@@ -286,13 +277,10 @@ useHead({
               class="centered-button"
             />
           </template>
-        </DefinitionList>
-      </template>
+  </DefinitionList>
+  </template>
 
-      <template
-        v-if="page?.richText"
-        #primaryMid
-      >
+  <template v-if="page?.richText" #primaryMid>
         <h3 class="collection-item-subtitle synopsis">
           Sypnosis
         </h3>
@@ -302,10 +290,7 @@ useHead({
         />
       </template>
 
-      <template
-        v-if="parsedCollectionItemCredits"
-        #primaryBottom
-      >
+  <template v-if="parsedCollectionItemCredits" #primaryBottom>
         <DividerWayFinder />
 
         <h3 class="collection-item-subtitle credits">
@@ -337,15 +322,15 @@ useHead({
                 {{ item.name }}
               </span>
             </template>
-            <template #column2>
+  <template #column2>
               <span>
                 {{ item.roles }}
               </span>
             </template>
-          </TableRow>
-        </TableComponent>
-      </template>
-    </TwoColLayoutWStickySideBar>
+  </TableRow>
+  </TableComponent>
+  </template>
+  </TwoColLayoutWStickySideBar-->
 
     <SectionWrapper
       v-if="parsedRelatedContent && parsedRelatedContent.length > 0"
@@ -370,130 +355,130 @@ useHead({
   </main>
 </template>
 
-<style lang="scss" scoped>
-.page-collection-item-detail {
-  position: relative;
+  <style lang="scss" scoped>
+  .page-collection-item-detail {
+    position: relative;
 
-  .collection-item-header {
-    background-color: var(--pale-blue);
-    padding-block: 0.5rem;
+    .collection-item-header {
+      background-color: var(--pale-blue);
+      padding-block: 0.5rem;
 
-    .breadcrumb {
-      padding: 0;
-      max-width: var(--ftva-container-max-width)
-    }
-  }
-
-  .two-col-layout__title {
-
-    :deep(.primary-section-wrapper) {
-      margin-bottom: var(--space-l);
+      .breadcrumb {
+        padding: 0;
+        max-width: var(--ftva-container-max-width)
+      }
     }
 
-    :deep(.linked-category),
-    :deep(.title-no-link) {
-      margin: 0;
-      color: var(--heading-grey);
+    .two-col-layout__title {
+
+      :deep(.primary-section-wrapper) {
+        margin-bottom: var(--space-l);
+      }
+
+      :deep(.linked-category),
+      :deep(.title-no-link) {
+        margin: 0;
+        color: var(--heading-grey);
+      }
+
+      :deep(.linked-category) {
+        @include ftva-subtitle-1;
+      }
+
+      :deep(.title-no-link) {
+        @include ftva-h2;
+      }
+
+      :deep(.sidebar-column) {
+        display: none;
+      }
     }
 
-    :deep(.linked-category) {
-      @include ftva-subtitle-1;
+    .two-col-layout__body {
+      :deep(.primary-section-wrapper) {
+        margin-top: 0;
+      }
+
+      :deep(.sidebar-column) {
+        padding-top: 0;
+      }
+
+      :deep(.sidebar-content-wrapper) {
+        position: static;
+        will-change: unset;
+      }
     }
 
-    :deep(.title-no-link) {
-      @include ftva-h2;
+    .collection-item-section-wrapper {
+      margin-top: var(--space-l);
+
+      :deep(.section-title) {
+        @include ftva-h4;
+      }
     }
 
-    :deep(.sidebar-column) {
-      display: none;
-    }
-  }
+    .collection-item-subtitle {
+      @include ftva-h3;
+      color: $heading-grey;
 
-  .two-col-layout__body {
-    :deep(.primary-section-wrapper) {
-      margin-top: 0;
+      &.synopsis {
+        margin-top: var(--space-m);
+      }
+
+      &.synopsis,
+      &.credits {
+        margin-bottom: var(--space-s);
+      }
     }
 
-    :deep(.sidebar-column) {
+    :deep(.definition-list-item-wrapper):is(:first-of-type) dt {
       padding-top: 0;
     }
 
-    :deep(.sidebar-content-wrapper) {
-      position: static;
-      will-change: unset;
-    }
-  }
-
-  .collection-item-section-wrapper {
-    margin-top: var(--space-l);
-
-    :deep(.section-title) {
-      @include ftva-h4;
-    }
-  }
-
-  .collection-item-subtitle {
-    @include ftva-h3;
-    color: $heading-grey;
-
-    &.synopsis {
-      margin-top: var(--space-m);
+    :deep(.definition-list-item-wrapper):not(:last-of-type) {
+      margin-bottom: 16px;
     }
 
-    &.synopsis,
-    &.credits {
-      margin-bottom: var(--space-s);
+    .list-bottom-wrapper .button-link {
+      width: 100%;
     }
-  }
 
-  :deep(.definition-list-item-wrapper):is(:first-of-type) dt {
-    padding-top: 0;
-  }
+    .director-link {
+      text-transform: uppercase;
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: #abbfd6;
+      text-underline-offset: 4px;
 
-  :deep(.definition-list-item-wrapper):not(:last-of-type) {
-    margin-bottom: 16px;
-  }
-
-  .list-bottom-wrapper .button-link {
-    width: 100%;
-  }
-
-  .director-link {
-    text-transform: uppercase;
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-decoration-color: #abbfd6;
-    text-underline-offset: 4px;
-
-    &:hover {
-      text-decoration-color: #2c91ff;
+      &:hover {
+        text-decoration-color: #2c91ff;
+      }
     }
-  }
 
-  .table-component :deep(thead) tr,
-  .table-component .table-row {
-    gap: 0;
-  }
-
-  .credit-table__name {
-    font-size: 30px;
-    color: $accent-blue;
-  }
-
-  @media(max-width: 1200px) {
-    .collection-item-header .breadcrumb {
-      padding-left: var(--unit-gutter);
+    .table-component :deep(thead) tr,
+    .table-component .table-row {
+      gap: 0;
     }
-  }
 
-  @media(max-width: 899px) {
-    .two-col-layout__title {
-      :deep(.primary-section-wrapper) {
-        margin-bottom: 0;
+    .credit-table__name {
+      font-size: 30px;
+      color: $accent-blue;
+    }
+
+    @media(max-width: 1200px) {
+      .collection-item-header .breadcrumb {
+        padding-left: var(--unit-gutter);
+      }
+    }
+
+    @media(max-width: 899px) {
+      .two-col-layout__title {
+        :deep(.primary-section-wrapper) {
+          margin-bottom: 0;
+        }
       }
     }
   }
-}
 
-@import 'assets/styles/slug-pages.scss';
+  @import 'assets/styles/slug-pages.scss';
 </style>
