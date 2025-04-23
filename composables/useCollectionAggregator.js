@@ -11,21 +11,21 @@ export async function useCollectionAggregator(fields, sectionHandle, title) {
       method: 'POST',
       body: JSON.stringify({
         size: 0,
-          "query": {
-              "bool": {
-                "filter": [
-                  {
-                    "term": {
-                      "sectionHandle.keyword": sectionHandle
-                    }
-                  },
-                  {
-                    "term": {
-                      "ftvaAssociatedCollections.keyword": title
-                    }
+        query: {
+          bool: {
+            filter: [
+              {
+                term: {
+                  'sectionHandle.keyword': sectionHandle
                 }
-              ]
-            }
+              },
+              {
+                term: {
+                  'ftvaAssociatedCollections.keyword': title
+                }
+              }
+            ]
+          }
         },
         aggs: {
           ...parseFieldNames(fields),

@@ -1,6 +1,6 @@
 const config = {
   collection: {
-    filters:[
+    filters: [
       {
         label: 'Filter by Topic',
         esFieldName: 'ftvaCollectionGroup.title.keyword',

@@ -116,7 +116,8 @@ useHead({
       <DividerGeneral />
       <h2>Associated General Content Pages (Titles)</h2>
       <pre
-        style="text-wrap: auto;">{{page.associatedGeneralContentPagesFtva.map(page => page.title)}}</pre>
+        style="text-wrap: auto;"
+      >{{ page.associatedGeneralContentPagesFtva.map(page => page.title) }}</pre>
       <DividerGeneral />
       <h2>Collection Count (ES): {{ totalDocuments }}</h2>
       <h3>Test Browse By Alphabet</h3>

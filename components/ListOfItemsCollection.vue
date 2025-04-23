@@ -43,13 +43,12 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
   console.log('ftvaFilters', ftvaFiltersArg)
   const parsedfilters = []
   for (const ftvaFilter of ftvaFiltersArg) {
-    const filter = configFilters.find((filter) => filter.craftFieldValue === ftvaFilter)
+    const filter = configFilters.find(filter => filter.craftFieldValue === ftvaFilter)
     if (filter) {
       parsedfilters.push(filter)
     }
   }
   return parsedfilters
-
 }
 const searchFilters = ref([])
 function parseAggRes(response: Aggregations) {
@@ -72,8 +71,7 @@ async function setFilters() {
     collectionTitle.value // change it what is being used on this page template
   )
 
-
-  console.log("Search Aggs Response: " + JSON.stringify(searchAggsResponse))
+  console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
   // searchFilters.value is just a place holder which will have all the
   // filter data for single select drop down in [{ label}]
   searchFilters.value = parseAggRes(
@@ -101,14 +99,16 @@ onMounted(async () => {
         {{ filter.label }}
       </label>
       <select
-        :name="filter.label"
         :id="filter.label"
+        :name="filter.label"
         class="select-input"
       >
         <option
           disabled
           value=""
-        >-- Select an option --</option>
+        >
+          -- Select an option --
+        </option>
         <option
           v-for="option in filter.options"
           :key="option"
