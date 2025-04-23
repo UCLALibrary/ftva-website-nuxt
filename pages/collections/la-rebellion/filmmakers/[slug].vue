@@ -14,7 +14,7 @@ const { $graphql } = useNuxtApp()
 const route = useRoute()
 
 // DATA
-const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
+const { data, error } = await useAsyncData(`filmmaker-detail-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVALARebellionFilmmakersDetail, { slug: route.params.slug })
   return data
 })

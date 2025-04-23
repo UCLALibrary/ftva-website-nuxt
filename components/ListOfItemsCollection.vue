@@ -1,9 +1,14 @@
 <script lang="ts" setup>
+
 import { computed, ref } from 'vue'
-const attrs = useAttrs()
-const route = useRoute()
 
 // This is creating an index of the main content(not related content)
+// import { useCollectionAggregator } from '../composables/useCollectionAggregator'
+import config from '~/utils/searchConfig'
+
+const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string } }
+const route = useRoute()
+
 if (attrs.page && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
@@ -37,6 +42,62 @@ useHead({
       content: removeTags(attrs.page.ftvaHomepageDescription)
     }
   ]
+  
+const collectionTitle = ref(attrs.page.title || '')
+interface AggregationBucket {
+  key: string
+  doc_count: number
+}
+
+interface Aggregations {
+  [key: string]: { buckets: AggregationBucket[] }
+}
+const ftvaFilters = ref(attrs.page.ftvaFilters || [])
+
+function parseESConfigFilters(configFilters, ftvaFiltersArg) {
+  console.log('configFilters', configFilters)
+  console.log('ftvaFilters', ftvaFiltersArg)
+  const parsedfilters = []
+  for (const ftvaFilter of ftvaFiltersArg) {
+    const filter = configFilters.find(filter => filter.craftFieldValue === ftvaFilter)
+    if (filter) {
+      parsedfilters.push(filter)
+    }
+  }
+  return parsedfilters
+}
+const searchFilters = ref([])
+function parseAggRes(response: Aggregations) {
+  const filters = (Object.entries(response) || []).map(([key, value]) => ({
+    label: key,
+    options: value.buckets.map(bucket => ({
+      label: bucket.key,
+      value: bucket.key
+    }))
+  }))
+  return filters
+}
+// fetch filters for the page from ES after page loads in Onmounted hook on the client side
+async function setFilters() {
+  const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
+
+  const searchAggsResponse: Aggregations = await useCollectionAggregator(
+    parsedESConfigFiltersRes,
+    'ftvaItemInCollection',
+    collectionTitle.value // change it what is being used on this page template
+  )
+
+  console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
+  // searchFilters.value is just a place holder which will have all the
+  // filter data for single select drop down in [{ label}]
+  searchFilters.value = parseAggRes(
+    searchAggsResponse
+  )
+}
+onMounted(async () => {
+  // console.log('onMounted called')
+
+  await setFilters()
 })
 </script>
 <template>
@@ -64,7 +125,39 @@ useHead({
         <DividerWayFinder />
 
         <span class="search-filters">
-          some text
+          
+          <div
+      v-for="(filter, index) in searchFilters"
+      :key="index"
+    >
+      <label
+        v-if="filter.label"
+        :for="filter.label"
+        class="select-label"
+      >
+        {{ filter.label }}
+      </label>
+      <select
+        :id="filter.label"
+        :name="filter.label"
+        class="select-input"
+      >
+        <option
+          disabled
+          value=""
+        >
+          -- Select an option --
+        </option>
+        <option
+          v-for="option in filter.options"
+          :key="option.key"
+          :value="option.value"
+        >
+          {{ option.value }}
+        </option>
+      </select>
+    </div>
+    
           <BlockTag
             data-test="total-results"
             class="total-results"

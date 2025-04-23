@@ -13,7 +13,7 @@ const { $graphql } = useNuxtApp()
 const route = useRoute()
 
 // DATA
-const { data, error } = await useAsyncData(`collections-detail-${route.params.slug}`, async () => {
+const { data, error } = await useAsyncData(`collections-layout-type-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVACollectionLayoutType, { slug: route.params.slug })
   return data
 })

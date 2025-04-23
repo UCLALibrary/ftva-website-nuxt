@@ -4,5 +4,6 @@ query FTVACollectionLayoutType($slug: [String!]) {
     ftvaCollectionLayoutType
     title
     ftvaHomepageDescription
+    ftvaFilters
   }
 }
