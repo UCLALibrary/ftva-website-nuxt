@@ -11,7 +11,7 @@ const { $graphql } = useNuxtApp()
 
 const route = useRoute()
 
-// routes this page supports:
+// routes this page template supports:
 const routeNameToSectionMap = {
   '/collections/motion-picture': {
     sectionName: 'ftvaListingMotionPictureCollections',
@@ -49,7 +49,7 @@ if (!data.value.entry) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-console.log('Page data: ', page.value)
+// console.log('Page data: ', page.value)
 const pageTitle = page.value.title
 const pageSummary = page.value.summary
 const generalContentPagesSection = page.value.sectionHeader[0]
@@ -69,16 +69,14 @@ const collectionType = ref(routeNameToSectionMap[route.path].collection)
 const desktopList = ref([])
 const mobileList = ref([])
 
-// const collectionList = ref([])
 const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
 
 const currentPage = ref(1)
 const documentsPerPage = 12
-const totalDocuments = ref()
+// const totalDocuments = ref()
 const totalPages = ref(0)
 const extraFilters = ref('*')
-
-const alphabet = ref()
+const selectedLetterProp = ref('')
 
 // INFINITE SCROLLING
 const isLoading = ref(false)
@@ -178,16 +176,39 @@ async function searchES() {
   }
 }
 
-watch(
-  () => route.query,
-  (newVal, oldVal) => {
+// watch(
+//   () => route.query,
+//   (newVal, oldVal) => {
+//     isLoading.value = false
+//     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+//     isMobile.value ? mobileList.value = [] : desktopList.value = []
+//     hasMore.value = true
+//     searchES()
+//   }, { deep: true, immediate: true }
+// )
+
+watch([() => route.query, () => extraFilters.value],
+  ([newRoute, newFilter], [prevRoute, prevFilter]) => {
     isLoading.value = false
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    currentPage.value = newRoute.page ? parseInt(newRoute.page) : 1
     isMobile.value ? mobileList.value = [] : desktopList.value = []
     hasMore.value = true
+
+    extraFilters.value = newFilter
+
     searchES()
   }, { deep: true, immediate: true }
 )
+
+function searchBySelectedLetter(letter) {
+  console.log('On the page searchBySelectedLetter called')
+  console.log('Selected: ', letter)
+  if (letter !== 'All') {
+    extraFilters.value = `${letter}*`
+  } else {
+    extraFilters.value = '*'
+  }
+}
 
 const parsedGeneralContentPagesHeader = computed(() => {
   return {
@@ -276,7 +297,6 @@ useHead({
         @selected-letter="searchBySelectedLetter"
       />
 
-      <!-- <div class="collection-type-list-wrapper"> -->
       <SectionTeaserCard :items="parsedCollectionList" />
 
       <SectionPagination
@@ -284,7 +304,6 @@ useHead({
         :pages="totalPages"
         :initial-current-page="currentPage"
       />
-      <!-- </div> -->
     </SectionWrapper>
 
     <SectionWrapper theme="paleblue">
