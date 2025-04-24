@@ -178,12 +178,33 @@ async function searchES() {
 }
 
 function browseBySelectedLetter(letter) {
+  desktopList.value = []
+  mobileList.value = []
+
   console.log('Browse by selected letter: ', letter)
+
+  // const testFilters = []
+  // for (const key in data) {
+  //   if (data[key].length > 0) {
+  //     eventFilters.push(`${key}:(${data[key].join(' OR ')})`)
+  //   }
+  // }
+
   if (letter !== 'All') {
     extraSearchFilter.value = `${letter}*`
+    // testFilters.push(extraSearchFilter.value)
   } else {
     extraSearchFilter.value = '*'
+    // testFilters.push(extraSearchFilter.value)
   }
+
+  useRouter().push({
+    path: route.path,
+    query: {
+      filters: extraSearchFilter.value
+      // filters: testFilters.join(' AND '),
+    },
+  })
 }
 
 watch([() => route.query, () => extraSearchFilter.value],
@@ -264,7 +285,7 @@ useHead({
 
     <SectionWrapper
       ref="scrollElem"
-      section-title="pageTitle"
+      :section-title="pageTitle"
       class="header"
       theme="paleblue"
     >
@@ -332,6 +353,8 @@ useHead({
   }
 
   :deep(.alphabet-list) {
+    max-width: unset;
+
     .letter:first-of-type {
       padding-left: 0;
     }
@@ -347,6 +370,10 @@ useHead({
 
     &.is-vertical.card:hover {
       box-shadow: none;
+    }
+
+    .card-meta {
+      padding-left: 0;
     }
 
     .card-meta.card-meta-items:hover>a.title {
