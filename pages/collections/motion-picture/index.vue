@@ -286,18 +286,24 @@ useHead({
     <SectionWrapper
       ref="scrollElem"
       :section-title="pageTitle"
-      class="header"
+      class="section-wrapper__page-header"
       theme="paleblue"
     >
       <RichText :rich-text-content="pageSummary" />
     </SectionWrapper>
 
-    <SectionWrapper theme="paleblue">
+    <SectionWrapper
+      theme="paleblue"
+      class="section-wrapper__divider"
+    >
       <DividerWayFinder />
     </SectionWrapper>
 
-    <SectionWrapper theme="paleblue">
-      <h2 class="search-heading">
+    <SectionWrapper
+      theme="paleblue"
+      class="section-wrapper__collection-list"
+    >
+      <h2 class="browse-heading">
         Browse by Alphabetical Order
       </h2>
       <AlphabeticalBrowseBy
@@ -315,13 +321,16 @@ useHead({
       />
     </SectionWrapper>
 
-    <SectionWrapper theme="paleblue">
+    <SectionWrapper
+      theme="paleblue"
+      class="section-wrapper__divider"
+    >
       <DividerWayFinder />
     </SectionWrapper>
 
     <SectionWrapper
-      class=""
       theme="paleblue"
+      class="section-wrapper__general-content"
     >
       <SectionPostSmall
         :items="parsedGeneralContentPages"
@@ -334,11 +343,10 @@ useHead({
 
 <style lang="scss" scoped>
 .page-collection-type {
-
   position: relative;
   background-color: var(--pale-blue);
 
-  .header {
+  .section-wrapper__page-header {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -346,10 +354,49 @@ useHead({
     align-items: center;
     text-align: center;
     max-width: 787px;
+    padding-top: 0;
+    padding-bottom: 0;
+
+    :deep(.section-header) {
+      margin-bottom: 24px;
+    }
+
+    :deep(.section-title) {
+      @include ftva-h4;
+      color: $heading-grey;
+      font-size: 48px;
+      margin-bottom: 0;
+    }
+
+    :deep(.parsed-content) {
+      margin-bottom: 0;
+
+      p {
+        @include ftva-body-2;
+        color: $body-grey;
+        text-align: left;
+      }
+    }
   }
 
-  .search-heading {
+  .section-wrapper__divider {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .section-wrapper__collection-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .section-wrapper__general-content {
+    padding-top: 0;
+    padding-bottom: 80px;
+  }
+
+  .browse-heading {
     font-size: 16px;
+    margin-bottom: 8px;
   }
 
   :deep(.alphabet-list) {
@@ -388,8 +435,16 @@ useHead({
     background-color: var(--pale-blue);
   }
 
+  .section-pagination {
+    margin-top: 32px;
+  }
+
   :deep(.section-post-small .grid) {
     max-width: unset;
+
+    .section-header {
+      margin-bottom: 32px;
+    }
   }
 
   // @media(min-width: 991px) {
