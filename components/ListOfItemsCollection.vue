@@ -7,6 +7,15 @@ import config from '~/utils/searchConfig'
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string } }
 const route = useRoute()
 
+
+interface AggregationBucket {
+  key: string
+  doc_count: number
+}
+interface Aggregations {
+  [key: string]: { buckets: AggregationBucket[] }
+}
+
 // This is creating an index of the main content(not related content)
 if (attrs.page && import.meta.prerender) {
   try {
@@ -31,21 +40,31 @@ const isLoading = ref<boolean>(false)
 const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
 
-// const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
-const collectionResults = ref([]) // Collection list?
+const userFilterSelection = ref({})  // intialise with empty filter
+const userSortSelection = ref('') // intialise with empty sort
 
+const collectionResults = ref([])
+// format search results for SectionTeaserCard
+const parsedCollectionResults = computed(() => {
+  if (collectionResults.value.length === 0) return []
+  return collectionResults.value.map((obj) => {
+    let obj_image = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
+    return {
+      // ...obj._source,
+      title: obj._source.title,
+      to: `/${obj._source.uri}`,
+      image: obj_image,
+      videoEmbed: obj._source.videoEmbed
+    }
+  })
+})
+
+// format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
   return totalResults.value + ' Video Clips'
 })
 
 const collectionTitle = ref(attrs.page.title || '')
-interface AggregationBucket {
-  key: string
-  doc_count: number
-}
-interface Aggregations {
-  [key: string]: { buckets: AggregationBucket[] }
-}
 const ftvaFilters = ref(attrs.page.ftvaFilters || [])
 
 function parseESConfigFilters(configFilters, ftvaFiltersArg) {
@@ -65,10 +84,16 @@ function parseAggRes(response: Aggregations) {
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
-      label: bucket.key,
+      label: key + ": " + bucket.key,   // append label to front of the filter display
       value: bucket.key
     }))
   }))
+  // append 'none selected' option to filters
+  filters[0].options.unshift({
+    label: filters[0].label + ': (none selected)',
+    value: ''
+  })
+  console.log('filters', filters)
   return filters
 }
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
@@ -89,6 +114,12 @@ async function setFilters() {
   )
 }
 
+// Object w key filter label and value ESFieldName for selected filter lookup
+const fieldNamefromLabel = {
+  'Filter by Topic': 'ftvaCollectionGroup.title.keyword',
+  'Filter by Season': 'episodeSeason.keyword'
+}
+
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
   if (isLoading.value || !hasMore.value) return
@@ -100,10 +131,12 @@ async function searchES() {
     const size = documentsPerPage
     let results: any = {}
 
-    const { paginatedSearchFilters } = useListSearchFilter()
+    const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
     console.log('about to searchES')
-    results = await paginatedSearchFilters(currpage, size, 'ftvaCollection', searchFilters.value, [], 'startDate', 'asc')
+    console.log('title', collectionTitle.value)
+    console.log('userFilterSelection.value', userFilterSelection.value)
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value)
 
     console.log('Search Results:', results)
     if (results && results.hits && results.hits.hits.length > 0) {
@@ -148,13 +181,19 @@ watch(
     // console.log('userDateSelection.value', userDateSelection.value)
 
     // isMobile.value ? mobileEvents.value = [] : desktopEvents.value = []
-    hasMore.value = true
-    searchES()
-  }, { deep: true, immediate: true }
+    // hasMore.value = true
+    // searchES()
+  }, { deep: true } /// TODO WAS IMMEDIATE
 )
 
 onMounted(async () => {
   await setFilters()
+  // initial selected filter
+  console.log('searchFilters.value', searchFilters.value)
+  // [fieldNamefromLabel[filter.label]]
+  userFilterSelection.value = { [fieldNamefromLabel[searchFilters.value[0].label]]: searchFilters.value[0].options[1].value }
+  console.log('userFilterSelection.value onmounted', userFilterSelection.value)
+  searchES()
 
   // const { allEvents } = useDateFilterQuery()
 
@@ -162,7 +201,6 @@ onMounted(async () => {
 
   // console.log(esOutput.hits.total.value)
   // if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
-  // dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
 })
 
 useHead({
@@ -177,7 +215,7 @@ useHead({
 })
 </script>
 <template>
-  <main>
+  <main class="blue-main">
     <div class="page page-collections-list-of-items">
       <NavBreadcrumb
         data-test="breadcrumb"
@@ -201,7 +239,7 @@ useHead({
         <DividerWayFinder />
 
         <span class="search-filters">
-
+          <!-- Filter by -->
           <div
             v-for="(filter, index) in searchFilters"
             :key="index"
@@ -217,6 +255,13 @@ useHead({
               :id="filter.label"
               :name="filter.label"
               class="select-input"
+              @change="(e) => {
+                console.log('e.target.value', e.target.value)
+                console.log(fieldNamefromLabel[filter.label])
+                userFilterSelection.value = { [fieldNamefromLabel[filter.label]]: e.target.value }
+                console.log('userFilterSelection.value onchange', userFilterSelection.value)
+                searchES()
+              }"
             >
               <option
                 disabled
@@ -229,19 +274,24 @@ useHead({
                 :key="option.key"
                 :value="option.value"
               >
-                {{ option.value }}
+                {{ option.label }}
               </option>
             </select>
           </div>
-
-          <label for="sortorder">Sort order</label>
-          <select
-            id="sortorder"
-            name="sortorder"
-          >
-            <option value="oldestdate">Sort by: Date (oldest)</option>
-            <option value="newestdate">Sort by: Date (newest)</option>
-          </select>
+          <!-- Sort Order -->
+          <div>
+            <label
+              for="sortorder"
+              class="sort-label"
+            >Sort order</label>
+            <select
+              id="sortorder"
+              name="sortorder"
+            >
+              <option value="oldestdate">Sort by: Date (oldest)</option>
+              <option value="newestdate">Sort by: Date (newest)</option>
+            </select>
+          </div>
 
           <BlockTag
             data-test="total-results"
@@ -249,7 +299,12 @@ useHead({
             :label="totalResultsDisplay"
           />
         </span>
-        <!-- <SectionTeaserCard /> -->
+        {{ parsedCollectionResults }}
+        <SectionTeaserCard
+          class="search-results-list"
+          :items="parsedCollectionResults"
+          :grid-layout="true"
+        />
         <SectionPagination
           v-if="totalPages !== 1 && !isMobile"
           :pages="totalPages"
@@ -260,11 +315,16 @@ useHead({
   </main>
 </template>
 <style lang="scss" scoped>
-main {
+main.blue-main {
   background-color: var(--pale-blue);
 }
 
 .page-collections-list-of-items {
+
+  label.select-label,
+  label.sort-label {
+    display: none;
+  }
 
   .section-wrapper {
     .section-header {
@@ -292,6 +352,15 @@ main {
         margin-left: auto; // pins the total results to the right
       }
     }
+
+    .search-results-list {
+      margin: 0 auto;
+
+      :deep(.card-meta) {
+        min-height: 150px;
+      }
+    }
+
 
     // :deep(.section-pagination) {
     //   margin-inline: auto;

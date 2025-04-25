@@ -62,6 +62,8 @@ const pageType = computed(() => {
 </template>
 <style lang="scss" scoped>
 .page-component-wrapper {
+  display: flex;
+  flex-direction: column;
   margin: 0px;
   padding: 0px;
 }
