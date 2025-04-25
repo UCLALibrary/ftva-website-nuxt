@@ -47,9 +47,27 @@ if (!data.value.entry) {
   })
 }
 
+// METADATA INFO
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.title,
+      text: data.value.entry.summary,
+      uri: route.path
+    }
+    // Index the collection type data using the composable during static build
+    await indexContent(doc, 'collection-type-listing')
+    // console.log('Collection type listing indexed successfully during static build')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX COLLECTION TYPE LISTING during static build:', error)
+  }
+}
+
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-console.log('Page data: ', page.value)
 const pageTitle = page.value.title
 const pageSummary = page.value.summary
 const generalContentPagesSection = page.value.sectionHeader[0]
@@ -147,8 +165,6 @@ async function searchES() {
       extraSearchFilter.value
     )
 
-    console.log('ES results: ', results)
-
     if (results && results.hits && results?.hits?.hits?.length > 0) {
       const newCollectionList = results.hits.hits || []
       hits.value = results.hits.total.value
@@ -184,30 +200,18 @@ function browseBySelectedLetter(letter) {
   desktopList.value = []
   mobileList.value = []
 
-  console.log('Browse by selected letter: ', letter)
-
-  // const testFilters = []
-  // for (const key in data) {
-  //   if (data[key].length > 0) {
-  //     eventFilters.push(`${key}:(${data[key].join(' OR ')})`)
-  //   }
-  // }
-
   if (letter !== 'All') {
     extraSearchFilter.value = `${letter}*`
     selectedLetterProp.value = letter
-    // testFilters.push(extraSearchFilter.value)
   } else {
     extraSearchFilter.value = '*'
     selectedLetterProp.value = 'All'
-    // testFilters.push(extraSearchFilter.value)
   }
 
   useRouter().push({
     path: route.path,
     query: {
       filters: extraSearchFilter.value
-      // filters: testFilters.join(' AND '),
     },
   })
 }
