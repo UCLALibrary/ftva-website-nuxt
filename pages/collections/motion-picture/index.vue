@@ -78,7 +78,7 @@ const totalPages = ref(0)
 
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
 const extraSearchFilter = ref('*')
-const selectedLetterProp = ref('')
+const selectedLetterProp = ref('All')
 
 // INFINITE SCROLLING
 const isLoading = ref(false)
@@ -195,9 +195,11 @@ function browseBySelectedLetter(letter) {
 
   if (letter !== 'All') {
     extraSearchFilter.value = `${letter}*`
+    selectedLetterProp.value = letter
     // testFilters.push(extraSearchFilter.value)
   } else {
     extraSearchFilter.value = '*'
+    selectedLetterProp.value = 'All'
     // testFilters.push(extraSearchFilter.value)
   }
 
