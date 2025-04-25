@@ -71,6 +71,7 @@ const desktopList = ref([])
 const mobileList = ref([])
 const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
 
+const hits = ref(0)
 const currentPage = ref(1)
 const documentsPerPage = 12
 const totalPages = ref(0)
@@ -150,6 +151,7 @@ async function searchES() {
 
     if (results && results.hits && results?.hits?.hits?.length > 0) {
       const newCollectionList = results.hits.hits || []
+      hits.value = results.hits.total.value
 
       if (isMobile.value) {
         totalPages.value = 0
@@ -312,6 +314,10 @@ useHead({
         @selected-letter="browseBySelectedLetter"
       />
 
+      <div class="browse-results">
+        <h2>{{ hits }} {{ hits > 1 ? `results` : `result` }} shown</h2>
+      </div>
+
       <SectionTeaserCard :items="parsedCollectionList" />
 
       <SectionPagination
@@ -399,8 +405,25 @@ useHead({
     margin-bottom: 8px;
   }
 
+  .browse-results {
+    display: flex;
+
+    h2 {
+      display: inline;
+      background-color: #132941;
+      border-radius: 20px;
+      padding: 8px 16px;
+      font-size: 15px;
+      color: #fff;
+    }
+  }
+
   :deep(.alphabet-list) {
     max-width: unset;
+
+    .letter {
+      margin-bottom: 18px;
+    }
 
     .letter:first-of-type {
       padding-left: 0;
