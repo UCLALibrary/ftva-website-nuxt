@@ -216,14 +216,21 @@ function browseBySelectedLetter(letter) {
   })
 }
 
-watch([() => route.query, () => extraSearchFilter.value],
-  ([newRoute, newFilter], [prevRoute, prevFilter]) => {
-    isLoading.value = false
-    currentPage.value = newRoute.page ? parseInt(newRoute.page) : 1
+watch(() => route.query,
+  (newVal, oldVal) => {
+    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
     isMobile.value ? mobileList.value = [] : desktopList.value = []
     hasMore.value = true
 
-    extraSearchFilter.value = newFilter
+    const filterLetter = route.query.filters
+    // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
+    if (filterLetter.length === 2) {
+      selectedLetterProp.value = filterLetter.replace('*', '')
+    } else {
+      selectedLetterProp.value = 'All'
+    }
+
+    extraSearchFilter.value = filterLetter
 
     searchES()
   }, { deep: true, immediate: true }
