@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 
 import { computed, ref } from 'vue'
-
-// This is creating an index of the main content(not related content)
-// import { useCollectionAggregator } from '../composables/useCollectionAggregator'
+import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string } }
 const route = useRoute()
 
+// This is creating an index of the main content(not related content)
 if (attrs.page && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
@@ -24,31 +23,26 @@ if (attrs.page && import.meta.prerender) {
 
 // "STATE"
 const currentPage = ref(1)
-const documentsPerPage = 15 // show 15 search results at a time 
+const documentsPerPage = 15 // show 15 search results at a time
 const totalPages = ref(3)
 const totalResults = ref(27)
+const noResultsFound = ref(false)
+const isLoading = ref<boolean>(false)
 const isMobile = ref(false)
+const hasMore = ref(true) // Flag to control infinite scroll
+
+// const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
+const collectionResults = ref([]) // Collection list?
 
 const totalResultsDisplay = computed(() => {
   return totalResults.value + ' Video Clips'
 })
 
-useHead({
-  title: attrs.page ? attrs.page.title : '... loading',
-  meta: [
-    {
-      hid: 'description',
-      name: 'description',
-      content: removeTags(attrs.page.ftvaHomepageDescription)
-    }
-  ]
-  
 const collectionTitle = ref(attrs.page.title || '')
 interface AggregationBucket {
   key: string
   doc_count: number
 }
-
 interface Aggregations {
   [key: string]: { buckets: AggregationBucket[] }
 }
@@ -94,10 +88,92 @@ async function setFilters() {
     searchAggsResponse
   )
 }
-onMounted(async () => {
-  // console.log('onMounted called')
 
+// ELASTIC SEARCH FUNCTION
+async function searchES() {
+  if (isLoading.value || !hasMore.value) return
+
+  isLoading.value = true
+
+  try {
+    const currpage = currentPage.value
+    const size = documentsPerPage
+    let results: any = {}
+
+    const { paginatedSearchFilters } = useListSearchFilter()
+
+    console.log('about to searchES')
+    results = await paginatedSearchFilters(currpage, size, 'ftvaCollection', searchFilters.value, [], 'startDate', 'asc')
+
+    console.log('Search Results:', results)
+    if (results && results.hits && results.hits.hits.length > 0) {
+      const newCollectionResults = results.hits.hits || []
+
+      collectionResults.value = newCollectionResults
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+
+      noResultsFound.value = false
+    } else {
+      noResultsFound.value = true
+      // if (!isMobile.value) totalPages.value = 0
+      hasMore.value = false
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Error fetching data:', error)
+    hasMore.value = false
+  } finally {
+    isLoading.value = false
+  }
+}
+
+// WATCHERS
+// This watcher is called when router pushes updates the query params
+watch(
+  () => route.query,
+  (newVal, oldVal) => {
+    console.log('route query watcher triggered')
+    // const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+
+    // userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
+
+    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+
+    // userViewSelection.value = (route.query.view as string | undefined) || 'list'
+    // console.log('route.query.dates', route?.query?.dates)
+
+    // userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
+
+    // allFilters.value = parsedRemoveSearchFilters.value
+    // console.log('userDateSelection.value', userDateSelection.value)
+
+    // isMobile.value ? mobileEvents.value = [] : desktopEvents.value = []
+    hasMore.value = true
+    searchES()
+  }, { deep: true, immediate: true }
+)
+
+onMounted(async () => {
   await setFilters()
+
+  // const { allEvents } = useDateFilterQuery()
+
+  // Logic to fetch all events
+
+  // console.log(esOutput.hits.total.value)
+  // if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
+  // dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
+})
+
+useHead({
+  title: attrs.page ? attrs.page.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(attrs.page.ftvaHomepageDescription)
+    }
+  ]
 })
 </script>
 <template>
@@ -125,39 +201,48 @@ onMounted(async () => {
         <DividerWayFinder />
 
         <span class="search-filters">
-          
+
           <div
-      v-for="(filter, index) in searchFilters"
-      :key="index"
-    >
-      <label
-        v-if="filter.label"
-        :for="filter.label"
-        class="select-label"
-      >
-        {{ filter.label }}
-      </label>
-      <select
-        :id="filter.label"
-        :name="filter.label"
-        class="select-input"
-      >
-        <option
-          disabled
-          value=""
-        >
-          -- Select an option --
-        </option>
-        <option
-          v-for="option in filter.options"
-          :key="option.key"
-          :value="option.value"
-        >
-          {{ option.value }}
-        </option>
-      </select>
-    </div>
-    
+            v-for="(filter, index) in searchFilters"
+            :key="index"
+          >
+            <label
+              v-if="filter.label"
+              :for="filter.label"
+              class="select-label"
+            >
+              {{ filter.label }}
+            </label>
+            <select
+              :id="filter.label"
+              :name="filter.label"
+              class="select-input"
+            >
+              <option
+                disabled
+                value=""
+              >
+                -- Select an option --
+              </option>
+              <option
+                v-for="option in filter.options"
+                :key="option.key"
+                :value="option.value"
+              >
+                {{ option.value }}
+              </option>
+            </select>
+          </div>
+
+          <label for="sortorder">Sort order</label>
+          <select
+            id="sortorder"
+            name="sortorder"
+          >
+            <option value="oldestdate">Sort by: Date (oldest)</option>
+            <option value="newestdate">Sort by: Date (newest)</option>
+          </select>
+
           <BlockTag
             data-test="total-results"
             class="total-results"
@@ -175,6 +260,10 @@ onMounted(async () => {
   </main>
 </template>
 <style lang="scss" scoped>
+main {
+  background-color: var(--pale-blue);
+}
+
 .page-collections-list-of-items {
 
   .section-wrapper {

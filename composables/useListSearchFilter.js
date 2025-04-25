@@ -39,11 +39,11 @@ async function paginatedSearchFilters(
                 filter: [
                   ...parseSectionHandle(sectionHandle),
                   ...parseFilterQuery(filters),
-                  parseDateRange(dates)
+                // parseDateRange(dates)   TODO REENABLE THIS BEFORE MERGE
                 ]
               },
             },
-            ...parseSort(sort, orderBy),
+            // ...parseSort(sort, orderBy), TODO REENABLE THIS BEFORE MERGE
           }),
         }
   )
