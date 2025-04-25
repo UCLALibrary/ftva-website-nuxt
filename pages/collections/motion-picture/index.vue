@@ -166,7 +166,7 @@ async function searchES() {
       }
     } else {
       totalPages.value = 0
-
+      hits.value = 0
       hasMore.value = false
     }
   }
@@ -174,6 +174,7 @@ async function searchES() {
     // eslint-disable-next-line no-console
     console.error('Error fetching data:', error)
     hasMore.value = false
+    hits.value = 0
   } finally {
     isLoading.value = false
   }
