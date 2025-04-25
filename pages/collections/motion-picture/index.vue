@@ -297,6 +297,7 @@ useHead({
       :section-title="pageTitle"
       class="section-wrapper__page-header"
       theme="paleblue"
+      data-test="page-title"
     >
       <RichText :rich-text-content="pageSummary" />
     </SectionWrapper>
@@ -318,6 +319,7 @@ useHead({
       <AlphabeticalBrowseBy
         class="browse-margin"
         :selected-letter-prop="selectedLetterProp"
+        data-test="collection-browse"
         @selected-letter="browseBySelectedLetter"
       />
 
@@ -325,7 +327,10 @@ useHead({
         <h2>{{ hits }} {{ hits > 1 ? `results` : `result` }} shown</h2>
       </div>
 
-      <SectionTeaserCard :items="parsedCollectionList" />
+      <SectionTeaserCard
+        :items="parsedCollectionList"
+        data-test="collection-list"
+      />
 
       <SectionPagination
         v-if="totalPages !== 1 && !isMobile"
@@ -423,10 +428,6 @@ useHead({
       margin-bottom: 18px;
       padding-left: 0;
     }
-
-    // .letter:first-of-type {
-    //   padding-left: 0;
-    // }
   }
 
   :deep(.block-highlight) {
@@ -473,18 +474,5 @@ useHead({
       margin-bottom: 32px;
     }
   }
-
-  // @media(min-width: 991px) {
-  //   :deep(.block-highlight) {
-  //     &.is-vertical.card {
-  //       height: 550px;
-  //     }
-  //   }
-
-  //   .ftva.block-highlight.is-vertical.card {
-  //     height: 550px;
-  //   }
-  // }
-
 }
 </style>
