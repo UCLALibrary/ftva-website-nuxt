@@ -237,7 +237,7 @@ const parsedGeneralContentHeader = computed(() => {
 })
 
 const parsedGeneralContentPages = computed(() => {
-  if (generalContentPages.length === 0) return []
+  if (generalContentPages.length === 0) return null
 
   return generalContentPages.map((obj) => {
     return {
@@ -340,16 +340,11 @@ useHead({
     </SectionWrapper>
 
     <SectionWrapper
-      theme="paleblue"
-      class="section-wrapper__divider"
-    >
-      <DividerWayFinder />
-    </SectionWrapper>
-
-    <SectionWrapper
+      v-if="parsedGeneralContentPages"
       theme="paleblue"
       class="section-wrapper__general-content"
     >
+      <DividerWayFinder />
       <SectionPostSmall
         :items="parsedGeneralContentPages"
         :section-title="parsedGeneralContentHeader.title"
@@ -369,6 +364,11 @@ useHead({
   .section-wrapper__collection-list {
     padding-top: 0;
     padding-bottom: 0;
+  }
+
+  .section-wrapper:last-of-type {
+    padding-top: 0;
+    padding-bottom: 100px;
   }
 
   .section-wrapper__page-header {
@@ -460,11 +460,6 @@ useHead({
 
   .section-pagination {
     margin-top: 32px;
-  }
-
-  .section-wrapper__general-content {
-    padding-top: 0;
-    padding-bottom: 80px;
   }
 
   :deep(.section-post-small .grid) {
