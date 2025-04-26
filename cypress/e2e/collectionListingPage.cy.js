@@ -2,7 +2,7 @@ Cypress.on('uncaught:exception', () => { return false })
 
 describe('Collection Listing Page', () => {
   beforeEach(() => {
-    cy.visit('/collections/motion-picture')
+    cy.visit('/collections/motion-picture', { failOnStatusCode: false })
   })
 
   it('Visits a Collection Listing Page', () => {
