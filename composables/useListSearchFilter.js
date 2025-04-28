@@ -12,15 +12,12 @@ async function paginatedCollectionSearchFilters(
   orderBy,
   source = ['*'],) {
   const config = useRuntimeConfig()
-  // console.log(config.public.esReadKey)
-  // console.log(config.public.esURL)
   if (
     config.public.esReadKey === '' ||
         config.public.esURL === '' ||
         config.public.esAlias === ''
   )
     return
-  // console.log('(currentPage - 1) * documentsPerPage', (currentPage - 1) * documentsPerPage, currentPage, documentsPerPage)
   const response = await fetch(
         `${config.public.esURL}/${config.public.esAlias}/_search`,
         {
@@ -42,18 +39,18 @@ async function paginatedCollectionSearchFilters(
                     term: {
                       'ftvaAssociatedCollections.title.keyword': title
                     }
-                 }
+                  }
                 ]
               },
             },
-            // ...parseSort(sort, orderBy), TODO REENABLE THIS BEFORE MERGE
+            // ...parseSort(sort, orderBy),
           }),
         }
   )
 
   const data = await response.json()
   return data
-   }
+}
 
 async function paginatedSearchFilters(
   currentPage = 1,

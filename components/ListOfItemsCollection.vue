@@ -7,7 +7,6 @@ import config from '~/utils/searchConfig'
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string } }
 const route = useRoute()
 
-
 interface AggregationBucket {
   key: string
   doc_count: number
@@ -34,27 +33,28 @@ if (attrs.page && import.meta.prerender) {
 const currentPage = ref(1)
 const documentsPerPage = 15 // show 15 search results at a time
 const totalPages = ref(3)
-const totalResults = ref(27)
+const totalResults = ref(0)
 const noResultsFound = ref(false)
 const isLoading = ref<boolean>(false)
 const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
 
-const userFilterSelection = ref({})  // intialise with empty filter
-const userSortSelection = ref('') // intialise with empty sort
+const userFilterSelection = ref({}) // intialise with empty filter
+const userSortSelection = ref('asc')
 
 const collectionResults = ref([])
 // format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
   if (collectionResults.value.length === 0) return []
   return collectionResults.value.map((obj) => {
-    let obj_image = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
+    const obj_image = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
     return {
       // ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
       image: obj_image,
-      videoEmbed: obj._source.videoEmbed
+      videoEmbed: obj._source.videoEmbed,
+      // date: new Date(obj._source.ftvaDate), // "ftvaDate": "July 10, 1974" // TODO FORMAT
     }
   })
 })
@@ -84,7 +84,7 @@ function parseAggRes(response: Aggregations) {
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
-      label: key + ": " + bucket.key,   // append label to front of the filter display
+      label: key + ': ' + bucket.key, // append label to front of the filter display
       value: bucket.key
     }))
   }))
@@ -133,16 +133,17 @@ async function searchES() {
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
-    console.log('about to searchES')
-    console.log('title', collectionTitle.value)
-    console.log('userFilterSelection.value', userFilterSelection.value)
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value)
+    // console.log('about to searchES')
+    // console.log('title', collectionTitle.value)
+    // console.log('userFilterSelection.value', userFilterSelection.value)
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, 'ftvaDate', 'asc')
 
     console.log('Search Results:', results)
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
 
       collectionResults.value = newCollectionResults
+      totalResults.value = results.hits.hits.length
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
 
       noResultsFound.value = false
@@ -166,24 +167,13 @@ watch(
   () => route.query,
   (newVal, oldVal) => {
     console.log('route query watcher triggered')
-    // const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
-
-    // userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
-
+    const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+    userFilterSelection.value = { ...selectedFiltersFromRoute }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-
-    // userViewSelection.value = (route.query.view as string | undefined) || 'list'
-    // console.log('route.query.dates', route?.query?.dates)
-
-    // userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
-
     // allFilters.value = parsedRemoveSearchFilters.value
-    // console.log('userDateSelection.value', userDateSelection.value)
-
-    // isMobile.value ? mobileEvents.value = [] : desktopEvents.value = []
     // hasMore.value = true
-    // searchES()
-  }, { deep: true } /// TODO WAS IMMEDIATE
+    searchES()
+  }, { deep: true, immediate: true }
 )
 
 onMounted(async () => {
@@ -191,16 +181,10 @@ onMounted(async () => {
   // initial selected filter
   console.log('searchFilters.value', searchFilters.value)
   // [fieldNamefromLabel[filter.label]]
+  // TODO FIX THIS LOGIC TO GET THE ACTUAL FILTER from route? right now it is hardcoded
   userFilterSelection.value = { [fieldNamefromLabel[searchFilters.value[0].label]]: searchFilters.value[0].options[1].value }
   console.log('userFilterSelection.value onmounted', userFilterSelection.value)
   searchES()
-
-  // const { allEvents } = useDateFilterQuery()
-
-  // Logic to fetch all events
-
-  // console.log(esOutput.hits.total.value)
-  // if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
 })
 
 useHead({
@@ -256,10 +240,8 @@ useHead({
               :name="filter.label"
               class="select-input"
               @change="(e) => {
-                console.log('e.target.value', e.target.value)
-                console.log(fieldNamefromLabel[filter.label])
-                userFilterSelection.value = { [fieldNamefromLabel[filter.label]]: e.target.value }
-                console.log('userFilterSelection.value onchange', userFilterSelection.value)
+                // value is implied within template tags, so only assign to userFilterSelection
+                userFilterSelection = { [fieldNamefromLabel[filter.label]]: e.target.value }
                 searchES()
               }"
             >
@@ -294,22 +276,35 @@ useHead({
           </div>
 
           <BlockTag
+            v-if="!isLoading"
             data-test="total-results"
             class="total-results"
             :label="totalResultsDisplay"
           />
         </span>
-        {{ parsedCollectionResults }}
-        <SectionTeaserCard
-          class="search-results-list"
-          :items="parsedCollectionResults"
-          :grid-layout="true"
-        />
-        <SectionPagination
-          v-if="totalPages !== 1 && !isMobile"
-          :pages="totalPages"
-          :initial-current-page="currentPage"
-        />
+        <!-- {{ parsedCollectionResults }} -->
+        <template v-if="isLoading">
+          <div class="loading">
+            ... loading ...
+          </div>
+        </template>
+        <template v-else-if="noResultsFound">
+          <div class="no-results">
+            No results found
+          </div>
+        </template>
+        <template v-else>
+          <SectionTeaserCard
+            class="search-results-list"
+            :items="parsedCollectionResults"
+            :grid-layout="true"
+          />
+          <SectionPagination
+            v-if="totalPages !== 1 && !isMobile"
+            :pages="totalPages"
+            :initial-current-page="currentPage"
+          />
+        </template>
       </SectionWrapper>
     </div>
   </main>
@@ -360,7 +355,6 @@ main.blue-main {
         min-height: 150px;
       }
     }
-
 
     // :deep(.section-pagination) {
     //   margin-inline: auto;
