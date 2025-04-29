@@ -227,11 +227,11 @@ watch(() => route.query,
     // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
     if (filterLetter?.length === 2) {
       selectedLetterProp.value = filterLetter.replace('*', '')
+      extraSearchFilter.value = filterLetter
     } else {
       selectedLetterProp.value = 'All'
+      extraSearchFilter.value = '*'
     }
-
-    extraSearchFilter.value = filterLetter
 
     searchES()
   }, { deep: true, immediate: true }
