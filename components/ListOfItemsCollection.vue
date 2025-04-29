@@ -81,6 +81,7 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 }
 const searchFilters = ref([])
 function parseAggRes(response: Aggregations) {
+  console.log('parseAggRes', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
@@ -91,7 +92,7 @@ function parseAggRes(response: Aggregations) {
   // append 'none selected' option to filters
   filters[0].options.unshift({
     label: filters[0].label + ': (none selected)',
-    value: ''
+    value: '' // TODO make this all options with OR inbetween?
   })
   console.log('filters', filters)
   return filters
@@ -136,7 +137,7 @@ async function searchES() {
     // console.log('about to searchES')
     // console.log('title', collectionTitle.value)
     // console.log('userFilterSelection.value', userFilterSelection.value)
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, 'ftvaDate', 'asc')
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, 'ftvaSortDate', 'asc')
 
     console.log('Search Results:', results)
     if (results && results.hits && results.hits.hits.length > 0) {
@@ -168,10 +169,19 @@ watch(
   (newVal, oldVal) => {
     console.log('route query watcher triggered')
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+    console.log(selectedFiltersFromRoute, 'selectedFiltersFromRoute')
     userFilterSelection.value = { ...selectedFiltersFromRoute }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    // allFilters.value = parsedRemoveSearchFilters.value
     // hasMore.value = true
+    // from tinus PR
+    // const filterLetter = route.query.filters
+    // // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
+    // if (filterLetter.length === 2) {
+    //   selectedLetterProp.value = filterLetter.replace('*', '')
+    // } else {
+    //   selectedLetterProp.value = 'All'
+    // }
+    // extraSearchFilter.value = filterLetter
     searchES()
   }, { deep: true, immediate: true }
 )

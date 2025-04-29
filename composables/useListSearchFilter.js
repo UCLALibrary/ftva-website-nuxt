@@ -43,7 +43,7 @@ async function paginatedCollectionSearchFilters(
                 ]
               },
             },
-            // ...parseSort(sort, orderBy),
+            ...parseSort(sort, orderBy),
           }),
         }
   )

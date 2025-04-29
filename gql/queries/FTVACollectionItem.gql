@@ -18,6 +18,7 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
     richText
     externalResourceUrl
 
+    ftvaSortDate
     ftvaDate
     releaseDate
     episodeAirDate
