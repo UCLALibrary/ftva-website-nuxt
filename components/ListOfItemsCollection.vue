@@ -199,13 +199,13 @@ onMounted(async () => {
 
 useHead({
   title: attrs.page ? attrs.page.title : '... loading',
-  meta: [
-    {
-      hid: 'description',
-      name: 'description',
-      content: removeTags(attrs.page.ftvaHomepageDescription)
-    }
-  ]
+  // meta: [
+  //   {
+  //     hid: 'description',
+  //     name: 'description',
+  //     content: removeTags(attrs.page.ftvaHomepageDescription)
+  //   }
+  // ]
 })
 </script>
 <template>
