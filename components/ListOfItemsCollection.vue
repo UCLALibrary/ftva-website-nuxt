@@ -47,12 +47,12 @@ const collectionResults = ref([])
 const parsedCollectionResults = computed(() => {
   if (collectionResults.value.length === 0) return []
   return collectionResults.value.map((obj) => {
-    const obj_image = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
+    const objImage = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
     return {
       // ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
-      image: obj_image,
+      image: objImage,
       videoEmbed: obj._source.videoEmbed,
       // date: new Date(obj._source.ftvaDate), // "ftvaDate": "July 10, 1974" // TODO FORMAT
     }
