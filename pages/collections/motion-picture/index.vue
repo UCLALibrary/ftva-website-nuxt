@@ -96,7 +96,7 @@ const totalPages = ref(0)
 
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
 const extraSearchFilter = ref('*')
-const selectedLetterProp = ref('All')
+const selectedLetterProp = ref('')
 
 // INFINITE SCROLLING
 const isLoading = ref(false)
@@ -168,6 +168,13 @@ async function searchES() {
     if (results && results.hits && results?.hits?.hits?.length > 0) {
       const newCollectionList = results.hits.hits || []
       hits.value = results.hits.total.value
+
+      if (extraSearchFilter.value.length === 2) {
+        selectedLetterProp.value = extraSearchFilter.value.replace('*', '')
+      } else {
+        selectedLetterProp.value = 'All'
+      }
+      console.log('ES SelectedLetter value: ', selectedLetterProp.value)
 
       if (isMobile.value) {
         totalPages.value = 0
