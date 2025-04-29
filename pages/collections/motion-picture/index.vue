@@ -223,8 +223,9 @@ watch(() => route.query,
     hasMore.value = true
 
     const filterLetter = route.query.filters
+
     // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
-    if (filterLetter.length === 2) {
+    if (filterLetter?.length === 2) {
       selectedLetterProp.value = filterLetter.replace('*', '')
     } else {
       selectedLetterProp.value = 'All'
