@@ -169,13 +169,16 @@ async function searchES() {
       const newCollectionList = results.hits.hits || []
       hits.value = results.hits.total.value
 
+      console.log('In ES call, extraSearchFilter: ', extraSearchFilter.value)
+
       if (extraSearchFilter.value.length === 2) {
         selectedLetterProp.value = extraSearchFilter.value.replace('*', '')
-      } else {
-        selectedLetterProp.value = 'All'
       }
-      console.log('In ES call, ExtraSearchFilter: ', extraSearchFilter.value)
+      // else {
+      //   selectedLetterProp.value = 'All'
+      // }
       console.log('In ES call, selectedLetterProp: ', selectedLetterProp.value)
+      // console.log('In ES call, extraSearchFilter: ', extraSearchFilter.value)
 
       if (isMobile.value) {
         totalPages.value = 0
@@ -208,6 +211,8 @@ function browseBySelectedLetter(letter) {
   desktopList.value = []
   mobileList.value = []
 
+  console.log('In browseBySelectedLetter function/handler, letter clicked: ', letter)
+
   if (letter !== 'All') {
     extraSearchFilter.value = `${letter}*`
     selectedLetterProp.value = letter
@@ -215,6 +220,9 @@ function browseBySelectedLetter(letter) {
     extraSearchFilter.value = '*'
     selectedLetterProp.value = 'All'
   }
+
+  console.log('In browseBySelectedLetter function/handler, selectedLetterProp: ', selectedLetterProp.value)
+  console.log('In browseBySelectedLetter function/handler, extraSearchFilter: ', extraSearchFilter.value)
 
   useRouter().push({
     path: route.path,
@@ -232,16 +240,19 @@ watch(() => route.query,
     hasMore.value = true
 
     const filterLetter = route.query.filters
-    console.log('In watcher, filterLetter/route.query.filters: ', route.query.filters)
+    console.log('In watcher, route.query.filters: ', route.query.filters)
 
     // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
     if (filterLetter?.length === 2) {
       selectedLetterProp.value = filterLetter.replace('*', '')
-      extraSearchFilter.value = filterLetter
+      // extraSearchFilter.value = filterLetter
     } else {
       selectedLetterProp.value = 'All'
-      extraSearchFilter.value = '*'
+      // extraSearchFilter.value = '*'
     }
+
+    extraSearchFilter.value = filterLetter
+
     console.log('In watcher, selectedLetterProp: ', selectedLetterProp.value)
     console.log('In watcher, extraSearchFilter: ', extraSearchFilter.value)
 
