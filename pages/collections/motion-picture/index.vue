@@ -262,7 +262,7 @@ const parsedCollectionList = computed(() => {
 
   return collectionList.value.map((obj) => {
     return {
-      to: `/${obj._source.uri}`,
+      to: `/${obj._source.to}`,
       title: obj._source.title,
       text: obj._source.ftvaHomepageDescription,
       ftvaCollectionType: obj._source.ftvaCollectionType,
