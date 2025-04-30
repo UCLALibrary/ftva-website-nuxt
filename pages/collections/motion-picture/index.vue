@@ -174,7 +174,8 @@ async function searchES() {
       } else {
         selectedLetterProp.value = 'All'
       }
-      console.log('ES SelectedLetter value: ', selectedLetterProp.value)
+      console.log('In ES call, ExtraSearchFilter: ', extraSearchFilter.value)
+      console.log('In ES call, selectedLetterProp: ', selectedLetterProp.value)
 
       if (isMobile.value) {
         totalPages.value = 0
@@ -225,11 +226,13 @@ function browseBySelectedLetter(letter) {
 
 watch(() => route.query,
   (newVal, oldVal) => {
+    console.log('Watcher newVal, oldVal: ', newVal, oldVal)
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
     isMobile.value ? mobileList.value = [] : desktopList.value = []
     hasMore.value = true
 
     const filterLetter = route.query.filters
+    console.log('In watcher, filterLetter/route.query.filters: ', route.query.filters)
 
     // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
     if (filterLetter?.length === 2) {
@@ -239,6 +242,8 @@ watch(() => route.query,
       selectedLetterProp.value = 'All'
       extraSearchFilter.value = '*'
     }
+    console.log('In watcher, selectedLetterProp: ', selectedLetterProp.value)
+    console.log('In watcher, extraSearchFilter: ', extraSearchFilter.value)
 
     searchES()
   }, { deep: true, immediate: true }
