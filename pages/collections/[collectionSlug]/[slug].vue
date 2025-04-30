@@ -16,6 +16,7 @@ const { collectionSlug, slug } = route.params
 
 // DATA
 const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
+  // console.log('Fetching collection item data for slug:', slug, 'and collectionSlug:', collectionSlug)
   const data = await $graphql.default.request(FTVACollectionItem, { slug, collectionSlug })
   return data
 })
