@@ -89,12 +89,13 @@ const desktopList = ref([])
 const mobileList = ref([])
 const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
 
+// ELASTIC SEARCH
 const hits = ref(0)
 const currentPage = ref(1)
 const documentsPerPage = 12
 const totalPages = ref(0)
-
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
+
 const extraSearchFilter = ref('*')
 const selectedLetterProp = ref('')
 
@@ -169,17 +170,6 @@ async function searchES() {
       const newCollectionList = results.hits.hits || []
       hits.value = results.hits.total.value
 
-      console.log('In ES call, extraSearchFilter: ', extraSearchFilter.value)
-
-      if (extraSearchFilter.value.length === 2) {
-        selectedLetterProp.value = extraSearchFilter.value.replace('*', '')
-      }
-      else {
-        selectedLetterProp.value = 'All'
-      }
-
-      console.log('In ES call, selectedLetterProp: ', selectedLetterProp.value)
-
       if (isMobile.value) {
         totalPages.value = 0
 
@@ -207,16 +197,9 @@ async function searchES() {
   }
 }
 
-// Test
-onMounted(async () => {
-  await searchES()
-})
-
 function browseBySelectedLetter(letter) {
   desktopList.value = []
   mobileList.value = []
-
-  console.log('In browseBySelectedLetter function/handler, letter clicked: ', letter)
 
   if (letter !== 'All') {
     extraSearchFilter.value = `${letter}*`
@@ -225,9 +208,6 @@ function browseBySelectedLetter(letter) {
     extraSearchFilter.value = '*'
     selectedLetterProp.value = 'All'
   }
-
-  console.log('In browseBySelectedLetter function/handler, selectedLetterProp: ', selectedLetterProp.value)
-  console.log('In browseBySelectedLetter function/handler, extraSearchFilter: ', extraSearchFilter.value)
 
   useRouter().push({
     path: route.path,
@@ -239,13 +219,11 @@ function browseBySelectedLetter(letter) {
 
 watch(() => route.query,
   (newVal, oldVal) => {
-    console.log('Watcher newVal, oldVal: ', newVal, oldVal)
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
     isMobile.value ? mobileList.value = [] : desktopList.value = []
     hasMore.value = true
 
     const filterLetter = route.query.filters
-    console.log('In watcher, route.query.filters: ', route.query.filters)
 
     // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
     if (filterLetter?.length === 2) {
@@ -255,9 +233,6 @@ watch(() => route.query,
       selectedLetterProp.value = 'All'
       extraSearchFilter.value = '*'
     }
-
-    console.log('In watcher, selectedLetterProp: ', selectedLetterProp.value)
-    console.log('In watcher, extraSearchFilter: ', extraSearchFilter.value)
 
     searchES()
   }, { deep: true, immediate: true }
@@ -289,7 +264,7 @@ const parsedCollectionList = computed(() => {
     return {
       to: `/${obj._source.uri}`,
       title: obj._source.title,
-      text: obj._source.richText?.replace(/<img.*?>/ig, ''),
+      text: obj._source.ftvaHomepageDescription,
       ftvaCollectionType: obj._source.ftvaCollectionType,
       image: parseImage(obj)
     }
