@@ -81,6 +81,7 @@ const parsedMetadataList = computed((): Metadata => {
   // Metadata comes through as individual fields that have to be consolidated
   const collectedMetadata = {
     Date: page.value.ftvaDate,
+    ftvaSortDate: page.value.ftvaSortDate,
     'Release Date': page.value.releaseDate,
     'Episode Air Date': page.value.episodeAirDate,
     'Episode Title': page.value.episodeTitle,

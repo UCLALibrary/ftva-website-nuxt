@@ -6,6 +6,7 @@ import config from '~/utils/searchConfig'
 
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string } }
 const route = useRoute()
+const router = useRouter()
 
 interface AggregationBucket {
   key: string
@@ -54,7 +55,6 @@ const parsedCollectionResults = computed(() => {
       to: `/${obj._source.uri}`,
       image: objImage,
       videoEmbed: obj._source.videoEmbed,
-      // date: new Date(obj._source.ftvaDate), // "ftvaDate": "July 10, 1974" // TODO FORMAT
     }
   })
 })
@@ -89,10 +89,15 @@ function parseAggRes(response: Aggregations) {
       value: bucket.key
     }))
   }))
-  // append 'none selected' option to filters
+  // append 'none selected' option to filters with value set to all options
+  // first, get all options in array
+  let allFilterValues = (Object.entries(response) || []).map(([key, value]) => {
+    return value.buckets.map(bucket => bucket.key)
+  })
+  // then join array on 'OR' for value
   filters[0].options.unshift({
     label: filters[0].label + ': (none selected)',
-    value: '' // TODO make this all options with OR inbetween?
+    value: '' // allFilterValues.join(' OR ')
   })
   console.log('filters', filters)
   return filters
@@ -136,8 +141,8 @@ async function searchES() {
 
     // console.log('about to searchES')
     // console.log('title', collectionTitle.value)
-    // console.log('userFilterSelection.value', userFilterSelection.value)
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, 'ftvaSortDate', 'asc')
+    console.log('userFilterSelection.value', userFilterSelection.value)
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, 'ftvaSortDate', userSortSelection.value)
 
     console.log('Search Results:', results)
     if (results && results.hits && results.hits.hits.length > 0) {
@@ -168,6 +173,7 @@ watch(
   () => route.query,
   (newVal, oldVal) => {
     console.log('route query watcher triggered')
+    console.log(route.query, 'route.query')
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
     console.log(selectedFiltersFromRoute, 'selectedFiltersFromRoute')
     userFilterSelection.value = { ...selectedFiltersFromRoute }
@@ -189,16 +195,18 @@ watch(
 onMounted(async () => {
   await setFilters()
   // initial selected filter
-  console.log('searchFilters.value', searchFilters.value)
+  // console.log('searchFilters.value', searchFilters.value)
   // [fieldNamefromLabel[filter.label]]
-  // TODO FIX THIS LOGIC TO GET THE ACTUAL FILTER from route? right now it is hardcoded
-  userFilterSelection.value = { [fieldNamefromLabel[searchFilters.value[0].label]]: searchFilters.value[0].options[1].value }
-  console.log('userFilterSelection.value onmounted', userFilterSelection.value)
-  searchES()
+  // TODO FIX THIS LOGIC TO GET selected filters from route
+  // userFilterSelection.value = { [fieldNamefromLabel[searchFilters.value[0].label]]: searchFilters.value[0].options[0].value }
+  // userSortSelection.value = route.query.sortorder || 'asc'
+  //console.log('userFilterSelection.value onmounted', userFilterSelection.value)
+  // searchES()
 })
 
 useHead({
   title: attrs.page ? attrs.page.title : '... loading',
+  // TODO this causes build errors as is, either remove or fix - try without removeTags?
   // meta: [
   //   {
   //     hid: 'description',
@@ -250,9 +258,24 @@ useHead({
               :name="filter.label"
               class="select-input"
               @change="(e) => {
-                // value is implied within template tags, so only assign to userFilterSelection
-                userFilterSelection = { [fieldNamefromLabel[filter.label]]: e.target.value }
-                searchES()
+                if (e.target.value === '(none selected)') {
+                  router.push({
+                    path: route.path,
+                    query: {
+                      filters: undefined
+                    } // TODO how to clear query? This doesnt work
+                  })
+                  // router.push(route.path, undefined)
+                } else {
+                  router.push({
+                    path: route.path,
+                    query: {
+                      filters: [fieldNamefromLabel[filter.label]] + ':(' + e.target.value + ')'
+                    }
+                  })
+                }
+                // userFilterSelection = { [fieldNamefromLabel[filter.label]]: e.target.value }
+                // searchES()
               }"
             >
               <option

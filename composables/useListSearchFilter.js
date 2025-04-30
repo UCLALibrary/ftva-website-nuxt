@@ -93,7 +93,7 @@ async function paginatedSearchFilters(
                 ]
               },
             },
-            ...parseSort(sort, orderBy),
+            // ...parseSort(sort, orderBy),
           }),
         }
   )
