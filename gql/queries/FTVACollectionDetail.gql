@@ -16,6 +16,7 @@ query FTVACollectionDetail($slug: [String!]) {
     title
     sectionTitle
     ftvaCollectionType
+    ftvaHomepageDescription
     richText
     videoEmbed
     viewAllSectionLink {
