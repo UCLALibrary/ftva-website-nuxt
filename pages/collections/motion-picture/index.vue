@@ -174,11 +174,11 @@ async function searchES() {
       if (extraSearchFilter.value.length === 2) {
         selectedLetterProp.value = extraSearchFilter.value.replace('*', '')
       }
-      // else {
-      //   selectedLetterProp.value = 'All'
-      // }
+      else {
+        selectedLetterProp.value = 'All'
+      }
+
       console.log('In ES call, selectedLetterProp: ', selectedLetterProp.value)
-      // console.log('In ES call, extraSearchFilter: ', extraSearchFilter.value)
 
       if (isMobile.value) {
         totalPages.value = 0
@@ -206,6 +206,11 @@ async function searchES() {
     isLoading.value = false
   }
 }
+
+// Test
+onMounted(async () => {
+  await searchES()
+})
 
 function browseBySelectedLetter(letter) {
   desktopList.value = []
@@ -245,13 +250,11 @@ watch(() => route.query,
     // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
     if (filterLetter?.length === 2) {
       selectedLetterProp.value = filterLetter.replace('*', '')
-      // extraSearchFilter.value = filterLetter
+      extraSearchFilter.value = filterLetter
     } else {
       selectedLetterProp.value = 'All'
-      // extraSearchFilter.value = '*'
+      extraSearchFilter.value = '*'
     }
-
-    extraSearchFilter.value = filterLetter
 
     console.log('In watcher, selectedLetterProp: ', selectedLetterProp.value)
     console.log('In watcher, extraSearchFilter: ', extraSearchFilter.value)
