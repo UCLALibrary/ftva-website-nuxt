@@ -33,7 +33,7 @@ if (attrs.page && import.meta.prerender) {
 // "STATE"
 const currentPage = ref(1)
 const documentsPerPage = 15 // show 15 search results at a time
-const totalPages = ref(3)
+const totalPages = ref(0)
 const totalResults = ref(0)
 const noResultsFound = ref(false)
 const isLoading = ref<boolean>(false)
@@ -50,7 +50,7 @@ const parsedCollectionResults = computed(() => {
   return collectionResults.value.map((obj) => {
     const objImage = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
     return {
-      // ...obj._source,
+      ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
       image: objImage,
@@ -89,17 +89,10 @@ function parseAggRes(response: Aggregations) {
       value: bucket.key
     }))
   }))
-  // append 'none selected' option to filters with value set to all options
-  // first, get all options in array
-  let allFilterValues = (Object.entries(response) || []).map(([key, value]) => {
-    return value.buckets.map(bucket => bucket.key)
-  })
-  // then join array on 'OR' for value
   filters[0].options.unshift({
     label: filters[0].label + ': (none selected)',
-    value: '' // allFilterValues.join(' OR ')
+    value: '(none selected)'
   })
-  console.log('filters', filters)
   return filters
 }
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
@@ -125,6 +118,13 @@ const fieldNamefromLabel = {
   'Filter by Topic': 'ftvaCollectionGroup.title.keyword',
   'Filter by Season': 'episodeSeason.keyword'
 }
+// function to parse the filter value from the current userFilterSelection
+const userFilterSelectionValue = computed(() => {
+  if (!searchFilters.value || searchFilters.value.length === 0) return '(none selected)'
+  else if (!searchFilters.value[0].label) return '(none selected)'
+  else if (!userFilterSelection.value || !userFilterSelection.value[fieldNamefromLabel[searchFilters.value[0].label]]) return '(none selected)'
+  return userFilterSelection.value[fieldNamefromLabel[searchFilters.value[0].label]][0]
+})
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
@@ -139,23 +139,18 @@ async function searchES() {
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
-    // console.log('about to searchES')
-    // console.log('title', collectionTitle.value)
-    console.log('userFilterSelection.value', userFilterSelection.value)
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, 'ftvaSortDate', userSortSelection.value)
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, userSortSelection.value)
 
-    console.log('Search Results:', results)
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
 
       collectionResults.value = newCollectionResults
-      totalResults.value = results.hits.hits.length
+      totalResults.value = results.hits.total.value
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
 
       noResultsFound.value = false
     } else {
       noResultsFound.value = true
-      // if (!isMobile.value) totalPages.value = 0
       hasMore.value = false
     }
   } catch (error) {
@@ -172,48 +167,27 @@ async function searchES() {
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    console.log('route query watcher triggered')
-    console.log(route.query, 'route.query')
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
-    console.log(selectedFiltersFromRoute, 'selectedFiltersFromRoute')
+    userSortSelection.value = route.query.sort || 'asc'
     userFilterSelection.value = { ...selectedFiltersFromRoute }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    // hasMore.value = true
-    // from tinus PR
-    // const filterLetter = route.query.filters
-    // // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
-    // if (filterLetter.length === 2) {
-    //   selectedLetterProp.value = filterLetter.replace('*', '')
-    // } else {
-    //   selectedLetterProp.value = 'All'
-    // }
-    // extraSearchFilter.value = filterLetter
     searchES()
   }, { deep: true, immediate: true }
 )
 
 onMounted(async () => {
   await setFilters()
-  // initial selected filter
-  // console.log('searchFilters.value', searchFilters.value)
-  // [fieldNamefromLabel[filter.label]]
-  // TODO FIX THIS LOGIC TO GET selected filters from route
-  // userFilterSelection.value = { [fieldNamefromLabel[searchFilters.value[0].label]]: searchFilters.value[0].options[0].value }
-  // userSortSelection.value = route.query.sortorder || 'asc'
-  //console.log('userFilterSelection.value onmounted', userFilterSelection.value)
-  // searchES()
 })
 
 useHead({
   title: attrs.page ? attrs.page.title : '... loading',
-  // TODO this causes build errors as is, either remove or fix - try without removeTags?
-  // meta: [
-  //   {
-  //     hid: 'description',
-  //     name: 'description',
-  //     content: removeTags(attrs.page.ftvaHomepageDescription)
-  //   }
-  // ]
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(attrs.page.ftvaHomepageDescription)
+    }
+  ]
 })
 </script>
 <template>
@@ -254,7 +228,9 @@ useHead({
               {{ filter.label }}
             </label>
             <select
+              v-if="filter.label"
               :id="filter.label"
+              v-model="userFilterSelectionValue"
               :name="filter.label"
               class="select-input"
               @change="(e) => {
@@ -262,20 +238,20 @@ useHead({
                   router.push({
                     path: route.path,
                     query: {
-                      filters: undefined
-                    } // TODO how to clear query? This doesnt work
+                      sort: userSortSelection,
+                      page: route.query.page,
+                    }
                   })
-                  // router.push(route.path, undefined)
                 } else {
                   router.push({
                     path: route.path,
                     query: {
-                      filters: [fieldNamefromLabel[filter.label]] + ':(' + e.target.value + ')'
+                      filters: [fieldNamefromLabel[filter.label]] + ':(' + e.target.value + ')',
+                      sort: userSortSelection,
+                      page: route.query.page,
                     }
                   })
                 }
-                // userFilterSelection = { [fieldNamefromLabel[filter.label]]: e.target.value }
-                // searchES()
               }"
             >
               <option
@@ -301,10 +277,21 @@ useHead({
             >Sort order</label>
             <select
               id="sortorder"
+              v-model="userSortSelection"
               name="sortorder"
+              @change="(e) => {
+                router.push({
+                  path: route.path,
+                  query: {
+                    filters: route.query.filters,
+                    sort: e.target.value,
+                    page: route.query.page,
+                  }
+                })
+              }"
             >
-              <option value="oldestdate">Sort by: Date (oldest)</option>
-              <option value="newestdate">Sort by: Date (newest)</option>
+              <option value="asc">Sort by: Date (oldest)</option>
+              <option value="desc">Sort by: Date (newest) </option>
             </select>
           </div>
 
@@ -315,7 +302,6 @@ useHead({
             :label="totalResultsDisplay"
           />
         </span>
-        <!-- {{ parsedCollectionResults }} -->
         <template v-if="isLoading">
           <div class="loading">
             ... loading ...
@@ -354,6 +340,12 @@ main.blue-main {
     display: none;
   }
 
+  .loading,
+  .no-results {
+    text-align: center;
+    width: 100%;
+  }
+
   .section-wrapper {
     .section-header {
       text-align: center;
@@ -388,11 +380,6 @@ main.blue-main {
         min-height: 150px;
       }
     }
-
-    // :deep(.section-pagination) {
-    //   margin-inline: auto;
-    //   padding: 2.5%;
-    // }
   }
 }
 </style>

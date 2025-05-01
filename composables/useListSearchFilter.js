@@ -8,7 +8,6 @@ async function paginatedCollectionSearchFilters(
   sectionHandle,
   title,
   filters,
-  sort,
   orderBy,
   source = ['*'],) {
   const config = useRuntimeConfig()
@@ -43,7 +42,14 @@ async function paginatedCollectionSearchFilters(
                 ]
               },
             },
-            // ...parseSort(sort, orderBy),
+            sort: [
+              {
+                ftvaSortDate: {
+                  order: orderBy,
+                  missing: '_last'
+                }
+              }
+            ],
           }),
         }
   )
@@ -93,7 +99,7 @@ async function paginatedSearchFilters(
                 ]
               },
             },
-            // ...parseSort(sort, orderBy),
+            ...parseSort(sort, orderBy),
           }),
         }
   )
