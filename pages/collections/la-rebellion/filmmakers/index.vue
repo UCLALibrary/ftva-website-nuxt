@@ -30,6 +30,7 @@ if (!data.value.entries) {
     fatal: true
   })
 }
+const route = useRoute()
 
 // TODO This is creating an index of the content for ES search
 if (data.value.entry && import.meta.prerender) {
