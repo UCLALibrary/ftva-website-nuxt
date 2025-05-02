@@ -270,7 +270,7 @@ useHead({
             </select>
           </div>
           <!-- Sort Order -->
-          <div>
+          <div v-if="!isLoading">
             <label
               for="sortorder"
               class="sort-label"
@@ -370,6 +370,11 @@ main.blue-main {
       .total-results {
         background-color: #132941; // navyblue
         margin-left: auto; // pins the total results to the right
+        margin-right: 26px;
+
+        @media #{$small} {
+          margin-right: 0px;
+        }
       }
     }
 
@@ -378,6 +383,12 @@ main.blue-main {
 
       :deep(.card-meta) {
         min-height: 150px;
+      }
+    }
+
+    :deep(figure.responsive-image) {
+      div.sizer {
+        padding-bottom: 60% !important; //overwrite the inline styles for this page
       }
     }
   }
