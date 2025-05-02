@@ -81,7 +81,6 @@ const parsedMetadataList = computed((): Metadata => {
   // Metadata comes through as individual fields that have to be consolidated
   const collectedMetadata = {
     Date: page.value.ftvaDate,
-    ftvaSortDate: page.value.ftvaSortDate,
     'Release Date': page.value.releaseDate,
     'Episode Air Date': page.value.episodeAirDate,
     'Episode Title': page.value.episodeTitle,
@@ -94,7 +93,6 @@ const parsedMetadataList = computed((): Metadata => {
     Country: page.value.country,
     Runtime: page.value.runtime,
   }
-
   let nonNullMetadata = {}
 
   // Filter out fields with null/undefined value, empty array/object
@@ -103,7 +101,6 @@ const parsedMetadataList = computed((): Metadata => {
       nonNullMetadata = { [key]: value, ...nonNullMetadata }
     }
   })
-
   return nonNullMetadata
 })
 
