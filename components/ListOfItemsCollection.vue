@@ -392,5 +392,9 @@ main.blue-main {
       }
     }
   }
+
+  .section-pagination {
+    padding-top: 12px;
+  }
 }
 </style>
