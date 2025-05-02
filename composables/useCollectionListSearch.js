@@ -6,7 +6,7 @@ async function paginatedCollectionListQuery(
   collectionType,
   currentPage = 1,
   documentsPerPage = 12,
-  extraFilters,
+  extraSearchFilter,
   source = ['*'],
 ) {
   const config = useRuntimeConfig()
@@ -43,7 +43,7 @@ async function paginatedCollectionListQuery(
               {
                 wildcard: {
                   'title.keyword': {
-                    value: extraFilters
+                    value: extraSearchFilter
                   }
                 }
               }
