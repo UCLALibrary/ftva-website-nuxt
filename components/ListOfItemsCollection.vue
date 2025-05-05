@@ -5,9 +5,12 @@ import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string } }
+
 const route = useRoute()
 const router = useRouter()
-
+defineOptions({
+  inheritAttrs: false
+})
 interface AggregationBucket {
   key: string
   doc_count: number
