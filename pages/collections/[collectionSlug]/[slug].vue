@@ -93,7 +93,6 @@ const parsedMetadataList = computed((): Metadata => {
     Country: page.value.country,
     Runtime: page.value.runtime,
   }
-
   let nonNullMetadata = {}
 
   // Filter out fields with null/undefined value, empty array/object
@@ -102,7 +101,6 @@ const parsedMetadataList = computed((): Metadata => {
       nonNullMetadata = { [key]: value, ...nonNullMetadata }
     }
   })
-
   return nonNullMetadata
 })
 

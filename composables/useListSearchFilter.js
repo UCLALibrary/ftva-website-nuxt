@@ -1,5 +1,61 @@
 export default function useListSearchFilter() {
-  return { paginatedSearchFilters }
+  return { paginatedSearchFilters, paginatedCollectionSearchFilters }
+}
+
+async function paginatedCollectionSearchFilters(
+  currentPage = 1,
+  documentsPerPage = 10,
+  sectionHandle,
+  title,
+  filters,
+  orderBy,
+  source = ['*'],) {
+  const config = useRuntimeConfig()
+  if (
+    config.public.esReadKey === '' ||
+        config.public.esURL === '' ||
+        config.public.esAlias === ''
+  )
+    return
+  const response = await fetch(
+        `${config.public.esURL}/${config.public.esAlias}/_search`,
+        {
+          headers: {
+            Authorization: `ApiKey ${config.public.esReadKey}`,
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify({
+            from: (currentPage - 1) * documentsPerPage,
+            size: documentsPerPage,
+            _source: [...source],
+            query: {
+              bool: {
+                filter: [
+                  ...parseSectionHandle(sectionHandle),
+                  ...parseFilterQuery(filters),
+                  {
+                    term: {
+                      'ftvaAssociatedCollections.title.keyword': title
+                    }
+                  }
+                ]
+              },
+            },
+            sort: [
+              {
+                ftvaSortDate: {
+                  order: orderBy,
+                  missing: '_last'
+                }
+              }
+            ],
+          }),
+        }
+  )
+
+  const data = await response.json()
+  return data
 }
 
 async function paginatedSearchFilters(
