@@ -239,7 +239,7 @@ useHead({
                   path: route.path,
                   query: {
                     sort: selectedSortFilters['sortField'],
-                    page: route.query.page,
+                    // ignore page, we want to clear page # when filter is cleared
                   }
                 })
               } else {
@@ -248,7 +248,7 @@ useHead({
                   query: {
                     filters: [fieldNamefromLabel[searchFilters[0].label]] + ':(' + newFilterValue + ')',
                     sort: selectedSortFilters['sortField'],
-                    page: route.query.page,
+                    // ignore page, we want to clear page # when filter is cleared
                   }
                 })
               }
