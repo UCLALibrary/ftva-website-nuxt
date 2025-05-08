@@ -44,7 +44,7 @@ const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
 
 const userFilterSelection = ref({}) // intialise with empty filter
-const userSortSelection = ref('asc')
+// const userSortSelection = ref('asc') // previous
 
 const collectionResults = ref([])
 // format search results for SectionTeaserCard
@@ -68,11 +68,23 @@ const totalResultsDisplay = computed(() => {
 })
 
 const collectionTitle = ref(attrs.page.title || '')
-const ftvaFilters = ref(attrs.page.ftvaFilters || [])
 
+// SORT SETUP - uses static data
+const sortDropdownData = {
+  options: [
+    { label: 'Date (oldest)', value: 'asc' },
+    { label: 'Date (newest)', value: 'desc' },
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
+const selectedSortFilters = ref({ sortField: 'asc' }) // new
+
+// FILTERS SETUP - uses dynamic data 
+const ftvaFilters = ref(attrs.page.ftvaFilters || [])
 function parseESConfigFilters(configFilters, ftvaFiltersArg) {
-  console.log('configFilters', configFilters)
-  console.log('ftvaFilters', ftvaFiltersArg)
+  // console.log('configFilters', configFilters)
+  // console.log('ftvaFilters', ftvaFiltersArg)
   const parsedfilters = []
   for (const ftvaFilter of ftvaFiltersArg) {
     const filter = configFilters.find(filter => filter.craftFieldValue === ftvaFilter)
@@ -84,7 +96,7 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 }
 const searchFilters = ref([])
 function parseAggRes(response: Aggregations) {
-  console.log('parseAggRes', response)
+  // console.log('parseAggRes', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
@@ -115,7 +127,6 @@ async function setFilters() {
     searchAggsResponse
   )
 }
-
 // Object w key filter label and value ESFieldName for selected filter lookup
 const fieldNamefromLabel = {
   'Filter by Topic': 'ftvaCollectionGroup.title.keyword',
@@ -142,7 +153,7 @@ async function searchES() {
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, userSortSelection.value)
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, selectedSortFilters.value.sortField)
 
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
@@ -171,7 +182,10 @@ watch(
   () => route.query,
   (newVal, oldVal) => {
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
-    userSortSelection.value = route.query.sort || 'asc'
+    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
+
+    // console.log('watch selectedSortFilters', selectedSortFilters)
+
     userFilterSelection.value = { ...selectedFiltersFromRoute }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     searchES()
@@ -217,9 +231,48 @@ useHead({
         />
         <DividerWayFinder />
 
-        <span class="search-filters">
+        <span
+          v-if="!isLoading"
+          class="search-filters"
+        >
           <!-- Filter by -->
-          <div
+          <DropdownSingleSelect
+            v-model:selected-filters="selectedFilters"
+            :label="searchFilters[0].label"
+            :options="searchFilters[0].options"
+            :field-name="searchFilters[0].fieldName"
+            @update-display="(newFilter) => {
+              console.log('update-display', newFilter)
+              // router.push({
+              //   path: route.path,
+              //   query: {
+              //     filters: route.query.filters,
+              //     sort: newSort['sortField'],
+              //     page: route.query.page
+              //   }
+              // })
+            }"
+          />
+          <!-- Sort by -->
+          <DropdownSingleSelect
+            v-model:selected-filters="selectedSortFilters"
+            :label="sortDropdownData.label"
+            :options="sortDropdownData.options"
+            :field-name="sortDropdownData.fieldName"
+            @update-display="(newSort) => {
+              // console.log('update-display', newSort)
+              router.push({
+                path: route.path,
+                query: {
+                  filters: route.query.filters,
+                  sort: newSort['sortField'],
+                  page: route.query.page
+                }
+              })
+            }"
+          />
+          <!-- Filter by -->
+          <!-- <div
             v-for="(filter, index) in searchFilters"
             :key="index"
           >
@@ -271,9 +324,9 @@ useHead({
                 {{ option.label }}
               </option>
             </select>
-          </div>
+          </div> -->
           <!-- Sort Order -->
-          <div v-if="!isLoading">
+          <!-- <div v-if="!isLoading">
             <label
               for="sortorder"
               class="sort-label"
@@ -296,7 +349,7 @@ useHead({
               <option value="asc">Sort by: Date (oldest)</option>
               <option value="desc">Sort by: Date (newest) </option>
             </select>
-          </div>
+          </div> -->
 
           <BlockTag
             v-if="!isLoading"
@@ -370,6 +423,12 @@ main.blue-main {
       justify-content: flex-start;
       margin-bottom: 2rem;
 
+      // filter dropdowns
+      :deep(.button-dropdown-modal-wrapper.is-expanded) {
+        z-index: 5;
+      }
+
+      // results pill
       .total-results {
         background-color: #132941; // navyblue
         margin-left: auto; // pins the total results to the right
