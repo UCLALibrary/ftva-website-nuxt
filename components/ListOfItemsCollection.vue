@@ -375,6 +375,10 @@ main.blue-main {
       }
     }
 
+    :deep(.dropdown-single-select) {
+      width: auto; // allow the dropdown to be as wide as the content
+    }
+
     :deep(figure.responsive-image) {
       div.sizer {
         padding-bottom: 60% !important; //overwrite the inline styles for this page
