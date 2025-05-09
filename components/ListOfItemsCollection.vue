@@ -43,9 +43,6 @@ const isLoading = ref<boolean>(false)
 const isMobile = ref(false)
 const hasMore = ref(true) // Flag to control infinite scroll
 
-const userFilterSelection = ref({}) // intialise with empty filter
-const userSortSelection = ref('asc')
-
 const collectionResults = ref([])
 // format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
@@ -64,15 +61,35 @@ const parsedCollectionResults = computed(() => {
 
 // format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
-  return totalResults.value + ' Video Clips'
+  return totalResults.value + ' Video Clip' + (totalResults.value > 1 ? 's' : '')
 })
 
 const collectionTitle = ref(attrs.page.title || '')
-const ftvaFilters = ref(attrs.page.ftvaFilters || [])
 
+// SORT SETUP - uses static data
+const sortDropdownData = {
+  options: [
+    { label: 'Date (oldest)', value: 'asc' },
+    { label: 'Date (newest)', value: 'desc' },
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
+const selectedSortFilters = ref({ sortField: 'asc' })
+function updateSort(newSort) {
+  router.push({
+    path: route.path,
+    query: {
+      filters: route.query.filters,
+      sort: newSort.sortField,
+      page: route.query.page
+    }
+  })
+}
+
+// FILTERS SETUP - uses dynamic data
+const ftvaFilters = ref(attrs.page.ftvaFilters || [])
 function parseESConfigFilters(configFilters, ftvaFiltersArg) {
-  console.log('configFilters', configFilters)
-  console.log('ftvaFilters', ftvaFiltersArg)
   const parsedfilters = []
   for (const ftvaFilter of ftvaFiltersArg) {
     const filter = configFilters.find(filter => filter.craftFieldValue === ftvaFilter)
@@ -84,16 +101,15 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 }
 const searchFilters = ref([])
 function parseAggRes(response: Aggregations) {
-  console.log('parseAggRes', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
-      label: key + ': ' + bucket.key, // append label to front of the filter display
+      label: bucket.key,
       value: bucket.key
     }))
   }))
   filters[0].options.unshift({
-    label: filters[0].label + ': (none selected)',
+    label: '(none selected)',
     value: '(none selected)'
   })
   return filters
@@ -107,27 +123,39 @@ async function setFilters() {
     'ftvaItemInCollection',
     collectionTitle.value // change it what is being used on this page template
   )
-
-  console.log('Search Aggs Response: ' + JSON.stringify(searchAggsResponse))
   // searchFilters.value is just a place holder which will have all the
   // filter data for single select drop down in [{ label}]
   searchFilters.value = parseAggRes(
     searchAggsResponse
   )
 }
-
+const selectedFilters = ref({}) // initialise with empty filter
 // Object w key filter label and value ESFieldName for selected filter lookup
 const fieldNamefromLabel = {
   'Filter by Topic': 'ftvaCollectionGroup.title.keyword',
   'Filter by Season': 'episodeSeason.keyword'
 }
-// function to parse the filter value from the current userFilterSelection
-const userFilterSelectionValue = computed(() => {
-  if (!searchFilters.value || searchFilters.value.length === 0) return '(none selected)'
-  else if (!searchFilters.value[0].label) return '(none selected)'
-  else if (!userFilterSelection.value || !userFilterSelection.value[fieldNamefromLabel[searchFilters.value[0].label]]) return '(none selected)'
-  return userFilterSelection.value[fieldNamefromLabel[searchFilters.value[0].label]][0]
-})
+function updateFilters(newFilter) {
+  const newFilterValue = Object.values(newFilter)[0]
+  if (newFilterValue === '(none selected)') {
+    router.push({
+      path: route.path,
+      query: {
+        sort: selectedSortFilters.value.sortField,
+        // ignore page, we want to clear page # when filter is cleared
+      }
+    })
+  } else {
+    router.push({
+      path: route.path,
+      query: {
+        filters: [fieldNamefromLabel[searchFilters.value[0].label]] + ':(' + newFilterValue + ')',
+        sort: selectedSortFilters.value.sortField,
+        // ignore page, we want to clear page # when filter is cleared
+      }
+    })
+  }
+}
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
@@ -142,7 +170,7 @@ async function searchES() {
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, userFilterSelection.value, userSortSelection.value)
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, selectedFilters.value, selectedSortFilters.value.sortField)
 
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
@@ -170,9 +198,17 @@ async function searchES() {
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    // set filters from query params
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
-    userSortSelection.value = route.query.sort || 'asc'
-    userFilterSelection.value = { ...selectedFiltersFromRoute }
+    if (Object.keys(selectedFiltersFromRoute).length === 0) {
+      // if object is empty, set selectedFilters to empty object
+      selectedFilters.value = {}
+    } else {
+      // else destructure the selectedFiltersFromRoute object and convert first value from array to string
+      selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
+    }
+    // set sort & page # from query params
+    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     searchES()
   }, { deep: true, immediate: true }
@@ -217,87 +253,30 @@ useHead({
         />
         <DividerWayFinder />
 
-        <span class="search-filters">
+        <span
+          v-if="!isLoading"
+          class="search-filters"
+        >
           <!-- Filter by -->
-          <div
-            v-for="(filter, index) in searchFilters"
-            :key="index"
-          >
-            <label
-              v-if="filter.label"
-              :for="filter.label"
-              class="select-label"
-            >
-              {{ filter.label }}
-            </label>
-            <select
-              v-if="filter.label"
-              :id="filter.label"
-              v-model="userFilterSelectionValue"
-              :name="filter.label"
-              class="select-input"
-              @change="(e) => {
-                if (e.target.value === '(none selected)') {
-                  router.push({
-                    path: route.path,
-                    query: {
-                      sort: userSortSelection,
-                      page: route.query.page,
-                    }
-                  })
-                } else {
-                  router.push({
-                    path: route.path,
-                    query: {
-                      filters: [fieldNamefromLabel[filter.label]] + ':(' + e.target.value + ')',
-                      sort: userSortSelection,
-                      page: route.query.page,
-                    }
-                  })
-                }
-              }"
-            >
-              <option
-                disabled
-                value=""
-              >
-                -- Select an option --
-              </option>
-              <option
-                v-for="option in filter.options"
-                :key="option.key"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </option>
-            </select>
-          </div>
-          <!-- Sort Order -->
-          <div v-if="!isLoading">
-            <label
-              for="sortorder"
-              class="sort-label"
-            >Sort order</label>
-            <select
-              id="sortorder"
-              v-model="userSortSelection"
-              name="sortorder"
-              @change="(e) => {
-                router.push({
-                  path: route.path,
-                  query: {
-                    filters: route.query.filters,
-                    sort: e.target.value,
-                    page: route.query.page,
-                  }
-                })
-              }"
-            >
-              <option value="asc">Sort by: Date (oldest)</option>
-              <option value="desc">Sort by: Date (newest) </option>
-            </select>
-          </div>
-
+          <DropdownSingleSelect
+            v-model:selected-filters="selectedFilters"
+            :label="searchFilters[0].label"
+            :options="searchFilters[0].options"
+            :field-name="fieldNamefromLabel[searchFilters[0].label]"
+            @update-display="(newFilter) => {
+              updateFilters(newFilter)
+            }"
+          />
+          <!-- Sort by -->
+          <DropdownSingleSelect
+            v-model:selected-filters="selectedSortFilters"
+            :label="sortDropdownData.label"
+            :options="sortDropdownData.options"
+            :field-name="sortDropdownData.fieldName"
+            @update-display="(newSort) => {
+              updateSort(newSort)
+            }"
+          />
           <BlockTag
             v-if="!isLoading"
             data-test="total-results"
@@ -370,10 +349,17 @@ main.blue-main {
       justify-content: flex-start;
       margin-bottom: 2rem;
 
+      // filter dropdowns
+      :deep(.button-dropdown-modal-wrapper.is-expanded) {
+        z-index: 5;
+      }
+
+      // results pill
       .total-results {
         background-color: #132941; // navyblue
         margin-left: auto; // pins the total results to the right
         margin-right: 26px;
+        text-align: center;
 
         @media #{$small} {
           margin-right: 0px;
@@ -387,6 +373,10 @@ main.blue-main {
       :deep(.card-meta) {
         min-height: 150px;
       }
+    }
+
+    :deep(.dropdown-single-select) {
+      width: auto; // allow the dropdown to be as wide as the content
     }
 
     :deep(figure.responsive-image) {
