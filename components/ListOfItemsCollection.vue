@@ -61,7 +61,7 @@ const parsedCollectionResults = computed(() => {
 
 // format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
-  return totalResults.value + ' Video Clips'
+  return totalResults.value + ' Video Clip' + (totalResults.value > 1 ? 's' : '')
 })
 
 const collectionTitle = ref(attrs.page.title || '')
@@ -76,6 +76,16 @@ const sortDropdownData = {
   fieldName: 'sortField'
 }
 const selectedSortFilters = ref({ sortField: 'asc' })
+function updateSort(newSort) {
+  router.push({
+    path: route.path,
+    query: {
+      filters: route.query.filters,
+      sort: newSort.sortField,
+      page: route.query.page
+    }
+  })
+}
 
 // FILTERS SETUP - uses dynamic data
 const ftvaFilters = ref(attrs.page.ftvaFilters || [])
@@ -124,6 +134,27 @@ const selectedFilters = ref({}) // initialise with empty filter
 const fieldNamefromLabel = {
   'Filter by Topic': 'ftvaCollectionGroup.title.keyword',
   'Filter by Season': 'episodeSeason.keyword'
+}
+function updateFilters(newFilter) {
+  const newFilterValue = Object.values(newFilter)[0]
+  if (newFilterValue === '(none selected)') {
+    router.push({
+      path: route.path,
+      query: {
+        sort: selectedSortFilters.value.sortField,
+        // ignore page, we want to clear page # when filter is cleared
+      }
+    })
+  } else {
+    router.push({
+      path: route.path,
+      query: {
+        filters: [fieldNamefromLabel[searchFilters.value[0].label]] + ':(' + newFilterValue + ')',
+        sort: selectedSortFilters.value.sortField,
+        // ignore page, we want to clear page # when filter is cleared
+      }
+    })
+  }
 }
 
 // ELASTIC SEARCH FUNCTION
@@ -233,26 +264,7 @@ useHead({
             :options="searchFilters[0].options"
             :field-name="fieldNamefromLabel[searchFilters[0].label]"
             @update-display="(newFilter) => {
-              const newFilterValue = Object.values(newFilter)[0]
-              if (newFilterValue === '(none selected)') {
-                router.push({
-                  path: route.path,
-                  query: {
-                    sort: selectedSortFilters['sortField'],
-                    // ignore page, we want to clear page # when filter is cleared
-                  }
-                })
-              } else {
-                router.push({
-                  path: route.path,
-                  query: {
-                    filters: [fieldNamefromLabel[searchFilters[0].label]] + ':(' + newFilterValue + ')',
-                    sort: selectedSortFilters['sortField'],
-                    // ignore page, we want to clear page # when filter is cleared
-                  }
-                })
-              }
-
+              updateFilters(newFilter)
             }"
           />
           <!-- Sort by -->
@@ -262,14 +274,7 @@ useHead({
             :options="sortDropdownData.options"
             :field-name="sortDropdownData.fieldName"
             @update-display="(newSort) => {
-              router.push({
-                path: route.path,
-                query: {
-                  filters: route.query.filters,
-                  sort: newSort['sortField'],
-                  page: route.query.page
-                }
-              })
+              updateSort(newSort)
             }"
           />
           <BlockTag
@@ -354,6 +359,7 @@ main.blue-main {
         background-color: #132941; // navyblue
         margin-left: auto; // pins the total results to the right
         margin-right: 26px;
+        text-align: center;
 
         @media #{$small} {
           margin-right: 0px;
