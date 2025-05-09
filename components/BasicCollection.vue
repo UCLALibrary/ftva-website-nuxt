@@ -228,9 +228,10 @@ useHead({
           v-if="page.videoEmbed"
           :trailer="page.videoEmbed"
         />
-        <DividerWayFinder v-if="parsedInfoBlock" />
+        <!-- TODO APPS-3326 can remove the '&& parsedInfoBlock.text' condition when we have a way to support Contact Info Data in this spot -->
+        <DividerWayFinder v-if="parsedInfoBlock && parsedInfoBlock.text" />
         <div
-          v-if="parsedInfoBlock"
+          v-if="parsedInfoBlock && parsedInfoBlock.text"
           class="cta-block"
         >
           <BlockCallToAction
