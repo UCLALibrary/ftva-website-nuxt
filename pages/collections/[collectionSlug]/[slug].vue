@@ -39,6 +39,7 @@ if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
+    data.value.entry.titleBrowse = data.value.entry.title.replace(/^(the|a|an)\s+/i, '').trim()
     // Index the data using the composable during static build
     await indexContent(data.value.entry, slug)
   } catch (error) {

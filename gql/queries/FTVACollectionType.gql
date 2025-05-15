@@ -5,5 +5,7 @@ query FTVACollectionLayoutType($slug: [String!]) {
     title
     ftvaHomepageDescription
     ftvaFilters
+    sectionHandle
+    ftvaCollectionType
   }
 }
