@@ -17,6 +17,19 @@ async function paginatedCollectionListQuery(
   )
     return
 
+  // Build the must clause conditionally
+  const mustClause = []
+
+  if (extraSearchFilter && extraSearchFilter !== '*') {
+    mustClause.push({
+      prefix: {
+        titleBrowse: {
+          value: extraSearchFilter.toLowerCase() // because normalizer is lowercase
+        }
+      }
+    })
+  }
+
   const response = await fetch(
     `${config.public.esURL}/${config.public.esAlias}/_search`,
     {
@@ -39,15 +52,7 @@ async function paginatedCollectionListQuery(
               },
               ...parseCollectionType(collectionType)
             ],
-            must: [
-              {
-                wildcard: {
-                  'title.keyword': {
-                    value: extraSearchFilter
-                  }
-                }
-              }
-            ]
+            must: mustClause
           },
         },
         sort: [
