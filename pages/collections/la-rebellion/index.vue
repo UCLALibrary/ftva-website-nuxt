@@ -49,6 +49,12 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+definePageMeta({
+  layout: 'default',
+  path: '/collections/la-rebellion',
+  alias: ['/collections/in-the-life']
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
