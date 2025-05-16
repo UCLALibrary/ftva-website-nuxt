@@ -1,0 +1,26 @@
+#import "../gql/fragments/collections/AllFtvaFpb.gql"
+#import "../gql/fragments/Image.gql"
+
+
+query FTVACollectionStory($slug: [String!]){
+  entry(section: "ftvaCollectionStory", slug:$slug) {
+    id
+    slug
+    uri
+    sectionHandle
+    title
+    summary
+    ftvaImage {
+      ...Image
+    }
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+    ...AllFtvaFpb
+  }
+}

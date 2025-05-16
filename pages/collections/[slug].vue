@@ -6,7 +6,7 @@ import _get from 'lodash/get'
 import FTVACollectionLayoutType from '../gql/queries/FTVACollectionType.gql'
 
 // CHILD COMPONENTS
-import { BasicCollection, ListOfItemsCollection, StorytellingCollection } from '#components'
+import { BasicCollection, ListOfItemsCollection } from '#components'
 
 const { $graphql } = useNuxtApp()
 
@@ -43,8 +43,6 @@ const pageType = computed(() => {
   const collectionpagetype = _get(data.value, 'ftvaCollection.ftvaCollectionLayoutType', 'basic')
   if (collectionpagetype === 'listOfItems') {
     return ListOfItemsCollection
-  } else if (collectionpagetype === 'storytelling') {
-    return StorytellingCollection
   } else {
     return BasicCollection // default to basic
   }
