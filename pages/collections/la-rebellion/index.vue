@@ -11,10 +11,10 @@ const { $graphql } = useNuxtApp()
 const route = useRoute()
 console.log('route path: ', route.path)
 
-// routes this page supports:
+// routes this template/page supports:
 const routeNameToSlugMap = {
   '/collections/la-rebellion': 'la-rebellion-2',
-  // '/collections/in-the-life': 'in-the-life'
+  '/collections/in-the-life': 'in-the-life'
 }
 
 console.log('slug: ', routeNameToSlugMap[route.path])
@@ -25,44 +25,40 @@ const { data, error } = await useAsyncData(`collections-story-${route.path}`, as
   return data
 })
 
-console.log('data: ', data.value)
+if (error.value) {
+  throw createError({
+    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+  })
+}
 
-// if (error.value) {
-//   console.log(route)
-//   throw createError({
-//     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
-//   })
-// }
-
-// if (!data.value.entry) {
-//   console.log(route)
-//   throw createError({
-//     statusCode: 404,
-//     statusMessage: 'Page Not Found',
-//     fatal: true
-//   })
-// }
+if (!data.value.entry) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+    fatal: true
+  })
+}
 
 // DATA
-// const page = ref(_get(data.value, 'entry', {}))
+const page = ref(_get(data.value, 'entry', {}))
 
-// console.log('page data: ', page.value)
+console.log('page data: ', page.value)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
-// watch(data, (newVal, oldVal) => {
-//   page.value = _get(newVal, 'entry', {})
-// })
+watch(data, (newVal, oldVal) => {
+  page.value = _get(newVal, 'entry', {})
+})
 
-// useHead({
-//   title: page.value ? page.value.title : '... loading',
-//   meta: [
-//     {
-//       hid: 'description',
-//       name: 'description',
-//       content: removeTags(page.value.summary)
-//     }
-//   ]
-// })
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.summary)
+    }
+  ]
+})
 </script>
 
 <template>
@@ -71,9 +67,8 @@ console.log('data: ', data.value)
     class="page"
   >
     <SectionWrapper>
-      <h2>Page</h2>
-      <!-- <h1>{{ page.title }}</h1>
-      <pre style="text-wrap: auto;">{{ page }}</pre> -->
+      <h1>{{ page.title }}</h1>
+      <pre style="text-wrap: auto;">{{ page }}</pre>
       <DividerGeneral />
     </SectionWrapper>
   </main>
