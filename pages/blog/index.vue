@@ -2,6 +2,7 @@
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
+import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 // GQL
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
@@ -65,72 +66,78 @@ watch(data, (newVal, oldVal) => {
 })
 
 // "STATE"
-const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
-const desktopArticles = ref([]) // Desktop articles list
-const mobileArticles = ref([]) // Mobile articles list
-const articles = computed(() => (isMobile.value ? mobileArticles.value : desktopArticles.value))
+// replaced by 'useMobileOnlyInfiniteScroll' composable 
+const { isLoading, isMobile, hasMore, currentList, mobileItemList, desktopItemList, currentPage, scrollElem, updateValues, reset } = await useMobileOnlyInfiniteScroll(searchES)
+// const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
+// const desktopArticles = ref([]) // Desktop articles list
+// const mobileArticles = ref([]) // Mobile articles list
+// const articles = computed(() => (isMobile.value ? mobileArticles.value : desktopArticles.value))
+// TODO 'articles' becomes 'currentList'
+// const currentPage = ref(1)
 
-const currentPage = ref(1)
 const documentsPerPage = 10
 const totalPages = ref(0)
 
 // INFINITE SCROLLING
-const isLoading = ref(false)
-const isMobile = ref(false)
-const hasMore = ref(true) // Flag to control infinite scroll
+// const isLoading = ref(false)
+// const isMobile = ref(false)
+// const hasMore = ref(true) // Flag to control infinite scroll
 
-const scrollElem = ref(null)
-const { reset } = useInfiniteScroll(
-  scrollElem,
-  async () => {
-    if (isMobile.value && hasMore.value && !isLoading.value) {
-      currentPage.value++
-      await searchES()
-    }
-  },
-  { distance: 100 }
-)
+// const scrollElem = ref(null)
+// const { reset } = useInfiniteScroll(
+//   scrollElem,
+//   async () => {
+//     if (isMobile.value && hasMore.value && !isLoading.value) {
+//       currentPage.value++
+//       await searchES()
+//     }
+//   },
+//   { distance: 100 }
+// )
 
 // HANDLE WINDOW SIZING
-const { width } = useWindowSize()
-watch(width, (newWidth) => {
-  const wasMobile = isMobile.value
+// const { width } = useWindowSize()
+// watch(width, (newWidth) => {
+//   const wasMobile = isMobile.value
 
-  isMobile.value = newWidth <= 750
-  // Reinitialize only when transitioning between mobile and desktop
-  if (wasMobile !== isMobile.value) {
-    handleScreenTransition()
-  }
-}, { immediate: true })
+//   isMobile.value = newWidth <= 750
+//   // Reinitialize only when transitioning between mobile and desktop
+//   if (wasMobile !== isMobile.value) {
+//     handleScreenTransition()
+//   }
+// }, { immediate: true })
 
 // HANDLE SCREEN TRANSITIONS
-function handleScreenTransition() {
-  if (isMobile.value) {
-    // Switching to mobile: save desktop page, clear query param
+// function handleScreenTransition() {
+//   if (isMobile.value) {
+//     // Switching to mobile: save desktop page, clear query param
 
-    desktopPage.value = currentPage.value
-    currentPage.value = 1
-    mobileArticles.value = []
-    hasMore.value = true
-    const { page, ...remainingQuery } = route.query
-    useRouter().push({ query: { ...remainingQuery } })
-  } else {
-    // Switching to desktop: restore query param
-    if (totalPages.value === 1)
-      desktopPage.value = 1
-    const restoredPage = desktopPage.value || 1
-    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
-    currentPage.value = restoredPage
-    desktopArticles.value = []
-  }
-  searchES()
-}
+//     desktopPage.value = currentPage.value
+//     currentPage.value = 1
+//     mobileArticles.value = []
+//     hasMore.value = true
+//     const { page, ...remainingQuery } = route.query
+//     useRouter().push({ query: { ...remainingQuery } })
+//   } else {
+//     // Switching to desktop: restore query param
+//     if (totalPages.value === 1)
+//       desktopPage.value = 1
+//     const restoredPage = desktopPage.value || 1
+//     useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
+//     currentPage.value = restoredPage
+//     desktopArticles.value = []
+//   }
+//   searchES()
+// }
 
 // ELASTIC SEARCH
 async function searchES() {
   if (isLoading.value || !hasMore.value) return
 
-  isLoading.value = true
+  updateValues({
+    isLoading: true
+  })
+  // isLoading.value = true
 
   // COMPOSABLE
   const { paginatedArticlesQuery } = useArticlesListSearch()
@@ -145,40 +152,68 @@ async function searchES() {
     )
 
     if (results && results.hits && results?.hits?.hits?.length > 0) {
+      console.log('results', results)
       const newArticles = results.hits.hits || []
 
       if (isMobile.value) {
         totalPages.value = 0
-
-        mobileArticles.value.push(...newArticles)
-
-        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+        updateValues({
+          currentList: [...currentList.value, ...newArticles],
+          hasMore: currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+        })
+        // currentList.value.push(...newArticles)
+        // hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
       } else {
-        desktopArticles.value = newArticles
-
+        // desktopArticles.value = newArticles
+        console.log('desktopArticles', newArticles)
+        updateValues({
+          desktopItemList: newArticles,
+        })
+        console.log('desktopItemList', desktopItemList.value)
+        // currentList.value = newArticles
         totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
       }
     } else {
-      totalPages.value = 0
 
-      hasMore.value = false
+      totalPages.value = 0
+      updateValues({
+        hasMore: false
+      })
+      // hasMore.value = false
     }
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('Error fetching data:', error)
-    hasMore.value = false
+    updateValues({
+      hasMore: false
+    })
+    // hasMore.value = false
   } finally {
-    isLoading.value = false
+    updateValues({
+      isLoading: false
+    })
+    // isLoading.value = false
   }
 }
 
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    isLoading.value = false
+    console.log('In watch route query', newVal, oldVal)
+    updateValues({
+      isLoading: false
+    })
+    // isLoading.value = false
+    // TODO this line is causing an error
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileArticles.value = [] : desktopArticles.value = []
-    hasMore.value = true
+
+
+    isMobile.value ? updateValues({ mobileItemList: [] }) : updateValues({ desktopItemList: [] })
+    updateValues({
+      hasMore: true
+    })
+    // hasMore.value = true
+    console.log('about to searchES')
     searchES()
   }, { deep: true, immediate: true }
 )
@@ -210,9 +245,9 @@ const parsedFeaturedArticles = computed(() => {
 
 // PARSED ARTICLE LIST
 const parsedArticles = computed(() => {
-  if (articles.value.length === 0) return []
+  if (currentList.value.length === 0) return []
 
-  return articles.value.map((obj) => {
+  return currentList.value.map((obj) => {
     return {
       ...obj._source,
       to: `/${obj._source.uri}`,
