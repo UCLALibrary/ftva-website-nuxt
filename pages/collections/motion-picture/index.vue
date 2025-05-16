@@ -157,7 +157,6 @@ async function searchES() {
   isLoading.value = true
 
   const { paginatedCollectionListQuery } = useCollectionListSearch()
-
   try {
     const results = await paginatedCollectionListQuery(
       collectionType.value,
@@ -202,7 +201,7 @@ function browseBySelectedLetter(letter) {
   mobileList.value = []
 
   if (letter !== 'All') {
-    extraSearchFilter.value = `${letter}*`
+    extraSearchFilter.value = `${letter}`
     selectedLetterProp.value = letter
   } else {
     extraSearchFilter.value = '*'
@@ -226,8 +225,8 @@ watch(() => route.query,
     const filterLetter = route.query.filters
 
     // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
-    if (filterLetter?.length === 2) {
-      selectedLetterProp.value = filterLetter.replace('*', '')
+    if (filterLetter && filterLetter !== '*') {
+      selectedLetterProp.value = filterLetter
       extraSearchFilter.value = filterLetter
     } else {
       selectedLetterProp.value = 'All'

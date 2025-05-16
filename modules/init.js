@@ -1,3 +1,4 @@
+import { type } from 'os'
 import { defineNuxtModule } from 'nuxt/kit'
 import fetch from 'node-fetch'
 export default defineNuxtModule({
@@ -24,12 +25,22 @@ export default defineNuxtModule({
                 properties: {
                   blocks: { // TODO Making all flexible blocks flattened in ES to avoid any performnce issues further
                     type: 'flattened'
+                  },
+                  titleBrowse: {
+                    type: 'keyword',
+                    normalizer: 'lowercase_normalizer'
                   }
                 }
               },
               settings: {
                 'index.mapping.total_fields.limit': 1500, // Or a suitable limit
                 analysis: {
+                  normalizer: {
+                    lowercase_normalizer: {
+                      type: 'custom',
+                      filter: ['lowercase', 'asciifolding']
+                    }
+                  },
                   analyzer: {
                     default: {
                       type: 'custom',

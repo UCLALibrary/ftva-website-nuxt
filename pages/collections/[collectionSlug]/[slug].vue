@@ -8,6 +8,9 @@ import FTVACollectionItem from '../gql/queries/FTVACollectionItem.gql'
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
+// UTILS
+import normalizeTitleForAlphabeticalBrowseBy from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -39,6 +42,7 @@ if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
+    data.value.entry.titleBrowse = normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title)
     // Index the data using the composable during static build
     await indexContent(data.value.entry, slug)
   } catch (error) {
