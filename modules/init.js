@@ -1,4 +1,3 @@
-import { type } from 'os'
 import { defineNuxtModule } from 'nuxt/kit'
 import fetch from 'node-fetch'
 export default defineNuxtModule({
@@ -35,6 +34,21 @@ export default defineNuxtModule({
               settings: {
                 'index.mapping.total_fields.limit': 1500, // Or a suitable limit
                 analysis: {
+                  char_filter: {
+                    remove_hyphen: {
+                      type: 'pattern_replace',
+                      pattern: '-',
+                      replacement: ''
+                    }
+                  },
+                  tokenizer: {
+                    edge_ngram_tokenizer: {
+                      type: 'edge_ngram',
+                      min_gram: 2,
+                      max_gram: 20,
+                      token_chars: ['letter', 'digit']
+                    }
+                  },
                   normalizer: {
                     lowercase_normalizer: {
                       type: 'custom',
@@ -45,11 +59,13 @@ export default defineNuxtModule({
                     default: {
                       type: 'custom',
                       tokenizer: 'standard',
+                      char_filter: ['remove_hyphen'],
                       filter: ['stemmer', 'lowercase', 'stop', 'asciifolding'],
                     },
                     default_search: {
                       type: 'custom',
                       tokenizer: 'standard',
+                      char_filter: ['remove_hyphen'],
                       filter: ['stemmer', 'lowercase', 'stop', 'asciifolding'],
                     }
                   },
