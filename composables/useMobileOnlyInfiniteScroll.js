@@ -35,25 +35,27 @@ export default function useMobileInfiniteScroll(searchEsFn) {
   const currentList = computed(() => (isMobile.value ? mobileItemList.value : desktopItemList.value))
   // const currentPage = ref(1)
   const scrollElem = ref(null)
-  
+  const route = useRoute()
+
   // a function to update the values of the state
   function updateValues(newValues) {
     console.log('Updating values:', newValues)
     Object.keys(newValues).forEach((key) => {
       console.log('checking key:', key)
       if (localState[key] !== undefined) {
-        console.log(`Updating ${key} to ${newValues[key]}`);
-        localState[key] = newValues[key];
-        console.log(localState[key]);
+        console.log(`Updating ${key} to ${newValues[key]}`)
+        localState[key] = newValues[key]
+        console.log(localState[key])
       }
-    });
+    })
   };
 
   const { reset } = useInfiniteScroll(
     scrollElem,
     async () => {
-      if (isMobile.value && hasMore.value && !isLoading.value) {
-        currentPage.value++
+      if (localState.isMobile && localState.hasMore && !localState.isLoading) {
+        localState.currentPage++
+        // currentPage.value++
         await searchEsFn()
       }
     },
@@ -63,23 +65,27 @@ export default function useMobileInfiniteScroll(searchEsFn) {
   // HANDLE WINDOW SIZING
   const { width } = useWindowSize()
   watch(width, (newWidth) => {
-    const wasMobile = isMobile.value
+    const wasMobile = localState.isMobile
 
-    isMobile.value = newWidth <= 750
+    localState.isMobile = newWidth <= 750
     // Reinitialize only when transitioning between mobile and desktop
-    if (wasMobile !== isMobile.value) {
+    if (wasMobile !== localState.isMobile) {
       handleScreenTransition()
     }
   }, { immediate: true })
 
   // HANDLE SCREEN TRANSITIONS - pass this whole function as arg?
   function handleScreenTransition() {
-    if (isMobile.value) {
+    if (localState.isMobile) {
       // Switching to mobile: save desktop page, clear query param
-      desktopPage.value = currentPage.value
-      currentPage.value = 1
-      mobileItemList.value = []
-      hasMore.value = true
+      localState.desktopPage = localState.currentPage
+      localState.currentPage = 1
+      localState.mobileItemList = []
+      localState.hasMore = true
+      // desktopPage.value = currentPage.value
+      // currentPage.value = 1
+      // mobileItemList.value = []
+      // hasMore.value = true
       const { page, ...remainingQuery } = route.query
       useRouter().push({ query: { ...remainingQuery } })
     } else {
@@ -96,13 +102,14 @@ export default function useMobileInfiniteScroll(searchEsFn) {
   }
 
   return {
-    isLoading,
-    isMobile,
-    hasMore,
-    mobileItemList,
-    desktopItemList,
-    currentPage,
+    // isLoading,
+    // isMobile,
+    // hasMore,
+    // mobileItemList,
+    // desktopItemList,
+    // currentPage,
     currentList,
+    localState,
     scrollElem,
     updateValues,
     reset

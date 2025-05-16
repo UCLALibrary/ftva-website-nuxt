@@ -2,10 +2,10 @@
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
+import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 // GQL
-import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 
 const { $graphql } = useNuxtApp()
 
@@ -66,8 +66,8 @@ watch(data, (newVal, oldVal) => {
 })
 
 // "STATE"
-// replaced by 'useMobileOnlyInfiniteScroll' composable 
-const { isLoading, isMobile, hasMore, currentList, mobileItemList, desktopItemList, currentPage, scrollElem, updateValues, reset } = await useMobileOnlyInfiniteScroll(searchES)
+// replaced by 'useMobileOnlyInfiniteScroll' composable
+const { localState, currentList, scrollElem, updateValues, reset } = await useMobileOnlyInfiniteScroll(searchES)
 // const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
 // const desktopArticles = ref([]) // Desktop articles list
 // const mobileArticles = ref([]) // Mobile articles list
@@ -132,7 +132,7 @@ const totalPages = ref(0)
 
 // ELASTIC SEARCH
 async function searchES() {
-  if (isLoading.value || !hasMore.value) return
+  if (localState.isLoading || !localState.hasMore) return
 
   updateValues({
     isLoading: true
@@ -140,11 +140,11 @@ async function searchES() {
   // isLoading.value = true
 
   // COMPOSABLE
-  const { paginatedArticlesQuery } = useArticlesListSearch()
+  const { lesQuery } = useArticlesListSearch()
 
   try {
     const results = await paginatedArticlesQuery(
-      currentPage.value,
+      1, // TODO renable when fix is found localState.currentPage,
       documentsPerPage,
       'postDate',
       'desc',
@@ -155,11 +155,11 @@ async function searchES() {
       console.log('results', results)
       const newArticles = results.hits.hits || []
 
-      if (isMobile.value) {
+      if (localState.isMobile) {
         totalPages.value = 0
         updateValues({
-          currentList: [...currentList.value, ...newArticles],
-          hasMore: currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+          currentList: [...localState.currentList, ...newArticles],
+          hasMore: localState.currentPage < Math.ceil(results.hits.total.value / documentsPerPage)
         })
         // currentList.value.push(...newArticles)
         // hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
@@ -167,14 +167,14 @@ async function searchES() {
         // desktopArticles.value = newArticles
         console.log('desktopArticles', newArticles)
         updateValues({
-          desktopItemList: newArticles,
+          desktopItemList: [...newArticles],
         })
-        console.log('desktopItemList', desktopItemList.value)
+        // TODO TODO never gets here, never logs
+        console.log('desktopItemList', desktopItemList)
         // currentList.value = newArticles
         totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
       }
     } else {
-
       totalPages.value = 0
       updateValues({
         hasMore: false
@@ -205,10 +205,9 @@ watch(
     })
     // isLoading.value = false
     // TODO this line is causing an error
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    localState.currentPage = route.query.page ? parseInt(route.query.page) : 1
 
-
-    isMobile.value ? updateValues({ mobileItemList: [] }) : updateValues({ desktopItemList: [] })
+    localState.isMobile ? updateValues({ mobileItemList: [] }) : updateValues({ desktopItemList: [] })
     updateValues({
       hasMore: true
     })
@@ -245,9 +244,9 @@ const parsedFeaturedArticles = computed(() => {
 
 // PARSED ARTICLE LIST
 const parsedArticles = computed(() => {
-  if (currentList.value.length === 0) return []
-
-  return currentList.value.map((obj) => {
+  console.log('parsing articles', localState.currentList)
+  if (localState.currentList === undefined || localState.currentList.length === 0) return []
+  return localState.currentList.map((obj) => {
     return {
       ...obj._source,
       to: `/${obj._source.uri}`,
