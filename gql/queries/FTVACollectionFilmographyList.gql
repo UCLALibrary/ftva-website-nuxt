@@ -1,0 +1,6 @@
+query FTVACollectionFilmographyList($slug: [String!]) {
+  # ftvaCollection: entry(section: "ftvaCollection", slug: $slug) {
+  #   id
+  #   typeHandle
+  # }
+}
