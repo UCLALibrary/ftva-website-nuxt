@@ -11,6 +11,7 @@ import { useContentIndexer } from '~/composables/useContentIndexer'
 // UTILS
 import removeTags from '~/utils/removeTags'
 import socialList from '~/utils/socialList'
+import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 
 const { $graphql } = useNuxtApp()
 
@@ -41,7 +42,7 @@ if (data.value.ftvaCollection && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
-    data.value.ftvaCollection.titleBrowse = data.value.ftvaCollection.title.replace(/^(the|a|an)\s+/i, '').trim()
+    data.value.ftvaCollection.titleBrowse = normalizeTitleForAlphabeticalBrowse(data.value.ftvaCollection.title)
 
     // Index the collection data using the composable during static build
     await indexContent(data.value.ftvaCollection, route.params.slug)
