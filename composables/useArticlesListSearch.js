@@ -44,8 +44,9 @@ async function paginatedArticlesQuery(
       }),
     }
   )
-
+  console.log('Response:', response)
   const data = await response.json()
+  console.log('Data:', data)
   return data
 }
 
