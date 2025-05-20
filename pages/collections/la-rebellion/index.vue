@@ -13,7 +13,7 @@ console.log('route path: ', route.path)
 
 // routes this template/page supports:
 const routeNameToSlugMap = {
-  '/collections/la-rebellion': 'la-rebellion-2',
+  '/collections/la-rebellion': 'la-rebellion',
   '/collections/in-the-life': 'in-the-life'
 }
 
