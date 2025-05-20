@@ -14,7 +14,6 @@ fragment AllFtvaFpb on ElementInterface {
     blocks: allFtvaFpb {
         id
         typeHandle
-        ftvaFlexibilePageBlockCardWithImageType
 
         ... on allFtvaFpb_callToAction_BlockType {
             ...BlockCallToActionFragment
