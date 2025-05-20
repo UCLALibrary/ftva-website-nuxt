@@ -227,8 +227,9 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     sharedPrerenderData: true
   } */
+
   experimental: {
-    sharedPrerenderData: true,
+    sharedPrerenderData: true, // Improves nuxt build performance
   },
 
   compatibilityDate: '2025-03-19',
