@@ -44,6 +44,7 @@ async function paginatedArticlesQuery(
       }),
     }
   )
+  
   const data = await response.json()
   return data
 }
