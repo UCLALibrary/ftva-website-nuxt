@@ -1,62 +1,86 @@
 /***
  * This composable handles toggling between desktop pagination and mobile infinite scroll.
- * @param {Function} searchEsFn function to call when the page changes, generally an elasticsearch function
- * @return {Object} an object containing the following properties:
+ * @param {Number} documentsPerPage number of results to show per page
+ * @param {Function} fetchFn function to call to fetch elasticsearch results
+ * @returns following:
  * - isLoading: boolean indicating if the page is loading
  * - isMobile: boolean indicating if the current view is mobile
  * - hasMore: boolean indicating if there are more pages to load
  * - currentList: the current list of items to display, depending on desktop or mobile view
+ * - mobileItemList: the list of items to display in mobile view
+ * - desktopPage: the current page number for desktop view
+ * - desktopItemList: the list of items to display in desktop view
+ * - currentPage: the current page number for the current view
+ * - totalPages: the total number of pages available
  * - scrollElem: the element to attach the infinite scroll to
  * - reset: function to reset the infinite scroll
+ * - searchES: function to call when reloading the search results on the page
  */
+
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
-export default function useMobileInfiniteScroll(searchEsFn) {
-  const localState = reactive({
-    isLoading: false,
-    isMobile: false,
-    hasMore: true,
-    currentPage: 1,
-    desktopPage: 1,
-    desktopItemList: [],
-    mobileItemList: [],
-  })
+export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn = () => Promise.resolve({})) {
   // DESKTOP STATE
-  // const desktopPage = useState('desktopPage', () => 1) // Persist desktop page #
-  // const desktopItemList = ref([]) // Persist desktop item list
+  const desktopPage = useState('desktopPage', () => 1) // Persist desktop page #
+  const desktopItemList = ref([]) // Persist desktop item list
 
   // MOBILE STATE
-  // const mobileItemList = ref([]) // Persist mobile item list
+  const mobileItemList = ref([]) // Persist mobile item list
 
   // CURRENT STATE
-  // const isLoading = ref(false)
-  // const isMobile = ref(false)
-  // const hasMore = ref(true)
+  const isLoading = ref(false)
+  const isMobile = ref(false)
+  const hasMore = ref(true)
   const currentList = computed(() => (isMobile.value ? mobileItemList.value : desktopItemList.value))
-  // const currentPage = ref(1)
+  const currentPage = ref(1)
+  const totalPages = ref(0)
   const scrollElem = ref(null)
   const route = useRoute()
 
-  // a function to update the values of the state
-  function updateValues(newValues) {
-    console.log('Updating values:', newValues)
-    Object.keys(newValues).forEach((key) => {
-      console.log('checking key:', key)
-      if (localState[key] !== undefined) {
-        console.log(`Updating ${key} to ${newValues[key]}`)
-        localState[key] = newValues[key]
-        console.log(localState[key])
+  // ES SEARCH FUNCTION
+  async function searchES() {
+    if (isLoading.value || !hasMore.value) return
+
+    isLoading.value = true
+
+    try {
+      // use callbback fetchFn to get search results
+      const results = await fetchFn()
+
+      if (results && results.hits && results?.hits?.hits?.length > 0) {
+        console.log('results', results)
+
+        const newArticles = results.hits.hits || []
+
+        if (isMobile.value) {
+          totalPages.value = 0
+          mobileItemList.value.push(...newArticles)
+          hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+        } else {
+          console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
+          desktopItemList.value = newArticles
+          totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+        }
+      } else {
+        totalPages.value = 0
+        hasMore.value = false
       }
-    })
-  };
+      
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching data:', err)
+      hasMore.value = false
+    } finally {
+      isLoading.value = false
+    }
+  }
 
   const { reset } = useInfiniteScroll(
     scrollElem,
     async () => {
-      if (localState.isMobile && localState.hasMore && !localState.isLoading) {
-        localState.currentPage++
-        // currentPage.value++
-        await searchEsFn()
+      if (isMobile.value && hasMore.value && !isLoading.value) {
+        currentPage.value++
+        await searchES()
       }
     },
     { distance: 100 }
@@ -65,27 +89,24 @@ export default function useMobileInfiniteScroll(searchEsFn) {
   // HANDLE WINDOW SIZING
   const { width } = useWindowSize()
   watch(width, (newWidth) => {
-    const wasMobile = localState.isMobile
+    console.log('Window width changed:', newWidth)
+    const wasMobile = isMobile.value
 
-    localState.isMobile = newWidth <= 750
+    isMobile.value = newWidth <= 750
     // Reinitialize only when transitioning between mobile and desktop
-    if (wasMobile !== localState.isMobile) {
+    if (wasMobile !== isMobile.value) {
       handleScreenTransition()
     }
   }, { immediate: true })
 
   // HANDLE SCREEN TRANSITIONS - pass this whole function as arg?
   function handleScreenTransition() {
-    if (localState.isMobile) {
+    if (isMobile.value) {
       // Switching to mobile: save desktop page, clear query param
-      localState.desktopPage = localState.currentPage
-      localState.currentPage = 1
-      localState.mobileItemList = []
-      localState.hasMore = true
-      // desktopPage.value = currentPage.value
-      // currentPage.value = 1
-      // mobileItemList.value = []
-      // hasMore.value = true
+      desktopPage.value = currentPage.value
+      currentPage.value = 1
+      mobileItemList.value = []
+      hasMore.value = true
       const { page, ...remainingQuery } = route.query
       useRouter().push({ query: { ...remainingQuery } })
     } else {
@@ -97,21 +118,21 @@ export default function useMobileInfiniteScroll(searchEsFn) {
       currentPage.value = restoredPage
       desktopItemList.value = []
     }
-    console.log('about to call searchES from inside mobileInfiniteScroll')
-    searchEsFn()
+    searchES()
   }
 
   return {
-    // isLoading,
-    // isMobile,
-    // hasMore,
-    // mobileItemList,
-    // desktopItemList,
-    // currentPage,
+    isLoading,
+    isMobile,
+    hasMore,
+    mobileItemList,
+    desktopPage,
+    desktopItemList,
+    currentPage,
     currentList,
-    localState,
     scrollElem,
-    updateValues,
-    reset
+    totalPages,
+    reset,
+    searchES,
   }
 }
