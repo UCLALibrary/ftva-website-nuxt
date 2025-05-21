@@ -57,7 +57,7 @@ const featuredArticles = page.value.ftvaFeaturedArticles
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
   pageTitle.value = page.value.title
   pageSummary.value = page.value.summary
