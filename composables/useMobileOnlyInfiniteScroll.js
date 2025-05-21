@@ -65,7 +65,6 @@ export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn =
         totalPages.value = 0
         hasMore.value = false
       }
-      
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Error fetching data:', err)
