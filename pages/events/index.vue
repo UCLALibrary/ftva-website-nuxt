@@ -834,8 +834,6 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
-
-
   :deep(.section-pagination) {
     /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
     background-color: white;
