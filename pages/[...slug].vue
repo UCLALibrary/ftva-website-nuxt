@@ -163,6 +163,11 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page-general-content {
 
+  // Apply extra padding to single/solo breadcrumb that has no parent
+  .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
+    padding: 5px 0;
+  }
+
   .page-title {
     display: block;
 
