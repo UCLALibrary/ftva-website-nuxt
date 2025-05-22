@@ -776,6 +776,14 @@ const parseFirstEventMonth = computed(() => {
     gap: 45px;
   }
 
+  :deep(.section-teaser-list .list-item) {
+    border-bottom: 1px solid $page-blue;
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
   :deep(.block-card-three-column .day-month-date) {
     flex: 0.7;
   }
