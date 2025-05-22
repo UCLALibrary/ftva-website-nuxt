@@ -2,7 +2,7 @@
  * This composable handles toggling between desktop pagination and mobile infinite scroll.
  * @param {Number} documentsPerPage number of results to show per page
  * @param {Function} fetchFn function to call to fetch elasticsearch results
- * @returns following:
+ * @returns the following:
  * - isLoading: boolean indicating if the page is loading
  * - isMobile: boolean indicating if the current view is mobile
  * - hasMore: boolean indicating if there are more pages to load
