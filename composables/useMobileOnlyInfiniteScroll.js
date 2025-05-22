@@ -112,7 +112,7 @@ export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn =
       // Switching to desktop: restore query param
       if (totalPages.value === 1)
         desktopPage.value = 1
-      const restoredPage = dinesktopPage.value || 1
+      const restoredPage = desktopPage.value || 1
       useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
       currentPage.value = restoredPage
       desktopItemList.value = []
