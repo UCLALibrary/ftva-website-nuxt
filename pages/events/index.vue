@@ -360,7 +360,7 @@ function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGr
     let searchField
     if (key === 'Event Type') {
       searchField = 'ftvaEventTypeFilters.title.keyword'
-    } else if (key === 'Film Format') {
+    } else if (key === 'Screening Format') {
       searchField = 'ftvaScreeningFormatFilters.title.keyword'
     }
 
