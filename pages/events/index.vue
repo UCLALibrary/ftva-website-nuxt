@@ -798,7 +798,9 @@ const parseFirstEventMonth = computed(() => {
   }
 
   :deep(.block-card-three-column .meta .floating-slot) {
-    gap: 10px;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 8px;
   }
 
   :deep(.base-calendar) {
