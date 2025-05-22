@@ -743,6 +743,24 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
+  .date-filter :deep(.vue-date-picker .action-row button),
+  .filters-dropdown :deep(.action-row button) {
+    padding: 10px 18px;
+    line-height: 15px;
+
+    >.label {
+      font-family: var(--font-secondary);
+      font-size: 15px;
+      line-height: 15px;
+      text-transform: capitalize;
+    }
+
+    .svg__icon-close {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
   .remove-filters {
     margin-top: 0;
     margin-bottom: 0;
