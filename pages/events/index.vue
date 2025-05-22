@@ -521,6 +521,7 @@ const parseFirstEventMonth = computed(() => {
         :section-title="heading.titleGeneral"
       />
       <SectionWrapper
+        class="main"
         ref="el"
         theme="paleblue"
       >
@@ -642,10 +643,18 @@ const parseFirstEventMonth = computed(() => {
     align-items: center;
     text-align: center;
     max-width: 787px;
+    padding-top: var(--space-2xl);
+    padding-bottom: 0;
   }
 
   .header :deep(.section-title) {
-    color: var(--heading-grey);
+    color: $heading-grey;
+    line-height: 1;
+    margin-bottom: var(--space-l);
+  }
+
+  .main {
+    padding-top: var(--space-xl);
   }
 
   .full-width {
