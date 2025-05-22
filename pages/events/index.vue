@@ -794,6 +794,10 @@ const parseFirstEventMonth = computed(() => {
     gap: 45px;
   }
 
+  :deep(.section-teaser-list) {
+    padding: var(--space-xl);
+  }
+
   :deep(.section-teaser-list .list-item) {
     border-bottom: 1px solid $page-blue;
 
@@ -829,6 +833,8 @@ const parseFirstEventMonth = computed(() => {
       margin-bottom: 14px;
     }
   }
+
+
 
   :deep(.section-pagination) {
     /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
