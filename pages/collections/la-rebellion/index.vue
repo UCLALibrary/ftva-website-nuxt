@@ -145,34 +145,27 @@ const pageClass = computed(() => {
         :section-titles="h2Array"
       />
 
-      <!-- <TwoColLayoutWStickySideBar
+      <TwoColLayoutWStickySideBar
         data-test="second-column"
         class="two-column"
       >
         <template #primaryTop>
-          <div v-if="page.formattedTitle">
-            <h3 class="page-title">
-              <rich-text
-                class="page-title-rich-text"
-                :rich-text-content="page.formattedTitle"
-              />
-            </h3>
-          </div>
-
-          <div v-else>
-            <h3 class="page-title">
-              {{ page.title }}
-            </h3>
-          </div>
+          <CardMeta
+            category="Collection"
+            :title="page?.title"
+          />
+          <SectionWrapper theme="paleblue">
+            <DividerWayFinder />
+          </SectionWrapper>
         </template>
 
-        <template #primaryMid>
+        <!-- <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
             :blocks="page.blocks"
           />
-        </template>
-      </TwoColLayoutWStickySideBar> -->
+        </template> -->
+      </TwoColLayoutWStickySideBar>
     </div>
   </main>
 </template>
@@ -180,5 +173,10 @@ const pageClass = computed(() => {
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 
-.page-storytelling {}
+.page-storytelling {
+
+  :deep(figure.image--full) {
+    margin: 0;
+  }
+}
 </style>

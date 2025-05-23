@@ -149,12 +149,12 @@ onMounted(() => {
           </div>
         </template>
 
-        <template #primaryMid>
+        <!-- <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
             :blocks="page.blocks"
           />
-        </template>
+        </template> -->
       </TwoColLayoutWStickySideBar>
     </div>
   </main>
@@ -163,7 +163,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .page-general-content {
 
-  // Apply extra padding to single/solo breadcrumb that has no parent
+  // Apply extra padding to single/solo breadcrumb that has no parent--to keep spacing below nav bar even with other pages
   .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
     padding: 5px 0;
   }
@@ -246,6 +246,10 @@ onMounted(() => {
   }
 
   @media (max-width: 1200px) {
+    .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
+      padding: 16px 0;
+    }
+
     .two-column {
       :deep(.primary-section-wrapper) {
         padding-left: 0;
