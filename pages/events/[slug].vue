@@ -129,7 +129,16 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 const parsedTagLabels = computed(() => {
   const eventObj = page.value
   const parsedTagLabels = getEventFilterLabels(eventObj)
-  return parsedTagLabels
+
+  const hasGuestSpeaker = parsedTagLabels.some(tag =>
+    /Guest Speaker/i.test(tag.title)
+  )
+
+  if (hasGuestSpeaker) {
+    return [{ title: "Guest speaker" }]
+  }
+
+  return []
 })
 
 useHead({
