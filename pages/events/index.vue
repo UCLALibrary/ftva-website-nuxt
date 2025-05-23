@@ -790,35 +790,6 @@ const parseFirstEventMonth = computed(() => {
     letter-spacing: 0.8px;
   }
 
-  :deep(.block-card-three-column) {
-    gap: 45px;
-  }
-
-  :deep(.section-teaser-list) {
-    padding: var(--space-xl);
-  }
-
-  :deep(.section-teaser-list .list-item) {
-    border-bottom: 1px solid $page-blue;
-
-    &:last-child {
-      border-bottom: 0;
-    }
-  }
-
-  :deep(.block-card-three-column .day-month-date) {
-    flex: 0.7;
-  }
-
-  :deep(.block-card-three-column .card-meta) {
-    padding: 0;
-  }
-
-  :deep(.block-card-three-column .meta .title) {
-    font-size: 30px;
-    line-height: 32px;
-  }
-
   :deep(.block-card-three-column .meta .floating-slot) {
     flex-wrap: wrap;
     column-gap: 10px;
@@ -839,6 +810,37 @@ const parseFirstEventMonth = computed(() => {
     background-color: white;
     max-width: unset;
     padding: 2.5%;
+  }
+
+  @media(min-width: 1025px) {
+    :deep(.section-teaser-list) {
+      padding: var(--space-xl);
+    }
+
+    :deep(.section-teaser-list .list-item) {
+      border-bottom: 1px solid $page-blue;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    :deep(.block-card-three-column) {
+      gap: 45px;
+    }
+
+    :deep(.block-card-three-column .day-month-date) {
+      flex: 0.7;
+    }
+
+    :deep(.block-card-three-column .card-meta) {
+      padding: 0;
+    }
+
+    :deep(.block-card-three-column .meta .title) {
+      font-size: 30px;
+      line-height: 32px;
+    }
   }
 
   @media(max-width: 1200px) {
@@ -862,6 +864,7 @@ const parseFirstEventMonth = computed(() => {
         top: 65px;
         z-index: 1000;
         background-color: var(--pale-blue);
+        padding: 20px;
       }
     }
 
@@ -883,6 +886,15 @@ const parseFirstEventMonth = computed(() => {
           width: 100%;
         }
       }
+    }
+
+    :deep(.block-card-three-column .image-block),
+    :deep(.block-card-three-column .image-block .image) {
+      aspect-ratio: 1.69 / 1;
+    }
+
+    :deep(.block-card-three-column .meta .title) {
+      font-size: 26px;
     }
   }
 
