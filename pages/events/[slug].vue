@@ -317,6 +317,15 @@ useHead({
 .page-event-detail {
   position: relative;
 
+  :deep(.lightbox) {
+    overflow: hidden;
+  }
+
+  :deep(.carousel),
+  :deep(.lightbox .media-item) {
+    height: calc(var(--media-width) / 1.984);
+  }
+
   .two-column {
 
     .button-dropdown {
