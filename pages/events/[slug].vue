@@ -129,7 +129,16 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 const parsedTagLabels = computed(() => {
   const eventObj = page.value
   const parsedTagLabels = getEventFilterLabels(eventObj)
-  return parsedTagLabels
+
+  const hasGuestSpeaker = parsedTagLabels.some(tag =>
+    /Guest Speaker/i.test(tag.title)
+  )
+
+  if (hasGuestSpeaker) {
+    return [{ title: "Guest speaker" }]
+  }
+
+  return []
 })
 
 useHead({
@@ -269,7 +278,7 @@ useHead({
           <template #block-info-end>
             <ButtonLink
               label="Plan Your Visit"
-              to="/plan-your-visit"
+              to="/billy-wilder-theater"
               class="button"
               :is-secondary="true"
               icon-name="none"
@@ -307,6 +316,29 @@ useHead({
 <style lang="scss" scoped>
 .page-event-detail {
   position: relative;
+
+  :deep(.lightbox) {
+    overflow: hidden;
+  }
+
+  :deep(.carousel),
+  :deep(.lightbox .media-item) {
+    height: calc(var(--media-width) / 1.984);
+  }
+
+  :deep(.inline.lightbox .button-prev) {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    opacity: 0.7;
+  }
+
+  :deep(.inline.lightbox .button-next) {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    opacity: 0.7;
+  }
 
   .two-column {
 
