@@ -270,6 +270,10 @@ const parsedCollectionList = computed(() => {
   })
 })
 
+const pageClass = computed(() => {
+  return ['page', 'page-collection-type', route.path.replace('/collections/', '')]
+})
+
 definePageMeta({
   layout: 'default',
   path: '/collections/motion-picture',
@@ -291,7 +295,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-collection-type"
+    :class="pageClass"
   >
     <SectionWrapper theme="paleblue">
       <NavBreadcrumb
