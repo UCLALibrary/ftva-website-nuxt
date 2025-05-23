@@ -326,6 +326,20 @@ useHead({
     height: calc(var(--media-width) / 1.984);
   }
 
+  :deep(.inline.lightbox .button-prev) {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    opacity: 0.7;
+  }
+
+  :deep(.inline.lightbox .button-next) {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    opacity: 0.7;
+  }
+
   .two-column {
 
     .button-dropdown {
