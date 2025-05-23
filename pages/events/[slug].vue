@@ -278,7 +278,7 @@ useHead({
           <template #block-info-end>
             <ButtonLink
               label="Plan Your Visit"
-              to="/plan-your-visit"
+              to="/billy-wilder-theater"
               class="button"
               :is-secondary="true"
               icon-name="none"
