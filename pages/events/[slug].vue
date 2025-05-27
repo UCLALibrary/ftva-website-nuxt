@@ -235,6 +235,7 @@ useHead({
 
       <template #primaryMid>
         <CardMeta
+          class="intro"
           :guest-speaker="page?.guestSpeaker"
           :tag-labels="parsedTagLabels"
           :introduction="page?.introduction"
@@ -299,7 +300,7 @@ useHead({
 
     <SectionWrapper
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-      section-title="Upcoming events in this series"
+      section-title="More in this series"
       theme="paleblue"
       class="series-section-wrapper"
     >
@@ -350,11 +351,60 @@ useHead({
       margin-top: 48px;
     }
 
+    :deep(.card-meta.intro) {
+      display: flex;
+      flex-direction: column;
+
+      .title-no-link:empty {
+        display: none;
+      }
+
+      /* REMOVE THIS HACK WHEN WE REORDER IT IN THE COMPONENT */
+      .guestSpeaker {
+        order: 2;
+      }
+    }
+
+    :deep(.guestSpeaker p) {
+      color: #132941;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: normal;
+    }
+
+    :deep(.card-meta .guestSpeaker .parsed-content:last-child) {
+      margin-bottom: 0;
+    }
+
+    :deep(.card-meta .block-tags) {
+      margin-bottom: 16px;
+    }
+
     // SECTION SCREENING DETAILS
     // TODO when component is patched, remove styles?
     :deep(figure.responsive-video:not(:has(.video-embed))) {
       display: none;
     }
+
+    :deep(.block-screening-detail .text) {
+      margin-top: 25px;
+    }
+
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
+      margin-bottom: 0;
+    }
+  }
+
+  :deep(.series-section-wrapper .section-title) {
+    color: #115DAF;
+
+    /* FTVA/d/card title 1 */
+    font-family: Karbon;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    /* 36px */
   }
 
   /* makes all EventSeries same height */
