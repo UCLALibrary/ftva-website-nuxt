@@ -135,7 +135,7 @@ const parsedTagLabels = computed(() => {
   )
 
   if (hasGuestSpeaker) {
-    return [{ title: "Guest speaker" }]
+    return [{ title: 'Guest speaker' }]
   }
 
   return []
