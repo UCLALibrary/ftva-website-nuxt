@@ -149,12 +149,12 @@ onMounted(() => {
           </div>
         </template>
 
-        <!-- <template #primaryMid>
+        <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
             :blocks="page.blocks"
           />
-        </template> -->
+        </template>
       </TwoColLayoutWStickySideBar>
     </div>
   </main>

@@ -9,15 +9,12 @@ import FTVACollectionStory from '../gql/queries/FTVACollectionStory.gql'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-console.log('route path: ', route.path)
 
 // routes this template/page supports:
 const routeNameToSlugMap = {
   '/collections/la-rebellion': 'la-rebellion',
   '/collections/in-the-life': 'in-the-life'
 }
-
-console.log('slug: ', routeNameToSlugMap[route.path])
 
 const { data, error } = await useAsyncData(`collections-story-${route.path}`, async () => {
   // lookup slug based on routeNameToSlugMap
@@ -159,12 +156,12 @@ const pageClass = computed(() => {
           </SectionWrapper>
         </template>
 
-        <!-- <template #primaryMid>
+        <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
             :blocks="page.blocks"
           />
-        </template> -->
+        </template>
       </TwoColLayoutWStickySideBar>
     </div>
   </main>
@@ -174,9 +171,53 @@ const pageClass = computed(() => {
 @import 'assets/styles/slug-pages.scss';
 
 .page-storytelling {
+  .two-column {
+    display: block;
+    margin-top: 32px;
+
+    .sidebar-column {
+      display: none;
+    }
+
+    :deep(.primary-section-wrapper) {
+      margin-top: 0;
+      // padding-right: 0;
+    }
+  }
+
+  .ftva.page-anchor {
+    margin-top: 24px;
+    top: 65px; // Sticks anchor after sticky header
+  }
+
+  .flexible-blocks.flexible-content {
+    :deep(.section-header.section-title) {
+      color: $heading-grey;
+    }
+  }
 
   :deep(figure.image--full) {
     margin: 0;
+  }
+
+  @media (max-width: 1200px) {
+    .two-column {
+      :deep(.primary-section-wrapper) {
+        padding-left: 0;
+      }
+
+      :deep(.primary-column) {
+        width: 80%;
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .two-column {
+      :deep(.primary-column) {
+        width: 100%;
+      }
+    }
   }
 }
 </style>
