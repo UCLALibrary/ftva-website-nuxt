@@ -432,6 +432,10 @@ useHead({
     :deep(.one-column .responsive-image) {
       aspect-ratio: 1.69/1;
     }
+
+    :deep(.card-meta .title-no-link) {
+      font-size: 34px;
+    }
   }
 }
 
