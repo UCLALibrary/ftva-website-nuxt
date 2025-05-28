@@ -10,7 +10,6 @@ import ListOfItemsCollection from '~/components/ListOfItemsCollection.vue'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-console.log('route path: ', route.path)
 
 // routes this template/page supports:
 const routeNameToSectionMap = {
@@ -43,8 +42,6 @@ if (!data.value.entry) {
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 
-console.log('page data: ', page.value)
-
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
@@ -69,7 +66,9 @@ useHead({
 </script>
 <template>
   <!-- {{ page }} -->
-  <ListOfItemsCollection :page="page" />
+  <div class="page-component-wrapper">
+    <ListOfItemsCollection :page="page" />
+  </div>
 </template>
 <style scoped>
 /* TODO test w styles before creating own

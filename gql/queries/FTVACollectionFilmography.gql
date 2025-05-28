@@ -5,5 +5,8 @@ query FTVACollectionFilmography($section: [String!]) {
   title: titleGeneral
   ftvaHomepageDescription: summary
   ftvaFilters
+  sectionHandle
+  # ftvaCollectionLayoutType
+  # ftvaCollectionType
  }
 }
