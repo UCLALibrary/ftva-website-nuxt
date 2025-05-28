@@ -204,6 +204,7 @@ useHead({
     >
       <template #primaryTop>
         <CardMeta
+          class="title"
           data-test="text-block"
           :title="page?.title"
         >
@@ -360,8 +361,18 @@ useHead({
       }
 
       /* REMOVE THIS HACK WHEN WE REORDER IT IN THE COMPONENT */
+      .block-tags {
+        order: 1;
+        padding-top: 0;
+      }
+
       .guestSpeaker {
         order: 2;
+        margin-bottom: 16px;
+      }
+
+      .introduction {
+        order: 3;
       }
     }
 
@@ -397,14 +408,11 @@ useHead({
 
   :deep(.series-section-wrapper .section-title) {
     color: #115DAF;
-
-    /* FTVA/d/card title 1 */
     font-family: Karbon;
     font-size: 30px;
     font-style: normal;
     font-weight: 500;
     line-height: 120%;
-    /* 36px */
   }
 
   /* makes all EventSeries same height */
@@ -435,6 +443,66 @@ useHead({
 
     :deep(.card-meta .title-no-link) {
       font-size: 34px;
+    }
+
+    :deep(.primary-section-wrapper) {
+      display: flex;
+      flex-direction: column;
+
+      .card-meta.title {
+        order: 0;
+      }
+
+      .card-meta.intro {
+        order: 1;
+        margin: 0;
+      }
+
+      .sidebar-mobile-top {
+        order: 2;
+        margin: 0;
+
+        .block-event-detail {
+          margin-bottom: 24px;
+        }
+
+        .button-dropdown {
+          margin: 24px 0;
+        }
+      }
+
+      .eventDescription {
+        order: 3;
+      }
+
+      .sidebar-mobile-bottom {
+        order: 4;
+        margin: 24px 0;
+
+        .block-info {
+          margin: 0;
+        }
+      }
+
+      >.divider-way-finder {
+        order: 5;
+        margin: 24px 0 40px;
+      }
+
+      .section-screening-details {
+        order: 6;
+      }
+    }
+
+    :deep(.ftva.block-screening-detail) {
+      .event-title {
+        margin: 10px 0;
+      }
+
+      .title {
+        font-size: 28px;
+        line-height: 110%;
+      }
     }
   }
 }
