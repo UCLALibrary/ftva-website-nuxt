@@ -427,6 +427,12 @@ useHead({
       padding-top: 30px;
     }
   }
+
+  @media #{$medium} {
+    :deep(.one-column .responsive-image) {
+      aspect-ratio: 1.69/1;
+    }
+  }
 }
 
 @import 'assets/styles/slug-pages.scss';
