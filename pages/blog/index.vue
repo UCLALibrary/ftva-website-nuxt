@@ -2,10 +2,10 @@
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
+import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
+import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 // GQL
-import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
-
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -65,123 +65,38 @@ watch(data, (newVal, oldVal) => {
 })
 
 // "STATE"
-const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
-const desktopArticles = ref([]) // Desktop articles list
-const mobileArticles = ref([]) // Mobile articles list
-const articles = computed(() => (isMobile.value ? mobileArticles.value : desktopArticles.value))
-
-const currentPage = ref(1)
-const documentsPerPage = 10
-const totalPages = ref(0)
-
-// INFINITE SCROLLING
-const isLoading = ref(false)
-const isMobile = ref(false)
-const hasMore = ref(true) // Flag to control infinite scroll
-
-const scrollElem = ref(null)
-const { reset } = useInfiniteScroll(
-  scrollElem,
-  async () => {
-    if (isMobile.value && hasMore.value && !isLoading.value) {
-      currentPage.value++
-      await searchES()
-    }
-  },
-  { distance: 100 }
-)
-
-// HANDLE WINDOW SIZING
-const { width } = useWindowSize()
-watch(width, (newWidth) => {
-  const wasMobile = isMobile.value
-
-  isMobile.value = newWidth <= 750
-  // Reinitialize only when transitioning between mobile and desktop
-  if (wasMobile !== isMobile.value) {
-    handleScreenTransition()
-  }
-}, { immediate: true })
-
-// HANDLE SCREEN TRANSITIONS
-function handleScreenTransition() {
-  if (isMobile.value) {
-    // Switching to mobile: save desktop page, clear query param
-
-    desktopPage.value = currentPage.value
-    currentPage.value = 1
-    mobileArticles.value = []
-    hasMore.value = true
-    const { page, ...remainingQuery } = route.query
-    useRouter().push({ query: { ...remainingQuery } })
-  } else {
-    // Switching to desktop: restore query param
-    if (totalPages.value === 1)
-      desktopPage.value = 1
-    const restoredPage = desktopPage.value || 1
-    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
-    currentPage.value = restoredPage
-    desktopArticles.value = []
-  }
-  searchES()
-}
-
-// ELASTIC SEARCH
-async function searchES() {
-  if (isLoading.value || !hasMore.value) return
-
-  isLoading.value = true
-
-  // COMPOSABLE
+const articleFetchFunction = async () => {
   const { paginatedArticlesQuery } = useArticlesListSearch()
-
-  try {
-    const results = await paginatedArticlesQuery(
-      currentPage.value,
-      documentsPerPage,
-      'postDate',
-      'desc',
-      ['*']
-    )
-
-    if (results && results.hits && results?.hits?.hits?.length > 0) {
-      const newArticles = results.hits.hits || []
-
-      if (isMobile.value) {
-        totalPages.value = 0
-
-        mobileArticles.value.push(...newArticles)
-
-        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
-      } else {
-        desktopArticles.value = newArticles
-
-        totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
-      }
-    } else {
-      totalPages.value = 0
-
-      hasMore.value = false
-    }
-  } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('Error fetching data:', error)
-    hasMore.value = false
-  } finally {
-    isLoading.value = false
-  }
+  const results = await paginatedArticlesQuery(
+    currentPage.value,
+    documentsPerPage,
+    'postDate',
+    'desc',
+    ['*']
+  )
+  return results
 }
+
+const documentsPerPage = 10
+// mostly provided by 'useMobileOnlyInfiniteScroll' composable
+const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(documentsPerPage, articleFetchFunction)
 
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    console.log('In watch route query', newVal, oldVal)
     isLoading.value = false
+
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileArticles.value = [] : desktopArticles.value = []
+
+    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+
     hasMore.value = true
     searchES()
   }, { deep: true, immediate: true }
 )
+
+//
 
 // PAGE SUMMARY
 const showPageSummary = computed(() => {
@@ -210,9 +125,8 @@ const parsedFeaturedArticles = computed(() => {
 
 // PARSED ARTICLE LIST
 const parsedArticles = computed(() => {
-  if (articles.value.length === 0) return []
-
-  return articles.value.map((obj) => {
+  if (currentList.value === undefined || currentList.value.length === 0) return []
+  return currentList.value.map((obj) => {
     return {
       ...obj._source,
       to: `/${obj._source.uri}`,
