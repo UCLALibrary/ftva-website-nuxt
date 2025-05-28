@@ -1,0 +1,9 @@
+# options "ftvaCollectionListingLARebellion"
+query FTVACollectionFilmography($section: [String!]) {
+ entry(section:$section) {
+  id
+  title: titleGeneral
+  ftvaHomepageDescription: summary
+  ftvaFilters
+ }
+}
