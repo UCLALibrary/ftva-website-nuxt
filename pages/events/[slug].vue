@@ -451,6 +451,7 @@ useHead({
 
       .card-meta.title {
         order: 0;
+        margin: 0;
       }
 
       .card-meta.intro {
@@ -472,11 +473,16 @@ useHead({
       }
 
       .eventDescription {
+        order: 4;
+      }
+
+      .acknowledgements {
         order: 3;
+        margin: 0;
       }
 
       .sidebar-mobile-bottom {
-        order: 4;
+        order: 5;
         margin: 24px 0;
 
         .block-info {
