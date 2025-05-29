@@ -103,7 +103,7 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 }
 const searchFilters = ref([])
 function parseAggRes(response: Aggregations) {
-  console.log('parseAggRes response', response)
+  // console.log('parseAggRes response', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
@@ -124,14 +124,13 @@ function parseAggRes(response: Aggregations) {
     label: '(none selected)',
     value: '(none selected)'
   })
-  console.log('Parsed filters:', filters)
+
   return filters
 }
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
 
-  console.log('Parsed ES config filters:', parsedESConfigFiltersRes)
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
     'ftvaItemInCollection',
@@ -183,15 +182,8 @@ async function searchES() {
     let results: any = {}
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
-    console.log('searchES called with:', {
-      currpage,
-      size,
-      collectionTitle: collectionTitle.value,
-      selectedFilters: selectedFilters.value,
-      sortField: selectedSortFilters.value.sortField
-    })
+
     results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, selectedFilters.value, selectedSortFilters.value.sortField)
-    console.log('searchES results:', results)
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
 
@@ -218,7 +210,7 @@ async function searchES() {
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    console.log('Route query params changed:', newVal, oldVal)
+    // console.log('Route query params changed:', newVal, oldVal)
     // set filters from query params
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
     if (Object.keys(selectedFiltersFromRoute).length === 0) {
@@ -231,7 +223,6 @@ watch(
     // set sort & page # from query params
     selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    console.log('about to search ES')
     searchES()
   }, { deep: true, immediate: true }
 )

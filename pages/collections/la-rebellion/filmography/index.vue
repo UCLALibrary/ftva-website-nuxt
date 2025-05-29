@@ -68,12 +68,15 @@ useHead({
 })
 </script>
 <template>
-  <!-- {{ page }} -->
   <div class="page-component-wrapper">
     <ListOfItemsCollection :page="page" />
   </div>
 </template>
 <style scoped>
-/* TODO test w styles before creating own
-@import 'assets/styles/listing-pages.scss'; */
+.page-component-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin: 0px;
+  padding: 0px;
+}
 </style>
