@@ -55,14 +55,16 @@ if (data.value.entry && import.meta.prerender) {
     const doc = {
       title: data.value.entry.title,
       text: data.value.entry.summary,
-      uri: route.path
+      uri: route.path,
+      sectionHandle: routeNameToSectionMap[route.path]?.sectionName,
+      groupName: 'Collections',
     }
     // Index the collection type data using the composable during static build
-    await indexContent(doc, 'collection-type-listing')
+    await indexContent(doc, route.path.replaceAll('/', '--'))
     // console.log('Collection type listing indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('FAILED TO INDEX COLLECTION TYPE LISTING during static build:', error)
+    console.error('FAILED TO INDEX' + route.path + 'during static build:', error)
   }
 }
 

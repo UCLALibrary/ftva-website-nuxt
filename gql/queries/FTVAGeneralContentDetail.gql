@@ -6,6 +6,7 @@ query FTVAGeneralContent($slug: [String!]) {
     ... on ftvaGeneralContentPage_generalContentPage_Entry {
       id
       uri
+      sectionHandle
       slug
       title
       formattedTitle

@@ -39,6 +39,7 @@ if (data.value.ftvaLARebellionIndividual && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     // Index the event data using the composable during static build
+    data.value.ftvaLARebellionIndividual.groupName = 'Collections'
     await indexContent(data.value.ftvaLARebellionIndividual, route.params.slug)
     // console.log('Event indexed successfully during static build')
   } catch (error) {

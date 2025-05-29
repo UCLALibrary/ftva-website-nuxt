@@ -39,6 +39,8 @@ if (!data.value.entry) {
   })
 }
 
+// TODO This is creating an index of the content for ES search
+
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 

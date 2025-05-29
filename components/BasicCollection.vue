@@ -43,9 +43,10 @@ if (data.value.ftvaCollection && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     data.value.ftvaCollection.titleBrowse = normalizeTitleForAlphabeticalBrowse(data.value.ftvaCollection.title)
+    data.value.ftvaCollectiongroupName = 'Collections',
 
-    // Index the collection data using the composable during static build
-    await indexContent(data.value.ftvaCollection, route.params.slug)
+      // Index the collection data using the composable during static build
+      await indexContent(data.value.ftvaCollection, route.params.slug)
     // console.log('Collection indexed successfully during static build', data.value.ftvaCollection)
   } catch (error) {
     // eslint-disable-next-line no-console

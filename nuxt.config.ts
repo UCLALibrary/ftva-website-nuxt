@@ -230,6 +230,7 @@ export default defineNuxtConfig({
 
   experimental: {
     sharedPrerenderData: true, // Improves nuxt build performance
+    buildCache: true, // Improves nuxt build performance
   },
 
   compatibilityDate: '2025-03-19',
