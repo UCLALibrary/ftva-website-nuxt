@@ -111,6 +111,15 @@ function parseAggRes(response: Aggregations) {
       value: bucket.key
     }))
   }))
+
+  filters.forEach((filter) => {
+    if (filter.label !== 'Filter by Season') return
+    // Special case for 'Filter by Season' to sort options numerically
+    filter.options.sort((a, b) => {
+      return parseInt(a.value) - parseInt(b.value)
+    })
+  })
+
   filters[0].options.unshift({
     label: '(none selected)',
     value: '(none selected)'
@@ -271,7 +280,7 @@ useHead({
           class="search-filters"
         >
           <!-- Filter by -->
-          <!-- <DropdownSingleSelect
+          <DropdownSingleSelect
             v-model:selected-filters="selectedFilters"
             :label="searchFilters[0].label"
             :options="searchFilters[0].options"
@@ -279,7 +288,7 @@ useHead({
             @update-display="(newFilter) => {
               updateFilters(newFilter)
             }"
-          /> -->
+          />
           <!-- Sort by -->
           <DropdownSingleSelect
             v-model:selected-filters="selectedSortFilters"
