@@ -130,7 +130,16 @@ const parsedFTVAEventScreeningDetails = computed(() => {
 const parsedTagLabels = computed(() => {
   const eventObj = page.value
   const parsedTagLabels = getEventFilterLabels(eventObj)
-  return parsedTagLabels
+
+  const hasGuestSpeaker = parsedTagLabels.some(tag =>
+    /Guest Speaker/i.test(tag.title)
+  )
+
+  if (hasGuestSpeaker) {
+    return [{ title: 'Guest speaker' }]
+  }
+
+  return []
 })
 
 useHead({
@@ -196,6 +205,7 @@ useHead({
     >
       <template #primaryTop>
         <CardMeta
+          class="title"
           data-test="text-block"
           :title="page?.title"
         >
@@ -227,6 +237,7 @@ useHead({
 
       <template #primaryMid>
         <CardMeta
+          class="intro"
           :guest-speaker="page?.guestSpeaker"
           :tag-labels="parsedTagLabels"
           :introduction="page?.introduction"
@@ -270,7 +281,7 @@ useHead({
           <template #block-info-end>
             <ButtonLink
               label="Plan Your Visit"
-              to="/plan-your-visit"
+              to="/billy-wilder-theater"
               class="button"
               :is-secondary="true"
               icon-name="none"
@@ -291,7 +302,7 @@ useHead({
 
     <SectionWrapper
       v-if="parsedFtvaEventSeries && parsedFtvaEventSeries.length > 0"
-      section-title="Upcoming events in this series"
+      section-title="More in this series"
       theme="paleblue"
       class="series-section-wrapper"
     >
@@ -309,6 +320,29 @@ useHead({
 .page-event-detail {
   position: relative;
 
+  :deep(.lightbox) {
+    overflow: hidden;
+  }
+
+  :deep(.carousel),
+  :deep(.lightbox .media-item) {
+    height: calc(var(--media-width) / 1.984);
+  }
+
+  :deep(.inline.lightbox .button-prev) {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    opacity: 0.7;
+  }
+
+  :deep(.inline.lightbox .button-next) {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    opacity: 0.7;
+  }
+
   .two-column {
 
     .button-dropdown {
@@ -319,11 +353,67 @@ useHead({
       margin-top: 48px;
     }
 
+    :deep(.card-meta.intro) {
+      display: flex;
+      flex-direction: column;
+
+      .title-no-link:empty {
+        display: none;
+      }
+
+      /* REMOVE THIS HACK WHEN WE REORDER IT IN THE COMPONENT */
+      .block-tags {
+        order: 1;
+        padding-top: 0;
+      }
+
+      .guestSpeaker {
+        order: 2;
+        margin-bottom: 16px;
+      }
+
+      .introduction {
+        order: 3;
+      }
+    }
+
+    :deep(.guestSpeaker p) {
+      color: #132941;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: normal;
+    }
+
+    :deep(.card-meta .guestSpeaker .parsed-content:last-child) {
+      margin-bottom: 0;
+    }
+
+    :deep(.card-meta .block-tags) {
+      margin-bottom: 16px;
+    }
+
     // SECTION SCREENING DETAILS
     // TODO when component is patched, remove styles?
     :deep(figure.responsive-video:not(:has(.video-embed))) {
       display: none;
     }
+
+    :deep(.block-screening-detail .text) {
+      margin-top: 25px;
+    }
+
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
+      margin-bottom: 0;
+    }
+  }
+
+  :deep(.series-section-wrapper .section-title) {
+    color: #115DAF;
+    font-family: Karbon;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
   }
 
   /* makes all EventSeries same height */
@@ -344,6 +434,82 @@ useHead({
 
     :deep(.block-tags) {
       padding-top: 30px;
+    }
+  }
+
+  @media #{$medium} {
+    :deep(.one-column .responsive-image) {
+      aspect-ratio: 1.69/1;
+    }
+
+    :deep(.card-meta .title-no-link) {
+      font-size: 34px;
+    }
+
+    :deep(.primary-section-wrapper) {
+      display: flex;
+      flex-direction: column;
+
+      .card-meta.title {
+        order: 0;
+        margin: 0;
+      }
+
+      .card-meta.intro {
+        order: 1;
+        margin: 0;
+      }
+
+      .sidebar-mobile-top {
+        order: 2;
+        margin: 0;
+
+        .block-event-detail {
+          margin-bottom: 24px;
+        }
+
+        .button-dropdown {
+          margin: 24px 0;
+        }
+      }
+
+      .eventDescription {
+        order: 4;
+      }
+
+      .acknowledgements {
+        order: 3;
+        margin: 0;
+      }
+
+      .sidebar-mobile-bottom {
+        order: 5;
+        margin: 24px 0;
+
+        .block-info {
+          margin: 0;
+        }
+      }
+
+      >.divider-way-finder {
+        order: 5;
+        margin: 24px 0 40px;
+      }
+
+      .section-screening-details {
+        order: 6;
+      }
+    }
+
+    :deep(.ftva.block-screening-detail) {
+      .event-title {
+        margin: 10px 0;
+      }
+
+      .title {
+        font-size: 28px;
+        line-height: 110%;
+      }
     }
   }
 }
