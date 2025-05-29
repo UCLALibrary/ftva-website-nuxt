@@ -38,6 +38,7 @@ if (!data.value.entry) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
+const additionalResources = page.value.ftvaAdditionalResources
 
 console.log('page data: ', page.value)
 
@@ -58,6 +59,18 @@ const parsedCarouselData = computed(() => {
     return {
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
+    }
+  })
+})
+
+const parsedAdditionalResources = computed(() => {
+  if (additionalResources.length === 0) return null
+
+  return additionalResources.map((obj) => {
+    return {
+      title: obj.title,
+      to: `/${obj.uri}`,
+      image: obj.ftvaImage[0]
     }
   })
 })
@@ -161,8 +174,16 @@ const pageClass = computed(() => {
             class="flexible-content"
             :blocks="page.blocks"
           />
+          <SectionPostSmall
+            :items="parsedAdditionalResources"
+            section-title="Additional Resources"
+          />
         </template>
       </TwoColLayoutWStickySideBar>
+      <!-- <SectionPostSmall
+        :items="parsedAdditionalResources"
+        section-title="Additional Resources"
+      /> -->
     </div>
   </main>
 </template>
@@ -198,6 +219,10 @@ const pageClass = computed(() => {
 
   :deep(figure.image--full) {
     margin: 0;
+  }
+
+  :deep(.section-post-small .grid) {
+    max-width: unset;
   }
 
   @media (max-width: 1200px) {

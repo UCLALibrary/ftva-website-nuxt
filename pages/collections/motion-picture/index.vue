@@ -359,6 +359,7 @@ useHead({
       <DividerWayFinder />
       <SectionPostSmall
         :items="parsedGeneralContentPages"
+        :full-width="false"
         :section-title="parsedGeneralContentHeader.title"
         :section-summary="parsedGeneralContentHeader.summary"
       />
@@ -475,10 +476,10 @@ useHead({
   }
 
   :deep(.section-post-small .grid) {
-    max-width: unset;
+    // max-width: unset;
 
     .section-header {
-      margin-bottom: 32px;
+      // margin-bottom: 32px;
     }
   }
 }
