@@ -18,30 +18,30 @@ export default function useSiteSearch() {
   async function aggregationsQuery() {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-      headers: {
-        Authorization: `ApiKey ${config.public.esReadKey}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        size: 0,
-        query: {
-          bool: {
-            must: {
-              wildcard: { 'sectionHandle.keyword': { value: "ftva*" } }
-            }
-          }
+        headers: {
+          Authorization: `ApiKey ${config.public.esReadKey}`,
+          'Content-Type': 'application/json',
         },
-        aggs: {
-          'Filter Results': {
-            terms: {
-              field: 'sectionHandle.keyword',
-              size: 100
+        method: 'POST',
+        body: JSON.stringify({
+          size: 0,
+          query: {
+            bool: {
+              must: {
+                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
+              }
+            }
+          },
+          aggs: {
+            'Filter Results': {
+              terms: {
+                field: 'sectionHandle.keyword',
+                size: 100
+              }
             }
           }
-        }
+        })
       })
-    })
     const data = await response.json()
     return data.aggregations
   }
@@ -220,7 +220,6 @@ export default function useSiteSearch() {
     )
     return await response.json()
   }
-
 
   return { paginatedSiteSearchQuery, aggregationsQuery }
 }

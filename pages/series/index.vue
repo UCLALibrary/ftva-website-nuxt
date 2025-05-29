@@ -300,7 +300,7 @@ watch(() => route.query,
         <SectionPagination
           v-if="
             totalPages
-            !== 1 && !isMobile"
+              !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"

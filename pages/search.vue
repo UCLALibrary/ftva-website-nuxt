@@ -10,8 +10,6 @@ const noResultsFound = ref<boolean>(false)
 const { aggregationsQuery, paginatedSiteSearchQuery } = useSiteSearch()
 const searchResults = ref([] as any)
 
-
-
 async function searchES() {
   // console.log('searchES called')
   // console.log('userFilterSelection.value', userFilterSelection.value)
@@ -20,7 +18,7 @@ async function searchES() {
   // console.log('route.query.filters', route.query.filters)
   // console.log('route.query.q', route.query.q)
 
-  const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '');
+  const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
   if (queryQ && queryQ !== '') {
     const results = await paginatedSiteSearchQuery(
       queryQ,
@@ -32,7 +30,6 @@ async function searchES() {
     console.log('searchResults', results)
     if (results && results.hits && results.hits.hits.length > 0) {
       searchResults.value = results.hits.hits || []
-
 
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
 
@@ -47,7 +44,6 @@ async function searchES() {
     noResultsFound.value = true
     totalPages.value = 0
   }
-
 }
 // TYPES
 interface FilterItem {
@@ -64,7 +60,7 @@ watch(
     // console.log('Site search page ES newVal, oldVal', newVal, oldVal)
     // searchGenericQuery.value.queryText = route.query.q || ''
     // console.log('Site search page ES queryText updated', searchGenericQuery.value.queryText)
-    //searchGenericQuery.value.queryFilters = route.query.filters ? parseFilters(decodeURIComponent(route.query?.filters)) : {}
+    // searchGenericQuery.value.queryFilters = route.query.filters ? parseFilters(decodeURIComponent(route.query?.filters)) : {}
     searchES()
   }, { deep: true, immediate: true }
 )
@@ -101,8 +97,6 @@ function transformEsResponseToFilterResults(aggregations: Aggregations): FilterR
   }
   return filterResults
 }
-
-
 
 const parsedResults = computed(() => {
   if (searchResults.value.length === 0) return []
@@ -150,15 +144,12 @@ onMounted(async () => {
               :to="{ query: { ...route.query, filters: encodeURIComponent(JSON.stringify({ 'sectionHandle.keyword': option })) } }"
               class="filter-link"
             >
-              {{ option }} <br />
+              {{ option }} <br>
             </NuxtLink>
-
           </div>
         </div>
       </div>
       <div class="content">
-
-
         <div
           v-if="noResultsFound"
           class="no-results"
@@ -171,7 +162,6 @@ onMounted(async () => {
         >
           <p>Results will be displayed here.</p>
           <div>
-
             <!--div
               v-for="result in parsedResults"
               :key="result.id"
@@ -197,10 +187,7 @@ onMounted(async () => {
               :initial-current-page="currentPage"
             />
           </div>
-
         </div>
-
-
       </div>
     </div>
   </div>
