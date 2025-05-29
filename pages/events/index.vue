@@ -362,7 +362,7 @@ function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGr
     let searchField
     if (key === 'Event Type') {
       searchField = 'ftvaEventTypeFilters.title.keyword'
-    } else if (key === 'Film Format') {
+    } else if (key === 'Screening Format') {
       searchField = 'ftvaScreeningFormatFilters.title.keyword'
     }
 
@@ -523,6 +523,7 @@ const parseFirstEventMonth = computed(() => {
         :section-title="heading.titleGeneral"
       />
       <SectionWrapper
+        class="main"
         ref="el"
         theme="paleblue"
       >
@@ -644,10 +645,18 @@ const parseFirstEventMonth = computed(() => {
     align-items: center;
     text-align: center;
     max-width: 787px;
+    padding-top: var(--space-2xl);
+    padding-bottom: 0;
   }
 
   .header :deep(.section-title) {
-    color: var(--heading-grey);
+    color: $heading-grey;
+    line-height: 1;
+    margin-bottom: var(--space-l);
+  }
+
+  .main {
+    padding-top: var(--space-xl);
   }
 
   .full-width {
@@ -736,6 +745,24 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 
+  .date-filter :deep(.vue-date-picker .action-row button),
+  .filters-dropdown :deep(.action-row button) {
+    padding: 10px 18px;
+    line-height: 15px;
+
+    >.label {
+      font-family: var(--font-secondary);
+      font-size: 15px;
+      line-height: 15px;
+      text-transform: capitalize;
+    }
+
+    .svg__icon-close {
+      height: 20px;
+      width: 20px;
+    }
+  }
+
   .remove-filters {
     margin-top: 0;
     margin-bottom: 0;
@@ -765,6 +792,12 @@ const parseFirstEventMonth = computed(() => {
     letter-spacing: 0.8px;
   }
 
+  :deep(.block-card-three-column .meta .floating-slot) {
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 8px;
+  }
+
   :deep(.base-calendar) {
     max-width: 1000px;
     padding-top: 32px;
@@ -779,6 +812,37 @@ const parseFirstEventMonth = computed(() => {
     background-color: white;
     max-width: unset;
     padding: 2.5%;
+  }
+
+  @media(min-width: 1025px) {
+    :deep(.section-teaser-list) {
+      padding: var(--space-xl);
+    }
+
+    :deep(.section-teaser-list .list-item) {
+      border-bottom: 1px solid $page-blue;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    :deep(.block-card-three-column) {
+      gap: 45px;
+    }
+
+    :deep(.block-card-three-column .day-month-date) {
+      flex: 0.7;
+    }
+
+    :deep(.block-card-three-column .card-meta) {
+      padding: 0;
+    }
+
+    :deep(.block-card-three-column .meta .title) {
+      font-size: 30px;
+      line-height: 32px;
+    }
   }
 
   @media(max-width: 1200px) {
@@ -802,6 +866,7 @@ const parseFirstEventMonth = computed(() => {
         top: 65px;
         z-index: 1000;
         background-color: var(--pale-blue);
+        padding: 20px;
       }
     }
 
@@ -823,6 +888,15 @@ const parseFirstEventMonth = computed(() => {
           width: 100%;
         }
       }
+    }
+
+    :deep(.block-card-three-column .image-block),
+    :deep(.block-card-three-column .image-block .image) {
+      aspect-ratio: 1.69 / 1;
+    }
+
+    :deep(.block-card-three-column .meta .title) {
+      font-size: 26px;
     }
   }
 

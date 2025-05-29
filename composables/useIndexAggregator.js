@@ -23,7 +23,7 @@ export async function useIndexAggregator() {
                 size: 100
               }
             },
-            'Film Format': {
+            'Screening Format': {
               terms: {
                 field: 'ftvaScreeningFormatFilters.title.keyword',
                 size: 100
