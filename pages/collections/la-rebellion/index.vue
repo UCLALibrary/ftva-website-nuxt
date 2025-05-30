@@ -175,6 +175,7 @@ const pageClass = computed(() => {
             data-test="flexible-blocks-content"
           />
           <SectionPostSmall
+            v-if="parsedAdditionalResources"
             :items="parsedAdditionalResources"
             :full-width="true"
             section-title="Additional Materials"
