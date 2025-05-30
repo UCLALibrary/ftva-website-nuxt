@@ -298,7 +298,7 @@ watch(() => route.query,
         <SectionPagination
           v-if="
             totalPages
-              !== 1 && !isMobile"
+            !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
@@ -322,13 +322,22 @@ watch(() => route.query,
     align-content: center;
     align-items: center;
     text-align: center;
-
     max-width: 787px;
+    padding-bottom: var(--space-xl);
+  }
+
+  .header :deep(.section-title) {
+    color: $heading-grey;
+    line-height: 1;
+    margin-bottom: var(--space-l);
+  }
+
+  :deep(.section-wrapper:has(.tab-list)) {
+    padding-top: 0;
   }
 
   :deep(.tab-list .tab-list-header) {
-    margin-top: -50px;
-    margin-bottom: 50px;
+    margin-bottom: var(--space-s);
   }
 
   .empty-tab {
@@ -344,6 +353,33 @@ watch(() => route.query,
     background-color: white;
     max-width: unset;
     padding: 2.5%;
+  }
+
+  @media #{$medium} {
+
+    :deep(.block-staff-article-item .image),
+    :deep(.block-staff-article-item .image .media) {
+      aspect-ratio: 1.69/1;
+      height: auto;
+      margin-bottom: 0;
+    }
+
+    :deep(.block-staff-article-item .meta) {
+      padding: 20px;
+      height: auto;
+
+      .title {
+        font-size: 26px;
+      }
+
+      .date {
+        position: initial;
+      }
+    }
+
+    :deep(.block-staff-article-item .responsive-image .sizer) {
+      padding-bottom: 0 !important;
+    }
   }
 
   @media #{$small} {
