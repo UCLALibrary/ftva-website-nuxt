@@ -35,16 +35,24 @@
 
     @media (max-width: 1200px) {
     .two-column {
-      :deep(.primary-column .primary-section-wrapper) {
-        padding-left: 0;
+      padding-right: 0;
+      
+      :deep(.primary-column) {
+        .primary-section-wrapper {
+          padding-left: 0;
+        }
       }
     }
   }
 
     @media (max-width: 1024px) {
     .two-column {
-      :deep(.primary-column .primary-section-wrapper) {
+      :deep(.primary-column) {
         width: 100%;
+        
+        .primary-section-wrapper {
+          padding-right: 0;
+        }
       }
     }
   }
