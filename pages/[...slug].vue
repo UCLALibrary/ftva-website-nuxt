@@ -45,7 +45,6 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-console.log('page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
   // eslint-disable-next-line no-console
@@ -71,6 +70,10 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path]
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading'
 })
@@ -86,7 +89,7 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-general-content"
+    :class="pageClass"
   >
     <div class="one-column">
       <NavBreadcrumb data-test="breadcrumb" />
