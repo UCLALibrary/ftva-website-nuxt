@@ -103,6 +103,7 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 }
 const searchFilters = ref([])
 function parseAggRes(response: Aggregations) {
+  // console.log('parseAggRes response', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
@@ -110,10 +111,20 @@ function parseAggRes(response: Aggregations) {
       value: bucket.key
     }))
   }))
+
+  filters.forEach((filter) => {
+    if (filter.label !== 'Filter by Season') return
+    // Special case for 'Filter by Season' to sort options numerically
+    filter.options.sort((a, b) => {
+      return parseInt(a.value) - parseInt(b.value)
+    })
+  })
+
   filters[0].options.unshift({
     label: '(none selected)',
     value: '(none selected)'
   })
+
   return filters
 }
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
@@ -173,7 +184,6 @@ async function searchES() {
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
     results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, selectedFilters.value, selectedSortFilters.value.sortField)
-
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
 
@@ -200,6 +210,7 @@ async function searchES() {
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    // console.log('Route query params changed:', newVal, oldVal)
     // set filters from query params
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
     if (Object.keys(selectedFiltersFromRoute).length === 0) {
