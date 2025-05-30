@@ -423,6 +423,52 @@ useHead({
     aspect-ratio: 1.69 / 1;
   }
 
+  :deep(.block-card-three-column .day) {
+    color: black;
+    font-family: var(--font-primary);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.8px;
+  }
+
+  :deep(.block-card-three-column .meta .floating-slot) {
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 8px;
+  }
+
+  @media(min-width: 1025px) {
+    :deep(.section-teaser-list) {
+      padding: var(--space-xl);
+    }
+
+    :deep(.section-teaser-list .list-item) {
+      border-bottom: 1px solid $page-blue;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    :deep(.block-card-three-column) {
+      gap: 45px;
+    }
+
+    :deep(.block-card-three-column .day-month-date) {
+      flex: 0.7;
+    }
+
+    :deep(.block-card-three-column .card-meta) {
+      padding: 0;
+    }
+
+    :deep(.block-card-three-column .meta .title) {
+      font-size: 30px;
+      line-height: 32px;
+    }
+  }
+
   .other-series-section {
     &:has(> :last-child:nth-child(3)) {
       /* if section has 3 elements */
@@ -452,6 +498,10 @@ useHead({
 
     :deep(.one-column .responsive-image) {
       aspect-ratio: 1.69/1;
+    }
+
+    :deep(.card-meta .title-no-link) {
+      font-size: 34px;
     }
   }
 }
