@@ -40,8 +40,6 @@ if (!data.value.entry) {
 const page = ref(_get(data.value, 'entry', {}))
 const additionalResources = page.value.ftvaAdditionalResources
 
-console.log('page data: ', page.value)
-
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
@@ -189,6 +187,7 @@ const pageClass = computed(() => {
 @import 'assets/styles/slug-pages.scss';
 
 .page-storytelling {
+
   .two-column {
     display: block;
     margin-top: 32px;
