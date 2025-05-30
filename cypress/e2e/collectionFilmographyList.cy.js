@@ -1,3 +1,4 @@
+// The filmography route only exists for 2 collections
 describe('Collection Filmography List Page', () => {
   it('Visits the `L.A. Rebellion` Filmography', () => {
     cy.visit('/collections/la-rebellion/filmography')
