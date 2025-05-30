@@ -117,7 +117,7 @@ const pageClass = computed(() => {
 
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
-        data-test="single-image"
+        data-test="hero-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
       >
@@ -161,6 +161,7 @@ const pageClass = computed(() => {
           <CardMeta
             category="Collection"
             :title="page?.title"
+            data-test="page-heading"
           />
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
@@ -171,6 +172,7 @@ const pageClass = computed(() => {
           <FlexibleBlocks
             class="flexible-content"
             :blocks="page.blocks"
+            data-test="flexible-blocks-content"
           />
           <SectionPostSmall
             :items="parsedAdditionalResources"
