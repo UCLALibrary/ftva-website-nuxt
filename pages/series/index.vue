@@ -355,6 +355,33 @@ watch(() => route.query,
     padding: 2.5%;
   }
 
+  @media #{$medium} {
+
+    :deep(.block-staff-article-item .image),
+    :deep(.block-staff-article-item .image .media) {
+      aspect-ratio: 1.69/1;
+      height: auto;
+      margin-bottom: 0;
+    }
+
+    :deep(.block-staff-article-item .meta) {
+      padding: 20px;
+      height: auto;
+
+      .title {
+        font-size: 26px;
+      }
+
+      .date {
+        position: initial;
+      }
+    }
+
+    :deep(.block-staff-article-item .responsive-image .sizer) {
+      padding-bottom: 0 !important;
+    }
+  }
+
   @media #{$small} {
     .pagination {
       display: none;
