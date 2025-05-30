@@ -176,14 +176,11 @@ const pageClass = computed(() => {
           />
           <SectionPostSmall
             :items="parsedAdditionalResources"
-            section-title="Additional Resources"
+            :full-width="true"
+            section-title="Additional Materials"
           />
         </template>
       </TwoColLayoutWStickySideBar>
-      <!-- <SectionPostSmall
-        :items="parsedAdditionalResources"
-        section-title="Additional Resources"
-      /> -->
     </div>
   </main>
 </template>
@@ -196,13 +193,16 @@ const pageClass = computed(() => {
     display: block;
     margin-top: 32px;
 
-    .sidebar-column {
+    :deep(.primary-column) {
+      width: 80%;
+    }
+
+    :deep(.sidebar-column) {
       display: none;
     }
 
     :deep(.primary-section-wrapper) {
       margin-top: 0;
-      // padding-right: 0;
     }
   }
 
@@ -221,18 +221,21 @@ const pageClass = computed(() => {
     margin: 0;
   }
 
-  :deep(.section-post-small .grid) {
-    max-width: unset;
+  :deep(.section-post-small) {
+    .section-title {
+      @include ftva-h5;
+      color: $heading-grey;
+    }
+
+    .block-post-small {
+      background: var(--pale-blue);
+    }
   }
 
   @media (max-width: 1200px) {
     .two-column {
       :deep(.primary-section-wrapper) {
         padding-left: 0;
-      }
-
-      :deep(.primary-column) {
-        width: 80%;
       }
     }
   }

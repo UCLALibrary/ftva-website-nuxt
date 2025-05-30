@@ -147,6 +147,9 @@ onMounted(() => {
               {{ page.title }}
             </h3>
           </div>
+          <SectionWrapper theme="paleblue">
+            <DividerWayFinder />
+          </SectionWrapper>
         </template>
 
         <template #primaryMid>
@@ -191,23 +194,16 @@ onMounted(() => {
     display: block;
     margin-top: 32px;
 
-    .sidebar-column {
+    :deep(.primary-column) {
+      width: 80%;
+    }
+
+    :deep(.sidebar-column) {
       display: none;
     }
 
     :deep(.primary-section-wrapper) {
       margin-top: 0;
-    }
-  }
-
-  // Apply spacing between flexible blocks
-  .flexible-blocks.flexible-content {
-    :deep(.section-wrapper) {
-      margin: var(--space-2xl) auto;
-    }
-
-    :deep(.section-header + div .section-wrapper) {
-      margin-top: 24px;
     }
   }
 
@@ -253,10 +249,6 @@ onMounted(() => {
     .two-column {
       :deep(.primary-section-wrapper) {
         padding-left: 0;
-      }
-
-      :deep(.primary-column) {
-        width: 80%;
       }
     }
   }

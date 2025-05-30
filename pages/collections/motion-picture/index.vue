@@ -475,12 +475,8 @@ useHead({
     margin-top: 32px;
   }
 
-  :deep(.section-post-small .grid) {
-    // max-width: unset;
-
-    .section-header {
-      // margin-bottom: 32px;
-    }
+  :deep(.section-post-small .grid-wrapper) {
+    gap: 12px;
   }
 }
 </style>
