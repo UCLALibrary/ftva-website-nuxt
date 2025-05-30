@@ -45,6 +45,7 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'entry', {}))
+console.log('page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
   // eslint-disable-next-line no-console
@@ -134,18 +135,11 @@ onMounted(() => {
       >
         <template #primaryTop>
           <div v-if="page.formattedTitle">
-            <h3 class="page-title">
-              <rich-text
-                class="page-title-rich-text"
-                :rich-text-content="page.formattedTitle"
-              />
-            </h3>
+            <CardMeta :title="page?.formattedTitle" />
           </div>
 
           <div v-else>
-            <h3 class="page-title">
-              {{ page.title }}
-            </h3>
+            <CardMeta :title="page?.title" />
           </div>
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
@@ -172,25 +166,6 @@ onMounted(() => {
   // Apply extra padding to single/solo breadcrumb that has no parent--to keep spacing below nav bar even with other pages
   .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
     padding: 5px 0;
-  }
-
-  .page-title {
-    display: block;
-
-    .translation {
-      display: block;
-    }
-
-    @include ftva-h2;
-    color: $heading-grey;
-    margin: 0;
-
-    .page-title-rich-text {
-      :deep(.parsed-content) {
-        @include ftva-h2;
-        color: $heading-grey;
-      }
-    }
   }
 
   // Rich Text Image

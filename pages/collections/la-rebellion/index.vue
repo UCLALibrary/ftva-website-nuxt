@@ -50,7 +50,7 @@ const parsedImage = computed(() => {
   return page.value.imageCarousel
 })
 
-// Transform data for Carousel
+// TRANSFORM DATA FOR CAROUSEL
 const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
   return parsedImage.value.map((rawItem, index) => {
@@ -189,38 +189,6 @@ const pageClass = computed(() => {
 
 .page-storytelling {
 
-  // .two-column {
-  //   display: block;
-  //   margin-top: 32px;
-
-  //   :deep(.primary-column) {
-  //     width: 80%;
-  //   }
-
-  //   :deep(.sidebar-column) {
-  //     display: none;
-  //   }
-
-  //   :deep(.primary-section-wrapper) {
-  //     margin-top: 0;
-  //   }
-  // }
-
-  // .ftva.page-anchor {
-  //   margin-top: 24px;
-  //   top: 65px; // Sticks anchor after sticky header
-  // }
-
-  // .flexible-blocks.flexible-content {
-  //   :deep(.section-header.section-title) {
-  //     color: $heading-grey;
-  //   }
-  // }
-
-  // :deep(figure.image--full) {
-  //   margin: 0;
-  // }
-
   :deep(.section-post-small) {
     .section-title {
       @include ftva-h5;
@@ -231,21 +199,5 @@ const pageClass = computed(() => {
       background: var(--pale-blue);
     }
   }
-
-  // @media (max-width: 1200px) {
-  //   .two-column {
-  //     :deep(.primary-section-wrapper) {
-  //       padding-left: 0;
-  //     }
-  //   }
-  // }
-
-  // @media (max-width: 1024px) {
-  //   .two-column {
-  //     :deep(.primary-column) {
-  //       width: 100%;
-  //     }
-  //   }
-  // }
 }
 </style>
