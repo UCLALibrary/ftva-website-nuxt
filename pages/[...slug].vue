@@ -207,7 +207,6 @@ onMounted(() => {
   }
 
   // Flexible Blocks Rich Text Styles
-  // added during UX review of page 4/4/2025 - TODO move to FTVA FlexibleBlocks theme?
   .flexible-blocks.flexible-content {
 
     :deep(.section-wrapper) {
