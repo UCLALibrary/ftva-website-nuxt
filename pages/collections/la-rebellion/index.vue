@@ -185,40 +185,41 @@ const pageClass = computed(() => {
 
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
+@import 'assets/styles/general-pages.scss';
 
 .page-storytelling {
 
-  .two-column {
-    display: block;
-    margin-top: 32px;
+  // .two-column {
+  //   display: block;
+  //   margin-top: 32px;
 
-    :deep(.primary-column) {
-      width: 80%;
-    }
+  //   :deep(.primary-column) {
+  //     width: 80%;
+  //   }
 
-    :deep(.sidebar-column) {
-      display: none;
-    }
+  //   :deep(.sidebar-column) {
+  //     display: none;
+  //   }
 
-    :deep(.primary-section-wrapper) {
-      margin-top: 0;
-    }
-  }
+  //   :deep(.primary-section-wrapper) {
+  //     margin-top: 0;
+  //   }
+  // }
 
-  .ftva.page-anchor {
-    margin-top: 24px;
-    top: 65px; // Sticks anchor after sticky header
-  }
+  // .ftva.page-anchor {
+  //   margin-top: 24px;
+  //   top: 65px; // Sticks anchor after sticky header
+  // }
 
-  .flexible-blocks.flexible-content {
-    :deep(.section-header.section-title) {
-      color: $heading-grey;
-    }
-  }
+  // .flexible-blocks.flexible-content {
+  //   :deep(.section-header.section-title) {
+  //     color: $heading-grey;
+  //   }
+  // }
 
-  :deep(figure.image--full) {
-    margin: 0;
-  }
+  // :deep(figure.image--full) {
+  //   margin: 0;
+  // }
 
   :deep(.section-post-small) {
     .section-title {
@@ -231,20 +232,20 @@ const pageClass = computed(() => {
     }
   }
 
-  @media (max-width: 1200px) {
-    .two-column {
-      :deep(.primary-section-wrapper) {
-        padding-left: 0;
-      }
-    }
-  }
+  // @media (max-width: 1200px) {
+  //   .two-column {
+  //     :deep(.primary-section-wrapper) {
+  //       padding-left: 0;
+  //     }
+  //   }
+  // }
 
-  @media (max-width: 1024px) {
-    .two-column {
-      :deep(.primary-column) {
-        width: 100%;
-      }
-    }
-  }
+  // @media (max-width: 1024px) {
+  //   .two-column {
+  //     :deep(.primary-column) {
+  //       width: 100%;
+  //     }
+  //   }
+  // }
 }
 </style>

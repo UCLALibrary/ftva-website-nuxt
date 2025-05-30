@@ -165,6 +165,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
+@import 'assets/styles/general-pages.scss';
 
 .page-general-content {
 
@@ -192,41 +193,11 @@ onMounted(() => {
     }
   }
 
-  .two-column {
-    display: block;
-    margin-top: 32px;
-
-    :deep(.primary-column) {
-      width: 80%;
-    }
-
-    :deep(.sidebar-column) {
-      display: none;
-    }
-
-    :deep(.primary-section-wrapper) {
-      margin-top: 0;
-    }
-  }
-
-  .ftva.page-anchor {
-    margin-top: 24px;
-    top: 65px; // Sticks anchor after sticky header
-  }
-
-  .flexible-blocks.flexible-content {
-    :deep(.section-header.section-title) {
-      color: $heading-grey;
-    }
-  }
-
   // Rich Text Image
   :deep(figure.image--full) {
-    margin: 0;
-
     a:after {
       position: absolute;
-      right: 0px;
+      right: 10px;
       bottom: -12px;
     }
 
@@ -241,25 +212,9 @@ onMounted(() => {
       padding: 16px 0;
     }
 
-    .two-column {
-      :deep(.primary-section-wrapper) {
-        padding-left: 0;
-      }
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .two-column {
-      :deep(.primary-column) {
-        width: 100%;
-      }
-    }
-  }
-
-  @media (max-width: 900px) {
-    .flexible-blocks.flexible-content {
-      :deep(.section-header + div .section-wrapper) {
-        margin-top: 0;
+    :deep(figure.image--full) {
+      a:after {
+        right: 0;
       }
     }
   }
