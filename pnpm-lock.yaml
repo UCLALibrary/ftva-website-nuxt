@@ -46,8 +46,8 @@ importers:
         specifier: ^18.17.3
         version: 18.19.59
       '@ucla-library/component-library-nuxt-module':
-        specifier: 1.2.13
-        version: 1.2.13(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+        specifier: 1.2.27
+        version: 1.2.27(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
       '@zadigetvoltaire/nuxt-gtm':
         specifier: ^0.0.13
         version: 0.0.13(magicast@0.3.5)(nuxt@3.13.2(@parcel/watcher@2.4.1)(@types/node@18.19.59)(eslint@8.57.1)(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.24.0)(sass@1.80.3)(terser@5.36.0)(typescript@5.6.3)(vite@5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0))(webpack-sources@3.2.3))(rollup@4.24.0)(vue@3.5.12(typescript@5.6.3))(webpack-sources@3.2.3)
@@ -1298,15 +1298,15 @@ packages:
     resolution: {integrity: sha512-JJtkDduxLi9bivAB+cYOVMtbkqdPOhZ+ZI5LC47MIRrDV4Yn2o+ZnW10Nkmr28xRpSpdJ6Sm42Hjf2+REYXm0A==}
     engines: {node: ^16.0.0 || >=18.0.0}
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.15.1':
-    resolution: {integrity: sha512-62ckgjFINo8cAaFUpbLHL2aU7HzhRJPpcqdSW7oGoYEsFHfF+qYlhzXUy0TR+2mRnP8DlV8URiuJ5slAN5C2uA==}
+  '@ucla-library-monorepo/ucla-library-website-components@1.19.1':
+    resolution: {integrity: sha512-MKQEpLh9C0M3X4TGFUycJvO9DO9koYysuomFANHHFj6JLQicwVvExU8jaSK0HUsPcVflfKypdI5VIoSb0ykxlQ==}
     engines: {pnpm: ^9.12.1}
     peerDependencies:
       vue: ^3.5.12
       vuetify: ^3.7.4
 
-  '@ucla-library/component-library-nuxt-module@1.2.13':
-    resolution: {integrity: sha512-9GKhL+DhE0xqJrRoV/KL+sA2yQtWM6zmgNh4QFQfqQo+O8HnQ0FBjkzci6MDKyRkPeVXaH5xUnu1KhCDcVJVGA==}
+  '@ucla-library/component-library-nuxt-module@1.2.27':
+    resolution: {integrity: sha512-5Mfg0JJ1GaQitrPUfnRzvlaLnJbkDzjxNJgQd91npSbgsFp1v1HqJe3wGU1UZXXdf1BffWa6QBMhTmVslrhiJg==}
     engines: {pnpm: ^9.12.1}
 
   '@ungap/structured-clone@1.2.0':
@@ -6460,7 +6460,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       eslint-visitor-keys: 3.4.3
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.15.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library-monorepo/ucla-library-website-components@1.19.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@vuepic/vue-datepicker': 8.8.1(vue@3.5.12(typescript@5.6.3))
       '@vueuse/components': 11.3.0(vue@3.5.12(typescript@5.6.3))
@@ -6476,10 +6476,10 @@ snapshots:
       - '@vue/composition-api'
       - typescript
 
-  '@ucla-library/component-library-nuxt-module@1.2.13(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library/component-library-nuxt-module@1.2.27(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@nuxt/kit': 3.16.0(magicast@0.3.5)
-      '@ucla-library-monorepo/ucla-library-website-components': 1.15.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+      '@ucla-library-monorepo/ucla-library-website-components': 1.19.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
     transitivePeerDependencies:
       - '@vue/composition-api'
       - magicast

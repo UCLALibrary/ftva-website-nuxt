@@ -21,6 +21,22 @@ query FTVACollectionStory($slug: [String!]){
         creditText
       }
     }
+    ftvaAdditionalResources {
+      id
+      title
+      slug
+      uri
+      ftvaImage {
+        ...Image
+      }
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+        }
+      }
+    }
     ...AllFtvaFpb
   }
 }
