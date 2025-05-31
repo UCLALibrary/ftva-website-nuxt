@@ -7,6 +7,7 @@ query FTVAGeneralContent($slug: [String!]) {
       id
       uri
       sectionHandle
+      postDate
       slug
       title
       formattedTitle

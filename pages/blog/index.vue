@@ -41,6 +41,7 @@ if (data.value.entry && import.meta.prerender) {
       uri: '/blog',
       sectionHandle: data.value.entry.sectionHandle,
       groupName: 'Articles',
+      postDate: data.value.entry.postDate,
     }
     // Index the articles data using the composable during static build
     await indexContent(doc, 'article-listing')

@@ -43,6 +43,7 @@ if (data.value.entry && import.meta.prerender) {
       uri: '/events',
       sectionHandle: data.value.entry.sectionHandle,
       groupName: 'Events',
+      postDate: data.value.entry.startDate,
     }
     // Index the events data using the composable during static build
     await indexContent(doc, 'event-listing')

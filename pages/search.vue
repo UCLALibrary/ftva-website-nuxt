@@ -10,6 +10,26 @@ const noResultsFound = ref<boolean>(false)
 const { aggregationsQuery, paginatedSiteSearchQuery } = useSiteSearch()
 const searchResults = ref([] as any)
 
+interface AggregationBucket {
+  key: string
+  doc_count: number
+}
+
+interface Aggregations {
+  [key: string]: { buckets: AggregationBucket[] }
+}
+interface Option {
+  queryOption: string
+  label: string
+  highlighted?: boolean // Optional class for styling, e.g., 'highlightFilter'
+}
+
+interface FilterResult {
+  name: string // The name of the filter group (e.g., "Event Type").
+  searchField: string // The corresponding search field in Elasticsearch.
+  options: Option[] // The options available for this filter group.
+}
+const searchFilters = ref({} as FilterResult)
 async function searchES() {
   // console.log('searchES called')
   // console.log('userFilterSelection.value', userFilterSelection.value)
@@ -30,7 +50,7 @@ async function searchES() {
     console.log('searchResults', results)
     if (results && results.hits && results.hits.hits.length > 0) {
       searchResults.value = results.hits.hits || []
-
+      // searchFilters.value = transformEsResponseToFilterResults(results.aggregations || {})
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
 
       noResultsFound.value = false
@@ -49,14 +69,16 @@ async function searchES() {
 interface FilterItem {
   [key: string]: string[]
 }
-const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
-
+const userFilterSelection = ref<FilterItem>({})
+const selectedSortFilters = ref({})
 // This watcher is called when router push updates the query params
 watch(
   () => route.query,
   (newVal, oldVal) => {
     userFilterSelection.value = parseFilters(route.query.filters || '')
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+    // set sort & page # from query params
+    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
     // console.log('Site search page ES newVal, oldVal', newVal, oldVal)
     // searchGenericQuery.value.queryText = route.query.q || ''
     // console.log('Site search page ES queryText updated', searchGenericQuery.value.queryText)
@@ -65,20 +87,32 @@ watch(
   }, { deep: true, immediate: true }
 )
 
-interface AggregationBucket {
-  key: string
-  doc_count: number
-}
+function addHighlightState(aggregations: Aggregations): FilterResult {
+  const highliftedFilters: Option[] = []
+  for (const [key, value] of Object.entries(aggregations)) {
+    for (const item of userFilterSelection.value[key] || []) {
+      // Check if the item exists in the buckets
+      const bucket = value.buckets.find(bucket => bucket.key === item)
+      if (bucket) {
+        // If it exists, add a highlight state
+        highliftedFilters.push({
+          queryOption: bucket.key,
+          label: bucket.key + ' (' + bucket.doc_count + ')'
+        })
+      }
+    }
+  }
+  for (const item of highliftedFilters) {
+    // Add the highlight state to the searchFilters
+    const existingOption = searchFilters.value.options.find(option => option.queryOption === item.queryOption)
+    if (existingOption) {
+      existingOption.label = item.label // Update the label with the highlight state
+      existingOption.highlighted = true // Add a highlighted property
+    }
+  }
 
-interface Aggregations {
-  [key: string]: { buckets: AggregationBucket[] }
+  return searchFilters.value
 }
-interface FilterResult {
-  name: string; // The name of the filter group (e.g., "Event Type").
-  searchField: string; // The corresponding search field in Elasticsearch.
-  options: string[]; // The options available for this filter group.
-}
-const searchFilters = ref({} as FilterResult)
 
 function transformEsResponseToFilterResults(aggregations: Aggregations): FilterResult {
   // Initialize the filterResults object
@@ -87,12 +121,18 @@ function transformEsResponseToFilterResults(aggregations: Aggregations): FilterR
   // Iterate over the aggregations in the Elasticsearch response
   for (const [key, value] of Object.entries(aggregations)) {
     // Extract the bucket keys as options
-    const options = value.buckets.map(bucket => bucket.key + '(' + bucket.doc_count + ')')
+    const options = value.buckets.map(bucket => {
+      return {
+        queryOption: bucket.key,
+        label: bucket.key, // no count initally, will be updated later
+        highlighted: false // Initially set to false, will be updated later if needed
+      }
+    })
 
     // Add the filter group to the array
 
     filterResults.name = key
-    filterResults.searchField = 'sectionHandle.keyword'
+    filterResults.searchField = 'groupName.keyword'
     filterResults.options = options
   }
   return filterResults
@@ -103,12 +143,23 @@ const parsedResults = computed(() => {
   return searchResults.value.map((obj) => {
     return {
       ...obj._source,
-      // tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
       image: parseImage(obj)
     }
   })
 })
+
+// SORT SETUP - uses static data
+const sortDropdownData = {
+  options: [
+    { label: 'Title (A-Z)', value: 'asc', sortBy: 'title.keyword', orderBy: 'asc' },
+    { label: 'Title (Z-A)', value: 'desc', sortBy: 'title.keyword', orderBy: 'desc' },
+    { label: 'Date (oldest)', value: 'asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
+    { label: 'Date (newest)', value: 'desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   // const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
@@ -120,8 +171,19 @@ async function setFilters() {
     searchAggsResponse
   )
 }
+function updateSort(newSort) {
+  console.log('updateSort called with newSort:', newSort)
+  /*router.push({
+    path: route.path,
+    query: {
+      filters: route.query.filters,
+      sort: newSort.sortField,
+      page: route.query.page
+    }
+  })*/
+}
 onMounted(async () => {
-  // await setFilters()
+  await setFilters()
 })
 </script>
 <template>
@@ -140,11 +202,22 @@ onMounted(async () => {
             <h3>{{ searchFilters.name }}</h3>
             <NuxtLink
               v-for="option in searchFilters.options"
-              :key="option"
-              :to="{ query: { ...route.query, filters: encodeURIComponent(JSON.stringify({ 'sectionHandle.keyword': option })) } }"
-              class="filter-link"
+              :key="option.queryOption"
+              class=""
+              :to="{ query: { ...route.query, filters: `groupName.keyword:(${option.queryOption})` } }"
             >
-              {{ option }} <br>
+              <!-- BlockTag component for display -->
+              <BlockTag
+                :label="option.label"
+                :is-secondary="!option.highlighted"
+                :is-primary="option.highlighted"
+              >
+                <!-- 'x' SVG only shows when selected -->
+                <template v-if="option.highlighted">
+                  <SvgGlyphX class="close-icon" />
+                </template>
+              </BlockTag>
+
             </NuxtLink>
           </div>
         </div>
@@ -162,6 +235,16 @@ onMounted(async () => {
         >
           <p>Results will be displayed here.</p>
           <div>
+            <!-- Sort by -->
+            <DropdownSingleSelect
+              v-model:selected-filters="selectedSortFilters"
+              :label="sortDropdownData.label"
+              :options="sortDropdownData.options"
+              :field-name="sortDropdownData.fieldName"
+              @update-display="(newSort) => {
+                updateSort(newSort)
+              }"
+            />
             <!--div
               v-for="result in parsedResults"
               :key="result.id"
@@ -193,6 +276,10 @@ onMounted(async () => {
   </div>
 </template>
 <style scoped>
+:deep(.button-dropdown-modal-wrapper.is-expanded) {
+  z-index: 1000;
+}
+
 .search-page {
   .one-column {
 

@@ -13,35 +13,35 @@ export default function useSiteSearch() {
     'aboutTheAuthor^2',
     'ftvaCollectionType^2',
     'sectionHandle^2',
-    // 'groupName^2',
+    'groupName^2',
   ]
   async function aggregationsQuery() {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-        headers: {
-          Authorization: `ApiKey ${config.public.esReadKey}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            bool: {
-              must: {
-                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-              }
-            }
-          },
-          aggs: {
-            'Filter Results': {
-              terms: {
-                field: 'sectionHandle.keyword',
-                size: 100
-              }
+      headers: {
+        Authorization: `ApiKey ${config.public.esReadKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          bool: {
+            must: {
+              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
             }
           }
-        })
+        },
+        aggs: {
+          'Filter Results': {
+            terms: {
+              field: 'groupName.keyword',
+              size: 100
+            }
+          }
+        }
       })
+    })
     const data = await response.json()
     return data.aggregations
   }
@@ -52,9 +52,10 @@ export default function useSiteSearch() {
     currentPage = 1,
     documentsPerPage = 10,
     queryFilters: FilterItem = {},
-    // sort,
-    // orderBy,
+    sort,
+    orderBy,
   ) {
+    console.log('paginatedSiteSearchQuery', keyword, currentPage, documentsPerPage, queryFilters)
     if (!config.public.esReadKey || !config.public.esURL || !config.public.esAlias)
       return
     const response = await fetch(
@@ -88,12 +89,12 @@ export default function useSiteSearch() {
           aggs: {
             'Filter Results': {
               terms: {
-                field: 'sectionHandle.keyword',
+                field: 'groupName.keyword',
                 size: 100
               }
             }
-          }
-          // ...parseSort(sort, orderBy),
+          },
+          ...parseSort(sort, orderBy),
         }),
       }
     )
@@ -101,9 +102,33 @@ export default function useSiteSearch() {
     let data = await response.json()
     if (data?.hits?.total.value === 0) {
       data = performFuzzySearchOnAllFields(keyword, ['*'], queryFilters, currentPage = 1,
-        documentsPerPage = 10)
+        documentsPerPage = 10, sort, orderBy)
     }
     return data
+  }
+  interface ParseQueryType {
+    sort: {
+      [key: string]: {
+        order: string
+      }
+    }[]
+  }
+  function parseSort(sortField, orderBy = 'asc') {
+    if (!sortField || sortField === '') return {}
+    const parseQuery: ParseQueryType = { sort: [] }
+    /**
+       * { "_score": "desc" },
+       */
+    parseQuery.sort[0] = {}
+    parseQuery.sort[0]._score = {
+      order: 'desc'
+    }
+    parseQuery.sort[1] = {}
+    parseQuery.sort[1][sortField] = {
+      order: orderBy
+    }
+
+    return parseQuery
   }
 
   function parseShouldQuery(keyword: string, searchFields: any) {
@@ -176,7 +201,7 @@ export default function useSiteSearch() {
     return boolQuery
   }
   async function performFuzzySearchOnAllFields(
-    keyword: string, searchFields: string[], queryFilters: { [key: string]: string[] }, currentPage: number, documentsPerPage: number) {
+    keyword: string, searchFields: string[], queryFilters: { [key: string]: string[] }, currentPage: number, documentsPerPage: number, sort: string, orderBy: string) {
     const config = useRuntimeConfig()
     if (!config.public.esReadKey || !config.public.esURL || !config.public.esAlias)
       return
@@ -210,11 +235,12 @@ export default function useSiteSearch() {
           aggs: {
             'Filter Results': {
               terms: {
-                field: 'sectionHandle.keyword',
+                field: 'groupName.keyword',
                 size: 100
               }
             }
-          }
+          },
+          ...parseSort(sort, orderBy),
         }),
       }
     )

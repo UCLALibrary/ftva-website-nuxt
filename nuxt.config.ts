@@ -40,7 +40,7 @@ export default defineNuxtConfig({
       failOnError: false,
       concurrency: 50,
       interval: 1000,
-      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/'],
+      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/', '/search/'],
     },
     hooks: {
       'prerender:generate'(route) {

@@ -58,6 +58,7 @@ if (data.value.entry && import.meta.prerender) {
       uri: route.path,
       sectionHandle: routeNameToSectionMap[route.path]?.sectionName,
       groupName: 'Collections',
+      postDate: data.value.entry.postDate,
     }
     // Index the collection type data using the composable during static build
     await indexContent(doc, route.path.replaceAll('/', '--'))
