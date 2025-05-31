@@ -3,6 +3,7 @@ query FTVACollectionLayoutType($slug: [String!]) {
     id
     ftvaCollectionLayoutType
     title
+    postDate
     ftvaHomepageDescription
     ftvaFilters
     sectionHandle

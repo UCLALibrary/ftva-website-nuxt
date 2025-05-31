@@ -33,11 +33,13 @@ if (!data.value.entries) {
 const route = useRoute()
 
 // TODO This is creating an index of the content for ES search
+// TODO FIX THE INDEXING DATA LOOK AT OTHER LISTING PAGES
 if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     console.log('Filmakers data', data.value.entry)
     const { indexContent } = useContentIndexer()
+    data.value.entry.groupName = 'Collections'
     // Index the event data using the composable during static build
     await indexContent(data.value.entry, route.params.slug)
 

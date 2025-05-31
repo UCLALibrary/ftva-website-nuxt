@@ -3,6 +3,7 @@ query FTVACollectionFilmography($section: [String!]) {
  entry(section:$section) {
   id
   title: titleGeneral
+  postDate
   ftvaHomepageDescription: summary
   ftvaFilters
  }

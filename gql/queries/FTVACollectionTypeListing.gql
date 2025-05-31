@@ -6,6 +6,7 @@ query FTVACollectionsListing($section: [String!]) {
     slug
     uri
     sectionHandle
+    postDate
     title: titleGeneral
     summary
     sectionHeader {

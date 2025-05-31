@@ -33,6 +33,27 @@ if (!data.value.entry) {
   })
 }
 
+// METADATA INFO
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.title,
+      text: data.value.entry.summary,
+      uri: route.path,
+      sectionHandle: routeNameToSectionMap[route.path]?.sectionName,
+      groupName: 'General Content',
+    }
+    // Index the collection type data using the composable during static build
+    await indexContent(doc, route.path.replaceAll('/', '--'))
+    // console.log('Collection type listing indexed successfully during static build')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX ' + route.path + ' during static build:', error)
+  }
+}
+
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 

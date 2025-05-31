@@ -26,6 +26,7 @@ if (!data.value.entries) {
     fatal: true
   })
 }
+// TODO This is creating an index of the content for ES search
 
 const page = ref(_get(data.value, 'entries[0]', {}))
 useHead({

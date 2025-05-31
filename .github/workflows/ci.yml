@@ -65,6 +65,17 @@ jobs:
               run: |
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}" >> $GITHUB_ENV
               if: github.ref_name=='main'
+
+            - name: Cache Nuxt build cache
+              uses: actions/cache@v3
+              with:
+                path: |
+                  .nuxt/cache
+                  node_modules/.vite
+                key: ${{ runner.os }}-nuxt-build-${{ hashFiles('nuxt.config.ts', '**/*.vue', '**/*.ts') }}
+                restore-keys: |
+                  ${{ runner.os }}-nuxt-build-
+
             - run: pnpm run generate
               if: steps.cache-nuxt3.outputs.cache-hit != 'true'
               env:
@@ -95,10 +106,19 @@ jobs:
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
+
+            - name: Cache Cypress
+              uses: actions/cache@v3
+              with:
+                path: ~/.cache/Cypress
+                key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
+                restore-keys: |
+                  ${{ runner.os }}-cypress-
+
             # Install Cypress binary explicitly to ensure it's available
             - name: Install Cypress
               run: npx cypress install
-              
+
             - uses: cypress-io/github-action@v3
               with:
                   start: pnpm dlx serve .output/public
@@ -127,4 +147,3 @@ jobs:
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
-            

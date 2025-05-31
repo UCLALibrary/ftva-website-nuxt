@@ -5,6 +5,7 @@ query FTVAEventSeriesList {
     id
     typeHandle
     sectionHandle
+    postDate
     titleGeneral
     summary
   }

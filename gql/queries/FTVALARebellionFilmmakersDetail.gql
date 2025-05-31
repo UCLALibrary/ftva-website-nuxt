@@ -6,6 +6,7 @@ query FTVALARebellionFilmmakersDetail($slug: [String!]) {
     title
     typeHandle
     sectionHandle
+    postDate
     slug
     to: uri
     richText

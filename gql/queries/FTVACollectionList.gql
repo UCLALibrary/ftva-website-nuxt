@@ -1,6 +1,6 @@
 # import "../gql/fragments/Image.gql"
 
-# TODO remove some of these fields? 
+# TODO remove some of these fields?
 query FTVACollectionList {
   entries(section: ["ftvaCollection"], orderBy: "postDate") {
     typeHandle
@@ -11,7 +11,7 @@ query FTVACollectionList {
     ftvaHomepageTitle
     ftvaHomepageDescription
     ftvaCollectionType
-    richText 
+    richText
     infoBlock {
       ... on infoBlock_infoBlock_BlockType {
         icon

@@ -5,7 +5,7 @@ import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 
-const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string } }
+const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
 
 const route = useRoute()
 const router = useRouter()
@@ -26,6 +26,7 @@ if (attrs.page && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     attrs.page.titleBrowse = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
+    attrs.page.groupName = 'Collections'
     // Index the collection data using the composable during static build
     await indexContent(attrs.page, route.params.slug)
     // console.log('Collection indexed successfully during static build')

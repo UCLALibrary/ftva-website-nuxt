@@ -4,5 +4,7 @@ query FTVAEventList {
   entry(section: ["ftvaListingEvents"]) {
     titleGeneral
     summary
+    postDate
+    sectionHandle
   }
 }

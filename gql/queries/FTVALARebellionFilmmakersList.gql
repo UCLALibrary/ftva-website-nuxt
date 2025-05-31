@@ -12,6 +12,7 @@ query FTVALARebellionFilmmakersList {
     to: uri
     typeHandle
     sectionHandle
+    postDate
     title
     richText
     associatedFilms {

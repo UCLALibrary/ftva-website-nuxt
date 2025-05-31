@@ -41,6 +41,7 @@ if (!data.value.entry) {
 if (data.value.entry && import.meta.prerender) {
   // Call the composable to use the indexing function
   const { indexContent } = useContentIndexer()
+  data.value.entry.groupName = 'General Content'
   await indexContent(data.value.entry, path.replaceAll('/', '--'))
 }
 

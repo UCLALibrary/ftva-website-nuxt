@@ -7,7 +7,7 @@ query FTVAEventDetail($slug: [String!]) {
     sectionHandle
     slug
     uri
-
+    postDate
     image: ftvaImage {
       ...Image
     }
