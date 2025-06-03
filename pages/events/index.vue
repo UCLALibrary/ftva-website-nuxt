@@ -521,8 +521,8 @@ const parseFirstEventMonth = computed(() => {
         :section-title="heading.titleGeneral"
       />
       <SectionWrapper
-        class="main"
         ref="el"
+        class="main"
         theme="paleblue"
       >
         <TabList
