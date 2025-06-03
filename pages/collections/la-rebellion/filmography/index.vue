@@ -18,8 +18,6 @@ const routeNameToSectionMap = {
   '/collections/in-the-life/filmography': 'ftvaCollectionListingInTheLife'
 }
 
-// console.log('slug: ', routeNameToSlugMap[route.path])
-
 const { data, error } = await useAsyncData(`${route.path}-filmography`, async () => {
   // lookup slug based on routeNameToSlugMap
   const data = await $graphql.default.request(FTVACollectionFilmography, { section: routeNameToSectionMap[route.path] })
@@ -42,8 +40,6 @@ if (!data.value.entry) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-
-console.log('page data: ', page.value)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {

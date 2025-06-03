@@ -324,11 +324,15 @@ useHead({
   </main>
 </template>
 <style lang="scss" scoped>
+@import '~/assets/styles/slug-pages.scss';
+
 main.blue-main {
   background-color: var(--pale-blue);
 }
 
 .page-collections-list-of-items {
+
+  padding-bottom: 20px; // add 20px at bottom per UX review
 
   label.select-label,
   label.sort-label {
@@ -353,6 +357,10 @@ main.blue-main {
 
     div.description {
       max-width: 964px;
+    }
+
+    :deep(.section-teaser-card) {
+      justify-content: space-around;
     }
 
     .search-filters {
