@@ -192,6 +192,22 @@ const pageClass = computed(() => {
 
 .page-storytelling {
 
+  :deep(.card-with-image) {
+    .block-highlight {
+      max-width: 100%;
+    }
+
+    .block {
+      width: calc((100% - 32px) / 2);
+    }
+
+    @media #{$small} {
+      .block {
+        width: 100%;
+      }
+    }
+  }
+
   :deep(.section-post-small) {
     .section-title {
       @include ftva-h5;
