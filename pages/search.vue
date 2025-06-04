@@ -1,13 +1,16 @@
 <script setup lang="ts">
+import SvgGlyphX from 'ucla-library-design-tokens/assets/svgs/icon-ftva-xtag.svg'
 import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
+
+// SVG
 
 const route = useRoute()
 const documentsPerPage = 10
 const totalPages = ref<number>(0)
 const currentPage = ref<number>(1)
 const noResultsFound = ref<boolean>(false)
-const { aggregationsQuery, paginatedSiteSearchQuery } = useSiteSearch()
+const { paginatedSiteSearchQuery } = useSiteSearch()
 const searchResults = ref([] as any)
 
 interface AggregationBucket {
@@ -22,14 +25,27 @@ interface Option {
   queryOption: string
   label: string
   highlighted?: boolean // Optional class for styling, e.g., 'highlightFilter'
+  count?: number // Optional count for the filter group, if needed.
 }
 
 interface FilterResult {
   name: string // The name of the filter group (e.g., "Event Type").
   searchField: string // The corresponding search field in Elasticsearch.
   options: Option[] // The options available for this filter group.
+
 }
-const searchFilters = ref({} as FilterResult)
+const searchFilters = ref<FilterResult>({
+  name: 'groupName.keyword',
+  searchField: 'groupName.keyword',
+  options: [
+    { queryOption: 'Collections', label: 'Collections (0)', highlighted: false, count: 0 },
+    { queryOption: 'Articles', label: 'Articles (0)', highlighted: false, count: 0 },
+    { queryOption: 'Events', label: 'Events (0)', highlighted: false, count: 0 },
+    { queryOption: 'Series', label: 'Series (0)', highlighted: false, count: 0 },
+    { queryOption: 'General Content', label: 'General Content (0)', highlighted: false, count: 0 }
+  ]
+})
+
 async function searchES() {
   // console.log('searchES called')
   // console.log('userFilterSelection.value', userFilterSelection.value)
@@ -45,12 +61,14 @@ async function searchES() {
       currentPage.value,
       documentsPerPage,
       userFilterSelection.value,
-
+      sortField.value,
+      orderBy.value,
     )
     console.log('searchResults', results)
     if (results && results.hits && results.hits.hits.length > 0) {
       searchResults.value = results.hits.hits || []
-      // searchFilters.value = transformEsResponseToFilterResults(results.aggregations || {})
+      // searchFilters.value =
+      addHighlightStateAndCountToFilters(results.aggregations || {})
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
 
       noResultsFound.value = false
@@ -71,14 +89,30 @@ interface FilterItem {
 }
 const userFilterSelection = ref<FilterItem>({})
 const selectedSortFilters = ref({})
+const sortField = ref('title.keyword') // default sort field
+const orderBy = ref('asc') // default order by
+// SORT SETUP - uses static data
+const sortDropdownData = {
+  options: [
+    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'title.keyword', orderBy: 'asc' },
+    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'title.keyword', orderBy: 'desc' },
+    { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
+    { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
 // This watcher is called when router push updates the query params
 watch(
   () => route.query,
   (newVal, oldVal) => {
     userFilterSelection.value = parseFilters(route.query.filters || '')
+    console.log('userFilterSelection updated', userFilterSelection.value)
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     // set sort & page # from query params
-    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
+    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'title asc') }
+    sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value)?.sortBy // Extract the field name
+    orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value)?.orderBy // Extract the order by
     // console.log('Site search page ES newVal, oldVal', newVal, oldVal)
     // searchGenericQuery.value.queryText = route.query.q || ''
     // console.log('Site search page ES queryText updated', searchGenericQuery.value.queryText)
@@ -87,55 +121,49 @@ watch(
   }, { deep: true, immediate: true }
 )
 
-function addHighlightState(aggregations: Aggregations): FilterResult {
-  const highliftedFilters: Option[] = []
+function addHighlightStateAndCountToFilters(aggregations: Aggregations) { // : FilterResult
+  console.log('addHighlightState called with aggregations:', Object.entries(aggregations))
+  const updateFilters: Option[] = []
   for (const [key, value] of Object.entries(aggregations)) {
-    for (const item of userFilterSelection.value[key] || []) {
-      // Check if the item exists in the buckets
-      const bucket = value.buckets.find(bucket => bucket.key === item)
-      if (bucket) {
-        // If it exists, add a highlight state
-        highliftedFilters.push({
-          queryOption: bucket.key,
-          label: bucket.key + ' (' + bucket.doc_count + ')'
-        })
+    console.log('userFilterSelection', userFilterSelection.value[key])
+    if (userFilterSelection.value[key] === undefined) {
+      // If the userFilterSelection does not have this key, skip it
+      console.log('Skipping key:', key, 'as it is not in userFilterSelection')
+      if (Array.isArray(searchFilters.value?.options)) {
+        for (const option of searchFilters.value?.options) {
+          const bucket = value.buckets.find(bucket => bucket.key === option.queryOption)
+          if (bucket) {
+            option.count = bucket.doc_count // Update the count
+            option.label = bucket.key + ' (' + bucket.doc_count + ')' // Update the label with the count
+          }
+        }
+      }
+    } else {
+      console.log('Processing key:', key, 'with value:', value)
+      for (const item of userFilterSelection.value[key] || []) {
+        // Check if the item exists in the buckets
+        const bucket = value.buckets.find(bucket => bucket.key === item)
+        console.log('Checking bucket:', bucket, 'for item:', item)
+        if (bucket) {
+          // If it exists, add a highlight state
+          updateFilters.push({
+            queryOption: bucket.key,
+            count: bucket.doc_count,
+            label: bucket.key + ' (' + bucket.doc_count + ')'
+          })
+        }
+      }
+      for (const item of updateFilters) {
+        // Add the highlight state to the searchFilters
+        const existingOption = searchFilters.value.options.find(option => option.queryOption === item.queryOption)
+        if (existingOption) {
+          existingOption.label = item.label // Update the label with the highlight state
+          existingOption.highlighted = true // Add a highlighted property
+        }
       }
     }
   }
-  for (const item of highliftedFilters) {
-    // Add the highlight state to the searchFilters
-    const existingOption = searchFilters.value.options.find(option => option.queryOption === item.queryOption)
-    if (existingOption) {
-      existingOption.label = item.label // Update the label with the highlight state
-      existingOption.highlighted = true // Add a highlighted property
-    }
-  }
-
-  return searchFilters.value
-}
-
-function transformEsResponseToFilterResults(aggregations: Aggregations): FilterResult {
-  // Initialize the filterResults object
-  const filterResults: FilterResult = { name: '', searchField: '', options: [] }
-
-  // Iterate over the aggregations in the Elasticsearch response
-  for (const [key, value] of Object.entries(aggregations)) {
-    // Extract the bucket keys as options
-    const options = value.buckets.map(bucket => {
-      return {
-        queryOption: bucket.key,
-        label: bucket.key, // no count initally, will be updated later
-        highlighted: false // Initially set to false, will be updated later if needed
-      }
-    })
-
-    // Add the filter group to the array
-
-    filterResults.name = key
-    filterResults.searchField = 'groupName.keyword'
-    filterResults.options = options
-  }
-  return filterResults
+  console.log('Updated searchFilters:', JSON.stringify(searchFilters.value))
 }
 
 const parsedResults = computed(() => {
@@ -149,42 +177,23 @@ const parsedResults = computed(() => {
   })
 })
 
-// SORT SETUP - uses static data
-const sortDropdownData = {
-  options: [
-    { label: 'Title (A-Z)', value: 'asc', sortBy: 'title.keyword', orderBy: 'asc' },
-    { label: 'Title (Z-A)', value: 'desc', sortBy: 'title.keyword', orderBy: 'desc' },
-    { label: 'Date (oldest)', value: 'asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
-    { label: 'Date (newest)', value: 'desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
-  ],
-  label: 'Sort by',
-  fieldName: 'sortField'
-}
-// fetch filters for the page from ES after page loads in Onmounted hook on the client side
-async function setFilters() {
-  // const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
-
-  const searchAggsResponse: Aggregations = await aggregationsQuery()
-  // searchFilters.value is just a place holder which will have all the
-  // filter data for single select drop down in [{ label}]
-  searchFilters.value = transformEsResponseToFilterResults(
-    searchAggsResponse
-  )
-}
+const router = useRouter()
 function updateSort(newSort) {
   console.log('updateSort called with newSort:', newSort)
-  /*router.push({
+  router.push({
     path: route.path,
     query: {
       filters: route.query.filters,
       sort: newSort.sortField,
       page: route.query.page
     }
-  })*/
+  })
 }
-onMounted(async () => {
-  await setFilters()
-})
+
+function omitPageParam(query: Record<string, any>) {
+  const { page, ...rest } = query
+  return rest
+}
 </script>
 <template>
   <div class="search-page">
@@ -199,32 +208,41 @@ onMounted(async () => {
       <div class="sidebar">
         <div class="filters">
           <div class="filter-group">
-            <h3>{{ searchFilters.name }}</h3>
-            <NuxtLink
+            <h3>Filter Results</h3>
+            <template
               v-for="option in searchFilters.options"
               :key="option.queryOption"
-              class=""
-              :to="{ query: { ...route.query, filters: `groupName.keyword:(${option.queryOption})` } }"
             >
-              <!-- BlockTag component for display -->
+              <NuxtLink
+                v-if="option.count > 0"
+                class=""
+                :to="{ query: { ...omitPageParam(route.query), filters: `groupName.keyword:(${option.queryOption})` } }"
+              >
+                <!-- BlockTag component for display -->
+                <BlockTag
+                  :label="option.label"
+                  :is-secondary="!option.highlighted"
+                  :is-primary="option.highlighted"
+                >
+                  <!-- 'x' SVG only shows when selected -->
+                  <template v-if="option.highlighted">
+                    <SvgGlyphX class="close-icon" />
+                  </template>
+                </BlockTag>
+              </NuxtLink>
               <BlockTag
+                v-else
                 :label="option.label"
                 :is-secondary="!option.highlighted"
                 :is-primary="option.highlighted"
-              >
-                <!-- 'x' SVG only shows when selected -->
-                <template v-if="option.highlighted">
-                  <SvgGlyphX class="close-icon" />
-                </template>
-              </BlockTag>
-
-            </NuxtLink>
+              />
+            </template>
           </div>
         </div>
       </div>
       <div class="content">
         <div
-          v-if="noResultsFound"
+          v-if="noResultsFound && searchResults.length === 0"
           class="no-results"
         >
           <p>No results found.</p>
@@ -234,7 +252,7 @@ onMounted(async () => {
           class="results"
         >
           <p>Results will be displayed here.</p>
-          <div>
+          <div v-if="parsedResults.length > 0">
             <!-- Sort by -->
             <DropdownSingleSelect
               v-model:selected-filters="selectedSortFilters"

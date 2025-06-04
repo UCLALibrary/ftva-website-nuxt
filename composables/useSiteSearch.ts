@@ -18,30 +18,30 @@ export default function useSiteSearch() {
   async function aggregationsQuery() {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-      headers: {
-        Authorization: `ApiKey ${config.public.esReadKey}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        size: 0,
-        query: {
-          bool: {
-            must: {
-              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-            }
-          }
+        headers: {
+          Authorization: `ApiKey ${config.public.esReadKey}`,
+          'Content-Type': 'application/json',
         },
-        aggs: {
-          'Filter Results': {
-            terms: {
-              field: 'groupName.keyword',
-              size: 100
+        method: 'POST',
+        body: JSON.stringify({
+          size: 0,
+          query: {
+            bool: {
+              must: {
+                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
+              }
+            }
+          },
+          aggs: {
+            'Filter Results': {
+              terms: {
+                field: 'groupName.keyword',
+                size: 100
+              }
             }
           }
-        }
+        })
       })
-    })
     const data = await response.json()
     return data.aggregations
   }
@@ -87,7 +87,7 @@ export default function useSiteSearch() {
             },
           },
           aggs: {
-            'Filter Results': {
+            'groupName.keyword': {
               terms: {
                 field: 'groupName.keyword',
                 size: 100
@@ -233,7 +233,7 @@ export default function useSiteSearch() {
             },
           },
           aggs: {
-            'Filter Results': {
+            'groupName.keyword': {
               terms: {
                 field: 'groupName.keyword',
                 size: 100
