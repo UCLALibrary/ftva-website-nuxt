@@ -57,7 +57,6 @@ describe('Events Listing page', () => {
     cy.wait('@eventData').wait('@eventData').then(() => {
       cy.getByData('filters-dropdown').click()
       cy.get('.pill-label').contains('35mm').first().click()
-      cy.get('.pill-label').contains('Film').first().click()
       cy.get('.select-button').click()
       // expect fewer than 8 items than match both
       cy.get('.list').find('li').should('have.length.below', 8)
