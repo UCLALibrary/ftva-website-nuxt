@@ -65,7 +65,10 @@ useHead({
 </script>
 <template>
   <div class="page-component-wrapper">
-    <ListOfItemsCollection :page="page" />
+    <ListOfItemsCollection
+      data-test="list-of-items-collection"
+      :page="page"
+    />
   </div>
 </template>
 <style scoped>
