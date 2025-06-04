@@ -47,12 +47,12 @@ const searchFilters = ref<FilterResult>({
 })
 
 async function searchES() {
-  /*console.log('searchES called')
+  /* console.log('searchES called')
   console.log('userFilterSelection.value', userFilterSelection.value)
   console.log('currentPage.value', currentPage.value)
   console.log('documentsPerPage', documentsPerPage)
   console.log('route.query.filters', route.query.filters)
-  console.log('route.query.q', route.query.q)*/
+  console.log('route.query.q', route.query.q) */
 
   const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
   if (queryQ && queryQ !== '') {
@@ -114,9 +114,9 @@ watch(
     // set sort & page # from query params
     selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'title asc') }
     console.log('selectedSortFilters updated', selectedSortFilters.value)
-    sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value['sortField'])?.sortBy // Extract the field name
+    sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
     console.log('sortField updated', sortField.value)
-    orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value['sortField'])?.orderBy // Extract the order by
+    orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
     console.log('orderBy updated', orderBy.value)
     searchES()
   }, { deep: true, immediate: true }
