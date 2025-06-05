@@ -183,7 +183,15 @@ async function searchES() {
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, selectedFilters.value, selectedSortFilters.value.sortField)
+    let titleForSearch = ''
+    if (route.path.endsWith('filmography')) {
+      titleForSearch = route.path.split('/')[2] == 'la-rebellion' ? 'L.A. Rebellion' :
+        route.path.split('/')[2] == 'in-the-life' ? 'In the Life' : collectionTitle.value
+    } else {
+      titleForSearch = collectionTitle.value
+    }
+
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch, selectedFilters.value, selectedSortFilters.value.sortField)
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
 
@@ -357,10 +365,6 @@ main.blue-main {
 
     div.description {
       max-width: 964px;
-    }
-
-    :deep(.section-teaser-card) {
-      justify-content: space-around;
     }
 
     .search-filters {
