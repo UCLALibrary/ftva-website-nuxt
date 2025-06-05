@@ -213,6 +213,10 @@ const pageClass = computed(() => {
   }
 
   :deep(.section-wrapper-post-small) {
+    #additional-materials {
+      scroll-margin-top: 70px;
+    }
+
     .section-title {
       @include ftva-h5;
       color: $heading-grey;
