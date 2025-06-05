@@ -270,6 +270,10 @@ const parsedCollectionList = computed(() => {
   })
 })
 
+const pageClass = computed(() => {
+  return ['page', 'page-collection-type', route.path.replace('/collections/', '')]
+})
+
 definePageMeta({
   layout: 'default',
   path: '/collections/motion-picture',
@@ -291,7 +295,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-collection-type"
+    :class="pageClass"
   >
     <SectionWrapper theme="paleblue">
       <NavBreadcrumb
@@ -355,6 +359,7 @@ useHead({
       <DividerWayFinder />
       <SectionPostSmall
         :items="parsedGeneralContentPages"
+        :full-width="false"
         :section-title="parsedGeneralContentHeader.title"
         :section-summary="parsedGeneralContentHeader.summary"
       />
@@ -470,12 +475,8 @@ useHead({
     margin-top: 32px;
   }
 
-  :deep(.section-post-small .grid) {
-    max-width: unset;
-
-    .section-header {
-      margin-bottom: 32px;
-    }
+  :deep(.section-post-small .grid-wrapper) {
+    gap: 12px;
   }
 }
 </style>
