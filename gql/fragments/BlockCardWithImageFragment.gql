@@ -3,7 +3,7 @@ fragment BlockCardWithImageFragment on ElementInterface {
   typeHandle
   sectionTitle: titleGeneral
   sectionSummary: summary
-  ftvaFlexibilePageBlockCardWithImageType
+  cardWithImageType: ftvaFlexibilePageBlockCardWithImageType
   cardWithImage: ftvaFlexiblePageBlock_cardWithImage {
     id
     ... on ftvaFlexiblePageBlock_cardWithImage_internalContent_BlockType {

@@ -85,3 +85,13 @@
 :deep(.form .iframe) {
   max-width: 100%;
 }
+
+// Adjust flexible block links to navigate below sticky header
+.flexible-blocks.flexible-content {
+  :deep(.section-wrapper) {
+    >a {
+      position: relative;
+      top: -70px; //offset links in the document by the height of the sticky header
+    }
+  }
+}

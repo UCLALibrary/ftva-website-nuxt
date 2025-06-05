@@ -1,0 +1,58 @@
+/* Shared styles for GeneralContent and StoryTelling templates */
+
+  .two-column {
+    display: block;
+    margin-top: 32px;
+
+    :deep(.primary-column) {
+      width: 75%;
+
+      .primary-section-wrapper {
+        margin-top: 0;
+      }
+
+      .flexible-blocks.flexible-content {
+        .section-header.section-title {
+          color: $heading-grey;
+        }
+      }
+    }
+
+    :deep(.sidebar-column) {
+      display: none;
+    }
+  }
+
+  .ftva.page-anchor {
+    margin-top: 24px;
+    top: 65px; // Sticks anchor after sticky header
+  }
+
+  // Rich Text Image
+  :deep(figure.image--full) {
+    margin: 0;
+  }
+
+    @media (max-width: 1200px) {
+    .two-column {
+      padding-right: 0;
+      
+      :deep(.primary-column) {
+        .primary-section-wrapper {
+          padding-left: 0;
+        }
+      }
+    }
+  }
+
+    @media (max-width: 1024px) {
+    .two-column {
+      :deep(.primary-column) {
+        width: 100%;
+        
+        .primary-section-wrapper {
+          padding-right: 0;
+        }
+      }
+    }
+  }
