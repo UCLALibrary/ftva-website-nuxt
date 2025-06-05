@@ -174,12 +174,16 @@ const pageClass = computed(() => {
             :blocks="page.blocks"
             data-test="flexible-blocks-content"
           />
-          <SectionPostSmall
-            v-if="parsedAdditionalResources"
-            :items="parsedAdditionalResources"
-            :full-width="true"
+          <SectionWrapper
             section-title="Additional Materials"
-          />
+            class="section-wrapper-post-small"
+          >
+            <SectionPostSmall
+              v-if="parsedAdditionalResources"
+              :items="parsedAdditionalResources"
+              :full-width="true"
+            />
+          </SectionWrapper>
         </template>
       </TwoColLayoutWStickySideBar>
     </div>
@@ -208,7 +212,7 @@ const pageClass = computed(() => {
     }
   }
 
-  :deep(.section-post-small) {
+  :deep(.section-wrapper-post-small) {
     .section-title {
       @include ftva-h5;
       color: $heading-grey;
