@@ -71,6 +71,10 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path]
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading'
 })
@@ -86,7 +90,7 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-general-content"
+    :class="pageClass"
   >
     <div class="one-column">
       <NavBreadcrumb data-test="breadcrumb" />
@@ -135,19 +139,15 @@ onMounted(() => {
       >
         <template #primaryTop>
           <div v-if="page.formattedTitle">
-            <h3 class="page-title">
-              <rich-text
-                class="page-title-rich-text"
-                :rich-text-content="page.formattedTitle"
-              />
-            </h3>
+            <CardMeta :title="page?.formattedTitle" />
           </div>
 
           <div v-else>
-            <h3 class="page-title">
-              {{ page.title }}
-            </h3>
+            <CardMeta :title="page?.title" />
           </div>
+          <SectionWrapper theme="paleblue">
+            <DividerWayFinder />
+          </SectionWrapper>
         </template>
 
         <template #primaryMid>
@@ -162,113 +162,40 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+@import 'assets/styles/general-pages.scss';
+
 .page-general-content {
 
-  .page-title {
-    display: block;
-
-    .translation {
-      display: block;
-    }
-
-    @include ftva-h2;
-    color: $heading-grey;
-    margin: 0;
-
-    .page-title-rich-text {
-      :deep(.parsed-content) {
-        @include ftva-h2;
-        color: $heading-grey;
-      }
-    }
+  // Apply extra padding to single/solo breadcrumb that has no parent--to keep spacing below nav bar even with other pages
+  .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
+    padding: 5px 0;
   }
 
-  .two-column {
-    display: block;
-    margin-top: 32px;
-
-    .sidebar-column {
-      display: none;
+  // Rich Text Image
+  :deep(figure.image--full) {
+    a:after {
+      position: absolute;
+      right: 10px;
+      bottom: -12px;
     }
 
-    :deep(.primary-section-wrapper) {
-      margin-top: 0;
+    figcaption {
+      margin: 0px;
+      padding: 0px;
     }
-  }
-
-  // Apply spacing between flexible blocks
-  .flexible-blocks.flexible-content {
-    :deep(.section-wrapper) {
-      margin: var(--space-2xl) auto;
-    }
-
-    :deep(.section-header + div .section-wrapper) {
-      margin-top: 24px;
-    }
-  }
-
-  // Flexible Blocks Rich Text Styles
-  // added during UX review of page 4/4/2025 - TODO move to FTVA FlexibleBlocks theme?
-  .flexible-blocks.flexible-content {
-
-    :deep(.section-wrapper) {
-      >a {
-        position: relative;
-        top: -70px; //offset links in the document by the height of the sticky header
-      }
-    }
-
-    :deep(figure.image--full) {
-      margin-left: 0px;
-
-      a:after {
-        position: absolute;
-        right: 0px;
-        bottom: -12px;
-      }
-
-      figcaption {
-        margin: 0px;
-        padding: 0px;
-      }
-    }
-  }
-
-  // END added rules
-
-  .ftva.page-anchor {
-    margin-top: 24px;
-    top: 65px; // Sticks anchor after sticky header
   }
 
   @media (max-width: 1200px) {
-    .two-column {
-      :deep(.primary-section-wrapper) {
-        padding-left: 0;
-      }
-
-      :deep(.primary-column) {
-        width: 80%;
-      }
+    .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
+      padding: 16px 0;
     }
-  }
 
-  @media (max-width: 1024px) {
-    .two-column {
-      :deep(.primary-column) {
-        width: 100%;
-      }
-    }
-  }
-
-  @media (max-width: 900px) {
-    .flexible-blocks.flexible-content {
-      :deep(.section-header + div .section-wrapper) {
-        margin-top: 0;
+    :deep(figure.image--full) {
+      a:after {
+        right: 0;
       }
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>

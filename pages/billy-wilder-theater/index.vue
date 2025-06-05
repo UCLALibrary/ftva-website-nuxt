@@ -108,7 +108,7 @@ useHead({
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-billy-wilder-theater"
+    class="page page-detail page-detail--paleblue billy-wilder-theater"
   >
     <div class="one-column">
       <ResponsiveImage
@@ -258,7 +258,9 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-.page-billy-wilder-theater {
+@import 'assets/styles/slug-pages.scss';
+
+.billy-wilder-theater {
   .one-column {
     padding-top: 80px;
   }
@@ -449,6 +451,4 @@ useHead({
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>
