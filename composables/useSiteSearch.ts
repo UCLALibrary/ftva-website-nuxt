@@ -119,12 +119,12 @@ export default function useSiteSearch() {
     /**
        * { "_score": "desc" },
        */
-    parseQuery.sort[0] = {}
+    /* parseQuery.sort[0] = {}
     parseQuery.sort[0]._score = {
       order: 'desc'
-    }
-    parseQuery.sort[1] = {}
-    parseQuery.sort[1][sortField] = {
+    } */
+    parseQuery.sort[0] = {}
+    parseQuery.sort[0][sortField] = {
       order: orderBy
     }
 
