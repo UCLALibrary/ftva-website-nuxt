@@ -384,6 +384,92 @@ useHead({
     }
   }
 
+  :deep(.lightbox) {
+    overflow: hidden;
+  }
+
+  :deep(.carousel),
+  :deep(.lightbox .media-item) {
+    height: calc(var(--media-width) / 1.984);
+  }
+
+  :deep(.inline.lightbox .button-prev) {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    opacity: 0.7;
+  }
+
+  :deep(.inline.lightbox .button-next) {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    opacity: 0.7;
+  }
+
+  :deep(.responsive-image .media),
+  :deep(.responsive-image) {
+    position: initial;
+    max-height: 500px;
+  }
+
+  :deep(.responsive-image .sizer) {
+    padding-bottom: 0 !important;
+  }
+
+  :deep(.block-card-three-column .image-block),
+  :deep(.block-card-three-column .image-block .image),
+  :deep(.block-highlight .image .media),
+  :deep(.block-highlight .image) {
+    aspect-ratio: 1.69 / 1;
+  }
+
+  :deep(.block-card-three-column .day) {
+    color: black;
+    font-family: var(--font-primary);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.8px;
+  }
+
+  :deep(.block-card-three-column .meta .floating-slot) {
+    flex-wrap: wrap;
+    column-gap: 10px;
+    row-gap: 8px;
+  }
+
+  @media(min-width: 1025px) {
+    :deep(.section-teaser-list) {
+      padding: var(--space-xl);
+    }
+
+    :deep(.section-teaser-list .list-item) {
+      border-bottom: 1px solid $page-blue;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    :deep(.block-card-three-column) {
+      gap: 45px;
+    }
+
+    :deep(.block-card-three-column .day-month-date) {
+      flex: 0.7;
+    }
+
+    :deep(.block-card-three-column .card-meta) {
+      padding: 0;
+    }
+
+    :deep(.block-card-three-column .meta .title) {
+      font-size: 30px;
+      line-height: 32px;
+    }
+  }
+
   .other-series-section {
     &:has(> :last-child:nth-child(3)) {
       /* if section has 3 elements */
@@ -401,6 +487,22 @@ useHead({
 
     .two-column {
       padding-right: 0;
+    }
+  }
+
+  @media #{$medium} {
+
+    :deep(.carousel),
+    :deep(.lightbox .media-item) {
+      height: calc(var(--media-width) / 1.575);
+    }
+
+    :deep(.one-column .responsive-image) {
+      aspect-ratio: 1.69/1;
+    }
+
+    :deep(.card-meta .title-no-link) {
+      font-size: 34px;
     }
   }
 }
