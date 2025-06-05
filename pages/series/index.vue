@@ -66,6 +66,8 @@ watch(data, (newVal, oldVal) => {
 })
 // GQL - End
 
+
+// TODO replace with infinite scroll composable
 // STATE MANAGEMENT
 const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
 const desktopSeries = ref([]) // Desktop series list

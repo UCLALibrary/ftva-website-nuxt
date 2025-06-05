@@ -36,6 +36,7 @@ if (attrs.page && import.meta.prerender) {
 }
 
 // "STATE"
+// TODO implement infinite scroll composable
 const currentPage = ref(1)
 const documentsPerPage = 15 // show 15 search results at a time
 const totalPages = ref(0)

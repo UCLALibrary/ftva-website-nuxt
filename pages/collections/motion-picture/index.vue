@@ -82,6 +82,8 @@ watch(data, (newVal, oldVal) => {
   generalContentPages.value = page.value.associatedGeneralContentPagesFtva
 })
 
+
+// TODO replace with infinite scroll composable
 // "STATE"
 const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
 
