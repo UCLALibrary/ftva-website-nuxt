@@ -5,6 +5,7 @@ query FTVACollectionDetail($slug: [String!]) {
     id
     typeHandle
     sectionHandle
+    postDate
     imageCarousel {
       ... on imageCarousel_imageCarousel_BlockType {
         image {

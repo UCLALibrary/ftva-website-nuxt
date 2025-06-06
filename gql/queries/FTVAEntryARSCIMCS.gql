@@ -6,6 +6,7 @@ query FTVAARSCIMCS($section: [String!]) {
     id
     typeHandle
     sectionHandle
+    postDate
     title: titleGeneral
     summary
     displaySummary

@@ -8,6 +8,7 @@ query FTVACollectionStory($slug: [String!]){
     slug
     uri
     sectionHandle
+    postDate
     title
     summary
     ftvaImage {
