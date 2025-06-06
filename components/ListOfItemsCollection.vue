@@ -131,11 +131,10 @@ function parseAggRes(response: Aggregations) {
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
-
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
     'ftvaItemInCollection',
-    collectionTitle.value // change it what is being used on this page template
+    titleForSearch.value // change it what is being used on this page template
   )
   // searchFilters.value is just a place holder which will have all the
   // filter data for single select drop down in [{ label}]
@@ -170,6 +169,15 @@ function updateFilters(newFilter) {
     })
   }
 }
+const titleForSearch = computed(() => {
+  // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
+  if (route.path.endsWith('filmography')) {
+    return route.path.split('/').includes('la-rebellion') ? 'L.A. Rebellion' :
+      route.path.split('/').includes('in-the-life') ? 'In the Life' : collectionTitle.value
+  } else {
+    return collectionTitle.value
+  }
+})
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
@@ -184,15 +192,7 @@ async function searchES() {
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
-    let titleForSearch = ''
-    if (route.path.endsWith('filmography')) {
-      titleForSearch = route.path.split('/')[2] == 'la-rebellion' ? 'L.A. Rebellion' :
-        route.path.split('/')[2] == 'in-the-life' ? 'In the Life' : collectionTitle.value
-    } else {
-      titleForSearch = collectionTitle.value
-    }
-
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch, selectedFilters.value, selectedSortFilters.value.sortField)
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
 
@@ -257,21 +257,21 @@ useHead({
       <NavBreadcrumb
         data-test="breadcrumb"
         class="breadcrumb"
-        :title="$attrs.page.title"
+        :title="attrs.page.title"
         to="/collections"
       />
       <!-- TODO scrollElem used for infinite scrolling -->
       <SectionWrapper
         ref="scrollElem"
-        :section-title="$attrs.page.title"
+        :section-title="attrs.page.title"
         class="header"
         theme="paleblue"
         data-test="complex-collections-page-title"
       >
         <RichText
-          v-if="$attrs.page?.ftvaHomepageDescription"
+          v-if="attrs.page?.ftvaHomepageDescription"
           class="description"
-          :rich-text-content="$attrs.page.ftvaHomepageDescription"
+          :rich-text-content="attrs.page.ftvaHomepageDescription"
         />
         <DividerWayFinder />
 

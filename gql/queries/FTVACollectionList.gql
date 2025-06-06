@@ -2,8 +2,10 @@
 
 # TODO remove some of these fields?
 query FTVACollectionList {
-  entries(section: ["ftvaCollection"], orderBy: "postDate") {
+  entries(section: ["ftvaCollectionStory","ftvaCollection"], orderBy: "postDate") {
     typeHandle
+    sectionHandle
+    uri
     id
     title
     slug
