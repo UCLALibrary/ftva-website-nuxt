@@ -86,6 +86,12 @@
   max-width: 100%;
 }
 
+// turn default cursor to pointers for dropdowns
+:deep(.button-dropdown-modal-wrapper.is-expanded),
+:deep(label.pill-label) {
+  cursor: pointer;
+}
+
 // Adjust flexible block links to navigate below sticky header
 .flexible-blocks.flexible-content {
   :deep(.section-wrapper) {
