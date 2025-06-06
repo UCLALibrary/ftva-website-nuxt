@@ -204,7 +204,24 @@ function omitParam(query: any, option: Option) {
 
 </script>
 <template>
-  <div class="search-page">
+  <main class="page page-detail page-detail--paleblue search-page">
+    <SectionWrapper
+      ref="scrollElem"
+      theme="paleblue"
+    >
+      <NavBreadcrumb
+        class="breadcrumb"
+        data-test="breadcrumb"
+        title="Search Results"
+        to="/"
+        parent-title="Home"
+      />
+      <h1>Search Page</h1>
+      <p>This is the search page.</p>
+      <div>
+        <NavSearch />
+      </div>
+    </SectionWrapper>
     <div class="one-column">
       <h1>Search Page</h1>
       <p>This is the search page.</p>
@@ -299,7 +316,7 @@ function omitParam(query: any, option: Option) {
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 <style scoped>
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
@@ -308,6 +325,7 @@ function omitParam(query: any, option: Option) {
 
 .search-page {
   .one-column {
+
 
     /*max-width: var(--max-width);
     margin: 0 auto;
@@ -329,9 +347,9 @@ function omitParam(query: any, option: Option) {
       padding-bottom: 36px;
     }
 
-    width: 100%;
-    background-color: var(--pale-blue);
-    margin: 0 auto;
+
+
+    /*margin: 0 auto;*/
   }
 
   .two-column {
@@ -357,4 +375,6 @@ function omitParam(query: any, option: Option) {
     }
   }
 }
+
+@import 'assets/styles/slug-pages.scss';
 </style>
