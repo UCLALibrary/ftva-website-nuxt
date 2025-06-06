@@ -5,6 +5,7 @@ query FTVAArticleList($slug: [String!]) {
     id
     typeHandle
     sectionHandle
+    postDate
     title: titleGeneral
     summary
     displaySummary

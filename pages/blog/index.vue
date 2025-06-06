@@ -38,7 +38,10 @@ if (data.value.entry && import.meta.prerender) {
     const doc = {
       title: data.value.entry.title,
       text: data.value.entry.summary,
-      uri: '/blog'
+      uri: '/blog',
+      sectionHandle: data.value.entry.sectionHandle,
+      groupName: 'Articles',
+      postDate: data.value.entry.postDate,
     }
     // Index the articles data using the composable during static build
     await indexContent(doc, 'article-listing')

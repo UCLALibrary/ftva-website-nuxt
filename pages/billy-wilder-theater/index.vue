@@ -38,6 +38,9 @@ if (data.value.entry && import.meta.prerender) {
     const doc = {
       title: data.value.entry.titleGeneral,
       text: data.value.entry.summary,
+      uri: '/billy-wilder-theater',
+      sectionHandle: data.value.entry.sectionHandle,
+      groupName: 'General Content',
     }
     // Index the data using the composable during static build
     await indexContent(doc, 'billy-wilder-theater')

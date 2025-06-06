@@ -40,7 +40,7 @@ export default defineNuxtConfig({
       failOnError: false,
       concurrency: 50,
       interval: 1000,
-      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/'],
+      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/', '/search/'],
     },
     hooks: {
       'prerender:generate'(route) {
@@ -227,8 +227,10 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     sharedPrerenderData: true
   } */
+
   experimental: {
-    sharedPrerenderData: true,
+    sharedPrerenderData: true, // Improves nuxt build performance
+    buildCache: true, // Improves nuxt build performance
   },
 
   compatibilityDate: '2025-03-19',

@@ -6,6 +6,7 @@ query FTVABillyWilder {
     slug
     uri
     sectionHandle
+    postDate
     title: titleGeneral
     summary
     image: ftvaImage {
