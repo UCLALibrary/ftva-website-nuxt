@@ -49,6 +49,7 @@ useHead({
         <NuxtLink :to="`/${collection?.to}`">
           {{ collection?.title }}
         </NuxtLink> <br>
+        <h4>sectionHandle: <code>{{ collection?.sectionHandle }}</code></h4>
         <h4>ftvaCollectionType: <code>{{ collection?.ftvaCollectionType }}</code></h4>
         <h4>richText: <code>{{ collection?.richText }}</code></h4>
         <h4>videoEmbed: <code>{{ collection?.videoEmbed }}</code></h4>

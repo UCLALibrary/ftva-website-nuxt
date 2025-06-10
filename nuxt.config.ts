@@ -84,6 +84,8 @@ export default defineNuxtConfig({
           routes.add('/collections/motion-picture')
           routes.add('/collections/television')
           routes.add('/collections/watch-listen-online')
+          routes.add('/collections/la-rebellion/filmography')
+          routes.add('/collections/in-the-life/filmography')
         }
         // eslint-disable-next-line no-console
         console.log('prerender:routes ctx.routes', routes)
