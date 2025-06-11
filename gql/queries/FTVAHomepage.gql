@@ -17,6 +17,9 @@ query FTVAHomepage {
           id
           description
           urlLink
+          image {
+            ...Image
+          }
         }
       }
       ftvaFeaturedEventsSection {
@@ -27,11 +30,25 @@ query FTVAHomepage {
         featuredEvents {
          ... on ftvaEvent_ftvaEvent_Entry {
           id
-          eventTitle
-          title
-          startDateWithTime
-          endDateWithTime
+          sectionHandle
           uri
+          workshopOrEventSeriesType
+          title
+          eventTitle
+          startDateWithTime
+              @formatDateTime(
+                  format: "Y-m-d\\TH:i"
+                  timezone: "America/Los_Angeles"
+              )
+          endDateWithTime
+              @formatDateTime(
+                  format: "Y-m-d\\TH:i"
+                  timezone: "America/Los_Angeles"
+              )
+          uri
+          ftvaImage {
+            ...Image
+          }
         }
         }
         }
@@ -40,6 +57,9 @@ query FTVAHomepage {
         id 
         title
         uri
+        ftvaImage {
+          ...Image
+        }
       }
       ftvaFeaturedCollectionsSection {
         ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
@@ -48,10 +68,21 @@ query FTVAHomepage {
           sectionDescription
           seeAllText
           seeAllLink
-          featuredCollections(featuredCollections: "") {
+          featuredCollections {
             id
             title
             uri
+            ftvaImage {
+              ...Image
+            }
+            imageCarousel {
+              ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                  ...Image
+                }
+                altText
+              }
+            }
           }
         }
       }
@@ -63,6 +94,9 @@ query FTVAHomepage {
             id
             title
             uri
+            ftvaImage {
+              ...Image
+            }
           }
         }
       }
