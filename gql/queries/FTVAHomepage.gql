@@ -1,0 +1,71 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVAHomepage {
+  entry(section: ["ftvaHomepage"]) {
+    id
+    title
+    ... on ftvaHomepage_ftvaHomepage_Entry {
+      id
+      summary
+      sectionTitle
+      richTextSimplified
+      ftvaRelatedResources
+      visitAndLearnSectionTitle
+      ftvaQuickLinks {
+        ... on ftvaQuickLinks_quickLink_BlockType {
+          titleGeneral
+          id
+          description
+          urlLink
+        }
+      }
+      ftvaFeaturedEventsSection {
+        ... on ftvaFeaturedEventsSection_featuredEventsSection_BlockType {
+        id
+        sectionTitle
+        seeAllText
+        featuredEvents {
+         ... on ftvaEvent_ftvaEvent_Entry {
+          id
+          eventTitle
+          title
+          startDateWithTime
+          endDateWithTime
+          uri
+        }
+        }
+        }
+      }
+      ftvaFeaturedEntries {
+        id 
+        title
+        uri
+      }
+      ftvaFeaturedCollectionsSection {
+        ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
+          id
+          sectionTitle
+          sectionDescription
+          seeAllText
+          seeAllLink
+          featuredCollections(featuredCollections: "") {
+            id
+            title
+            uri
+          }
+        }
+      }
+      ftvaFeaturedArticlesSection {
+        ... on ftvaFeaturedArticlesSection_ftvaFeaturedArticlesSection_BlockType {
+          seeAllText
+          sectionTitle
+          featuredArticles {
+            id
+            title
+            uri
+          }
+        }
+      }
+    }
+  }
+}
