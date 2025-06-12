@@ -144,7 +144,8 @@ const parsedEventSeries = computed(() => {
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
       ongoing: obj._source.ongoing,
-      image: parseImage(obj)
+      image: parseImage(obj),
+      sectionHandle: obj._source.sectionHandle,
     }
   })
 })
@@ -301,7 +302,7 @@ watch(() => route.query,
         <SectionPagination
           v-if="
             totalPages
-              !== 1 && !isMobile"
+            !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"

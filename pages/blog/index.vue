@@ -138,7 +138,8 @@ const parsedArticles = computed(() => {
       description: obj._source.aboutTheAuthor,
       startDate: obj._source.postDate,
       endDate: obj._source.postDate,
-      image: parseImage(obj)
+      image: parseImage(obj),
+      sectionHandle: obj._source.sectionHandle,
     }
   })
 })
