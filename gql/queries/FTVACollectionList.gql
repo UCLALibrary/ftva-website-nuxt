@@ -1,4 +1,4 @@
-# import "../gql/fragments/Image.gql"
+#import "../gql/fragments/Image.gql"
 
 query FTVACollectionList {
   entry(section: ["ftvaListingExploreCollections"]) {
@@ -9,23 +9,23 @@ query FTVACollectionList {
     title: titleGeneral
     summary
     displaySummary
-    # heroImage {
-    #   ... on heroImage_heroImage_BlockType {
-    #     image {
-    #       ...Image
-    #     }
-    #   }
-    # }
+    heroImage {
+      ... on heroImage_heroImage_BlockType {
+         image {
+          ...Image
+        }
+      }
+    }
 
     # Hearst Collection
     sectionTitle
     sectionDescription: richTextSimplified
     sectionUri: ftvaRelatedResources
-    # sectionImage: image {
-    #   ... on mediaAndDocuments_Asset {
-    #     ...Image
-    #   }
-    # }
+    sectionImage: image {
+      ... on mediaAndDocuments_Asset {
+        ...Image
+      }
+    }
 
     ... on ftvaListingExploreCollections_ftvaListingExploreCollections_Entry {
 
@@ -38,17 +38,17 @@ query FTVACollectionList {
           featuredCollections {
             title
             uri
-            # image: ftvaImage {
-            #   ...Image
-            # }
-            # imageCarousel {
-            #   ... on imageCarousel_imageCarousel_BlockType {
-            #     image {
-            #       ...Image
-            #     }
-            #     creditText
-            #   }
-            # }
+            image: ftvaImage {
+              ...Image
+            }
+            imageCarousel {
+              ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                  ...Image
+                }
+                creditText
+              }
+            }
           }
         }
       }
@@ -60,9 +60,9 @@ query FTVACollectionList {
           featuredResources {
             title
             uri
-            # image: ftvaImage {
-            #   ...Image
-            # }
+            image: ftvaImage {
+              ...Image
+            }
           }
         }
       }
@@ -74,9 +74,9 @@ query FTVACollectionList {
           collectionsInformation {
             title
             uri
-            # image: ftvaImage {
-            #   ...Image
-            # }
+            image: ftvaImage {
+              ...Image
+            }
           }
         }
       }
