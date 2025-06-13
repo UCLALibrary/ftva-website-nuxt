@@ -8,6 +8,7 @@ import parseImage from '@/utils/parseImage'
 const route = useRoute()
 const documentsPerPage = 10
 const totalPages = ref<number>(0)
+const totalResults = ref<number>(0)
 const currentPage = ref<number>(1)
 const noResultsFound = ref<boolean>(false)
 const { paginatedSiteSearchQuery } = useSiteSearch()
@@ -65,12 +66,14 @@ async function searchES() {
       // console.log('Search results found:', results.hits.hits.length)
       searchResults.value = results.hits.hits || []
       searchFilters.value = addHighlightStateAndCountToFilters(results.aggregations || {})
+      totalResults.value = results.hits.total.value
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
 
       noResultsFound.value = false
     } else {
       noResultsFound.value = true
       totalPages.value = 0
+      totalResults.value = 0
       searchFilters.value = resetSearchFilters()
       searchResults.value = []
       // if (!isMobile.value) totalPages.value = 0
@@ -79,6 +82,7 @@ async function searchES() {
   } else {
     searchResults.value = []
     noResultsFound.value = true
+    totalResults.value = 0
     totalPages.value = 0
     searchFilters.value = resetSearchFilters()
     // console.log('No query provided, resetting search results and filters')
@@ -211,8 +215,12 @@ function omitParam(query: any, option: Option) {
     }
   }
 }
+const startCount = computed(() => {
+  if ((currentPage.value - 1) * documentsPerPage === 0) return 1
+  return (currentPage.value - 1) * documentsPerPage + 1
+})
 const totalResultsDisplay = computed(() => {
-  return `${currentPage.value} - ${totalPages.value} of ${searchResults.value.length} Results`
+  return `${startCount.value} - ${((currentPage.value - 1) * documentsPerPage) + searchResults.value.length} of ${totalResults.value} Results`
 })
 
 </script>
@@ -478,7 +486,7 @@ const totalResultsDisplay = computed(() => {
 
       :deep(.ftva.block-staff-article-item:last-child) {
         .date {
-          height: unset;
+          height: auto;
         }
       }
 

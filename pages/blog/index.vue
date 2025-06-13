@@ -136,8 +136,8 @@ const parsedArticles = computed(() => {
       title: obj._source.title,
       category: parseArticleCategories(obj._source.articleCategories),
       description: obj._source.aboutTheAuthor,
-      startDate: obj._source.postDate,
-      endDate: obj._source.postDate,
+      date: obj._source.postDate,
+
       image: parseImage(obj),
       sectionHandle: obj._source.sectionHandle,
     }
@@ -347,6 +347,10 @@ useHead({
   .articles-list-wrapper {
     background-color: var(--color-white);
     margin-bottom: 20px;
+  }
+
+  :deep(.ftva.block-staff-article-item:last-child .date) {
+    height: auto;
   }
 
   .ftva.section-pagination {
