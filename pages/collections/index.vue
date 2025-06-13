@@ -58,6 +58,34 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+const parsedHeroImage = computed(() => {
+  return page.value.heroImage[0].image
+})
+
+const showPageSummary = computed(() => {
+  return page.value?.summary && page.value?.displaySummary === 'yes'
+})
+
+const parsedCollections = computed(() => {
+  return page.value.collections.map((item) => {
+    const test = item.featuredCollections.map((inner) => {
+      console.log('carousel: ', inner.imageCarousel[0]?.image[0])
+      return {
+        ...inner,
+        to: inner.uri,
+        image: inner.imageCarousel[0]?.image[0]
+      }
+    })
+
+    return {
+      ...item,
+      featuredCollections: test
+    }
+  })
+})
+
+// console.log('collections: ', parsedCollections.value)
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -73,15 +101,143 @@ useHead({
 <template>
   <main
     id="main"
-    class="page"
+    class="page page-detail page-explore-collections"
   >
-    <SectionWrapper>
-      <h1>{{ page.title }}</h1>
-      <pre style="text-wrap: auto;">{{ page }}</pre>
+    <div class="one-column">
+      <ResponsiveImage
+        v-if="parsedHeroImage.length === 1"
+        :media="parsedHeroImage[0]"
+        :aspect-ratio="43.103"
+        data-test="hero-image"
+      />
+      <SectionWrapper
+        :section-title="page.title"
+        class="header"
+        theme="paleblue"
+      >
+        <template v-if="showPageSummary">
+          <RichText :rich-text-content="page.summary" />
+        </template>
+      </SectionWrapper>
+    </div>
+
+    <SectionWrapper
+      class="dividers"
+      theme="paleblue"
+    >
+      <DividerWayFinder />
     </SectionWrapper>
+
+    <SectionWrapper
+      v-for="collection of parsedCollections"
+      :key="collection.sectionTitle"
+      :section-title="collection.sectionTitle"
+      :section-summary="collection.sectionDescription"
+      class="featured-collections"
+      theme="paleblue"
+    >
+      <template #top-right>
+        <nuxt-link :to="collection.uri">
+          View All <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
+
+      <ScrollWrapper>
+        <SectionTeaserCard
+          :items="collection.featuredCollections"
+          :grid-layout="false"
+        />
+      </ScrollWrapper>
+      <DividerWayFinder />
+    </SectionWrapper>
+    <!--  -->
+    <!--  -->
   </main>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
+
+.page-explore-collections {
+  position: relative;
+  background-color: var(--pale-blue);
+
+  .one-column {
+    padding-top: 80px;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .header>:deep(.section-header) {
+    margin-top: 20px;
+    margin-bottom: 0px;
+
+    h2.section-title {
+      color: $heading-grey;
+    }
+  }
+
+  .dividers {
+    // padding-block: 0;
+    padding-top: 0;
+
+    .divider-way-finder {
+      margin-block: 0;
+    }
+  }
+
+  .section-wrapper.featured-collections {
+    padding-top: 0;
+
+    :deep(.section-title) {
+      color: $heading-grey;
+    }
+
+    :deep(.rich-text.section-summary) {
+      max-width: 100%;
+    }
+
+    .section-teaser-card {
+      background-color: var(--pale-blue);
+
+      :deep(.card) {
+        width: 320px;
+      }
+    }
+
+    .divider-way-finder {
+      margin-bottom: 0;
+    }
+  }
+
+  @media #{$medium} {
+    .one-column {
+      padding-top: 60px;
+    }
+  }
+
+  @media #{$small} {
+    .featured-collections {
+      :deep(.section-header) {
+        display: flex;
+        flex-direction: column;
+        row-gap: 8px;
+      }
+
+      :deep(.section-link) {
+        position: static;
+        margin-top: 0;
+        margin-bottom: 24px;
+        order: 1;
+      }
+    }
+  }
+}
 </style>

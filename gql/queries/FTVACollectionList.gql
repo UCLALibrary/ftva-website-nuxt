@@ -30,7 +30,7 @@ query FTVACollectionList {
 
     ... on ftvaListingExploreCollections_ftvaListingExploreCollections_Entry {
 
-      featuredCollections: ftvaFeaturedCollectionsSection {
+      collections: ftvaFeaturedCollectionsSection {
         ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
           sectionTitle
           sectionDescription
