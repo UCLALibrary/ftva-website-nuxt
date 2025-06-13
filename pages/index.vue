@@ -266,13 +266,16 @@ const parsedNowShowing = computed(() => {
         <DividerWayFinder />
       </SectionWrapper>
       <!-- Visit and Learn -->
-      <SectionWrapper section-title="Visit and Learn">
-        <div
-          v-for="(item, index) in page.ftvaQuickLinks"
-          v-if="isMobile"
-          :key="index"
-        >
+      <SectionWrapper
+        section-title="
+        Visit
+        and
+        Learn"
+      >
+        <div v-if="isMobile">
           <BlockPostSmall
+            v-for="(item, index) in page.ftvaQuickLinks"
+            :key="index"
             :to="item.urlLink"
             :image="item.image[0]"
           >
