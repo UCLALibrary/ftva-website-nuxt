@@ -170,7 +170,7 @@ const parsedResults = computed(() => {
     return {
       ...obj._source,
       category: obj._source.groupName !== 'Series' ? obj._source.groupName.replace(/s$/, '') : obj._source.groupName,
-      date: obj._source.postDate || '',
+      date: obj._source.sectionHandle !== 'ftvaEvent' && obj._source.sectionHandle !== 'ftvaEventSeries' ? obj._source.postDate || '' : '', // TODO rethink date filed in blockstafarticlelist component, refactor to use another customslot for fva dates for postdate in sectionstaffarticlelist
       startDate: obj._source.startDate || '',
       enddate: obj._source.endDate || '',
       ongoing: obj._source.ongoing || false,
@@ -231,19 +231,19 @@ const totalResultsDisplay = computed(() => {
         parent-title="Home"
       />
       <h3
-        class="search-title"
         v-if="route.query.q"
-      >Search Results for <span class="search-keywords">"{{ route.query.q }}"</span></h3>
-
+        class="search-title"
+      >
+        Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
+      </h3>
 
       <NavSearch />
-
     </SectionWrapper>
     <div class="two-column">
       <div class="sidebar">
-
-
-        <h4 class="filter-results">Filter Results</h4>
+        <h4 class="filter-results">
+          Filter Results
+        </h4>
 
         <div
           v-for="option in searchFilters.options"
@@ -272,8 +272,6 @@ const totalResultsDisplay = computed(() => {
             :is-secondary="!option.highlighted"
             :is-primary="option.highlighted"
           />
-
-
         </div>
       </div>
       <div class="content">
@@ -281,12 +279,16 @@ const totalResultsDisplay = computed(() => {
           v-if="noResultsFound && parsedResults.length === 0"
           class="no-results"
         >
-          <h4 class="no-results-title">No results found.</h4>
-          <p class="no-results-text">Not finding what you’re looking for? Try searching for another term or search using
-            UC Library Search</p>
+          <h4 class="no-results-title">
+            No results found.
+          </h4>
+          <p class="no-results-text">
+            Not finding what you’re looking for? Try searching for another term or search using
+            UC Library Search
+          </p>
           <button-link
             label="UC Library Search"
-            iconName="svg-arrow-right"
+            icon-name="svg-arrow-right"
             to="https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,"
           />
         </div>
@@ -303,10 +305,10 @@ const totalResultsDisplay = computed(() => {
                 :label="sortDropdownData.label"
                 :options="sortDropdownData.options"
                 :field-name="sortDropdownData.fieldName"
+                class="sort-dropdown"
                 @update-display="(newSort) => {
                   updateSort(newSort)
                 }"
-                class="sort-dropdown"
               />
               <BlockTag
                 class="total-results"
@@ -330,7 +332,7 @@ const totalResultsDisplay = computed(() => {
             </div-->
 
             <SectionStaffArticleList
-              :items="c"
+              :items="parsedResults"
               class="search-results-list"
             />
 
@@ -339,17 +341,14 @@ const totalResultsDisplay = computed(() => {
               :pages="totalPages"
               :initial-current-page="currentPage"
             />
-            <code> {{ parsedResults }}</code>
-
           </div>
         </div>
       </div>
     </div>
     <SectionWrapper
-      theme="paleblue"
       v-if="!noResultsFound && parsedResults.length !== 0"
+      theme="paleblue"
     >
-
       <block-call-to-action
         class=""
         v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-find' }"
@@ -419,8 +418,6 @@ const totalResultsDisplay = computed(() => {
     background-color: $white;
   }
 
-
-
   .two-column {
     display: flex;
     flex-direction: row;
@@ -479,9 +476,10 @@ const totalResultsDisplay = computed(() => {
         }
       }
 
-      :deep(.ftva.block-staff-article-item .date) {
-        position: unset;
-        bottom: unset;
+      :deep(.ftva.block-staff-article-item:last-child) {
+        .date {
+          height: unset;
+        }
       }
 
       .ftva.section-pagination {
