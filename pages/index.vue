@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
+import { useWindowSize } from '@vueuse/core'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
 
 const { $graphql } = useNuxtApp()
+const route = useRoute()
+
+// STATE
+const isMobile = ref(false)
 
 const { data, error } = await useAsyncData('home-page', async () => {
   const data = await $graphql.default.request(FTVAHomepage)
@@ -28,6 +33,14 @@ watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
 })
+
+// HANDLE WINDOW SIZING
+const { width } = useWindowSize()
+watch(width, (newWidth) => {
+  const wasMobile = isMobile.value
+
+  isMobile.value = newWidth <= 750
+}, { immediate: true })
 
 // const parsedAdvancedSearchLink = computed(() => {
 //   // Last item in searchLinks
@@ -197,6 +210,26 @@ watch(data, (newVal, oldVal) => {
 //     },
 //   ],
 // })
+
+// Now Showing data
+const parsedNowShowing = computed(() => {
+  if (!page.value.ftvaFeaturedEventsSection || !page.value.ftvaFeaturedEventsSection[0].featuredEvents) {
+    return []
+  }
+  return page.value.ftvaFeaturedEventsSection[0].featuredEvents.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.uri}`,
+      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
+      startDate: item.startDateWithTime || item.startDate,
+      endDate: item.endDateWithTime || item.endDate,
+    }
+  })
+})
+
+// onMounted(async () => {
+//   isMobile.value = globalStore.winWidth <= 1024
+// })
 </script>
 
 <template>
@@ -204,12 +237,104 @@ watch(data, (newVal, oldVal) => {
     id="main"
     class="page page-home"
   >
-    {{ page }}
+    <!-- {{ page }} -->
+
+    <!-- TODO Carousel Here -->
+    <div class="one-column">
+      <!-- Now Showing -->
+      <SectionWrapper
+        :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
+        class="now-showing-section"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link
+            v-if="page.ftvaFeaturedEventsSection[0]"
+            to="/events"
+          >
+            {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;"> &#8250;</span>
+          </nuxt-link>
+        </template>
+        <ScrollWrapper>
+          <SectionTeaserCard
+            v-if="parsedNowShowing && parsedNowShowing.length > 0"
+            class="now-showing-items"
+            :items="parsedNowShowing"
+            :grid-layout="false"
+          />
+        </ScrollWrapper>
+        <DividerWayFinder />
+      </SectionWrapper>
+      <!-- Visit and Learn -->
+      <SectionWrapper section-title="Visit and Learn">
+        <div
+          v-for="(item, index) in page.ftvaQuickLinks"
+          v-if="isMobile"
+          :key="index"
+        >
+          <BlockPostSmall
+            :to="item.urlLink"
+            :image="item.image[0]"
+          >
+            <template #title>
+              {{ item.titleGeneral }}
+            </template>
+            <template #author>
+              {{ item.description }}
+            </template>
+          </BlockPostSmall>
+        </div>
+        <div v-else>
+          {{ page.ftvaQuickLinks }}
+        </div>
+        <DividerWayFinder />
+      </SectionWrapper>
+    </div>
   </main>
 </template>
 
 <style lang="scss" scoped>
-.page-home {
-  margin: 20px;
+// .page-home {
+//   margin: 20px;
+// }
+main {
+  background-color: var(--pale-blue);
+}
+
+.one-column {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+
+  :deep(.nav-breadcrumb) {
+    padding: 0px;
+  }
+}
+
+.now-showing-section {
+  .now-showing-items {
+    background-color: var(--pale-blue);
+    padding-top: 0px;
+
+    // START HomePage specific cardmeta styles
+    :deep(li.block-highlight) {
+      max-width: 350px;
+      flex-direction: column-reverse;
+
+      .smart-link.title {
+        @include ftva-card-title-1;
+      }
+
+      .card-meta {
+        min-height: 275px;
+      }
+
+      img.media {
+        border-radius: 0 0 10px 10px;
+      }
+    }
+
+    // END HomePage specific cardmeta styles
+  }
 }
 </style>
