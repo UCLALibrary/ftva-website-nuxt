@@ -10,7 +10,7 @@ query FTVAArticleDetail($slug: [String!]) {
     slug
     title
     uri
-
+    ftvaHomepageDescription
     image: ftvaImage {
       ...Image
     }

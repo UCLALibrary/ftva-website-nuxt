@@ -144,7 +144,8 @@ const parsedEventSeries = computed(() => {
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
       ongoing: obj._source.ongoing,
-      image: parseImage(obj)
+      image: parseImage(obj),
+      sectionHandle: obj._source.sectionHandle,
     }
   })
 })
