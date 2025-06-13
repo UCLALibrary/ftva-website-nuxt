@@ -79,10 +79,31 @@ const articleFetchFunction = async () => {
   )
   return results
 }
+const onResults = (results) => {
+  // console.log('searchResults', results)
+  if (results && results.hits && results?.hits?.hits?.length > 0) {
+    console.log('results', results)
+
+    const newArticles = results.hits.hits || []
+
+    if (isMobile.value) {
+      totalPages.value = 0
+      mobileItemList.value.push(...newArticles)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
+      desktopItemList.value = newArticles
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+    }
+  } else {
+    totalPages.value = 0
+    hasMore.value = false
+  }
+}
 
 const documentsPerPage = 10
 // mostly provided by 'useMobileOnlyInfiniteScroll' composable
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(documentsPerPage, articleFetchFunction)
+const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
 watch(
   () => route.query,
