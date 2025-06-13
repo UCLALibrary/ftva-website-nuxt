@@ -6,5 +6,6 @@ query FTVACollectionFilmography($section: [String!]) {
   postDate
   ftvaHomepageDescription: summary
   ftvaFilters
+  sectionHandle
  }
 }
