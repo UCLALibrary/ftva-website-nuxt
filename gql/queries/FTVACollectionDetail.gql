@@ -45,6 +45,7 @@ query FTVACollectionDetail($slug: [String!]) {
       richText
       uri
     }
+    uri
     slug
     to: uri
   }

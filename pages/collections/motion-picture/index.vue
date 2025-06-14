@@ -151,7 +151,6 @@ function handleScreenTransition() {
     currentPage.value = restoredPage
     desktopList.value = []
   }
-  searchES()
 }
 
 async function searchES() {

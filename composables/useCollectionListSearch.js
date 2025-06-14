@@ -46,8 +46,8 @@ async function paginatedCollectionListQuery(
           bool: {
             filter: [
               {
-                term: {
-                  'sectionHandle.keyword': 'ftvaCollection'
+                terms: {
+                  'sectionHandle.keyword': ['ftvaCollection', 'ftvaCollectionStory']
                 }
               },
               ...parseCollectionType(collectionType)
