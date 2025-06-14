@@ -5,8 +5,6 @@ import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
-
-
 const route = useRoute()
 const documentsPerPage = 10
 // const totalPages = ref<number>(0)
@@ -27,6 +25,7 @@ interface Aggregations {
 interface Option {
 
   value: string // Optional value for the option, if needed.
+  labelDesktop: string // Optional label for desktop view.
   label: string
   highlighted?: boolean // Optional class for styling, e.g., 'highlightFilter'
   count?: number // Optional count for the filter group, if needed.
@@ -45,11 +44,11 @@ function resetSearchFilters(): FilterResult {
     name: 'groupName.keyword',
     searchField: 'groupName.keyword',
     options: [
-      { value: 'Collections', label: 'Collections (0)', highlighted: false, count: 0 },
-      { value: 'Articles', label: 'Articles (0)', highlighted: false, count: 0 },
-      { value: 'Events', label: 'Events (0)', highlighted: false, count: 0 },
-      { value: 'Series', label: 'Series (0)', highlighted: false, count: 0 },
-      { value: 'General Content', label: 'General Content (0)', highlighted: false, count: 0 }
+      { value: 'Collections', label: 'Collections', labelDesktop: 'Collections (0)', highlighted: false, count: 0 },
+      { value: 'Articles', label: 'Articles', labelDesktop: 'Articles (0)', highlighted: false, count: 0 },
+      { value: 'Events', label: 'Events', labelDesktop: 'Events (0)', highlighted: false, count: 0 },
+      { value: 'Series', label: 'Series', labelDesktop: 'Series (0)', highlighted: false, count: 0 },
+      { value: 'General Content', label: 'General Content', labelDesktop: 'General Content (0)', highlighted: false, count: 0 }
     ]
   }
 }
@@ -63,12 +62,13 @@ const selectedSortFilters = ref<{ sortField: string }>({ sortField: '' })
 const sortField = ref('_score') // default sort field
 const orderBy = ref('desc') // default order by
 // "STATE"
-const searchResultsFetchFunction = async () => {
+const searchResultsFetchFunction = async (page: number) => {
+  console.log('searchResultsFetchFunction called with page:', userFilterSelection.value)
   const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
   if (queryQ && queryQ !== '') {
     const results = await paginatedSiteSearchQuery(
       queryQ,
-      currentPage.value,
+      page,
       documentsPerPage,
       userFilterSelection.value,
       sortField.value,
@@ -93,15 +93,16 @@ const onResults = (results) => {
     if (isMobile.value) {
       totalPages.value = 0
       mobileItemList.value.push(...newSearchResults)
+      desktopItemList.value = []
       totalResults.value = results.hits.total.value
       searchFilters.value = addHighlightStateAndCountToFilters(results.aggregations || {})
       hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
       desktopItemList.value = newSearchResults
+      mobileItemList.value = []
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
       searchFilters.value = addHighlightStateAndCountToFilters(results.aggregations || {})
       totalResults.value = results.hits.total.value
-
     }
 
     noResultsFound.value = false
@@ -112,51 +113,11 @@ const onResults = (results) => {
     totalPages.value = 0
     totalResults.value = 0
     searchFilters.value = resetSearchFilters()
+    hasMore.value = false
   }
-
 }
 // mostly provided by 'useMobileOnlyInfiniteScroll' composable
 const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
-
-/*async function searchES() {
-  const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
-  if (queryQ && queryQ !== '') {
-    const results = await paginatedSiteSearchQuery(
-      queryQ,
-      currentPage.value,
-      documentsPerPage,
-      userFilterSelection.value,
-      sortField.value,
-      orderBy.value,
-    )
-    // console.log('searchResults', results)
-    if (results && results.hits && results.hits.hits.length > 0) {
-      // console.log('Search results found:', results.hits.hits.length)
-      searchResults.value = results.hits.hits || []
-      searchFilters.value = addHighlightStateAndCountToFilters(results.aggregations || {})
-      totalResults.value = results.hits.total.value
-      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
-
-      noResultsFound.value = false
-    } else {
-      noResultsFound.value = true
-      totalPages.value = 0
-      totalResults.value = 0
-      searchFilters.value = resetSearchFilters()
-      searchResults.value = []
-      // if (!isMobile.value) totalPages.value = 0
-      // hasMore.value = false
-    }
-  } else {
-    searchResults.value = []
-    noResultsFound.value = true
-    totalResults.value = 0
-    totalPages.value = 0
-    searchFilters.value = resetSearchFilters()
-    // console.log('No query provided, resetting search results and filters')
-  }
-}*/
-
 
 // SORT SETUP - uses static data
 const sortDropdownData = {
@@ -179,7 +140,7 @@ watch(
     hasMore.value = true
     userFilterSelection.value = parseFilters(route.query.filters || '')
     selectedGroupNameFilters.value['groupName.keyword'] = userFilterSelection.value['groupName.keyword'] ? userFilterSelection.value['groupName.keyword'][0] : ''
-    // console.log('userFilterSelection updated', userFilterSelection.value)
+    console.log('userFilterSelection updated', userFilterSelection.value)
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     // set sort & page # from query params
     selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
@@ -218,7 +179,8 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
       return {
         count: bucket.doc_count, // Count of documents in this bucket
         value: bucket.key,
-        label: bucket.key + ` (${bucket.doc_count})`, // no count initally, will be updated later
+        label: bucket.key, // Label for the option, including the count
+        labelDesktop: bucket.key + ` (${bucket.doc_count})`, // no count initally, will be updated later
         highlighted: selectedFilters.includes(bucket.key) // Initially set to false, will be updated later if needed
       }
     })
@@ -247,7 +209,7 @@ const parsedResults = computed(() => {
       ongoing: obj._source.ongoing || false,
       description: obj._source.ftvaHomepageDescription || obj._source.description || obj._source.summary || obj._source.text || obj._source.eventDescription || obj._source.richtext || '',
       title: obj._source.title || obj._source.name || obj._source.headline || obj._source.eventTitle || '',
-      to: obj._source.sectionHandle !== 'ftvaGeneralContentPage' ? `/${obj._source.uri}` : `${obj._source.uri.replace(/^ftva/, '')}`,
+      to: obj._source.sectionHandle !== 'ftvaGeneralContentPage' ? `/${obj._source.uri?.replace(/^\//, '')}` : `${obj._source.uri.replace(/^ftva/, '')}`,
       image: parseImage(obj)
     }
   })
@@ -256,21 +218,20 @@ const parsedResults = computed(() => {
 const router = useRouter()
 
 function updateGroupNameFilters(newFilter) {
-  console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter), newFilter[0])
+  // console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter), newFilter[0])
 
   router.push({
     path: route.path,
     query: {
       q: route.query.q,
-      filters: 'groupName.keyword' + ':(' + newFilter[0] + ')',
+      filters: 'groupName.keyword' + ':(' + newFilter['groupName.keyword'] + ')',
       sort: selectedSortFilters.value.sortField,
       // ignore page, we want to clear page # when filter is cleared
     }
   })
-
 }
 function updateSort(newSort) {
-  console.log('updateSort called with newSort:', newSort)
+  // console.log('updateSort called with newSort:', newSort)
   router.push({
     path: route.path,
     query: {
@@ -332,8 +293,8 @@ const totalResultsDisplay = computed(() => {
     </SectionWrapper>
     <div class="two-column">
       <div
-        class="sidebar"
         v-if="!isMobile"
+        class="sidebar"
       >
         <h4 class="filter-results">
           Filter Results
@@ -350,7 +311,7 @@ const totalResultsDisplay = computed(() => {
             :to="{ query: { ...omitParam(route.query, option) } }"
           >
             <BlockTag
-              :label="option.label"
+              :label="option.labelDesktop"
               :is-secondary="!option.highlighted"
               :is-primary="option.highlighted"
             >
@@ -362,7 +323,7 @@ const totalResultsDisplay = computed(() => {
 
           <BlockTag
             v-show="option.count === 0"
-            :label="option.label"
+            :label="option.labelDesktop"
             :is-secondary="!option.highlighted"
             :is-primary="option.highlighted"
           />
@@ -387,27 +348,31 @@ const totalResultsDisplay = computed(() => {
           />
         </div>
         <div
-          v-else
-          class="results"
+          v-show="!noResultsFound
+            &&
+            totalResults > 0
+          "
           ref="el"
+          class="results"
         >
           <!--p>Results will be displayed here.</p-->
           <div v-if="parsedResults.length > 0">
-
-
+            Mobile List {{ mobileItemList.length }} <br> Desktop List {{ desktopItemList.length }} <br> Current List
+            {{
+              currentList.length }}
             <!-- Sort by -->
             <div class="sort-and-results">
               <!-- mobile filters -->
               <DropdownSingleSelect
-                v-if="isMobile"
+                v-show="isMobile"
                 v-model:selected-filters="selectedGroupNameFilters"
                 label="Filter Results"
                 :options="searchFilters.options"
                 field-name="groupName.keyword"
+                class="sort-dropdown"
                 @update-display="(newFilterSelection) => {
                   updateGroupNameFilters(newFilterSelection)
                 }"
-                class="sort-dropdown"
               />
               <DropdownSingleSelect
                 v-model:selected-filters="selectedSortFilters"
@@ -627,6 +592,28 @@ const totalResultsDisplay = computed(() => {
         a {
           text-decoration: none;
         }
+      }
+    }
+  }
+
+  @media #{$small} {
+    .two-column .content {
+      width: 100%;
+    }
+
+    .no-results {
+      margin: 0 25px 20px 25px;
+    }
+
+    .results {
+      margin-left: 20px;
+      margin-right: 20px;
+
+      .sort-and-results {
+        justify-content: center;
+        gap: 16px;
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   }

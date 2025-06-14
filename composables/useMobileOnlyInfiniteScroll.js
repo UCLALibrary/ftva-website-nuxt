@@ -45,9 +45,8 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
 
     try {
       // use callbback fetchFn to get search results
-      const results = await fetchFn()
+      const results = await fetchFn(currentPage.value)
       onResults(results)
-
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Error fetching data:', err)
@@ -62,6 +61,7 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
     async () => {
       if (isMobile.value && hasMore.value && !isLoading.value) {
         currentPage.value++
+        console.log(`Loading more items for page ${currentPage.value}...`)
         await searchES()
       }
     },
@@ -71,7 +71,7 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
   // HANDLE WINDOW SIZING
   const { width } = useWindowSize()
   watch(width, (newWidth) => {
-    console.log('Window width changed:', newWidth)
+    // console.log('Window width changed:', newWidth)
     const wasMobile = isMobile.value
 
     isMobile.value = newWidth <= 750
@@ -100,7 +100,8 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
       currentPage.value = restoredPage
       desktopItemList.value = []
     }
-    searchES()
+    console.log(`Switched to ${isMobile.value ? 'mobile' : 'desktop'} view`)
+    // searchES()
   }
 
   return {

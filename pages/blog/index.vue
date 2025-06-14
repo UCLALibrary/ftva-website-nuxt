@@ -68,10 +68,10 @@ watch(data, (newVal, oldVal) => {
 })
 
 // "STATE"
-const articleFetchFunction = async () => {
+const articleFetchFunction = async (page) => {
   const { paginatedArticlesQuery } = useArticlesListSearch()
   const results = await paginatedArticlesQuery(
-    currentPage.value,
+    page,
     documentsPerPage,
     'postDate',
     'desc',
