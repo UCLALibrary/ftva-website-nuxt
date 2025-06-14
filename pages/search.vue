@@ -357,9 +357,6 @@ const totalResultsDisplay = computed(() => {
         >
           <!--p>Results will be displayed here.</p-->
           <div v-if="parsedResults.length > 0">
-            Mobile List {{ mobileItemList.length }} <br> Desktop List {{ desktopItemList.length }} <br> Current List
-            {{
-              currentList.length }}
             <!-- Sort by -->
             <div class="sort-and-results">
               <!-- mobile filters -->
