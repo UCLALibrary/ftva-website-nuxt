@@ -8,6 +8,7 @@ import parseImage from '@/utils/parseImage'
 const route = useRoute()
 const documentsPerPage = 10
 const totalPages = ref<number>(0)
+const totalResults = ref<number>(0)
 const currentPage = ref<number>(1)
 const noResultsFound = ref<boolean>(false)
 const { paginatedSiteSearchQuery } = useSiteSearch()
@@ -65,17 +66,23 @@ async function searchES() {
       // console.log('Search results found:', results.hits.hits.length)
       searchResults.value = results.hits.hits || []
       searchFilters.value = addHighlightStateAndCountToFilters(results.aggregations || {})
+      totalResults.value = results.hits.total.value
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
 
       noResultsFound.value = false
     } else {
       noResultsFound.value = true
+      totalPages.value = 0
+      totalResults.value = 0
+      searchFilters.value = resetSearchFilters()
+      searchResults.value = []
       // if (!isMobile.value) totalPages.value = 0
       // hasMore.value = false
     }
   } else {
     searchResults.value = []
     noResultsFound.value = true
+    totalResults.value = 0
     totalPages.value = 0
     searchFilters.value = resetSearchFilters()
     // console.log('No query provided, resetting search results and filters')
@@ -86,7 +93,7 @@ interface FilterItem {
   [key: string]: string[]
 }
 const userFilterSelection = ref<FilterItem>({})
-const selectedSortFilters = ref({})
+const selectedSortFilters = ref<{ sortField: string }>({ sortField: '' })
 const sortField = ref('_score') // default sort field
 const orderBy = ref('desc') // default order by
 // SORT SETUP - uses static data
@@ -166,6 +173,13 @@ const parsedResults = computed(() => {
   return searchResults.value.map((obj) => {
     return {
       ...obj._source,
+      category: obj._source.groupName !== 'Series' ? obj._source.groupName.replace(/s$/, '') : obj._source.groupName,
+      date: obj._source.sectionHandle !== 'ftvaEvent' && obj._source.sectionHandle !== 'ftvaEventSeries' ? obj._source.postDate || '' : '', // TODO rethink date filed in blockstafarticlelist component, refactor to use another customslot for fva dates for postdate in sectionstaffarticlelist
+      startDate: obj._source.startDate || '',
+      enddate: obj._source.endDate || '',
+      ongoing: obj._source.ongoing || false,
+      description: obj._source.ftvaHomepageDescription || obj._source.description || obj._source.summary || obj._source.text || obj._source.eventDescription || obj._source.richtext || '',
+      title: obj._source.title || obj._source.name || obj._source.headline || obj._source.eventTitle || '',
       to: `/${obj._source.uri}`,
       image: parseImage(obj)
     }
@@ -201,51 +215,71 @@ function omitParam(query: any, option: Option) {
     }
   }
 }
+const startCount = computed(() => {
+  if ((currentPage.value - 1) * documentsPerPage === 0) return 1
+  return (currentPage.value - 1) * documentsPerPage + 1
+})
+const totalResultsDisplay = computed(() => {
+  return `${startCount.value} - ${((currentPage.value - 1) * documentsPerPage) + searchResults.value.length} of ${totalResults.value} Results`
+})
 
 </script>
 <template>
-  <div class="search-page">
-    <div class="one-column">
-      <h1>Search Page</h1>
-      <p>This is the search page.</p>
-      <div>
-        <NavSearch />
-      </div>
-    </div>
+  <main class="page page-detail page-detail--paleblue search-page">
+    <SectionWrapper
+      ref="scrollElem"
+      theme="paleblue"
+      class="one-column"
+    >
+      <NavBreadcrumb
+        class="breadcrumb"
+        data-test="breadcrumb"
+        title="Search Results"
+        to="/"
+        parent-title="Home"
+      />
+      <h3
+        v-if="route.query.q"
+        class="search-title"
+      >
+        Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
+      </h3>
+
+      <NavSearch />
+    </SectionWrapper>
     <div class="two-column">
       <div class="sidebar">
-        <div class="filters">
-          <div class="filter-group">
-            <h3>Filter Results</h3>
+        <h4 class="filter-results">
+          Filter Results
+        </h4>
 
-            <div
-              v-for="option in searchFilters.options"
-              :key="option.queryOption"
+        <div
+          v-for="option in searchFilters.options"
+          :key="option.queryOption"
+          class="filter-option"
+        >
+          <NuxtLink
+            v-show="option.count > 0"
+            class=""
+            :to="{ query: { ...omitParam(route.query, option) } }"
+          >
+            <BlockTag
+              :label="option.label"
+              :is-secondary="!option.highlighted"
+              :is-primary="option.highlighted"
             >
-              <NuxtLink
-                v-show="option.count > 0"
-                class=""
-                :to="{ query: { ...omitParam(route.query, option) } }"
-              >
-                <BlockTag
-                  :label="option.label"
-                  :is-secondary="!option.highlighted"
-                  :is-primary="option.highlighted"
-                >
-                  <template v-if="option.highlighted">
-                    x
-                  </template>
-                </BlockTag>
-              </NuxtLink>
+              <template v-if="option.highlighted">
+                <SvgGlyphX class="close-icon" />
+              </template>
+            </BlockTag>
+          </NuxtLink>
 
-              <BlockTag
-                v-show="option.count === 0"
-                :label="option.label"
-                :is-secondary="!option.highlighted"
-                :is-primary="option.highlighted"
-              />
-            </div>
-          </div>
+          <BlockTag
+            v-show="option.count === 0"
+            :label="option.label"
+            :is-secondary="!option.highlighted"
+            :is-primary="option.highlighted"
+          />
         </div>
       </div>
       <div class="content">
@@ -253,24 +287,43 @@ function omitParam(query: any, option: Option) {
           v-if="noResultsFound && parsedResults.length === 0"
           class="no-results"
         >
-          <p>No results found.</p>
+          <h4 class="no-results-title">
+            No results found.
+          </h4>
+          <p class="no-results-text">
+            Not finding what you’re looking for? Try searching for another term or search using
+            UC Library Search
+          </p>
+          <button-link
+            label="UC Library Search"
+            icon-name="svg-arrow-right"
+            to="https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,"
+          />
         </div>
         <div
           v-else
           class="results"
         >
-          <p>Results will be displayed here.</p>
+          <!--p>Results will be displayed here.</p-->
           <div v-if="parsedResults.length > 0">
             <!-- Sort by -->
-            <DropdownSingleSelect
-              v-model:selected-filters="selectedSortFilters"
-              :label="sortDropdownData.label"
-              :options="sortDropdownData.options"
-              :field-name="sortDropdownData.fieldName"
-              @update-display="(newSort) => {
-                updateSort(newSort)
-              }"
-            />
+            <div class="sort-and-results">
+              <DropdownSingleSelect
+                v-model:selected-filters="selectedSortFilters"
+                :label="sortDropdownData.label"
+                :options="sortDropdownData.options"
+                :field-name="sortDropdownData.fieldName"
+                class="sort-dropdown"
+                @update-display="(newSort) => {
+                  updateSort(newSort)
+                }"
+              />
+              <BlockTag
+                class="total-results"
+                :label="totalResultsDisplay"
+              />
+            </div>
+
             <!--div
               v-for="result in parsedResults"
               :key="result.id"
@@ -285,9 +338,10 @@ function omitParam(query: any, option: Option) {
                 <p>{{ result.description }}</p>
               </NuxtLink>
             </div-->
+
             <SectionStaffArticleList
               :items="parsedResults"
-              data-test="latest-blogs"
+              class="search-results-list"
             />
 
             <SectionPagination
@@ -299,15 +353,43 @@ function omitParam(query: any, option: Option) {
         </div>
       </div>
     </div>
-  </div>
+    <SectionWrapper
+      v-if="!noResultsFound && parsedResults.length !== 0"
+      theme="paleblue"
+    >
+      <block-call-to-action
+        class=""
+        v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-find' }"
+      />
+    </SectionWrapper>
+  </main>
 </template>
-<style scoped>
+<style lang="scss" scoped>
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
 
 .search-page {
   .one-column {
+
+    .breadcrumb {
+      padding-top: 2rem;
+      padding-left: 2rem;
+
+      // margin-bottom: 36px;
+    }
+
+    .search-title {
+      padding-left: 2rem;
+      line-height: 1.2;
+      @include ftva-h4;
+      color: $medium-grey;
+
+      .search-keywords {
+        @include ftva-h3;
+        color: $heading-grey;
+      }
+    }
 
     /*max-width: var(--max-width);
     margin: 0 auto;
@@ -327,11 +409,21 @@ function omitParam(query: any, option: Option) {
     :deep(.ftva.nav-search) {
       background-color: var(--pale-blue);
       padding-bottom: 36px;
-    }
 
-    width: 100%;
-    background-color: var(--pale-blue);
-    margin: 0 auto;
+      .bottom-row {
+        @include ftva-breadcrumb-inactive;
+        color: $medium-grey;
+
+        .bottom-link {
+          @include ftva-button-link;
+          color: $accent-blue;
+        }
+      }
+    }
+  }
+
+  :deep(.ftva.block-call-to-action.theme-light) {
+    background-color: $white;
   }
 
   .two-column {
@@ -348,13 +440,89 @@ function omitParam(query: any, option: Option) {
     .content {
       margin-bottom: 0;
       width: 67%;
+
+      .sort-dropdown {
+        margin-bottom: 28px;
+      }
+
+      .sort-and-results {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin-bottom: 28px;
+
+        .total-results {
+          background-color: #132941; // navyblue
+        }
+      }
+
+      :deep(.ftva.section-staff-article-list) {
+        padding: 0;
+      }
+
+      .search-results-list {
+        margin-bottom: 2rem;
+      }
+
+      .no-results {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        align-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        .no-results-title {
+          @include ftva-h4;
+          color: $heading-grey;
+        }
+
+        .no-results-text {
+          @include ftva-breadcrumb-inactive;
+          color: $heading-grey;
+        }
+      }
+
+      :deep(.ftva.block-staff-article-item:last-child) {
+        .date {
+          height: auto;
+        }
+      }
+
+      .ftva.section-pagination {
+        margin-left: 100px;
+        padding: 3%;
+
+      }
     }
 
     .sidebar {
       margin-bottom: 0;
       width: 33%;
       padding: 0 1rem;
+      padding-bottom: 60px;
+
+      .filter-results {
+        @include ftva-card-title-1;
+        color: $medium-grey;
+        margin-bottom: 2rem;
+      }
+
+      .filter-option {
+        margin-bottom: 0.5rem;
+
+        .close-icon {
+          margin: 5px 0 5px 5px;
+        }
+
+        a {
+          text-decoration: none;
+        }
+      }
     }
   }
 }
+
+/*@import 'assets/styles/slug-pages.scss';*/
 </style>
