@@ -175,7 +175,6 @@ function handleScreenTransition() {
     currentPage.value = restoredPage
     desktopEvents.value = []
   }
-  searchES()
 }
 
 const parsedRemoveSearchFilters = computed(() => {
