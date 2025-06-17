@@ -101,6 +101,7 @@ export default function useSiteSearch() {
 
     let data = await response.json()
     if (data?.hits?.total.value === 0) {
+      console.log('No results found, performing fuzzy search on all fields')
       data = performFuzzySearchOnAllFields(keyword, ['*'], queryFilters, currentPage = 1,
         documentsPerPage = 10, sort, orderBy)
     }

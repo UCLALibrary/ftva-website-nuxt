@@ -68,10 +68,10 @@ watch(data, (newVal, oldVal) => {
 })
 
 // "STATE"
-const articleFetchFunction = async () => {
+const articleFetchFunction = async (page) => {
   const { paginatedArticlesQuery } = useArticlesListSearch()
   const results = await paginatedArticlesQuery(
-    currentPage.value,
+    page,
     documentsPerPage,
     'postDate',
     'desc',
@@ -79,10 +79,31 @@ const articleFetchFunction = async () => {
   )
   return results
 }
+const onResults = (results) => {
+  // console.log('searchResults', results)
+  if (results && results.hits && results?.hits?.hits?.length > 0) {
+    console.log('results', results)
+
+    const newArticles = results.hits.hits || []
+
+    if (isMobile.value) {
+      totalPages.value = 0
+      mobileItemList.value.push(...newArticles)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
+      desktopItemList.value = newArticles
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+    }
+  } else {
+    totalPages.value = 0
+    hasMore.value = false
+  }
+}
 
 const documentsPerPage = 10
 // mostly provided by 'useMobileOnlyInfiniteScroll' composable
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(documentsPerPage, articleFetchFunction)
+const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
 watch(
   () => route.query,
@@ -136,9 +157,10 @@ const parsedArticles = computed(() => {
       title: obj._source.title,
       category: parseArticleCategories(obj._source.articleCategories),
       description: obj._source.aboutTheAuthor,
-      startDate: obj._source.postDate,
-      endDate: obj._source.postDate,
-      image: parseImage(obj)
+      date: obj._source.postDate,
+
+      image: parseImage(obj),
+      sectionHandle: obj._source.sectionHandle,
     }
   })
 })
@@ -346,6 +368,10 @@ useHead({
   .articles-list-wrapper {
     background-color: var(--color-white);
     margin-bottom: 20px;
+  }
+
+  :deep(.ftva.block-staff-article-item:last-child .date) {
+    height: auto;
   }
 
   .ftva.section-pagination {

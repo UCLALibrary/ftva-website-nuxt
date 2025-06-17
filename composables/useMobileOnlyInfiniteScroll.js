@@ -19,7 +19,7 @@
 
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
-export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn = () => Promise.resolve({})) {
+export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve({}), onResults) {
   // DESKTOP STATE
   const desktopPage = useState('desktopPage', () => 1) // Persist desktop page #
   const desktopItemList = ref([]) // Persist desktop item list
@@ -45,26 +45,8 @@ export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn =
 
     try {
       // use callbback fetchFn to get search results
-      const results = await fetchFn()
-
-      if (results && results.hits && results?.hits?.hits?.length > 0) {
-        console.log('results', results)
-
-        const newArticles = results.hits.hits || []
-
-        if (isMobile.value) {
-          totalPages.value = 0
-          mobileItemList.value.push(...newArticles)
-          hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
-        } else {
-          console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
-          desktopItemList.value = newArticles
-          totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
-        }
-      } else {
-        totalPages.value = 0
-        hasMore.value = false
-      }
+      const results = await fetchFn(currentPage.value)
+      onResults(results)
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error('Error fetching data:', err)
@@ -79,6 +61,7 @@ export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn =
     async () => {
       if (isMobile.value && hasMore.value && !isLoading.value) {
         currentPage.value++
+        console.log(`Loading more items for page ${currentPage.value}...`)
         await searchES()
       }
     },
@@ -88,7 +71,7 @@ export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn =
   // HANDLE WINDOW SIZING
   const { width } = useWindowSize()
   watch(width, (newWidth) => {
-    console.log('Window width changed:', newWidth)
+    // console.log('Window width changed:', newWidth)
     const wasMobile = isMobile.value
 
     isMobile.value = newWidth <= 750
@@ -117,7 +100,8 @@ export default function useMobileInfiniteScroll(documentsPerPage = 10, fetchFn =
       currentPage.value = restoredPage
       desktopItemList.value = []
     }
-    searchES()
+    console.log(`Switched to ${isMobile.value ? 'mobile' : 'desktop'} view`)
+    // searchES()
   }
 
   return {

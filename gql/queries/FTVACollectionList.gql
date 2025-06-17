@@ -4,6 +4,7 @@ query FTVACollectionList {
   entry(section: ["ftvaListingExploreCollections"]) {
     typeHandle
     sectionHandle
+    postDate
     uri
     slug
     title: titleGeneral
