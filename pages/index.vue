@@ -267,6 +267,8 @@ const parsedNowShowing = computed(() => {
       </SectionWrapper>
       <!-- Visit and Learn -->
       <SectionWrapper
+        class="visit-learn-section"
+        theme="paleblue"
         section-title="
         Visit
         and
@@ -278,6 +280,7 @@ const parsedNowShowing = computed(() => {
             :key="index"
             :to="item.urlLink"
             :image="item.image[0]"
+            class="quicklink-item-mobile"
           >
             <template #title>
               {{ item.titleGeneral }}
@@ -338,6 +341,46 @@ main {
     }
 
     // END HomePage specific cardmeta styles
+  }
+}
+
+.visit-learn-section {
+  .quicklink-item-mobile {
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
+    position: relative;
+    height: 100px;
+
+    :deep(a.block-post-small) {
+      background-color: transparent;
+      border-radius: 0px;
+      min-width: auto;
+      min-height: 100px;
+
+      &::after {
+        content: url('ucla-library-design-tokens/assets/svgs/icon-caret-right.svg');
+        position: absolute;
+        filter: brightness(0);
+        right: 0;
+        top: 35px;
+      }
+
+      .image {
+        height: 100px;
+        width: 100px;
+      }
+
+      .title {
+        margin-top: 0px;
+      }
+
+      .author {
+        margin-top: 4px;
+        @include ftva-body-2;
+      }
+    }
   }
 }
 </style>
