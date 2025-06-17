@@ -300,9 +300,6 @@ const parsedNowShowing = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-// .page-home {
-//   margin: 20px;
-// }
 main {
   background-color: var(--pale-blue);
 }
@@ -324,7 +321,7 @@ main {
 
     // START HomePage specific cardmeta styles
     :deep(li.block-highlight) {
-      max-width: 350px;
+      max-width: 325px;
       flex-direction: column-reverse;
 
       .smart-link.title {
