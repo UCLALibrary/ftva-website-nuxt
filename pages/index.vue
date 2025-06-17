@@ -263,6 +263,11 @@ const parsedNowShowing = computed(() => {
             :grid-layout="false"
           />
         </ScrollWrapper>
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
         <DividerWayFinder />
       </SectionWrapper>
       <!-- Visit and Learn -->
@@ -293,6 +298,11 @@ const parsedNowShowing = computed(() => {
         <div v-else>
           {{ page.ftvaQuickLinks }}
         </div>
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
         <DividerWayFinder />
       </SectionWrapper>
     </div>
@@ -302,6 +312,13 @@ const parsedNowShowing = computed(() => {
 <style lang="scss" scoped>
 main {
   background-color: var(--pale-blue);
+}
+
+:deep(.section-wrapper) {
+  &.no-padding {
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
 }
 
 .one-column {
