@@ -371,7 +371,7 @@ main {
   }
 
   .homepage-scroll-wrapper {
-    .v-sheet {
+    :deep(.v-sheet) {
       background-color: transparent;
     }
 
