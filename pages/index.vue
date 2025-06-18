@@ -222,14 +222,9 @@ const parsedNowShowing = computed(() => {
       to: `/${item.uri}`,
       image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
       startDate: item.startDateWithTime || item.startDate,
-      endDate: item.endDateWithTime || item.endDate,
     }
   })
 })
-
-// onMounted(async () => {
-//   isMobile.value = globalStore.winWidth <= 1024
-// })
 </script>
 
 <template>
@@ -238,6 +233,7 @@ const parsedNowShowing = computed(() => {
     class="page page-home"
   >
     <!-- {{ page }} -->
+    {{ parsedNowShowing }}
 
     <!-- TODO Carousel Here -->
     <div class="one-column">
@@ -255,7 +251,7 @@ const parsedNowShowing = computed(() => {
             {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;"> &#8250;</span>
           </nuxt-link>
         </template>
-        <ScrollWrapper>
+        <ScrollWrapper class="homepage-scroll-wrapper">
           <SectionTeaserCard
             v-if="parsedNowShowing && parsedNowShowing.length > 0"
             class="now-showing-items"
@@ -338,23 +334,49 @@ main {
 
     // START HomePage specific cardmeta styles
     :deep(li.block-highlight) {
-      max-width: 325px;
+      max-width: 340px;
       flex-direction: column-reverse;
+      margin-top: 16px;
+      transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        margin-top: 0px;
+      }
 
       .smart-link.title {
         @include ftva-card-title-1;
+        color: $heading-grey;
+      }
+
+      .date-time {
+        @include ftva-emphasized-subtitle;
+        color: $accent-blue;
+        margin-bottom: 0px;
+
+        .schedule-item.start-date {
+          margin-right: 26px;
+        }
       }
 
       .card-meta {
-        min-height: 275px;
+        height: 275px;
+        padding: 40px 30px 25px 30px;
       }
 
       img.media {
         border-radius: 0 0 10px 10px;
       }
-    }
 
-    // END HomePage specific cardmeta styles
+      figure.responsive-image>.sizer {
+        padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
+      }
+    }
+  }
+
+  .homepage-scroll-wrapper {
+    @media #{$small} {
+      padding-top: 16px;
+    }
   }
 }
 
@@ -393,6 +415,10 @@ main {
       .author {
         margin-top: 4px;
         @include ftva-body-2;
+      }
+
+      &:hover {
+        box-shadow: none;
       }
     }
   }
