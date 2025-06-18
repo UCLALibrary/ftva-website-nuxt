@@ -371,6 +371,10 @@ main {
   }
 
   .homepage-scroll-wrapper {
+    .v-sheet {
+      background-color: transparent;
+    }
+
     @media #{$small} {
       padding-top: 16px;
     }
