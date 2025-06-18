@@ -232,9 +232,6 @@ const parsedNowShowing = computed(() => {
     id="main"
     class="page page-home"
   >
-    <!-- {{ page }} -->
-    {{ parsedNowShowing }}
-
     <!-- TODO Carousel Here -->
     <div class="one-column">
       <!-- Now Showing -->
