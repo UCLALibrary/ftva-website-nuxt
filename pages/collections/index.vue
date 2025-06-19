@@ -67,24 +67,49 @@ const showPageSummary = computed(() => {
 })
 
 const parsedCollections = computed(() => {
-  return page.value.collections.map((item) => {
-    const test = item.featuredCollections.map((inner) => {
-      console.log('carousel: ', inner.imageCarousel[0]?.image[0])
+  return page.value.collections.map((collection) => {
+    const parsedFeaturedCollections = collection.featuredCollections.map((item) => {
       return {
-        ...inner,
-        to: inner.uri,
-        image: inner.imageCarousel[0]?.image[0]
+        ...item,
+        to: item.uri,
+        image: item.imageCarousel[0]?.image[0]
       }
     })
 
     return {
-      ...item,
-      featuredCollections: test
+      ...collection,
+      featuredCollections: parsedFeaturedCollections
     }
   })
 })
 
-// console.log('collections: ', parsedCollections.value)
+const parsedResources = computed(() => {
+  if (page.value.otherResources.length === 0) return null
+
+  return page.value.otherResources[0].featuredResources.map((obj) => {
+    return {
+      title: obj.title,
+      to: `/${obj.uri}`,
+      image: obj.image[0]
+    }
+  })
+})
+
+// console.log('resources: ', parsedResources.value)
+
+const parsedAboutCollections = computed(() => {
+  if (page.value.aboutOurCollection.length === 0) return null
+
+  return page.value.aboutOurCollection[0].collectionsInformation.map((obj) => {
+    return {
+      title: obj.title,
+      to: `/${obj.uri}`,
+      image: obj.image[0]
+    }
+  })
+})
+
+// console.log('about: ', parsedAboutCollections.value)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -150,8 +175,45 @@ useHead({
       </ScrollWrapper>
       <DividerWayFinder />
     </SectionWrapper>
-    <!--  -->
-    <!--  -->
+
+    <!-- Rename GQL fields for hearst? -->
+    <SectionWrapper
+      :section-title="page.sectionTitle"
+      theme="paleblue"
+      class="hearst"
+    >
+      <BlockCardWithImage
+        :image="page.sectionImage[0]"
+        :to="page.sectionUri"
+      >
+        <template #customDescription>
+          <RichText :rich-text-content="page.sectionDescription" />
+        </template>
+      </BlockCardWithImage>
+      <DividerWayFinder />
+    </SectionWrapper>
+
+    <SectionWrapper
+      :section-title="page.otherResources[0].sectionTitle"
+      :section-summary="page.otherResources[0].sectionDescription"
+      theme="paleblue"
+      class="section-wrapper-post-small"
+    >
+      <!-- v-if="parsedAdditionalResources" -->
+      <SectionPostSmall :items="parsedResources" />
+      <DividerWayFinder />
+    </SectionWrapper>
+
+    <SectionWrapper
+      :section-title="page.aboutOurCollection[0].sectionTitle"
+      :section-summary="page.aboutOurCollection[0].sectionDescription"
+      theme="paleblue"
+      class="section-wrapper-post-small"
+    >
+      <!-- v-if="parsedAdditionalResources" -->
+      <SectionPostSmall :items="parsedAboutCollections" />
+      <!-- <DividerWayFinder /> -->
+    </SectionWrapper>
   </main>
 </template>
 
@@ -172,7 +234,6 @@ useHead({
     justify-content: flex-start;
     align-content: center;
     align-items: center;
-    text-align: center;
   }
 
   .header>:deep(.section-header) {
@@ -185,7 +246,6 @@ useHead({
   }
 
   .dividers {
-    // padding-block: 0;
     padding-top: 0;
 
     .divider-way-finder {
@@ -195,6 +255,10 @@ useHead({
 
   .section-wrapper.featured-collections {
     padding-top: 0;
+
+    :deep(.section-header) {
+      margin-bottom: 20px;
+    }
 
     :deep(.section-title) {
       color: $heading-grey;
@@ -215,6 +279,73 @@ useHead({
     .divider-way-finder {
       margin-bottom: 0;
     }
+  }
+
+  // Refactor
+  .section-wrapper.featured-collections:nth-of-type(4) {
+    padding-bottom: 0;
+  }
+
+  .hearst {
+    :deep(.section-title) {
+      color: $heading-grey;
+    }
+
+    // Refactor
+    :deep(.divider-way-finder) {
+      margin-bottom: 0;
+    }
+  }
+
+  .hearst .block-highlight {
+    background-color: #fff;
+    padding-bottom: 0;
+
+    :deep(.image-container),
+    :deep(.image) {
+      max-height: 400px;
+    }
+
+    :deep(.card-meta) {
+      min-height: max-content;
+      padding: 40px;
+
+      .title {
+        margin-bottom: 0;
+      }
+    }
+
+    .rich-text {
+      padding: 0;
+      margin-bottom: 0;
+
+      :deep(.parsed-content) {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Refactor
+  :deep(.section-wrapper-post-small) {
+    padding-top: 0;
+
+    .section-title {
+      // @include ftva-h5;
+      color: $heading-grey;
+    }
+
+    .rich-text {
+      max-width: 100%;
+    }
+
+    .divider-way-finder {
+      margin-bottom: 0;
+    }
+  }
+
+  // Refactor
+  :deep(.section-wrapper-post-small:last-of-type) {
+    margin-bottom: 60px;
   }
 
   @media #{$medium} {
