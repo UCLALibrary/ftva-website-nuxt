@@ -237,7 +237,7 @@ const parsedNowShowing = computed(() => {
       <!-- Now Showing -->
       <SectionWrapper
         :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
-        class="now-showing-section"
+        class="now-showing-section no-padding"
         theme="paleblue"
       >
         <template #top-right>
@@ -265,7 +265,7 @@ const parsedNowShowing = computed(() => {
       </SectionWrapper>
       <!-- Visit and Learn -->
       <SectionWrapper
-        class="visit-learn-section"
+        class="visit-learn-section no-padding"
         theme="paleblue"
         section-title="
         Visit
@@ -309,8 +309,9 @@ main {
 
 :deep(.section-wrapper) {
   &.no-padding {
-    padding-top: 0px;
-    padding-bottom: 0px;
+    @media screen and (min-width: 1160px) {
+      padding: 0px;
+    }
   }
 }
 
