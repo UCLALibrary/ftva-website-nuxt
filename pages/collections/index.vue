@@ -26,7 +26,6 @@ if (!data.value.entry) {
     fatal: true
   })
 }
-// TODO This is creating an index of the content for ES search
 
 // METADATA INFO
 if (data.value.entry && import.meta.prerender) {
@@ -51,7 +50,6 @@ if (data.value.entry && import.meta.prerender) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-console.log('page data: ', page.value)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
@@ -68,7 +66,8 @@ const showPageSummary = computed(() => {
 
 const parsedCollections = computed(() => {
   return page.value.collections.map((collection) => {
-    const parsedFeaturedCollections = collection.featuredCollections.map((item) => {
+    // Parse collection items images and uris
+    const parsedSelectedCollectionItems = collection.featuredCollections.map((item) => {
       return {
         ...item,
         to: item.uri,
@@ -78,7 +77,7 @@ const parsedCollections = computed(() => {
 
     return {
       ...collection,
-      featuredCollections: parsedFeaturedCollections
+      featuredCollections: parsedSelectedCollectionItems
     }
   })
 })
@@ -95,12 +94,10 @@ const parsedResources = computed(() => {
   })
 })
 
-// console.log('resources: ', parsedResources.value)
-
 const parsedAboutCollections = computed(() => {
-  if (page.value.aboutOurCollection.length === 0) return null
+  if (page.value.aboutOurCollections.length === 0) return null
 
-  return page.value.aboutOurCollection[0].collectionsInformation.map((obj) => {
+  return page.value.aboutOurCollections[0].collectionsInformation.map((obj) => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,
@@ -108,8 +105,6 @@ const parsedAboutCollections = computed(() => {
     }
   })
 })
-
-// console.log('about: ', parsedAboutCollections.value)
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -176,43 +171,41 @@ useHead({
       <DividerWayFinder />
     </SectionWrapper>
 
-    <!-- Rename GQL fields for hearst? -->
     <SectionWrapper
-      :section-title="page.sectionTitle"
+      :section-title="page.hearstTitle"
       theme="paleblue"
       class="hearst"
     >
       <BlockCardWithImage
-        :image="page.sectionImage[0]"
-        :to="page.sectionUri"
+        :image="page.hearstImage[0]"
+        :to="page.hearstUri"
       >
         <template #customDescription>
-          <RichText :rich-text-content="page.sectionDescription" />
+          <RichText :rich-text-content="page.hearstDescription" />
         </template>
       </BlockCardWithImage>
       <DividerWayFinder />
     </SectionWrapper>
 
     <SectionWrapper
+      v-if="parsedResources"
       :section-title="page.otherResources[0].sectionTitle"
       :section-summary="page.otherResources[0].sectionDescription"
       theme="paleblue"
       class="section-wrapper-post-small"
     >
-      <!-- v-if="parsedAdditionalResources" -->
       <SectionPostSmall :items="parsedResources" />
       <DividerWayFinder />
     </SectionWrapper>
 
     <SectionWrapper
-      :section-title="page.aboutOurCollection[0].sectionTitle"
-      :section-summary="page.aboutOurCollection[0].sectionDescription"
+      v-if="parsedAboutCollections"
+      :section-title="page.aboutOurCollections[0].sectionTitle"
+      :section-summary="page.aboutOurCollections[0].sectionDescription"
       theme="paleblue"
       class="section-wrapper-post-small"
     >
-      <!-- v-if="parsedAdditionalResources" -->
       <SectionPostSmall :items="parsedAboutCollections" />
-      <!-- <DividerWayFinder /> -->
     </SectionWrapper>
   </main>
 </template>
