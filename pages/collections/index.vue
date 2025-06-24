@@ -257,16 +257,16 @@ useHead({
     padding-top: 0;
   }
 
-  .section-wrapper {
-    padding-bottom: 0;
+  .section-wrapper-header-divider .divider-way-finder {
+    margin-block-start: 0;
   }
 
   .divider-way-finder {
-    margin-inline-start: 0;
+    margin-block-end: 0;
   }
 
-  :deep(.section-summary) {
-    @include ftva-body;
+  :deep(.rich-text.section-summary) {
+    @include ftva-body-2;
   }
 
   .section-wrapper-featured-collections {
@@ -335,7 +335,7 @@ useHead({
     }
 
     &:last-of-type {
-      margin-bottom: 100px;
+      margin-bottom: 60px;
     }
   }
 
