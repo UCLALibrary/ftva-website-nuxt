@@ -579,6 +579,7 @@ const totalResultsDisplay = computed(() => {
     .sidebar {
       margin-bottom: 0;
       width: 33%;
+      max-width: 275px;
       padding: 0 1rem;
       padding-bottom: 60px;
 
