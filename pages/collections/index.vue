@@ -134,9 +134,13 @@ useHead({
         :section-title="page.title"
         class="header"
         theme="paleblue"
+        data-test="page-heading"
       >
         <template v-if="showPageSummary">
-          <RichText :rich-text-content="page.summary" />
+          <RichText
+            :rich-text-content="page.summary"
+            data-test="page-description"
+          />
         </template>
       </SectionWrapper>
     </div>
@@ -155,6 +159,7 @@ useHead({
       :section-summary="collection.sectionDescription"
       class="section-wrapper-featured-collections"
       theme="paleblue"
+      data-test="featured-collection"
     >
       <template #top-right>
         <nuxt-link :to="collection.uri">
@@ -175,6 +180,7 @@ useHead({
       :section-title="page.hearstTitle"
       theme="paleblue"
       class="section-wrapper-hearst"
+      data-test="hearst-collection"
     >
       <BlockCardWithImage
         :image="page.hearstImage[0]"
@@ -194,7 +200,10 @@ useHead({
       theme="paleblue"
       class="section-wrapper-post-small"
     >
-      <SectionPostSmall :items="parsedResources" />
+      <SectionPostSmall
+        :items="parsedResources"
+        data-test="other-resources"
+      />
       <DividerWayFinder />
     </SectionWrapper>
 
@@ -205,7 +214,10 @@ useHead({
       theme="paleblue"
       class="section-wrapper-post-small"
     >
-      <SectionPostSmall :items="parsedAboutCollections" />
+      <SectionPostSmall
+        :items="parsedAboutCollections"
+        data-test="about-collections"
+      />
     </SectionWrapper>
   </main>
 </template>
@@ -231,6 +243,7 @@ useHead({
 
   .header :deep(.section-title) {
     color: $heading-grey;
+    margin-bottom: 0;
   }
 
   .header :deep(p) {

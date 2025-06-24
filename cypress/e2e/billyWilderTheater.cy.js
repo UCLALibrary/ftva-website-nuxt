@@ -9,6 +9,6 @@ describe('Billy Wilder Theater Page', () => {
     cy.getByData('theater-address').should('be.visible')
     cy.getByData('theater-map').should('be.visible')
     cy.getByData('parking-info').should('be.visible')
-    cy.percySnapshot('collectiondetailpage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('billyWilderTheaterpage', { widths: [768, 992, 1200] })
   })
 })
