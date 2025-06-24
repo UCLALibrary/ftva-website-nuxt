@@ -142,7 +142,7 @@ useHead({
     </div>
 
     <SectionWrapper
-      class="dividers"
+      class="section-wrapper-header-divider"
       theme="paleblue"
     >
       <DividerWayFinder />
@@ -153,7 +153,7 @@ useHead({
       :key="collection.sectionTitle"
       :section-title="collection.sectionTitle"
       :section-summary="collection.sectionDescription"
-      class="featured-collections"
+      class="section-wrapper-featured-collections"
       theme="paleblue"
     >
       <template #top-right>
@@ -174,7 +174,7 @@ useHead({
     <SectionWrapper
       :section-title="page.hearstTitle"
       theme="paleblue"
-      class="hearst"
+      class="section-wrapper-hearst"
     >
       <BlockCardWithImage
         :image="page.hearstImage[0]"
@@ -229,26 +229,34 @@ useHead({
     align-items: center;
   }
 
-  .header>:deep(.section-header) {
-    margin-top: 20px;
-    margin-bottom: 0px;
-
-    h2.section-title {
-      color: $heading-grey;
-    }
+  .header :deep(.section-title) {
+    color: $heading-grey;
   }
 
-  .dividers {
-    padding-top: 0;
-
-    .divider-way-finder {
-      margin-block: 0;
-    }
+  .header :deep(p) {
+    @include ftva-body-2;
   }
 
-  .section-wrapper.featured-collections {
+  .section-wrapper-header-divider,
+  .section-wrapper-featured-collections,
+  .section-wrapper-hearst,
+  :deep(.section-wrapper-post-small) {
     padding-top: 0;
+  }
 
+  .section-wrapper {
+    padding-bottom: 0;
+  }
+
+  .divider-way-finder {
+    margin-inline-start: 0;
+  }
+
+  :deep(.section-summary) {
+    @include ftva-body;
+  }
+
+  .section-wrapper-featured-collections {
     :deep(.section-header) {
       margin-bottom: 20px;
     }
@@ -268,62 +276,44 @@ useHead({
         width: 320px;
       }
     }
-
-    .divider-way-finder {
-      margin-bottom: 0;
-    }
   }
 
-  // Refactor
-  .section-wrapper.featured-collections:nth-of-type(4) {
-    padding-bottom: 0;
-  }
-
-  .hearst {
+  .section-wrapper-hearst {
     :deep(.section-title) {
       color: $heading-grey;
     }
 
-    // Refactor
-    :deep(.divider-way-finder) {
-      margin-bottom: 0;
-    }
-  }
+    .block-highlight {
+      background-color: #fff;
+      padding-bottom: 0;
 
-  .hearst .block-highlight {
-    background-color: #fff;
-    padding-bottom: 0;
-
-    :deep(.image-container),
-    :deep(.image) {
-      max-height: 400px;
-    }
-
-    :deep(.card-meta) {
-      min-height: max-content;
-      padding: 40px;
-
-      .title {
-        margin-bottom: 0;
+      :deep(.image-container),
+      :deep(.image) {
+        max-height: 400px;
       }
-    }
 
-    .rich-text {
-      padding: 0;
-      margin-bottom: 0;
+      :deep(.card-meta) {
+        min-height: max-content;
+        padding: 40px;
 
-      :deep(.parsed-content) {
+        .title {
+          margin-bottom: 0;
+        }
+      }
+
+      .rich-text {
+        padding: 0;
         margin-bottom: 0;
+
+        :deep(.parsed-content) {
+          margin-bottom: 0;
+        }
       }
     }
   }
 
-  // Refactor
   :deep(.section-wrapper-post-small) {
-    padding-top: 0;
-
     .section-title {
-      // @include ftva-h5;
       color: $heading-grey;
     }
 
@@ -331,14 +321,9 @@ useHead({
       max-width: 100%;
     }
 
-    .divider-way-finder {
-      margin-bottom: 0;
+    &:last-of-type {
+      margin-bottom: 100px;
     }
-  }
-
-  // Refactor
-  :deep(.section-wrapper-post-small:last-of-type) {
-    margin-bottom: 60px;
   }
 
   @media #{$medium} {
@@ -348,7 +333,14 @@ useHead({
   }
 
   @media #{$small} {
-    .featured-collections {
+    :deep(.section-wrapper:not(:first-of-type)) {
+      .section-header.section-title {
+        @include ftva-h5;
+        font-size: 28px;
+      }
+    }
+
+    .section-wrapper-featured-collections {
       :deep(.section-header) {
         display: flex;
         flex-direction: column;
@@ -360,6 +352,15 @@ useHead({
         margin-top: 0;
         margin-bottom: 24px;
         order: 1;
+      }
+    }
+
+    .section-wrapper-hearst {
+      .block-highlight {
+        :deep(.card-meta) {
+          min-height: max-content;
+          padding: 25px;
+        }
       }
     }
   }
