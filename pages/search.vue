@@ -351,7 +351,7 @@ const totalResultsDisplay = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -386,21 +386,6 @@ const totalResultsDisplay = computed(() => {
                 :label="totalResultsDisplay"
               />
             </div>
-
-            <!--div
-              v-for="result in parsedResults"
-              :key="result.id"
-              class="result-item"
-            >
-              <NuxtLink :to="result.to">
-                <img
-                  :src="result.image"
-                  alt=""
-                />
-                <h2>{{ result.title }}</h2>
-                <p>{{ result.description }}</p>
-              </NuxtLink>
-            </div-->
 
             <SectionStaffArticleList
               :items="parsedResults"
@@ -504,23 +489,47 @@ const totalResultsDisplay = computed(() => {
       margin-bottom: 0;
       width: 67%;
 
-      .sort-dropdown {
-        margin-bottom: 28px;
-      }
+      // .sort-dropdown {
+      //   margin-bottom: 28px;
+      // }
 
       .sort-and-results {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        margin-bottom: 28px;
+        align-items: center;
+        margin-bottom: 35px;
+        margin-right: 1rem;
 
         .total-results {
+          :deep(.label) {
+            text-align: center;
+          }
+
           background-color: #132941; // navyblue
         }
       }
 
       :deep(.ftva.section-staff-article-list) {
         padding: 0;
+        margin-right: 1rem;
+
+        li.block-staff-article-item {
+          .category {
+            @include ftva-subtitle-1;
+            color: $accent-blue;
+          }
+
+          .title {
+            @include truncate(2);
+          }
+
+          .molecule-no-image {
+            width: 500px;
+            height: 213px;
+            aspect-ratio: 3 / 1;
+          }
+        }
       }
 
       .search-results-list {
@@ -611,6 +620,14 @@ const totalResultsDisplay = computed(() => {
         gap: 16px;
         margin-left: auto;
         margin-right: auto;
+      }
+
+      :deep(li.block-staff-article-item) {
+
+        figure,
+        .molecule-no-image {
+          display: none;
+        }
       }
     }
   }
