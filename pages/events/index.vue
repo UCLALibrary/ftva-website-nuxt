@@ -630,6 +630,8 @@ const parseFirstEventMonth = computed(() => {
 </template>
 
 <style lang='scss' scoped>
+@import 'assets/styles/listing-pages.scss';
+
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -939,6 +941,4 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 }
-
-@import 'assets/styles/listing-pages.scss';
 </style>
