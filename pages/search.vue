@@ -351,12 +351,15 @@ const totalResultsDisplay = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >
           <!--p>Results will be displayed here.</p-->
-          <div v-if="parsedResults.length > 0">
+          <div
+            v-if="parsedResults.length > 0"
+            class="results-container"
+          >
             <!-- Sort by -->
             <div class="sort-and-results">
               <!-- mobile filters -->
@@ -423,8 +426,6 @@ const totalResultsDisplay = computed(() => {
     .breadcrumb {
       padding-top: 2rem;
       padding-left: 2rem;
-
-      // margin-bottom: 36px;
     }
 
     .search-title {
@@ -439,21 +440,6 @@ const totalResultsDisplay = computed(() => {
       }
     }
 
-    /*max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-
-    @media (max-width: 1200px) {
-      .one-column {
-        padding-left: var(--unit-gutter);
-        padding-right: var(--unit-gutter);
-      }
-    }
-
-    width: 100%;*/
     :deep(.ftva.nav-search) {
       background-color: var(--pale-blue);
       padding-bottom: 36px;
@@ -477,7 +463,7 @@ const totalResultsDisplay = computed(() => {
   .two-column {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     max-width: var(--ftva-container-max-width);
     position: relative;
     width: 100%;
@@ -487,11 +473,7 @@ const totalResultsDisplay = computed(() => {
 
     .content {
       margin-bottom: 0;
-      width: 67%;
-
-      // .sort-dropdown {
-      //   margin-bottom: 28px;
-      // }
+      flex: 1;
 
       .sort-and-results {
         display: flex;
@@ -499,7 +481,7 @@ const totalResultsDisplay = computed(() => {
         justify-content: space-between;
         align-items: center;
         margin-bottom: 35px;
-        margin-right: 1rem;
+        // margin-right: 1rem;
 
         .total-results {
           :deep(.label) {
@@ -512,7 +494,7 @@ const totalResultsDisplay = computed(() => {
 
       :deep(.ftva.section-staff-article-list) {
         padding: 0;
-        margin-right: 1rem;
+        // margin-right: 1rem;
 
         li.block-staff-article-item {
           .category {
@@ -578,7 +560,7 @@ const totalResultsDisplay = computed(() => {
 
     .sidebar {
       margin-bottom: 0;
-      width: 33%;
+      flex-basis: 33%;
       max-width: 275px;
       padding: 0 1rem;
       padding-bottom: 60px;
