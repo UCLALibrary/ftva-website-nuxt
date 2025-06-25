@@ -416,7 +416,7 @@ const totalResultsDisplay = computed(() => {
     >
       <block-call-to-action
         class=""
-        v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-find' }"
+        v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
       />
     </SectionWrapper>
   </main>
