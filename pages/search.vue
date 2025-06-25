@@ -503,7 +503,9 @@ const totalResultsDisplay = computed(() => {
         // margin-right: 1rem;
 
         li.block-staff-article-item {
-          border-bottom: 1px solid var(--pale-blue);
+          &:not(:last-child) {
+            border-bottom: 1px solid var(--pale-blue);
+          }
 
           .category {
             @include ftva-subtitle-1;
