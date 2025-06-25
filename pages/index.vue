@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
+import { useWindowSize } from '@vueuse/core'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
 
 const { $graphql } = useNuxtApp()
+const route = useRoute()
+
+// STATE
+const isMobile = ref(false)
 
 const { data, error } = await useAsyncData('home-page', async () => {
   const data = await $graphql.default.request(FTVAHomepage)
@@ -28,6 +33,14 @@ watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
 })
+
+// HANDLE WINDOW SIZING
+const { width } = useWindowSize()
+watch(width, (newWidth) => {
+  const wasMobile = isMobile.value
+
+  isMobile.value = newWidth <= 750
+}, { immediate: true })
 
 // const parsedAdvancedSearchLink = computed(() => {
 //   // Last item in searchLinks
@@ -197,6 +210,21 @@ watch(data, (newVal, oldVal) => {
 //     },
 //   ],
 // })
+
+// Now Showing data
+const parsedNowShowing = computed(() => {
+  if (!page.value.ftvaFeaturedEventsSection || !page.value.ftvaFeaturedEventsSection[0].featuredEvents) {
+    return []
+  }
+  return page.value.ftvaFeaturedEventsSection[0].featuredEvents.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.uri}`,
+      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
+      startDate: item.startDateWithTime || item.startDate,
+    }
+  })
+})
 </script>
 
 <template>
@@ -204,12 +232,197 @@ watch(data, (newVal, oldVal) => {
     id="main"
     class="page page-home"
   >
-    {{ page }}
+    <!-- TODO Carousel Here -->
+    <div class="one-column">
+      <!-- Now Showing -->
+      <SectionWrapper
+        :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
+        class="now-showing-section no-padding"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link
+            v-if="page.ftvaFeaturedEventsSection[0]"
+            to="/events"
+          >
+            {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;"> &#8250;</span>
+          </nuxt-link>
+        </template>
+        <ScrollWrapper class="homepage-scroll-wrapper">
+          <SectionTeaserCard
+            v-if="parsedNowShowing && parsedNowShowing.length > 0"
+            class="now-showing-items"
+            :items="parsedNowShowing"
+            :grid-layout="false"
+          />
+        </ScrollWrapper>
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
+        <DividerWayFinder />
+      </SectionWrapper>
+      <!-- Visit and Learn -->
+      <SectionWrapper
+        class="visit-learn-section no-padding"
+        theme="paleblue"
+        section-title="
+        Visit
+        and
+        Learn"
+      >
+        <div v-if="isMobile">
+          <BlockPostSmall
+            v-for="(item, index) in page.ftvaQuickLinks"
+            :key="index"
+            :to="item.urlLink"
+            :image="item.image[0]"
+            class="quicklink-item-mobile"
+          >
+            <template #title>
+              {{ item.titleGeneral }}
+            </template>
+            <template #author>
+              {{ item.description }}
+            </template>
+          </BlockPostSmall>
+        </div>
+        <div v-else>
+          {{ page.ftvaQuickLinks }}
+        </div>
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
+        <DividerWayFinder />
+      </SectionWrapper>
+    </div>
   </main>
 </template>
 
 <style lang="scss" scoped>
-.page-home {
-  margin: 20px;
+main {
+  background-color: var(--pale-blue);
+}
+
+:deep(.section-wrapper) {
+  &.no-padding {
+    @media screen and (min-width: 1160px) {
+      padding: 0px;
+    }
+  }
+}
+
+.one-column {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+
+  :deep(.nav-breadcrumb) {
+    padding: 0px;
+  }
+}
+
+.now-showing-section {
+  .now-showing-items {
+    background-color: var(--pale-blue);
+    padding-top: 0px;
+
+    // START HomePage specific cardmeta styles
+    :deep(li.block-highlight) {
+      max-width: 340px;
+      flex-direction: column-reverse;
+      margin-top: 16px;
+      transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:hover {
+        margin-top: 0px;
+      }
+
+      .smart-link.title {
+        @include ftva-card-title-1;
+        color: $heading-grey;
+      }
+
+      .date-time {
+        @include ftva-emphasized-subtitle;
+        color: $accent-blue;
+        margin-bottom: 0px;
+
+        .schedule-item.start-date {
+          margin-right: 26px;
+        }
+      }
+
+      .card-meta {
+        height: 275px;
+        padding: 40px 30px 25px 30px;
+      }
+
+      img.media {
+        border-radius: 0 0 10px 10px;
+      }
+
+      figure.responsive-image>.sizer {
+        padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
+      }
+    }
+  }
+
+  .homepage-scroll-wrapper {
+    :deep(.v-sheet) {
+      background-color: transparent;
+    }
+
+    @media #{$small} {
+      padding-top: 16px;
+    }
+  }
+}
+
+.visit-learn-section {
+  .quicklink-item-mobile {
+    &:not(:last-child) {
+      margin-bottom: 20px;
+    }
+
+    position: relative;
+    height: 100px;
+
+    :deep(a.block-post-small) {
+      background-color: transparent;
+      border-radius: 0px;
+      min-width: auto;
+      min-height: 100px;
+
+      &::after {
+        content: url('ucla-library-design-tokens/assets/svgs/icon-caret-right.svg');
+        position: absolute;
+        filter: brightness(0);
+        right: 0;
+        top: 35px;
+      }
+
+      .image {
+        height: 100px;
+        width: 100px;
+      }
+
+      .title {
+        margin-top: 0px;
+      }
+
+      .author {
+        margin-top: 4px;
+        @include ftva-body-2;
+      }
+
+      &:hover {
+        box-shadow: none;
+      }
+    }
+  }
 }
 </style>

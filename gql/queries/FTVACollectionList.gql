@@ -4,7 +4,6 @@ query FTVACollectionList {
   entry(section: ["ftvaListingExploreCollections"]) {
     typeHandle
     sectionHandle
-    postDate
     uri
     slug
     title: titleGeneral
@@ -19,10 +18,10 @@ query FTVACollectionList {
     }
 
     # Hearst Collection
-    sectionTitle
-    sectionDescription: richTextSimplified
-    sectionUri: ftvaRelatedResources
-    sectionImage: image {
+    hearstTitle: sectionTitle
+    hearstDescription: richTextSimplified
+    hearstUri: ftvaRelatedResources
+    hearstImage: image {
       ... on mediaAndDocuments_Asset {
         ...Image
       }
@@ -30,7 +29,7 @@ query FTVACollectionList {
 
     ... on ftvaListingExploreCollections_ftvaListingExploreCollections_Entry {
 
-      featuredCollections: ftvaFeaturedCollectionsSection {
+      collections: ftvaFeaturedCollectionsSection {
         ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
           sectionTitle
           sectionDescription
@@ -68,7 +67,7 @@ query FTVACollectionList {
         }
       }
 
-      aboutOurCollection: ftvaCollectionsSection {
+      aboutOurCollections: ftvaCollectionsSection {
         ... on ftvaCollectionsSection_aboutOurCollections_BlockType {
           sectionTitle
           sectionDescription
