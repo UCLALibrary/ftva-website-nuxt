@@ -351,7 +351,7 @@ const totalResultsDisplay = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -363,26 +363,32 @@ const totalResultsDisplay = computed(() => {
             <!-- Sort by -->
             <div class="sort-and-results">
               <!-- mobile filters -->
-              <DropdownSingleSelect
-                v-show="isMobile"
-                v-model:selected-filters="selectedGroupNameFilters"
-                label="Filter Results"
-                :options="searchFilters.options"
-                field-name="groupName.keyword"
-                class="sort-dropdown"
-                @update-display="(newFilterSelection) => {
-                  updateGroupNameFilters(newFilterSelection)
-                }"
-              />
-              <DropdownSingleSelect
-                v-model:selected-filters="selectedSortFilters"
-                :label="sortDropdownData.label"
-                :options="sortDropdownData.options"
-                :field-name="sortDropdownData.fieldName"
-                class="sort-dropdown"
-                @update-display="(newSort) => {
-                  updateSort(newSort)
-                }"
+              <span class="dropdown-wrapper">
+                <DropdownSingleSelect
+                  v-show="isMobile"
+                  v-model:selected-filters="selectedGroupNameFilters"
+                  label="Filter Results"
+                  :options="searchFilters.options"
+                  field-name="groupName.keyword"
+                  class="sort-dropdown"
+                  @update-display="(newFilterSelection) => {
+                    updateGroupNameFilters(newFilterSelection)
+                  }"
+                />
+                <DropdownSingleSelect
+                  v-model:selected-filters="selectedSortFilters"
+                  :label="sortDropdownData.label"
+                  :options="sortDropdownData.options"
+                  :field-name="sortDropdownData.fieldName"
+                  class="sort-dropdown"
+                  @update-display="(newSort) => {
+                    updateSort(newSort)
+                  }"
+                />
+              </span>
+              <DividerWayFinder
+                v-if="isMobile"
+                class="divider"
               />
               <BlockTag
                 class="total-results"
@@ -497,6 +503,8 @@ const totalResultsDisplay = computed(() => {
         // margin-right: 1rem;
 
         li.block-staff-article-item {
+          border-bottom: 1px solid var(--pale-blue);
+
           .category {
             @include ftva-subtitle-1;
             color: $accent-blue;
@@ -586,23 +594,51 @@ const totalResultsDisplay = computed(() => {
   }
 
   @media #{$small} {
-    .two-column .content {
-      width: 100%;
-    }
+    .two-column {
 
-    .no-results {
-      margin: 0 25px 20px 25px;
-    }
+      .content {
+        width: 100%;
+      }
 
-    .results {
-      margin-left: 20px;
-      margin-right: 20px;
+      .no-results {
+        margin: 0 25px 20px 25px;
+      }
 
-      .sort-and-results {
-        justify-content: center;
-        gap: 16px;
-        margin-left: auto;
-        margin-right: auto;
+      .results {
+        margin-left: 20px;
+        margin-right: 20px;
+
+        .sort-and-results {
+          flex-direction: column;
+          justify-content: center;
+          margin-left: auto;
+          margin-right: auto;
+
+          .dropdown-wrapper {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            gap: 16px;
+
+            .sort-dropdown {
+              width: 100%;
+
+              :deep(button) {
+                width: 100%;
+              }
+            }
+          }
+
+          .total-results {
+            align-self: end;
+          }
+        }
+
+        .divider {
+          width: 100%;
+          padding-left: 0px;
+          padding-right: 0px;
+        }
       }
 
       :deep(li.block-staff-article-item) {
