@@ -469,6 +469,7 @@ const totalResultsDisplay = computed(() => {
   .two-column {
     display: flex;
     flex-direction: row;
+    gap: 1rem;
     flex-wrap: nowrap;
     max-width: var(--ftva-container-max-width);
     position: relative;
@@ -572,7 +573,7 @@ const totalResultsDisplay = computed(() => {
       margin-bottom: 0;
       flex-basis: 33%;
       max-width: 275px;
-      padding: 0 1rem;
+      // padding: 0 1rem;
       padding-bottom: 60px;
 
       .filter-results {
@@ -583,6 +584,10 @@ const totalResultsDisplay = computed(() => {
 
       .filter-option {
         margin-bottom: 0.5rem;
+
+        :deep(.block-tag) {
+          height: auto;
+        }
 
         .close-icon {
           margin: 5px 0 5px 5px;
@@ -653,6 +658,4 @@ const totalResultsDisplay = computed(() => {
     }
   }
 }
-
-/*@import 'assets/styles/slug-pages.scss';*/
 </style>
