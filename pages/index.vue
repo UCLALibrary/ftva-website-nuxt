@@ -30,6 +30,26 @@ if (!data.value.entry) {
   })
 }
 
+// METADATA INFO
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.title,
+      text: data.value.entry.summary,
+      uri: '/',
+      groupName: 'homepage',
+    }
+    // Index the articles data using the composable during static build
+    await indexContent(doc, 'homepage')
+    // console.log('Homepage content indexed successfully during static build')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX HOMEPAGE during static build:', error)
+  }
+}
+
 const page = ref(_get(data.value, 'entry', {}))
 console.log('Page: ', page.value)
 
@@ -407,6 +427,10 @@ main {
 .preservation-section {
   :deep(.section-header.section-title) {
     margin-bottom: 40px;
+  }
+
+  :deep(.rich-text.summary) {
+    max-width: 100%;
   }
 
   :deep(.rich-text p) {
