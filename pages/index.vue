@@ -7,7 +7,6 @@ import { useWindowSize } from '@vueuse/core'
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
 
 const { $graphql } = useNuxtApp()
-const route = useRoute()
 
 // STATE
 const isMobile = ref(false)
@@ -16,11 +15,13 @@ const { data, error } = await useAsyncData('home-page', async () => {
   const data = await $graphql.default.request(FTVAHomepage)
   return data
 })
+
 if (error.value) {
   throw createError({
     statusCode: error.value.statusCode, statusMessage: error.value.statusMessage + error.value, fatal: true
   })
 }
+
 if (!data.value.entry) {
   throw createError({
     statusCode: 404,
@@ -28,6 +29,7 @@ if (!data.value.entry) {
     fatal: true
   })
 }
+
 const page = ref(_get(data.value, 'entry', {}))
 console.log('Page: ', page.value)
 
@@ -265,20 +267,22 @@ main {
 
 :deep(.section-wrapper) {
   &.no-padding {
-    @media screen and (min-width: 1160px) {
-      padding: 0px;
-    }
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 
 .one-column {
   width: 100%;
-  max-width: var(--max-width);
   margin: 65px auto;
 
   :deep(.nav-breadcrumb) {
     padding: 0px;
   }
+}
+
+:deep(.section-wrapper h2.section-header.section-title) {
+  color: $heading-grey;
 }
 
 .now-showing-section {
@@ -290,7 +294,6 @@ main {
     :deep(li.block-highlight) {
       max-width: 340px;
       flex-direction: column-reverse;
-      margin-top: 16px;
       transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
@@ -330,10 +333,6 @@ main {
   .homepage-scroll-wrapper {
     :deep(.v-sheet) {
       background-color: transparent;
-    }
-
-    @media #{$small} {
-      padding-top: 16px;
     }
   }
 }
@@ -397,6 +396,7 @@ main {
 .featured-collections-section {
   .section-teaser-card {
     background-color: var(--pale-blue);
+    padding-top: 0;
   }
 
   :deep(.block-highlight .card-meta) {
@@ -405,8 +405,37 @@ main {
 }
 
 .preservation-section {
-  :deep(.rich-text) {
-    max-width: 100%;
+  :deep(.section-header.section-title) {
+    margin-bottom: 40px;
+  }
+
+  :deep(.rich-text p) {
+    @include ftva-body-2;
+  }
+}
+
+@media #{$medium} {
+  :deep(.ftva.section-wrapper div.section-header) {
+    margin-bottom: 40px;
+  }
+}
+
+@media #{$small} {
+  .archive-blog-section {
+    :deep(.media-with-text) {
+      margin-top: 16px;
+      max-height: unset;
+    }
+  }
+
+  .preservation-section {
+    :deep(.section-header.section-title) {
+      margin-bottom: 10px;
+    }
+
+    :deep(.section-header .section-link) {
+      margin-bottom: 36px;
+    }
   }
 }
 </style>
