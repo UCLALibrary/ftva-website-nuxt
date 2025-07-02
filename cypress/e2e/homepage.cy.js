@@ -2,6 +2,19 @@ describe('Website Homepage', () => {
   it('Visit the Homepage', () => {
     cy.visit('/')
     cy.viewport(1200, 1200)
+
+    // cy.getByData('homepage-carousel').should('be.visible')
+
+    cy.getByData('featured-event-items').should('be.visible')
+
+    cy.getByData('quick-link-items').should('be.visible')
+
+    cy.getByData('featured-article').should('be.visible')
+
+    cy.getByData('featured-collection-items').should('be.visible')
+
+    // cy.getByData('preservation-image-slider').should('be.visible')
+
     cy.get('.footer-primary.ftva').should('be.visible')
     cy.get('.footer-links.ftva').should('be.visible')
     cy.get('.footer-sock.ftva').should('be.visible')
@@ -20,6 +33,6 @@ describe('Website Homepage', () => {
     //   .should('have.attr', 'href', 'https://www.library.ucla.edu')
     // NavPrimary
 
-    // cy.percySnapshot({ widths: [768, 992, 1200] })
+    cy.percySnapshot({ widths: [768, 992, 1200] })
   })
 })

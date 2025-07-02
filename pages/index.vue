@@ -161,6 +161,7 @@ useHead({
             class="now-showing-items"
             :items="parsedNowShowing"
             :grid-layout="false"
+            data-test="featured-event-items"
           />
         </ScrollWrapper>
       </SectionWrapper>
@@ -198,6 +199,7 @@ useHead({
           <SectionTeaserCard
             :items="parsedQuickLinks"
             :grid-layout="false"
+            data-test="quick-link-items"
           />
         </div>
       </SectionWrapper>
@@ -215,7 +217,7 @@ useHead({
         theme="paleblue"
       >
         <template #top-right>
-          <nuxt-link to="/articles">
+          <nuxt-link to="/blog">
             {{ parsedArchiveBlogs.sectionCta }} <span style="font-size:1.5em;">
               &#8250;</span>
           </nuxt-link>
@@ -225,6 +227,7 @@ useHead({
           button-text="Continue Reading"
           :button-url="parsedArchiveBlogs.blogUri"
           :cover-image="parsedArchiveBlogs.image"
+          data-test="featured-article"
         />
       </SectionWrapper>
       <SectionWrapper
@@ -250,6 +253,7 @@ useHead({
           <SectionTeaserCard
             :items="parsedFeaturedCollections"
             :grid-layout="false"
+            data-test="featured-collection-items"
           />
         </ScrollWrapper>
       </SectionWrapper>
@@ -429,7 +433,7 @@ main {
     margin-bottom: 40px;
   }
 
-  :deep(.rich-text.summary) {
+  :deep(.rich-text.section-summary) {
     max-width: 100%;
   }
 
