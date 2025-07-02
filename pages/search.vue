@@ -351,56 +351,50 @@ const totalResultsDisplay = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
           <!--p>Results will be displayed here.</p-->
-          <div v-if="parsedResults.length > 0">
+          <div
+            v-if="parsedResults.length > 0"
+            class="results-container"
+          >
             <!-- Sort by -->
             <div class="sort-and-results">
               <!-- mobile filters -->
-              <DropdownSingleSelect
-                v-show="isMobile"
-                v-model:selected-filters="selectedGroupNameFilters"
-                label="Filter Results"
-                :options="searchFilters.options"
-                field-name="groupName.keyword"
-                class="sort-dropdown"
-                @update-display="(newFilterSelection) => {
-                  updateGroupNameFilters(newFilterSelection)
-                }"
-              />
-              <DropdownSingleSelect
-                v-model:selected-filters="selectedSortFilters"
-                :label="sortDropdownData.label"
-                :options="sortDropdownData.options"
-                :field-name="sortDropdownData.fieldName"
-                class="sort-dropdown"
-                @update-display="(newSort) => {
-                  updateSort(newSort)
-                }"
+              <span class="dropdown-wrapper">
+                <DropdownSingleSelect
+                  v-show="isMobile"
+                  v-model:selected-filters="selectedGroupNameFilters"
+                  label="Filter Results"
+                  :options="searchFilters.options"
+                  field-name="groupName.keyword"
+                  class="sort-dropdown"
+                  @update-display="(newFilterSelection) => {
+                    updateGroupNameFilters(newFilterSelection)
+                  }"
+                />
+                <DropdownSingleSelect
+                  v-model:selected-filters="selectedSortFilters"
+                  :label="sortDropdownData.label"
+                  :options="sortDropdownData.options"
+                  :field-name="sortDropdownData.fieldName"
+                  class="sort-dropdown"
+                  @update-display="(newSort) => {
+                    updateSort(newSort)
+                  }"
+                />
+              </span>
+              <DividerWayFinder
+                v-if="isMobile"
+                class="divider"
               />
               <BlockTag
                 class="total-results"
                 :label="totalResultsDisplay"
               />
             </div>
-
-            <!--div
-              v-for="result in parsedResults"
-              :key="result.id"
-              class="result-item"
-            >
-              <NuxtLink :to="result.to">
-                <img
-                  :src="result.image"
-                  alt=""
-                />
-                <h2>{{ result.title }}</h2>
-                <p>{{ result.description }}</p>
-              </NuxtLink>
-            </div-->
 
             <SectionStaffArticleList
               :items="parsedResults"
@@ -422,7 +416,7 @@ const totalResultsDisplay = computed(() => {
     >
       <block-call-to-action
         class=""
-        v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-find' }"
+        v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
       />
     </SectionWrapper>
   </main>
@@ -438,8 +432,6 @@ const totalResultsDisplay = computed(() => {
     .breadcrumb {
       padding-top: 2rem;
       padding-left: 2rem;
-
-      // margin-bottom: 36px;
     }
 
     .search-title {
@@ -454,21 +446,6 @@ const totalResultsDisplay = computed(() => {
       }
     }
 
-    /*max-width: var(--max-width);
-    margin: 0 auto;
-
-    :deep(.nav-breadcrumb) {
-      padding: 0px;
-    }
-
-    @media (max-width: 1200px) {
-      .one-column {
-        padding-left: var(--unit-gutter);
-        padding-right: var(--unit-gutter);
-      }
-    }
-
-    width: 100%;*/
     :deep(.ftva.nav-search) {
       background-color: var(--pale-blue);
       padding-bottom: 36px;
@@ -492,7 +469,8 @@ const totalResultsDisplay = computed(() => {
   .two-column {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    gap: 1rem;
+    flex-wrap: nowrap;
     max-width: var(--ftva-container-max-width);
     position: relative;
     width: 100%;
@@ -502,25 +480,49 @@ const totalResultsDisplay = computed(() => {
 
     .content {
       margin-bottom: 0;
-      width: 67%;
-
-      .sort-dropdown {
-        margin-bottom: 28px;
-      }
+      flex: 1;
 
       .sort-and-results {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        margin-bottom: 28px;
+        align-items: center;
+        margin-bottom: 35px;
+        // margin-right: 1rem;
 
         .total-results {
+          :deep(.label) {
+            text-align: center;
+          }
+
           background-color: #132941; // navyblue
         }
       }
 
       :deep(.ftva.section-staff-article-list) {
         padding: 0;
+        // margin-right: 1rem;
+
+        li.block-staff-article-item {
+          &:not(:last-child) {
+            border-bottom: 1px solid var(--pale-blue);
+          }
+
+          .category {
+            @include ftva-subtitle-1;
+            color: $accent-blue;
+          }
+
+          .title {
+            @include truncate(2);
+          }
+
+          .molecule-no-image {
+            width: 500px;
+            height: 213px;
+            aspect-ratio: 3 / 1;
+          }
+        }
       }
 
       .search-results-list {
@@ -569,8 +571,9 @@ const totalResultsDisplay = computed(() => {
 
     .sidebar {
       margin-bottom: 0;
-      width: 33%;
-      padding: 0 1rem;
+      flex-basis: 33%;
+      max-width: 275px;
+      // padding: 0 1rem;
       padding-bottom: 60px;
 
       .filter-results {
@@ -581,6 +584,10 @@ const totalResultsDisplay = computed(() => {
 
       .filter-option {
         margin-bottom: 0.5rem;
+
+        :deep(.block-tag) {
+          height: auto;
+        }
 
         .close-icon {
           margin: 5px 0 5px 5px;
@@ -594,27 +601,61 @@ const totalResultsDisplay = computed(() => {
   }
 
   @media #{$small} {
-    .two-column .content {
-      width: 100%;
-    }
+    .two-column {
 
-    .no-results {
-      margin: 0 25px 20px 25px;
-    }
+      .content {
+        width: 100%;
+      }
 
-    .results {
-      margin-left: 20px;
-      margin-right: 20px;
+      .no-results {
+        margin: 0 25px 20px 25px;
+      }
 
-      .sort-and-results {
-        justify-content: center;
-        gap: 16px;
-        margin-left: auto;
-        margin-right: auto;
+      .results {
+        margin-left: 20px;
+        margin-right: 20px;
+
+        .sort-and-results {
+          flex-direction: column;
+          justify-content: center;
+          margin-left: auto;
+          margin-right: auto;
+
+          .dropdown-wrapper {
+            display: flex;
+            width: 100%;
+            flex-direction: row;
+            gap: 16px;
+
+            .sort-dropdown {
+              width: 100%;
+
+              :deep(button) {
+                width: 100%;
+              }
+            }
+          }
+
+          .total-results {
+            align-self: end;
+          }
+        }
+
+        .divider {
+          width: 100%;
+          padding-left: 0px;
+          padding-right: 0px;
+        }
+      }
+
+      :deep(li.block-staff-article-item) {
+
+        figure,
+        .molecule-no-image {
+          display: none;
+        }
       }
     }
   }
 }
-
-/*@import 'assets/styles/slug-pages.scss';*/
 </style>
