@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup>
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
@@ -29,6 +29,8 @@ if (!data.value.entry) {
   })
 }
 const page = ref(_get(data.value, 'entry', {}))
+console.log('Page: ', page.value)
+
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
@@ -42,176 +44,8 @@ watch(width, (newWidth) => {
   isMobile.value = newWidth <= 750
 }, { immediate: true })
 
-// const parsedAdvancedSearchLink = computed(() => {
-//   // Last item in searchLinks
-//   const advancedLink = page.value.searchLinks.slice(-1)[0]
-//   return advancedLink
-// })
-// const parsedSearchLinks = computed(() => {
-//   // Remove last item in searchLinks
-//   const searchLinks = [...page.value.searchLinks].slice(0, -1)
-//   return searchLinks
-// })
+// Carousel
 
-// const parsedGetHelpWith = computed(() => {
-//   return page.value.getHelpWith[0].getHelpWith.map((obj) => {
-//     return {
-//       ...obj,
-//       to: obj.externalResourceUrl
-//         ? obj.externalResourceUrl
-//         : `/${obj.uri}`,
-//     }
-//   })
-// })
-// const bannerFeaturedEvent = computed(() => {
-//   const bannerFeaturedEvent = page.value.featuredEvents[0]
-//   return {
-//     ...bannerFeaturedEvent,
-//     to: `/${bannerFeaturedEvent.uri}`,
-//     title:
-//       bannerFeaturedEvent.sectionHandle
-//         === 'workshopOrEventSeries'
-//         ? bannerFeaturedEvent.title
-//         : bannerFeaturedEvent.eventTitle,
-//     prompt:
-//       bannerFeaturedEvent.sectionHandle
-//         === 'workshopOrEventSeries'
-//         ? 'View series'
-//         : `View ${bannerFeaturedEvent.sectionHandle}`,
-//     image: _get(bannerFeaturedEvent, 'heroImage[0].image[0]', null),
-//     startDate:
-//       bannerFeaturedEvent.sectionHandle === 'event'
-//         ? _get(bannerFeaturedEvent, 'startDateWithTime', null)
-//         : _get(bannerFeaturedEvent, 'startDate', null),
-//     endDate:
-//       bannerFeaturedEvent.sectionHandle === 'event'
-//         ? _get(bannerFeaturedEvent, 'endDateWithTime', null)
-//         : _get(bannerFeaturedEvent, 'endDate', null),
-//     category: _get(bannerFeaturedEvent, 'category[0].title', ''),
-//     description:
-//       bannerFeaturedEvent.sectionHandle === 'event'
-//         ? _get(bannerFeaturedEvent, 'eventDescription', '')
-//         : _get(bannerFeaturedEvent, 'summary', ''),
-//     locations:
-//       bannerFeaturedEvent.associatedLocations[0] != null
-//         ? bannerFeaturedEvent.associatedLocations
-//         : bannerFeaturedEvent.eventLocation,
-//   }
-// })
-// // TO DO need to update dates on component
-// const parsedDualMasonryEvents = computed(() => {
-//   const masonaryEvents = page.value.featuredEvents.slice(1, 3)
-//   return masonaryEvents.map((obj) => {
-//     return {
-//       ...obj,
-//       to: `/${obj.uri}`,
-//       title:
-//         obj.sectionHandle === 'workshopOrEventSeries'
-//           ? obj.title
-//           : obj.eventTitle,
-//       image: _get(obj, 'heroImage[0].image[0]', null),
-//       startDate:
-//         obj.sectionHandle === 'event'
-//           ? _get(obj, 'startDateWithTime', null)
-//           : _get(obj, 'startDate', null),
-//       endDate:
-//         obj.sectionHandle === 'event'
-//           ? _get(obj, 'endDateWithTime', null)
-//           : _get(obj, 'endDate', null),
-//       category: 'Featured',
-//       prompt:
-//         obj.sectionHandle === 'workshopOrEventSeries'
-//           ? 'View series'
-//           : `View ${obj.sectionHandle}`,
-//     }
-//   })
-// })
-// const bannerFeaturedCollection = computed(() => {
-//   const bannerFeaturedCollection = page.value.featuredCollections[0]
-//   return {
-//     ...bannerFeaturedCollection,
-//     to: `/${bannerFeaturedCollection.uri}`,
-//     image: _get(
-//       bannerFeaturedCollection,
-//       'heroImage[0].image[0]',
-//       null
-//     ),
-//     category: bannerFeaturedCollection.category
-//       ? bannerFeaturedCollection.category.toString()
-//       : '',
-//     description: _get(bannerFeaturedCollection, 'text', ''),
-//     prompt: `View ${bannerFeaturedCollection.sectionHandle}`,
-//   }
-// })
-// const parsedSectionHighlightCollection = computed(() => {
-//   const highlightCollections = page.value.featuredCollections.slice(1)
-//   return highlightCollections.map((obj) => {
-//     return {
-//       ...obj,
-//       to: `/${obj.uri}`,
-//       image: _get(obj, 'heroImage[0].image[0]', ''),
-//       category: obj.category ? obj.category.toString() : '',
-//     }
-//   })
-// })
-
-// function parseArticleCategory(categories) {
-//   if (!categories || categories.length === 0)
-//     return ''
-//   let result = ''
-//   categories.forEach((obj) => {
-//     result = `${result + obj.title}, `
-//   })
-//   return result.slice(0, -2)
-// }
-// const bannerFeaturedNews = computed(() => {
-//   const bannerFeaturedNews = page.value.featuredNews[0]
-//   return {
-//     ...bannerFeaturedNews,
-//     to:
-//       bannerFeaturedNews.externalResourceUrl != null
-//         ? _get(bannerFeaturedNews, 'externalResourceUrl', '')
-//         : `/${bannerFeaturedNews.to}`,
-//     image: _get(bannerFeaturedNews, 'heroImage[0].image[0]', null),
-//     // startDate: _get(bannerFeaturedNews, "postDate", null),
-//     category: parseArticleCategory(
-//       bannerFeaturedNews.articleCategories
-//     ),
-//     description: _get(bannerFeaturedNews, 'text', ''),
-//     startDate: _get(bannerFeaturedNews, 'postDate', ''),
-//     endDate: _get(bannerFeaturedNews, 'postDate', ''),
-//     prompt: `View ${bannerFeaturedNews.sectionHandle}`,
-//   }
-// })
-// const parsedNewsList = computed(() => {
-//   const newsList = page.value.featuredNews.slice(1)
-//   return newsList.map((obj) => {
-//     return {
-//       ...obj,
-//       to:
-//         obj.externalResourceUrl != null
-//           ? _get(obj, 'externalResourceUrl', '')
-//           : `/${obj.to}`,
-//       image: _get(obj, 'heroImage[0].image[0]', ''),
-//       category: parseArticleCategory(obj.articleCategories),
-//       startDate: _get(obj, 'postDate', ''),
-//       endDate: _get(obj, 'postDate', ''),
-//     }
-//   })
-// })
-
-// useHead({
-//   title: page.value?.title || '... loading',
-//   meta: [
-//     {
-//       hid: 'description',
-//       name: 'description',
-//       content: 'The UCLA Library creates a vibrant nexus of ideas, collections, expertise, and spaces in which users illuminate solutions for local and global challenges. We constantly evolve to advance UCLA’s research, education, and public service mission by empowering and inspiring communities of scholars and learners to discover, access, create, share, and preserve knowledge.',
-//     },
-//   ],
-// })
-
-// Now Showing data
 const parsedNowShowing = computed(() => {
   if (!page.value.ftvaFeaturedEventsSection || !page.value.ftvaFeaturedEventsSection[0].featuredEvents) {
     return []
@@ -224,6 +58,59 @@ const parsedNowShowing = computed(() => {
       startDate: item.startDateWithTime || item.startDate,
     }
   })
+})
+
+const parsedQuickLinks = computed(() => {
+  return page.value.ftvaQuickLinks.map((item) => {
+    return {
+      title: item.titleGeneral,
+      to: item.urlLink,
+      text: item.description,
+      image: item.image[0],
+    }
+  })
+})
+
+const parsedArchiveBlogs = computed(() => {
+  const obj = page.value.ftvaFeaturedArticlesSection[0]
+  return {
+    sectionTitle: obj.sectionTitle,
+    sectionCta: obj.seeAllText,
+    blogTitle: obj.featuredArticles[0].title,
+    blogUri: obj.featuredArticles[0].uri,
+    // blogSummary: ,
+    image: obj.featuredArticles[0].ftvaImage
+  }
+})
+
+const parsedFeaturedCollections = computed(() => {
+  return page.value.ftvaFeaturedEntries.map((item) => {
+    return {
+      title: item.title,
+      to: item.uri,
+      image: item.ftvaImage[0],
+    }
+  })
+})
+
+const parsedPreservationData = computed(() => {
+  return {
+    sectionTitle: page.value.sectionTitle,
+    sectionSummary: page.value.richTextSimplified,
+    sectionUri: page.value.ftvaRelatedResources,
+    // Image
+  }
+})
+
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.summary)
+    }
+  ]
 })
 </script>
 
@@ -241,11 +128,9 @@ const parsedNowShowing = computed(() => {
         theme="paleblue"
       >
         <template #top-right>
-          <nuxt-link
-            v-if="page.ftvaFeaturedEventsSection[0]"
-            to="/events"
-          >
-            {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;"> &#8250;</span>
+          <nuxt-link to="/events">
+            {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;">
+              &#8250;</span>
           </nuxt-link>
         </template>
         <ScrollWrapper class="homepage-scroll-wrapper">
@@ -263,14 +148,13 @@ const parsedNowShowing = computed(() => {
       >
         <DividerWayFinder />
       </SectionWrapper>
+
       <!-- Visit and Learn -->
       <SectionWrapper
         class="visit-learn-section no-padding"
         theme="paleblue"
-        section-title="
-        Visit
-        and
-        Learn"
+        :section-title="page.visitAndLearnSectionTitle
+          "
       >
         <div v-if="isMobile">
           <BlockPostSmall
@@ -289,7 +173,10 @@ const parsedNowShowing = computed(() => {
           </BlockPostSmall>
         </div>
         <div v-else>
-          {{ page.ftvaQuickLinks }}
+          <SectionTeaserCard
+            :items="parsedQuickLinks"
+            :grid-layout="false"
+          />
         </div>
       </SectionWrapper>
       <SectionWrapper
@@ -297,6 +184,75 @@ const parsedNowShowing = computed(() => {
         theme="paleblue"
       >
         <DividerWayFinder />
+      </SectionWrapper>
+
+      <!-- Archive Blogs -->
+      <SectionWrapper
+        :section-title="parsedArchiveBlogs.sectionTitle"
+        class="archive-blog-section no-padding"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link to="/articles">
+            {{ parsedArchiveBlogs.sectionCta }} <span style="font-size:1.5em;">
+              &#8250;</span>
+          </nuxt-link>
+        </template>
+        <BlockMediaWithText
+          :section-header="parsedArchiveBlogs.blogTitle"
+          button-text="Continue Reading"
+          :button-url="parsedArchiveBlogs.blogUri"
+          :cover-image="parsedArchiveBlogs.image"
+        />
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
+        <DividerWayFinder />
+      </SectionWrapper>
+
+      <!-- Featured Collections -->
+      <SectionWrapper
+        section-title="Featured Collections"
+        class="featured-collections-section no-padding"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link to="/collections">
+            View All Collections <span style="font-size:1.5em;"> &#8250;</span>
+          </nuxt-link>
+        </template>
+
+        <ScrollWrapper>
+          <SectionTeaserCard
+            :items="parsedFeaturedCollections"
+            :grid-layout="false"
+          />
+        </ScrollWrapper>
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
+        <DividerWayFinder />
+      </SectionWrapper>
+
+      <!-- Preservation -->
+      <SectionWrapper
+        :section-title="parsedPreservationData.sectionTitle"
+        :section-summary="parsedPreservationData.sectionSummary"
+        class="preservation-section no-padding"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link :to="parsedPreservationData.sectionUri">
+            Learn More<span style="font-size:1.5em;">
+              &#8250;</span>
+          </nuxt-link>
+        </template>
+
+        <!-- Slider -->
       </SectionWrapper>
     </div>
   </main>
@@ -318,7 +274,7 @@ main {
 .one-column {
   width: 100%;
   max-width: var(--max-width);
-  margin: 0 auto;
+  margin: 65px auto;
 
   :deep(.nav-breadcrumb) {
     padding: 0px;
@@ -383,6 +339,18 @@ main {
 }
 
 .visit-learn-section {
+  :deep(.block-highlight.card) {
+    background-color: none;
+  }
+
+  :deep(.section-teaser-card) {
+    padding-top: 0;
+  }
+
+  :deep(.card-meta) {
+    min-height: 0;
+  }
+
   .quicklink-item-mobile {
     &:not(:last-child) {
       margin-bottom: 20px;
@@ -423,6 +391,22 @@ main {
         box-shadow: none;
       }
     }
+  }
+}
+
+.featured-collections-section {
+  .section-teaser-card {
+    background-color: var(--pale-blue);
+  }
+
+  :deep(.block-highlight .card-meta) {
+    min-height: 0;
+  }
+}
+
+.preservation-section {
+  :deep(.rich-text) {
+    max-width: 100%;
   }
 }
 </style>
