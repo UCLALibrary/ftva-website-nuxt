@@ -100,7 +100,7 @@ const parsedArchiveBlogs = computed(() => {
     sectionCta: obj.seeAllText,
     blogTitle: obj.featuredArticles[0].title,
     blogUri: obj.featuredArticles[0].uri,
-    // blogSummary: ,
+    blogSummary: obj.featuredArticles[0].ftvaHomepageDescription,
     image: obj.featuredArticles[0].ftvaImage
   }
 })
@@ -224,6 +224,7 @@ useHead({
         </template>
         <BlockMediaWithText
           :section-header="parsedArchiveBlogs.blogTitle"
+          :short-description="parsedArchiveBlogs.blogSummary"
           button-text="Continue Reading"
           :button-url="parsedArchiveBlogs.blogUri"
           :cover-image="parsedArchiveBlogs.image"

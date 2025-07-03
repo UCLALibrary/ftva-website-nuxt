@@ -54,7 +54,7 @@ query FTVAHomepage {
         }
       }
       ftvaFeaturedEntries {
-        id 
+        id
         title
         uri
         ftvaImage {
@@ -94,6 +94,7 @@ query FTVAHomepage {
             id
             title
             uri
+            ftvaHomepageDescription
             ftvaImage {
               ...Image
             }
