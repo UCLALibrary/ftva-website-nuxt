@@ -55,8 +55,17 @@ query FTVAHomepage {
       }
       ftvaFeaturedEntries {
         id
-        title
+        typeHandle
         uri
+        title
+        ftvaHomepageTitle
+        ftvaHomepageDescription
+        # FOR EVENT SERIES
+        startDate
+        endDate
+        ongoing
+				# FOR EVENT
+      	startDateWithTime
         ftvaImage {
           ...Image
         }
