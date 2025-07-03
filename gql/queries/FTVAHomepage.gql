@@ -1,0 +1,105 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVAHomepage {
+  entry(section: ["ftvaHomepage"]) {
+    id
+    title
+    ... on ftvaHomepage_ftvaHomepage_Entry {
+      id
+      summary
+      sectionTitle
+      richTextSimplified
+      ftvaRelatedResources
+      visitAndLearnSectionTitle
+      ftvaQuickLinks {
+        ... on ftvaQuickLinks_quickLink_BlockType {
+          titleGeneral
+          id
+          description
+          urlLink
+          image {
+            ...Image
+          }
+        }
+      }
+      ftvaFeaturedEventsSection {
+        ... on ftvaFeaturedEventsSection_featuredEventsSection_BlockType {
+        id
+        sectionTitle
+        seeAllText
+        featuredEvents {
+         ... on ftvaEvent_ftvaEvent_Entry {
+          id
+          sectionHandle
+          uri
+          workshopOrEventSeriesType
+          title
+          eventTitle
+          startDateWithTime
+              @formatDateTime(
+                  format: "Y-m-d\\TH:i"
+                  timezone: "America/Los_Angeles"
+              )
+          endDateWithTime
+              @formatDateTime(
+                  format: "Y-m-d\\TH:i"
+                  timezone: "America/Los_Angeles"
+              )
+          uri
+          ftvaImage {
+            ...Image
+          }
+        }
+        }
+        }
+      }
+      ftvaFeaturedEntries {
+        id 
+        title
+        uri
+        ftvaImage {
+          ...Image
+        }
+      }
+      ftvaFeaturedCollectionsSection {
+        ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
+          id
+          sectionTitle
+          sectionDescription
+          seeAllText
+          seeAllLink
+          featuredCollections {
+            id
+            title
+            uri
+            ftvaImage {
+              ...Image
+            }
+            imageCarousel {
+              ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                  ...Image
+                }
+                altText
+              }
+            }
+          }
+        }
+      }
+      ftvaFeaturedArticlesSection {
+        ... on ftvaFeaturedArticlesSection_ftvaFeaturedArticlesSection_BlockType {
+          seeAllText
+          sectionTitle
+          featuredArticles {
+            id
+            title
+            uri
+            ftvaImage {
+              ...Image
+            }
+          }
+        }
+      }
+    }
+  }
+}

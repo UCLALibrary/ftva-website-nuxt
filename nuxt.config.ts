@@ -1,8 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import svgLoader from 'vite-svg-loader'
 
 export default defineNuxtConfig({
   // when using local pnpm link with component library uncomment this line
   vite: {
+    plugins: [svgLoader()],
     // ADDED FOLLOWING LINE TO RESOLVE CROSS-FETCH ERROR
     // Uncaught SyntaxError: The requested module '/_nuxt/node_modules/.pnpm/cross-fetch@3.1.8/node_modules/cross-fetch/dist/browser-ponyfill.js?v=4dc3293b'
     // does not provide an export named 'default' (at index.js?v=4dc3293b:6:8)
@@ -40,7 +42,7 @@ export default defineNuxtConfig({
       failOnError: false,
       concurrency: 50,
       interval: 1000,
-      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/'],
+      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/', '/search/'],
     },
     hooks: {
       'prerender:generate'(route) {
@@ -84,6 +86,8 @@ export default defineNuxtConfig({
           routes.add('/collections/motion-picture')
           routes.add('/collections/television')
           routes.add('/collections/watch-listen-online')
+          routes.add('/collections/la-rebellion/filmography')
+          routes.add('/collections/in-the-life/filmography')
         }
         // eslint-disable-next-line no-console
         console.log('prerender:routes ctx.routes', routes)
@@ -227,8 +231,10 @@ export default defineNuxtConfig({
     payloadExtraction: true,
     sharedPrerenderData: true
   } */
+
   experimental: {
-    sharedPrerenderData: true,
+    sharedPrerenderData: true, // Improves nuxt build performance
+    buildCache: true, // Improves nuxt build performance
   },
 
   compatibilityDate: '2025-03-19',

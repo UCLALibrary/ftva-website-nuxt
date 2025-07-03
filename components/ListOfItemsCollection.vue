@@ -5,7 +5,7 @@ import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 
-const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string } }
+const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
 
 const route = useRoute()
 const router = useRouter()
@@ -26,6 +26,7 @@ if (attrs.page && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     attrs.page.titleBrowse = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
+    attrs.page.groupName = 'Collections'
     // Index the collection data using the composable during static build
     await indexContent(attrs.page, route.params.slug)
     // console.log('Collection indexed successfully during static build')
@@ -104,6 +105,7 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 }
 const searchFilters = ref([])
 function parseAggRes(response: Aggregations) {
+  // console.log('parseAggRes response', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
@@ -111,20 +113,29 @@ function parseAggRes(response: Aggregations) {
       value: bucket.key
     }))
   }))
+
+  filters.forEach((filter) => {
+    if (filter.label !== 'Filter by Season') return
+    // Special case for 'Filter by Season' to sort options numerically
+    filter.options.sort((a, b) => {
+      return parseInt(a.value) - parseInt(b.value)
+    })
+  })
+
   filters[0].options.unshift({
     label: '(none selected)',
     value: '(none selected)'
   })
+
   return filters
 }
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
-
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
     'ftvaItemInCollection',
-    collectionTitle.value // change it what is being used on this page template
+    titleForSearch.value // change it what is being used on this page template
   )
   // searchFilters.value is just a place holder which will have all the
   // filter data for single select drop down in [{ label}]
@@ -159,6 +170,16 @@ function updateFilters(newFilter) {
     })
   }
 }
+const titleForSearch = computed(() => {
+  // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
+  if (route.path.endsWith('filmography')) {
+    return route.path.split('/').includes('la-rebellion')
+      ? 'L.A. Rebellion' :
+      route.path.split('/').includes('in-the-life') ? 'In the Life' : collectionTitle.value
+  } else {
+    return collectionTitle.value
+  }
+})
 
 // ELASTIC SEARCH FUNCTION
 async function searchES() {
@@ -173,8 +194,7 @@ async function searchES() {
 
     const { paginatedCollectionSearchFilters } = useListSearchFilter()
 
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', collectionTitle.value, selectedFilters.value, selectedSortFilters.value.sortField)
-
+    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
     if (results && results.hits && results.hits.hits.length > 0) {
       const newCollectionResults = results.hits.hits || []
 
@@ -201,6 +221,7 @@ async function searchES() {
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    // console.log('Route query params changed:', newVal, oldVal)
     // set filters from query params
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
     if (Object.keys(selectedFiltersFromRoute).length === 0) {
@@ -238,21 +259,21 @@ useHead({
       <NavBreadcrumb
         data-test="breadcrumb"
         class="breadcrumb"
-        :title="$attrs.page.title"
+        :title="attrs.page.title"
         to="/collections"
       />
       <!-- TODO scrollElem used for infinite scrolling -->
       <SectionWrapper
         ref="scrollElem"
-        :section-title="$attrs.page.title"
+        :section-title="attrs.page.title"
         class="header"
         theme="paleblue"
         data-test="complex-collections-page-title"
       >
         <RichText
-          v-if="$attrs.page?.ftvaHomepageDescription"
+          v-if="attrs.page?.ftvaHomepageDescription"
           class="description"
-          :rich-text-content="$attrs.page.ftvaHomepageDescription"
+          :rich-text-content="attrs.page.ftvaHomepageDescription"
         />
         <DividerWayFinder />
 
@@ -314,11 +335,15 @@ useHead({
   </main>
 </template>
 <style lang="scss" scoped>
+@import '~/assets/styles/slug-pages.scss';
+
 main.blue-main {
   background-color: var(--pale-blue);
 }
 
 .page-collections-list-of-items {
+
+  padding-bottom: 20px; // add 20px at bottom per UX review
 
   label.select-label,
   label.sort-label {

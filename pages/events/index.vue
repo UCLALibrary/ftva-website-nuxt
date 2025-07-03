@@ -40,7 +40,10 @@ if (data.value.entry && import.meta.prerender) {
     const doc = {
       title: data.value.entry.titleGeneral,
       text: data.value.entry.summary,
-      uri: '/events'
+      uri: '/events',
+      sectionHandle: data.value.entry.sectionHandle,
+      groupName: 'Events',
+      postDate: data.value.entry.startDate,
     }
     // Index the events data using the composable during static build
     await indexContent(doc, 'event-listing')
@@ -172,7 +175,6 @@ function handleScreenTransition() {
     currentPage.value = restoredPage
     desktopEvents.value = []
   }
-  searchES()
 }
 
 const parsedRemoveSearchFilters = computed(() => {
@@ -521,8 +523,8 @@ const parseFirstEventMonth = computed(() => {
         :section-title="heading.titleGeneral"
       />
       <SectionWrapper
-        class="main"
         ref="el"
+        class="main"
         theme="paleblue"
       >
         <TabList
@@ -628,6 +630,8 @@ const parseFirstEventMonth = computed(() => {
 </template>
 
 <style lang='scss' scoped>
+@import 'assets/styles/listing-pages.scss';
+
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -937,6 +941,4 @@ const parseFirstEventMonth = computed(() => {
     }
   }
 }
-
-@import 'assets/styles/listing-pages.scss';
 </style>

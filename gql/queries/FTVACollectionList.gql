@@ -1,35 +1,85 @@
-# import "../gql/fragments/Image.gql"
+#import "../gql/fragments/Image.gql"
 
-# TODO remove some of these fields? 
 query FTVACollectionList {
-  entries(section: ["ftvaCollection"], orderBy: "postDate") {
+  entry(section: ["ftvaListingExploreCollections"]) {
     typeHandle
-    id
-    title
+    sectionHandle
+    uri
     slug
-    to: uri
-    ftvaHomepageTitle
-    ftvaHomepageDescription
-    ftvaCollectionType
-    richText 
-    infoBlock {
-      ... on infoBlock_infoBlock_BlockType {
-        icon
-        text
+    title: titleGeneral
+    summary
+    displaySummary
+    heroImage {
+      ... on heroImage_heroImage_BlockType {
+         image {
+          ...Image
+        }
       }
     }
-    # unknown fragment errors for some reason, works in craftcms
-    # seems to be happening on all list pages?
-    # ftvaImage {
-    #   ...Image
-    # }
 
+    # Hearst Collection
+    hearstTitle: sectionTitle
+    hearstDescription: richTextSimplified
+    hearstUri: ftvaRelatedResources
+    hearstImage: image {
+      ... on mediaAndDocuments_Asset {
+        ...Image
+      }
+    }
 
+    ... on ftvaListingExploreCollections_ftvaListingExploreCollections_Entry {
 
-    ftvaRelatedCollections {
-      title
-      richText
-      uri
+      collections: ftvaFeaturedCollectionsSection {
+        ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
+          sectionTitle
+          sectionDescription
+          cta: seeAllText
+          uri: seeAllLink
+          featuredCollections {
+            title
+            uri
+            image: ftvaImage {
+              ...Image
+            }
+            imageCarousel {
+              ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                  ...Image
+                }
+                creditText
+              }
+            }
+          }
+        }
+      }
+
+      otherResources: ftvaFeaturedResourcesSection {
+        ... on ftvaFeaturedResourcesSection_otherResources_BlockType {
+          sectionTitle
+          sectionDescription
+          featuredResources {
+            title
+            uri
+            image: ftvaImage {
+              ...Image
+            }
+          }
+        }
+      }
+
+      aboutOurCollections: ftvaCollectionsSection {
+        ... on ftvaCollectionsSection_aboutOurCollections_BlockType {
+          sectionTitle
+          sectionDescription
+          collectionsInformation {
+            title
+            uri
+            image: ftvaImage {
+              ...Image
+            }
+          }
+        }
+      }
     }
   }
 }
