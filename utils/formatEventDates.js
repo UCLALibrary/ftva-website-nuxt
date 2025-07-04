@@ -6,7 +6,8 @@
  * @returns {String}
  */
 
-import format from 'date-fns/format'
+import { format } from 'date-fns/format'
+// import { format } from 'date-fns/format'
 
 function formatDates(startDate = '', endDate = '') {
   const start = format(new Date(startDate), 'MMMM d Y')

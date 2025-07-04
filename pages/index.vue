@@ -2,9 +2,14 @@
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
+import { format } from 'date-fns/format'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
+
+// UTILITIES
+import formatEventDates from '@/utils/formatEventDates'
+import formatSeriesDates from '@/utils/formatEventSeriesDates'
 
 const { $graphql } = useNuxtApp()
 
@@ -66,7 +71,17 @@ watch(width, (newWidth) => {
   isMobile.value = newWidth <= 750
 }, { immediate: true })
 
-// Carousel
+const parsedCarouselData = computed(() => {
+  return page.value.ftvaFeaturedEntries.map((obj) => {
+    return {
+      item: parseFTVACarouselImage(obj.ftvaImage),
+      tag: parseFTVATypeHandles(obj.typeHandle),
+      captionText: obj.ftvaHomepageDescription,
+      captionTitle: obj.title,
+      itemDate: parseDatesAndTimes(obj.typeHandle, obj.startDate, obj.endDate, obj.startDateWithTime, obj.ongoing)
+    }
+  })
+})
 
 const parsedNowShowing = computed(() => {
   if (!page.value.ftvaFeaturedEventsSection || !page.value.ftvaFeaturedEventsSection[0].featuredEvents) {
@@ -134,6 +149,45 @@ useHead({
     }
   ]
 })
+
+// Helpers to parse Carousel
+function parseFTVACarouselImage(imgObj) {
+  return [{
+    ...imgObj[0],
+    src: imgObj[0]?.url,
+    kind: 'image', // This key is expected by the Media component
+  }]
+}
+
+function parseFTVATypeHandles(str) {
+  // Add extra typehandles as needed
+  switch (str) {
+    case 'ftvaEvent':
+      return 'Event'
+    case 'ftvaArticle':
+      return 'Article'
+    case 'eventSeries':
+      return 'Series'
+    default:
+      return null
+  }
+}
+
+function formatEventTime(date) {
+  const formattedTime = format(new Date(date), 'h:mm aaa')
+  return formattedTime.toUpperCase()
+}
+
+function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, ongoing) {
+  if (ongoing)
+    return 'Ongoing'
+  if (typeHandle === 'ftvaEvent')
+    return `${formatEventDates(startDateWithTime, startDateWithTime, 'longWithYear')} - ${formatEventTime(startDateWithTime)}`
+  if (typeHandle === 'eventSeries')
+    return formatSeriesDates(startDate, endDate, 'longWithYear')
+
+  return null
+}
 </script>
 
 <template>
@@ -141,8 +195,20 @@ useHead({
     id="main"
     class="page page-home"
   >
-    <!-- TODO Carousel Here -->
     <div class="one-column">
+      <div class="lightbox-container">
+        <FlexibleMediaGalleryNewLightbox
+          class="homepage"
+          :items="parsedCarouselData"
+          :inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex].tag" /> {{
+              parsedCarouselData[slotProps.selectionIndex].itemDate }}
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
+
       <!-- Now Showing -->
       <SectionWrapper
         :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
@@ -290,20 +356,25 @@ main {
   background-color: var(--pale-blue);
 }
 
-:deep(.section-wrapper) {
+.one-column {
+  width: 100%;
+  margin: 0 auto 65px auto;
+}
+
+:deep(.section-wrapper:not(:first-of-type)) {
   &.no-padding {
     padding-top: 0;
+  }
+}
+
+:deep(.section-wrapper) {
+  &.no-padding {
     padding-bottom: 0;
   }
 }
 
-.one-column {
-  width: 100%;
-  margin: 65px auto;
-
-  :deep(.nav-breadcrumb) {
-    padding: 0px;
-  }
+.lightbox-container {
+  position: relative;
 }
 
 :deep(.section-wrapper h2.section-header.section-title) {
