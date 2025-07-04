@@ -1,13 +1,17 @@
-<script lang="ts" setup>
+<script setup>
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
+import { format } from 'date-fns/format'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
 
+// UTILITIES
+import formatEventDates from '@/utils/formatEventDates'
+import formatSeriesDates from '@/utils/formatEventSeriesDates'
+
 const { $graphql } = useNuxtApp()
-const route = useRoute()
 
 // STATE
 const isMobile = ref(false)
@@ -16,11 +20,13 @@ const { data, error } = await useAsyncData('home-page', async () => {
   const data = await $graphql.default.request(FTVAHomepage)
   return data
 })
+
 if (error.value) {
   throw createError({
     statusCode: error.value.statusCode, statusMessage: error.value.statusMessage + error.value, fatal: true
   })
 }
+
 if (!data.value.entry) {
   throw createError({
     statusCode: 404,
@@ -28,7 +34,30 @@ if (!data.value.entry) {
     fatal: true
   })
 }
+
+// METADATA INFO
+if (data.value.entry && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    const doc = {
+      title: data.value.entry.title,
+      text: data.value.entry.summary,
+      uri: '/',
+      groupName: 'homepage',
+    }
+    // Index the articles data using the composable during static build
+    await indexContent(doc, 'homepage')
+    // console.log('Homepage content indexed successfully during static build')
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX HOMEPAGE during static build:', error)
+  }
+}
+
 const page = ref(_get(data.value, 'entry', {}))
+console.log('Page: ', page.value)
+
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
@@ -42,176 +71,18 @@ watch(width, (newWidth) => {
   isMobile.value = newWidth <= 750
 }, { immediate: true })
 
-// const parsedAdvancedSearchLink = computed(() => {
-//   // Last item in searchLinks
-//   const advancedLink = page.value.searchLinks.slice(-1)[0]
-//   return advancedLink
-// })
-// const parsedSearchLinks = computed(() => {
-//   // Remove last item in searchLinks
-//   const searchLinks = [...page.value.searchLinks].slice(0, -1)
-//   return searchLinks
-// })
+const parsedCarouselData = computed(() => {
+  return page.value.ftvaFeaturedEntries.map((obj) => {
+    return {
+      item: parseFTVACarouselImage(obj.ftvaImage),
+      tag: parseFTVATypeHandles(obj.typeHandle),
+      captionText: obj.ftvaHomepageDescription,
+      captionTitle: obj.title,
+      itemDate: parseDatesAndTimes(obj.typeHandle, obj.startDate, obj.endDate, obj.startDateWithTime, obj.ongoing)
+    }
+  })
+})
 
-// const parsedGetHelpWith = computed(() => {
-//   return page.value.getHelpWith[0].getHelpWith.map((obj) => {
-//     return {
-//       ...obj,
-//       to: obj.externalResourceUrl
-//         ? obj.externalResourceUrl
-//         : `/${obj.uri}`,
-//     }
-//   })
-// })
-// const bannerFeaturedEvent = computed(() => {
-//   const bannerFeaturedEvent = page.value.featuredEvents[0]
-//   return {
-//     ...bannerFeaturedEvent,
-//     to: `/${bannerFeaturedEvent.uri}`,
-//     title:
-//       bannerFeaturedEvent.sectionHandle
-//         === 'workshopOrEventSeries'
-//         ? bannerFeaturedEvent.title
-//         : bannerFeaturedEvent.eventTitle,
-//     prompt:
-//       bannerFeaturedEvent.sectionHandle
-//         === 'workshopOrEventSeries'
-//         ? 'View series'
-//         : `View ${bannerFeaturedEvent.sectionHandle}`,
-//     image: _get(bannerFeaturedEvent, 'heroImage[0].image[0]', null),
-//     startDate:
-//       bannerFeaturedEvent.sectionHandle === 'event'
-//         ? _get(bannerFeaturedEvent, 'startDateWithTime', null)
-//         : _get(bannerFeaturedEvent, 'startDate', null),
-//     endDate:
-//       bannerFeaturedEvent.sectionHandle === 'event'
-//         ? _get(bannerFeaturedEvent, 'endDateWithTime', null)
-//         : _get(bannerFeaturedEvent, 'endDate', null),
-//     category: _get(bannerFeaturedEvent, 'category[0].title', ''),
-//     description:
-//       bannerFeaturedEvent.sectionHandle === 'event'
-//         ? _get(bannerFeaturedEvent, 'eventDescription', '')
-//         : _get(bannerFeaturedEvent, 'summary', ''),
-//     locations:
-//       bannerFeaturedEvent.associatedLocations[0] != null
-//         ? bannerFeaturedEvent.associatedLocations
-//         : bannerFeaturedEvent.eventLocation,
-//   }
-// })
-// // TO DO need to update dates on component
-// const parsedDualMasonryEvents = computed(() => {
-//   const masonaryEvents = page.value.featuredEvents.slice(1, 3)
-//   return masonaryEvents.map((obj) => {
-//     return {
-//       ...obj,
-//       to: `/${obj.uri}`,
-//       title:
-//         obj.sectionHandle === 'workshopOrEventSeries'
-//           ? obj.title
-//           : obj.eventTitle,
-//       image: _get(obj, 'heroImage[0].image[0]', null),
-//       startDate:
-//         obj.sectionHandle === 'event'
-//           ? _get(obj, 'startDateWithTime', null)
-//           : _get(obj, 'startDate', null),
-//       endDate:
-//         obj.sectionHandle === 'event'
-//           ? _get(obj, 'endDateWithTime', null)
-//           : _get(obj, 'endDate', null),
-//       category: 'Featured',
-//       prompt:
-//         obj.sectionHandle === 'workshopOrEventSeries'
-//           ? 'View series'
-//           : `View ${obj.sectionHandle}`,
-//     }
-//   })
-// })
-// const bannerFeaturedCollection = computed(() => {
-//   const bannerFeaturedCollection = page.value.featuredCollections[0]
-//   return {
-//     ...bannerFeaturedCollection,
-//     to: `/${bannerFeaturedCollection.uri}`,
-//     image: _get(
-//       bannerFeaturedCollection,
-//       'heroImage[0].image[0]',
-//       null
-//     ),
-//     category: bannerFeaturedCollection.category
-//       ? bannerFeaturedCollection.category.toString()
-//       : '',
-//     description: _get(bannerFeaturedCollection, 'text', ''),
-//     prompt: `View ${bannerFeaturedCollection.sectionHandle}`,
-//   }
-// })
-// const parsedSectionHighlightCollection = computed(() => {
-//   const highlightCollections = page.value.featuredCollections.slice(1)
-//   return highlightCollections.map((obj) => {
-//     return {
-//       ...obj,
-//       to: `/${obj.uri}`,
-//       image: _get(obj, 'heroImage[0].image[0]', ''),
-//       category: obj.category ? obj.category.toString() : '',
-//     }
-//   })
-// })
-
-// function parseArticleCategory(categories) {
-//   if (!categories || categories.length === 0)
-//     return ''
-//   let result = ''
-//   categories.forEach((obj) => {
-//     result = `${result + obj.title}, `
-//   })
-//   return result.slice(0, -2)
-// }
-// const bannerFeaturedNews = computed(() => {
-//   const bannerFeaturedNews = page.value.featuredNews[0]
-//   return {
-//     ...bannerFeaturedNews,
-//     to:
-//       bannerFeaturedNews.externalResourceUrl != null
-//         ? _get(bannerFeaturedNews, 'externalResourceUrl', '')
-//         : `/${bannerFeaturedNews.to}`,
-//     image: _get(bannerFeaturedNews, 'heroImage[0].image[0]', null),
-//     // startDate: _get(bannerFeaturedNews, "postDate", null),
-//     category: parseArticleCategory(
-//       bannerFeaturedNews.articleCategories
-//     ),
-//     description: _get(bannerFeaturedNews, 'text', ''),
-//     startDate: _get(bannerFeaturedNews, 'postDate', ''),
-//     endDate: _get(bannerFeaturedNews, 'postDate', ''),
-//     prompt: `View ${bannerFeaturedNews.sectionHandle}`,
-//   }
-// })
-// const parsedNewsList = computed(() => {
-//   const newsList = page.value.featuredNews.slice(1)
-//   return newsList.map((obj) => {
-//     return {
-//       ...obj,
-//       to:
-//         obj.externalResourceUrl != null
-//           ? _get(obj, 'externalResourceUrl', '')
-//           : `/${obj.to}`,
-//       image: _get(obj, 'heroImage[0].image[0]', ''),
-//       category: parseArticleCategory(obj.articleCategories),
-//       startDate: _get(obj, 'postDate', ''),
-//       endDate: _get(obj, 'postDate', ''),
-//     }
-//   })
-// })
-
-// useHead({
-//   title: page.value?.title || '... loading',
-//   meta: [
-//     {
-//       hid: 'description',
-//       name: 'description',
-//       content: 'The UCLA Library creates a vibrant nexus of ideas, collections, expertise, and spaces in which users illuminate solutions for local and global challenges. We constantly evolve to advance UCLA’s research, education, and public service mission by empowering and inspiring communities of scholars and learners to discover, access, create, share, and preserve knowledge.',
-//     },
-//   ],
-// })
-
-// Now Showing data
 const parsedNowShowing = computed(() => {
   if (!page.value.ftvaFeaturedEventsSection || !page.value.ftvaFeaturedEventsSection[0].featuredEvents) {
     return []
@@ -225,6 +96,98 @@ const parsedNowShowing = computed(() => {
     }
   })
 })
+
+const parsedQuickLinks = computed(() => {
+  return page.value.ftvaQuickLinks.map((item) => {
+    return {
+      title: item.titleGeneral,
+      to: item.urlLink,
+      text: item.description,
+      image: item.image[0],
+    }
+  })
+})
+
+const parsedArchiveBlogs = computed(() => {
+  const obj = page.value.ftvaFeaturedArticlesSection[0]
+  return {
+    sectionTitle: obj.sectionTitle,
+    sectionCta: obj.seeAllText,
+    blogTitle: obj.featuredArticles[0].title,
+    blogUri: obj.featuredArticles[0].uri,
+    blogSummary: obj.featuredArticles[0].ftvaHomepageDescription,
+    image: obj.featuredArticles[0].ftvaImage
+  }
+})
+
+const parsedFeaturedCollections = computed(() => {
+  return page.value.ftvaFeaturedEntries.map((item) => {
+    return {
+      title: item.title,
+      to: item.uri,
+      image: item.ftvaImage[0],
+    }
+  })
+})
+
+const parsedPreservationData = computed(() => {
+  return {
+    sectionTitle: page.value.sectionTitle,
+    sectionSummary: page.value.richTextSimplified,
+    sectionUri: page.value.ftvaRelatedResources,
+    // Image
+  }
+})
+
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.summary)
+    }
+  ]
+})
+
+// Helpers to parse Carousel
+function parseFTVACarouselImage(imgObj) {
+  return [{
+    ...imgObj[0],
+    src: imgObj[0]?.url,
+    kind: 'image', // This key is expected by the Media component
+  }]
+}
+
+function parseFTVATypeHandles(str) {
+  // Add extra typehandles as needed
+  switch (str) {
+    case 'ftvaEvent':
+      return 'Event'
+    case 'ftvaArticle':
+      return 'Article'
+    case 'eventSeries':
+      return 'Series'
+    default:
+      return null
+  }
+}
+
+function formatEventTime(date) {
+  const formattedTime = format(new Date(date), 'h:mm aaa')
+  return formattedTime.toUpperCase()
+}
+
+function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, ongoing) {
+  if (ongoing)
+    return 'Ongoing'
+  if (typeHandle === 'ftvaEvent')
+    return `${formatEventDates(startDateWithTime, startDateWithTime, 'longWithYear')} - ${formatEventTime(startDateWithTime)}`
+  if (typeHandle === 'eventSeries')
+    return formatSeriesDates(startDate, endDate, 'longWithYear')
+
+  return null
+}
 </script>
 
 <template>
@@ -232,8 +195,20 @@ const parsedNowShowing = computed(() => {
     id="main"
     class="page page-home"
   >
-    <!-- TODO Carousel Here -->
     <div class="one-column">
+      <div class="lightbox-container">
+        <FlexibleMediaGalleryNewLightbox
+          class="homepage"
+          :items="parsedCarouselData"
+          :inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex].tag" /> {{
+              parsedCarouselData[slotProps.selectionIndex].itemDate }}
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
+
       <!-- Now Showing -->
       <SectionWrapper
         :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
@@ -241,11 +216,9 @@ const parsedNowShowing = computed(() => {
         theme="paleblue"
       >
         <template #top-right>
-          <nuxt-link
-            v-if="page.ftvaFeaturedEventsSection[0]"
-            to="/events"
-          >
-            {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;"> &#8250;</span>
+          <nuxt-link to="/events">
+            {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;">
+              &#8250;</span>
           </nuxt-link>
         </template>
         <ScrollWrapper class="homepage-scroll-wrapper">
@@ -254,6 +227,7 @@ const parsedNowShowing = computed(() => {
             class="now-showing-items"
             :items="parsedNowShowing"
             :grid-layout="false"
+            data-test="featured-event-items"
           />
         </ScrollWrapper>
       </SectionWrapper>
@@ -263,14 +237,13 @@ const parsedNowShowing = computed(() => {
       >
         <DividerWayFinder />
       </SectionWrapper>
+
       <!-- Visit and Learn -->
       <SectionWrapper
         class="visit-learn-section no-padding"
         theme="paleblue"
-        section-title="
-        Visit
-        and
-        Learn"
+        :section-title="page.visitAndLearnSectionTitle
+          "
       >
         <div v-if="isMobile">
           <BlockPostSmall
@@ -289,7 +262,11 @@ const parsedNowShowing = computed(() => {
           </BlockPostSmall>
         </div>
         <div v-else>
-          {{ page.ftvaQuickLinks }}
+          <SectionTeaserCard
+            :items="parsedQuickLinks"
+            :grid-layout="false"
+            data-test="quick-link-items"
+          />
         </div>
       </SectionWrapper>
       <SectionWrapper
@@ -297,6 +274,78 @@ const parsedNowShowing = computed(() => {
         theme="paleblue"
       >
         <DividerWayFinder />
+      </SectionWrapper>
+
+      <!-- Archive Blogs -->
+      <SectionWrapper
+        :section-title="parsedArchiveBlogs.sectionTitle"
+        class="archive-blog-section no-padding"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link to="/blog">
+            {{ parsedArchiveBlogs.sectionCta }} <span style="font-size:1.5em;">
+              &#8250;</span>
+          </nuxt-link>
+        </template>
+        <BlockMediaWithText
+          :section-header="parsedArchiveBlogs.blogTitle"
+          :short-description="parsedArchiveBlogs.blogSummary"
+          button-text="Continue Reading"
+          :button-url="parsedArchiveBlogs.blogUri"
+          :cover-image="parsedArchiveBlogs.image"
+          data-test="featured-article"
+        />
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
+        <DividerWayFinder />
+      </SectionWrapper>
+
+      <!-- Featured Collections -->
+      <SectionWrapper
+        section-title="Featured Collections"
+        class="featured-collections-section no-padding"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link to="/collections">
+            View All Collections <span style="font-size:1.5em;"> &#8250;</span>
+          </nuxt-link>
+        </template>
+
+        <ScrollWrapper>
+          <SectionTeaserCard
+            :items="parsedFeaturedCollections"
+            :grid-layout="false"
+            data-test="featured-collection-items"
+          />
+        </ScrollWrapper>
+      </SectionWrapper>
+      <SectionWrapper
+        class="no-padding"
+        theme="paleblue"
+      >
+        <DividerWayFinder />
+      </SectionWrapper>
+
+      <!-- Preservation -->
+      <SectionWrapper
+        :section-title="parsedPreservationData.sectionTitle"
+        :section-summary="parsedPreservationData.sectionSummary"
+        class="preservation-section no-padding"
+        theme="paleblue"
+      >
+        <template #top-right>
+          <nuxt-link :to="parsedPreservationData.sectionUri">
+            Learn More<span style="font-size:1.5em;">
+              &#8250;</span>
+          </nuxt-link>
+        </template>
+
+        <!-- Slider -->
       </SectionWrapper>
     </div>
   </main>
@@ -307,22 +356,29 @@ main {
   background-color: var(--pale-blue);
 }
 
-:deep(.section-wrapper) {
+.one-column {
+  width: 100%;
+  margin: 0 auto 65px auto;
+}
+
+:deep(.section-wrapper:not(:first-of-type)) {
   &.no-padding {
-    @media screen and (min-width: 1160px) {
-      padding: 0px;
-    }
+    padding-top: 0;
   }
 }
 
-.one-column {
-  width: 100%;
-  max-width: var(--max-width);
-  margin: 0 auto;
-
-  :deep(.nav-breadcrumb) {
-    padding: 0px;
+:deep(.section-wrapper) {
+  &.no-padding {
+    padding-bottom: 0;
   }
+}
+
+.lightbox-container {
+  position: relative;
+}
+
+:deep(.section-wrapper h2.section-header.section-title) {
+  color: $heading-grey;
 }
 
 .now-showing-section {
@@ -334,7 +390,6 @@ main {
     :deep(li.block-highlight) {
       max-width: 340px;
       flex-direction: column-reverse;
-      margin-top: 16px;
       transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
@@ -375,14 +430,22 @@ main {
     :deep(.v-sheet) {
       background-color: transparent;
     }
-
-    @media #{$small} {
-      padding-top: 16px;
-    }
   }
 }
 
 .visit-learn-section {
+  :deep(.block-highlight.card) {
+    background-color: none;
+  }
+
+  :deep(.section-teaser-card) {
+    padding-top: 0;
+  }
+
+  :deep(.card-meta) {
+    min-height: 0;
+  }
+
   .quicklink-item-mobile {
     &:not(:last-child) {
       margin-bottom: 20px;
@@ -422,6 +485,56 @@ main {
       &:hover {
         box-shadow: none;
       }
+    }
+  }
+}
+
+.featured-collections-section {
+  .section-teaser-card {
+    background-color: var(--pale-blue);
+    padding-top: 0;
+  }
+
+  :deep(.block-highlight .card-meta) {
+    min-height: 0;
+  }
+}
+
+.preservation-section {
+  :deep(.section-header.section-title) {
+    margin-bottom: 40px;
+  }
+
+  :deep(.rich-text.section-summary) {
+    max-width: 100%;
+  }
+
+  :deep(.rich-text p) {
+    @include ftva-body-2;
+  }
+}
+
+@media #{$medium} {
+  :deep(.ftva.section-wrapper div.section-header) {
+    margin-bottom: 40px;
+  }
+}
+
+@media #{$small} {
+  .archive-blog-section {
+    :deep(.media-with-text) {
+      margin-top: 16px;
+      max-height: unset;
+    }
+  }
+
+  .preservation-section {
+    :deep(.section-header.section-title) {
+      margin-bottom: 10px;
+    }
+
+    :deep(.section-header .section-link) {
+      margin-bottom: 36px;
     }
   }
 }
