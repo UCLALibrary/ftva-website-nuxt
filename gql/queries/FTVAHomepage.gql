@@ -110,6 +110,33 @@ query FTVAHomepage {
           }
         }
       }
+      beforeAfterImageCarousel {
+        ... on beforeAfterImageCarousel_imageCarousel_BlockType {
+          beforeImage {
+            ... on mediaAndDocuments_Asset {
+              id
+              src: url
+              altText
+              focalPoint
+              height
+              width
+              srcset(sizes: ["375", "960", "1280", "1920", "2560"])
+            }
+          }
+          afterImage {
+            ... on mediaAndDocuments_Asset {
+              id
+              src: url
+              altText
+              focalPoint
+              height
+              width
+              srcset(sizes: ["375", "960", "1280", "1920", "2560"])
+            }
+          }
+          caption
+        }
+      }
     }
   }
 }
