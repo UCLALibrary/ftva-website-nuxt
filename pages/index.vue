@@ -527,7 +527,7 @@ main {
   }
 
   :deep(.rich-text.section-summary) {
-    max-width: 100%;
+    @include ftva-body-2;
   }
 
   :deep(.block-highlight .card-meta) {
@@ -540,12 +540,15 @@ main {
     margin-bottom: 40px;
   }
 
-  :deep(.rich-text.section-summary) {
-    max-width: 100%;
-  }
-
   :deep(.rich-text p) {
     @include ftva-body-2;
+  }
+}
+
+.featured-collections-section,
+.preservation-section {
+  :deep(.rich-text.section-summary) {
+    max-width: 100%;
   }
 }
 
