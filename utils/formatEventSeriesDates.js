@@ -12,9 +12,9 @@ import { format } from 'date-fns/format'
 function formatDates(startDate = '', endDate = '', dateFormat = 'long') {
   const formatDate = (date, formatType) => (date ? format(new Date(date), formatType) : '')
 
-  const longFormat = 'MMMM d, Y'
+  const longFormat = 'MMMM d, y'
   const shortFormat = 'MMM d'
-  const shortWithYearFormat = 'MMM d, Y'
+  const shortWithYearFormat = 'MMM d, y'
 
   const start = formatDate(startDate, longFormat)
   const end = endDate ? formatDate(endDate, longFormat) : ''
