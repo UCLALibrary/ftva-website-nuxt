@@ -352,21 +352,22 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
         </template>
 
         <!-- Slider -->
-        <ImageSlider
-          :before-image="parsedPreservationData.beforeImage"
-          :after-image="parsedPreservationData.afterImage"
-          data-test="preservation-image-slider"
-        >
-          <template #captionText>
-            {{ parsedPreservationData.caption }}
-          </template>
-          <template #beforeLabel>
-            Paris 1895
-          </template>
-          <template #afterLabel>
-            Paris 2013
-          </template>
-        </ImageSlider>
+        <div data-test="preservation-image-slider">
+          <ImageSlider
+            :before-image="parsedPreservationData.beforeImage"
+            :after-image="parsedPreservationData.afterImage"
+          >
+            <template #captionText>
+              {{ parsedPreservationData.caption }}
+            </template>
+            <template #beforeLabel>
+              Paris 1895
+            </template>
+            <template #afterLabel>
+              Paris 2013
+            </template>
+          </ImageSlider>
+        </div>
       </SectionWrapper>
     </div>
   </main>

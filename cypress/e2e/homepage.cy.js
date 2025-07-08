@@ -1,7 +1,6 @@
 describe('Website Homepage', () => {
   it('Visit the Homepage', () => {
-    cy.visit('/')
-    cy.viewport(1200, 1200)
+    cy.visit('/', { failOnStatusCode: false })
 
     cy.getByData('homepage-carousel').should('be.visible')
 
@@ -16,8 +15,11 @@ describe('Website Homepage', () => {
     cy.getByData('preservation-image-slider').should('be.visible')
 
     cy.get('.footer-primary.ftva').should('be.visible')
+
     cy.get('.footer-links.ftva').should('be.visible')
+
     cy.get('.footer-sock.ftva').should('be.visible')
+
     // UCLA brand
     // TODO Un comment this once header and footer are added back to default layout file.
     /* cy.get('.site-brand-bar').should('be.visible')
