@@ -3,7 +3,7 @@ describe('Website Homepage', () => {
     cy.visit('/')
     cy.viewport(1200, 1200)
 
-    // cy.getByData('homepage-carousel').should('be.visible')
+    cy.getByData('homepage-carousel').should('be.visible')
 
     cy.getByData('featured-event-items').should('be.visible')
 
@@ -13,7 +13,7 @@ describe('Website Homepage', () => {
 
     cy.getByData('featured-collection-items').should('be.visible')
 
-    // cy.getByData('preservation-image-slider').should('be.visible')
+    cy.getByData('preservation-image-slider').should('be.visible')
 
     cy.get('.footer-primary.ftva').should('be.visible')
     cy.get('.footer-links.ftva').should('be.visible')

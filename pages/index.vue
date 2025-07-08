@@ -220,6 +220,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
           class="homepage"
           :items="parsedCarouselData"
           :inline="true"
+          data-test="homepage-carousel"
         >
           <template #default="slotProps">
             <BlockTag :label="parsedCarouselData[slotProps.selectionIndex].tag" /> {{
@@ -354,6 +355,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
         <ImageSlider
           :before-image="parsedPreservationData.beforeImage"
           :after-image="parsedPreservationData.afterImage"
+          data-test="preservation-image-slider"
         >
           <template #captionText>
             {{ parsedPreservationData.caption }}
