@@ -3,6 +3,7 @@
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
 import { format } from 'date-fns/format'
+import { ImageSlider } from '../../ucla-library-website-components/packages/vue-component-library/dist/ucla-library-website-components'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
@@ -135,7 +136,9 @@ const parsedPreservationData = computed(() => {
     sectionTitle: page.value.sectionTitle,
     sectionSummary: page.value.richTextSimplified,
     sectionUri: page.value.ftvaRelatedResources,
-    // Image
+    beforeImage: page.value.beforeAfterImageCarousel[0].beforeImage[0],
+    afterImage: page.value.beforeAfterImageCarousel[0].afterImage[0],
+    caption: page.value.beforeAfterImageCarousel[0].caption,
   }
 })
 
@@ -331,7 +334,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
         <DividerWayFinder />
       </SectionWrapper>
 
-      <!-- Preservation -->
+      <!-- Preservation & Restoration-->
       <SectionWrapper
         :section-title="parsedPreservationData.sectionTitle"
         :section-summary="parsedPreservationData.sectionSummary"
@@ -346,6 +349,20 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
         </template>
 
         <!-- Slider -->
+        <ImageSlider
+          :before-image="parsedPreservationData.beforeImage"
+          :after-image="parsedPreservationData.afterImage"
+        >
+          <template #captionText>
+            {{ parsedPreservationData.caption }}
+          </template>
+          <template #beforeLabel>
+            Paris 1895
+          </template>
+          <template #afterLabel>
+            Paris 2013
+          </template>
+        </ImageSlider>
       </SectionWrapper>
     </div>
   </main>
