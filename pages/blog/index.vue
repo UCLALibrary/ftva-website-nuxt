@@ -80,10 +80,7 @@ const articleFetchFunction = async (page) => {
   return results
 }
 const onResults = (results) => {
-  // console.log('searchResults', results)
   if (results && results.hits && results?.hits?.hits?.length > 0) {
-    console.log('results', results)
-
     const newArticles = results.hits.hits || []
 
     if (isMobile.value) {
@@ -91,7 +88,7 @@ const onResults = (results) => {
       mobileItemList.value.push(...newArticles)
       hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
-      console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
+      // console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
       desktopItemList.value = newArticles
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     }
