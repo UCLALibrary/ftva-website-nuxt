@@ -3,7 +3,6 @@
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
 import { format } from 'date-fns/format'
-import { ImageSlider } from '../../ucla-library-website-components/packages/vue-component-library/dist/ucla-library-website-components'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
