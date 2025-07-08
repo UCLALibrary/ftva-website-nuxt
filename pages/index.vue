@@ -56,7 +56,6 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-console.log('Page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -72,6 +71,9 @@ watch(width, (newWidth) => {
 }, { immediate: true })
 
 const parsedCarouselData = computed(() => {
+  if (page.value.ftvaFeaturedEntries.length === 0)
+    return null
+
   return page.value.ftvaFeaturedEntries.map((obj) => {
     return {
       item: parseFTVACarouselImage(obj.ftvaImage),
@@ -85,7 +87,7 @@ const parsedCarouselData = computed(() => {
 
 const parsedNowShowing = computed(() => {
   if (!page.value.ftvaFeaturedEventsSection || !page.value.ftvaFeaturedEventsSection[0].featuredEvents) {
-    return []
+    return null
   }
   return page.value.ftvaFeaturedEventsSection[0].featuredEvents.map((item, index) => {
     return {
@@ -98,6 +100,9 @@ const parsedNowShowing = computed(() => {
 })
 
 const parsedQuickLinks = computed(() => {
+  if (page.value.ftvaQuickLinks.length === 0)
+    return null
+
   return page.value.ftvaQuickLinks.map((item) => {
     return {
       title: item.titleGeneral,
@@ -109,6 +114,9 @@ const parsedQuickLinks = computed(() => {
 })
 
 const parsedArchiveBlogs = computed(() => {
+  if (page.value.ftvaFeaturedArticlesSection.length === 0)
+    return null
+
   const obj = page.value.ftvaFeaturedArticlesSection[0]
   return {
     sectionTitle: obj.sectionTitle,
@@ -121,6 +129,9 @@ const parsedArchiveBlogs = computed(() => {
 })
 
 const parsedFeaturedCollections = computed(() => {
+  if (page.value.ftvaFeaturedEntries.length === 0)
+    return null
+
   return page.value.ftvaFeaturedEntries.map((item) => {
     return {
       title: item.title,
@@ -131,6 +142,9 @@ const parsedFeaturedCollections = computed(() => {
 })
 
 const parsedPreservationData = computed(() => {
+  if (page.value.beforeAfterImageCarousel.length === 0)
+    return null
+
   return {
     sectionTitle: page.value.sectionTitle,
     sectionSummary: page.value.richTextSimplified,
@@ -198,7 +212,10 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
     class="page page-home"
   >
     <div class="one-column">
-      <div class="lightbox-container">
+      <div
+        v-if="parsedCarouselData"
+        class="lightbox-container"
+      >
         <FlexibleMediaGalleryNewLightbox
           class="homepage"
           :items="parsedCarouselData"
@@ -213,6 +230,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
 
       <!-- Now Showing -->
       <SectionWrapper
+        v-if="parsedNowShowing"
         :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
         class="now-showing-section no-padding"
         theme="paleblue"
@@ -232,16 +250,12 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
             data-test="featured-event-items"
           />
         </ScrollWrapper>
-      </SectionWrapper>
-      <SectionWrapper
-        class="no-padding"
-        theme="paleblue"
-      >
         <DividerWayFinder />
       </SectionWrapper>
 
       <!-- Visit and Learn -->
       <SectionWrapper
+        v-if="parsedQuickLinks"
         class="visit-learn-section no-padding"
         theme="paleblue"
         :section-title="page.visitAndLearnSectionTitle
@@ -249,17 +263,17 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
       >
         <div v-if="isMobile">
           <BlockPostSmall
-            v-for="(item, index) in page.ftvaQuickLinks"
+            v-for="(item, index) in parsedQuickLinks"
             :key="index"
-            :to="item.urlLink"
-            :image="item.image[0]"
+            :to="item.to"
+            :image="item.image"
             class="quicklink-item-mobile"
           >
             <template #title>
-              {{ item.titleGeneral }}
+              {{ item.title }}
             </template>
             <template #author>
-              {{ item.description }}
+              {{ item.text }}
             </template>
           </BlockPostSmall>
         </div>
@@ -270,16 +284,12 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
             data-test="quick-link-items"
           />
         </div>
-      </SectionWrapper>
-      <SectionWrapper
-        class="no-padding"
-        theme="paleblue"
-      >
         <DividerWayFinder />
       </SectionWrapper>
 
       <!-- Archive Blogs -->
       <SectionWrapper
+        v-if="parsedArchiveBlogs"
         :section-title="parsedArchiveBlogs.sectionTitle"
         class="archive-blog-section no-padding"
         theme="paleblue"
@@ -298,16 +308,12 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
           :cover-image="parsedArchiveBlogs.image"
           data-test="featured-article"
         />
-      </SectionWrapper>
-      <SectionWrapper
-        class="no-padding"
-        theme="paleblue"
-      >
         <DividerWayFinder />
       </SectionWrapper>
 
       <!-- Featured Collections -->
       <SectionWrapper
+        v-if="parsedFeaturedCollections"
         section-title="Featured Collections"
         class="featured-collections-section no-padding"
         theme="paleblue"
@@ -325,16 +331,13 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
             data-test="featured-collection-items"
           />
         </ScrollWrapper>
-      </SectionWrapper>
-      <SectionWrapper
-        class="no-padding"
-        theme="paleblue"
-      >
+
         <DividerWayFinder />
       </SectionWrapper>
 
       <!-- Preservation & Restoration-->
       <SectionWrapper
+        v-if="parsedPreservationData"
         :section-title="parsedPreservationData.sectionTitle"
         :section-summary="parsedPreservationData.sectionSummary"
         class="preservation-section no-padding"
