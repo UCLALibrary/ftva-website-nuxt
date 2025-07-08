@@ -70,8 +70,8 @@ query FTVAHomepage {
           ...Image
         }
       }
-      ftvaFeaturedCollectionsSection {
-        ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
+      ftvaFeaturedCollectionsSectionSingle {
+        ... on ftvaFeaturedCollectionsSectionSingle_featuredCollections_BlockType {
           id
           sectionTitle
           sectionDescription

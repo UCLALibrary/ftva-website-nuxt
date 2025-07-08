@@ -129,16 +129,23 @@ const parsedArchiveBlogs = computed(() => {
 })
 
 const parsedFeaturedCollections = computed(() => {
-  if (page.value.ftvaFeaturedEntries.length === 0)
+  if (page.value.ftvaFeaturedCollectionsSectionSingle.length === 0)
     return null
 
-  return page.value.ftvaFeaturedEntries.map((item) => {
+  const collections = page.value.ftvaFeaturedCollectionsSectionSingle[0].featuredCollections.map((item) => {
     return {
       title: item.title,
       to: item.uri,
-      image: item.ftvaImage[0],
+      image: item.imageCarousel && item.imageCarousel.length > 0 ? item.imageCarousel[0].image[0] : null,
     }
   })
+
+  return {
+    sectionTitle: page.value.ftvaFeaturedCollectionsSectionSingle[0].sectionTitle,
+    sectionSummary: page.value.ftvaFeaturedCollectionsSectionSingle[0].sectionDescription,
+    sectionCta: page.value.ftvaFeaturedCollectionsSectionSingle[0].seeAllText,
+    collections
+  }
 })
 
 const parsedPreservationData = computed(() => {
@@ -315,19 +322,21 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
       <!-- Featured Collections -->
       <SectionWrapper
         v-if="parsedFeaturedCollections"
-        section-title="Featured Collections"
+        :section-title="parsedFeaturedCollections.sectionTitle"
+        :section-summary="parsedFeaturedCollections.sectionSummary"
         class="featured-collections-section no-padding"
         theme="paleblue"
       >
         <template #top-right>
           <nuxt-link to="/collections">
-            View All Collections <span style="font-size:1.5em;"> &#8250;</span>
+            {{ parsedFeaturedCollections.sectionCta }} <span style="font-size:1.5em;">
+              &#8250;</span>
           </nuxt-link>
         </template>
 
         <ScrollWrapper>
           <SectionTeaserCard
-            :items="parsedFeaturedCollections"
+            :items="parsedFeaturedCollections.collections"
             :grid-layout="false"
             data-test="featured-collection-items"
           />
@@ -515,6 +524,10 @@ main {
   .section-teaser-card {
     background-color: var(--pale-blue);
     padding-top: 0;
+  }
+
+  :deep(.rich-text.section-summary) {
+    max-width: 100%;
   }
 
   :deep(.block-highlight .card-meta) {
