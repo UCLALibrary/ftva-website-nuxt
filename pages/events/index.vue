@@ -353,8 +353,14 @@ function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGr
   // Initialize the filterGroups array
   const filterGroups: FilterGroup[] = []
 
-  // Iterate over the aggregations in the Elasticsearch response
-  for (const [key, value] of Object.entries(aggregations)) {
+  // Define the desired order of display
+  const keyOrder = ['Event Type', 'Screening Format']
+
+  // Iterate over the desired order and compare to aggregations in the Elasticsearch response
+  for (const key of keyOrder) {
+    const value = aggregations[key]
+    if (!value) continue
+
     // Extract the bucket keys as options
     const options = value.buckets.map(bucket => bucket.key)
 
