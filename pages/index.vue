@@ -489,6 +489,8 @@ main {
 
   :deep(.ftva.card-meta a.title) {
     overflow: initial;
+    @include ftva-h5;
+    color: $heading-grey;
 
     &:hover {
       text-decoration: underline;
@@ -527,6 +529,8 @@ main {
 
       .title {
         margin-top: 0px;
+        @include ftva-h5;
+        color: $heading-grey;
 
         &:hover {
           text-decoration: underline;
@@ -552,7 +556,6 @@ main {
   :deep(.block-highlight.card) {
     background-color: transparent;
   }
-
 }
 
 .featured-collections-section {
