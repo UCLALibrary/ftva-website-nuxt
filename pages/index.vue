@@ -58,6 +58,7 @@ if (data.value.entry && import.meta.prerender) {
 const page = ref(_get(data.value, 'entry', {}))
 
 watch(data, (newVal, oldVal) => {
+  // eslint-disable-next-line no-console
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
 })
@@ -266,8 +267,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
         v-if="parsedQuickLinks"
         class="visit-learn-section no-padding"
         theme="paleblue"
-        :section-title="page.visitAndLearnSectionTitle
-          "
+        :section-title="page.visitAndLearnSectionTitle"
       >
         <div v-if="isMobile">
           <BlockPostSmall
@@ -421,6 +421,7 @@ main {
     :deep(li.block-highlight) {
       max-width: 340px;
       flex-direction: column-reverse;
+      margin-top: 16px;
       transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       &:hover {
