@@ -487,6 +487,17 @@ main {
     min-height: 0;
   }
 
+  :deep(.ftva.card-meta a.title) {
+    overflow: initial;
+
+    &:hover {
+      text-decoration: underline;
+      text-decoration-color: #2c91ff;
+      text-decoration-thickness: 3px;
+      text-underline-offset: 4px;
+    }
+  }
+
   .quicklink-item-mobile {
     &:not(:last-child) {
       margin-bottom: 20px;
@@ -516,6 +527,13 @@ main {
 
       .title {
         margin-top: 0px;
+
+        &:hover {
+          text-decoration: underline;
+          text-decoration-color: #2c91ff;
+          text-decoration-thickness: 3px;
+          text-underline-offset: 4px;
+        }
       }
 
       .author {
