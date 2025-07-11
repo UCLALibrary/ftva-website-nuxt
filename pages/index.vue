@@ -253,7 +253,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
         <ScrollWrapper class="homepage-scroll-wrapper">
           <SectionTeaserCard
             v-if="parsedNowShowing && parsedNowShowing.length > 0"
-            class="now-showing-items"
+            class="now-showing-items hovered-items"
             :items="parsedNowShowing"
             :grid-layout="false"
             data-test="featured-event-items"
@@ -339,6 +339,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
             :items="parsedFeaturedCollections.collections"
             :grid-layout="false"
             data-test="featured-collection-items"
+            class="hovered-items"
           />
         </ScrollWrapper>
 
@@ -421,12 +422,6 @@ main {
     :deep(li.block-highlight) {
       max-width: 340px;
       flex-direction: column-reverse;
-      margin-top: 16px;
-      transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        margin-top: 0px;
-      }
 
       .smart-link.title {
         @include ftva-card-title-1;
@@ -465,13 +460,27 @@ main {
   }
 }
 
-.visit-learn-section {
-  :deep(.block-highlight.card) {
-    background-color: none;
-  }
+.now-showing-section,
+.featured-collections-section {
+  .hovered-items {
+    :deep(li.block-highlight) {
+      margin-top: 16px;
+      transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
+      &:hover {
+        margin-top: 0px;
+      }
+    }
+  }
+}
+
+.visit-learn-section {
   :deep(.section-teaser-card) {
     padding-top: 0;
+  }
+
+  :deep(.block-highlight .media) {
+    border-radius: 12px;
   }
 
   :deep(.card-meta) {
@@ -519,6 +528,13 @@ main {
       }
     }
   }
+}
+
+.visit-learn-section.ftva.section-wrapper.top-level.theme-paleblue {
+  :deep(.block-highlight.card) {
+    background-color: transparent;
+  }
+
 }
 
 .featured-collections-section {
