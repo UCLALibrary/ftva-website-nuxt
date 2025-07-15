@@ -10,7 +10,6 @@ import ListOfItemsCollection from '~/components/ListOfItemsCollection.vue'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-console.log('route path: ', route.path)
 
 // routes this template/page supports:
 const routeNameToSectionMap = {
