@@ -44,7 +44,7 @@ if (data.value.entry && import.meta.prerender) {
       title: data.value.entry.title,
       text: data.value.entry.summary,
       uri: '/',
-      groupName: 'homepage',
+      groupName: 'General Content',
     }
     // Index the articles data using the composable during static build
     await indexContent(doc, 'homepage')
@@ -87,9 +87,10 @@ const parsedCarouselData = computed(() => {
 })
 
 const parsedNowShowing = computed(() => {
-  if (!page.value.ftvaFeaturedEventsSection || !page.value.ftvaFeaturedEventsSection[0].featuredEvents) {
+  if (!Array.isArray(page.value.ftvaFeaturedEventsSection?.[0]?.featuredEvents)) {
     return null
   }
+
   return page.value.ftvaFeaturedEventsSection[0].featuredEvents.map((item, index) => {
     return {
       ...item,
@@ -122,7 +123,7 @@ const parsedArchiveBlogs = computed(() => {
   return {
     sectionTitle: obj.sectionTitle,
     sectionCta: obj.seeAllText,
-    blogTitle: obj.featuredArticles[0].title,
+    blogTitle: obj.featuredArticles[0]?.title,
     blogUri: obj.featuredArticles[0].uri,
     blogSummary: obj.featuredArticles[0].ftvaHomepageDescription,
     image: obj.featuredArticles[0].ftvaImage
@@ -157,9 +158,9 @@ const parsedPreservationData = computed(() => {
     sectionTitle: page.value.sectionTitle,
     sectionSummary: page.value.richTextSimplified,
     sectionUri: page.value.ftvaRelatedResources,
-    beforeImage: page.value.beforeAfterImageCarousel[0].beforeImage[0],
-    afterImage: page.value.beforeAfterImageCarousel[0].afterImage[0],
-    caption: page.value.beforeAfterImageCarousel[0].caption,
+    beforeImage: page.value.beforeAfterImageCarousel[0]?.beforeImage[0] || null,
+    afterImage: page.value.beforeAfterImageCarousel[0]?.afterImage[0] || null,
+    caption: page.value.beforeAfterImageCarousel[0]?.caption,
   }
 })
 
@@ -271,8 +272,8 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
       >
         <div v-if="isMobile">
           <BlockPostSmall
-            v-for="(item, index) in parsedQuickLinks"
-            :key="index"
+            v-for="(item) in parsedQuickLinks"
+            :key="item.to"
             :to="item.to"
             :image="item.image"
             class="quicklink-item-mobile"
