@@ -2,7 +2,6 @@
 
 // HELPERS
 import _get from 'lodash/get'
-import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
 import FTVACollectionTypeListing from '../gql/queries/FTVACollectionTypeListing.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
@@ -85,12 +84,6 @@ watch(data, (newVal, oldVal) => {
   generalContentPages.value = page.value.associatedGeneralContentPagesFtva
 })
 
-// "STATE"
-// const desktopList = ref([])
-// const mobileList = ref([])
-// const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
-// const collectionList = computed(() => (isMobile.value ? mobileItemList.value : desktopItemList.value))
-
 // ELASTIC SEARCH
 const hits = ref(0)
 const documentsPerPage = 12
@@ -101,7 +94,7 @@ const selectedLetterProp = ref('')
 
 // "STATE"
 const collectionFetchFunction = async (page) => {
-  const { paginatedCollectionListQuery } = useCollectionListSearch()
+  const { paginatedCollectionListQuery } = useCollectionListSearch() // Composable
 
   const results = await paginatedCollectionListQuery(
     collectionType.value,
@@ -122,7 +115,6 @@ const onResults = (results) => {
       mobileItemList.value.push(...newCollectionList)
       hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
-      // console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
       desktopItemList.value = newCollectionList
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     }
@@ -132,6 +124,7 @@ const onResults = (results) => {
   }
 }
 
+// INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
 function browseBySelectedLetter(letter) {
@@ -195,10 +188,8 @@ const parsedGeneralContentPages = computed(() => {
 })
 
 const parsedCollectionList = computed(() => {
-  // if (collectionList.value.length === 0) return []
   if (currentList.value.length === 0) return []
 
-  // return collectionList.value.map((obj) => {
   return currentList.value.map((obj) => {
     return {
       to: `/${obj._source.to}`,
