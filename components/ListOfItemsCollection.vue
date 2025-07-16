@@ -45,7 +45,6 @@ const documentsPerPage = 15 // show 15 search results at a time
 const totalResults = ref(0)
 const noResultsFound = ref(false)
 
-// "STATE"
 const collectionFetchFunction = async () => {
   const { paginatedCollectionSearchFilters } = useListSearchFilter() // composable
 
@@ -80,9 +79,9 @@ const onResults = (results) => {
 }
 
 // INFINITE SCROLL
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
-// format search results for SectionTeaserCard
+// Format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
   if (currentList.value.length === 0) return []
   return currentList.value.map((obj) => {
@@ -97,7 +96,7 @@ const parsedCollectionResults = computed(() => {
   })
 })
 
-// format # of results of BlockTag display
+// Format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
   return totalResults.value + ' Video Clip' + (totalResults.value > 1 ? 's' : '')
 })

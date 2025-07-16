@@ -69,13 +69,12 @@ watch(data, (newVal, oldVal) => {
   heading.value = _get(newVal, 'entry', {})
 })
 
-// STATE MANAGEMENT
+// "STATE"
+const route = useRoute()
 const currentView = computed(() => route.query.view || 'current') // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
 const documentsPerPage = 10
-const route = useRoute()
 
-// "STATE"
 const seriesFetchFunction = async (page) => {
   const { currentEventSeriesQueryCurrent, currentEventSeriesQueryOngoing, pastEventSeriesQuery } = useEventSeriesListSearchFilter() // Composable
 
@@ -140,7 +139,7 @@ const onResults = (results) => {
 }
 
 // INFINITE SCROLL
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(seriesFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(seriesFetchFunction, onResults)
 
 watch(() => route.query,
   (newVal, oldVal) => {

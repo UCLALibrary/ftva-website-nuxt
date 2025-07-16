@@ -125,7 +125,7 @@ const onResults = (results) => {
 }
 
 // INFINITE SCROLL
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
+const { isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
 function browseBySelectedLetter(letter) {
   desktopItemList.value = []
