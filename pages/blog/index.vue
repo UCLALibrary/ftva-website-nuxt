@@ -98,8 +98,8 @@ const onResults = (results) => {
   }
 }
 
+// INFINITE SCROLL
 const documentsPerPage = 10
-// mostly provided by 'useMobileOnlyInfiniteScroll' composable
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
 watch(

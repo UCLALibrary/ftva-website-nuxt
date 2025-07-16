@@ -61,6 +61,7 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
     async () => {
       if (isMobile.value && hasMore.value && !isLoading.value) {
         currentPage.value++
+        // eslint-disable-next-line no-console
         console.log(`Loading more items for page ${currentPage.value}...`)
         await searchES()
       }
