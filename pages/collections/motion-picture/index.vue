@@ -4,8 +4,8 @@
 import _get from 'lodash/get'
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
-// GQL
 import FTVACollectionTypeListing from '../gql/queries/FTVACollectionTypeListing.gql'
+import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 const { $graphql } = useNuxtApp()
 
@@ -86,121 +86,57 @@ watch(data, (newVal, oldVal) => {
 })
 
 // "STATE"
-const desktopPage = useState('desktopPage', () => 1) // Persist desktop page
-
-const desktopList = ref([])
-const mobileList = ref([])
-const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
+// const desktopList = ref([])
+// const mobileList = ref([])
+// const collectionList = computed(() => (isMobile.value ? mobileList.value : desktopList.value))
+// const collectionList = computed(() => (isMobile.value ? mobileItemList.value : desktopItemList.value))
 
 // ELASTIC SEARCH
 const hits = ref(0)
-const currentPage = ref(1)
 const documentsPerPage = 12
-const totalPages = ref(0)
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
 
 const extraSearchFilter = ref('*')
 const selectedLetterProp = ref('')
 
-// INFINITE SCROLLING
-const isLoading = ref(false)
-const isMobile = ref(false)
-const hasMore = ref(true) // Flag to control infinite scroll
-
-const scrollElem = ref(null)
-const { reset } = useInfiniteScroll(
-  scrollElem,
-  async () => {
-    if (isMobile.value && hasMore.value && !isLoading.value) {
-      currentPage.value++
-      await searchES()
-    }
-  },
-  { distance: 100 }
-)
-
-// HANDLE WINDOW SIZING
-const { width } = useWindowSize()
-watch(width, (newWidth) => {
-  const wasMobile = isMobile.value
-
-  isMobile.value = newWidth <= 750
-  // Reinitialize only when transitioning between mobile and desktop
-  if (wasMobile !== isMobile.value) {
-    handleScreenTransition()
-  }
-}, { immediate: true })
-
-// HANDLE SCREEN TRANSITIONS
-function handleScreenTransition() {
-  if (isMobile.value) {
-    // Switching to mobile: save desktop page, clear query param
-
-    desktopPage.value = currentPage.value
-    currentPage.value = 1
-    mobileList.value = []
-    hasMore.value = true
-    const { page, ...remainingQuery } = route.query
-    useRouter().push({ query: { ...remainingQuery } })
-  } else {
-    // Switching to desktop: restore query param
-    if (totalPages.value === 1)
-      desktopPage.value = 1
-    const restoredPage = desktopPage.value || 1
-    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
-    currentPage.value = restoredPage
-    desktopList.value = []
-  }
-}
-
-async function searchES() {
-  if (isLoading.value || !hasMore.value) return
-
-  isLoading.value = true
-
+// "STATE"
+const collectionFetchFunction = async (page) => {
   const { paginatedCollectionListQuery } = useCollectionListSearch()
-  try {
-    const results = await paginatedCollectionListQuery(
-      collectionType.value,
-      currentPage.value,
-      documentsPerPage,
-      extraSearchFilter.value
-    )
 
-    if (results && results.hits && results?.hits?.hits?.length > 0) {
-      const newCollectionList = results.hits.hits || []
-      hits.value = results.hits.total.value
+  const results = await paginatedCollectionListQuery(
+    collectionType.value,
+    currentPage.value,
+    documentsPerPage,
+    extraSearchFilter.value
+  )
+  return results
+}
 
-      if (isMobile.value) {
-        totalPages.value = 0
+const onResults = (results) => {
+  if (results && results.hits && results?.hits?.hits?.length > 0) {
+    const newCollectionList = results.hits.hits || []
+    hits.value = results.hits.total.value
 
-        mobileList.value.push(...newCollectionList)
-
-        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
-      } else {
-        desktopList.value = newCollectionList
-
-        totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
-      }
-    } else {
+    if (isMobile.value) {
       totalPages.value = 0
-      hits.value = 0
-      hasMore.value = false
+      mobileItemList.value.push(...newCollectionList)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      // console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
+      desktopItemList.value = newCollectionList
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     }
-  }
-  catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('Error fetching data:', error)
+  } else {
+    totalPages.value = 0
     hasMore.value = false
-    hits.value = 0
-  } finally {
-    isLoading.value = false
   }
 }
+
+const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
 function browseBySelectedLetter(letter) {
-  desktopList.value = []
-  mobileList.value = []
+  desktopItemList.value = []
+  mobileItemList.value = []
 
   if (letter !== 'All') {
     extraSearchFilter.value = `${letter}`
@@ -221,7 +157,7 @@ function browseBySelectedLetter(letter) {
 watch(() => route.query,
   (newVal, oldVal) => {
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileList.value = [] : desktopList.value = []
+    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
     hasMore.value = true
 
     const filterLetter = route.query.filters
@@ -259,9 +195,11 @@ const parsedGeneralContentPages = computed(() => {
 })
 
 const parsedCollectionList = computed(() => {
-  if (collectionList.value.length === 0) return []
+  // if (collectionList.value.length === 0) return []
+  if (currentList.value.length === 0) return []
 
-  return collectionList.value.map((obj) => {
+  // return collectionList.value.map((obj) => {
+  return currentList.value.map((obj) => {
     return {
       to: `/${obj._source.to}`,
       title: obj._source.title,
