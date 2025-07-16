@@ -100,8 +100,9 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
       currentPage.value = restoredPage
       desktopItemList.value = []
     }
+
+    // eslint-disable-next-line no-console
     console.log(`Switched to ${isMobile.value ? 'mobile' : 'desktop'} view`)
-    // searchES()
   }
 
   return {

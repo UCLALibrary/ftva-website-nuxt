@@ -242,8 +242,7 @@ const parsedEventSeries = computed(() => {
 
         <SectionPagination
           v-if="
-            totalPages
-            !== 1 && !isMobile"
+            totalPages !== 1 && !isMobile"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
