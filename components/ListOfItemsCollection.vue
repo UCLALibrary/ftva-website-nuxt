@@ -4,18 +4,22 @@ import { computed, ref } from 'vue'
 import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
+import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
 
 const route = useRoute()
 const router = useRouter()
+
 defineOptions({
   inheritAttrs: false
 })
+
 interface AggregationBucket {
   key: string
   doc_count: number
 }
+
 interface Aggregations {
   [key: string]: { buckets: AggregationBucket[] }
 }
@@ -37,20 +41,51 @@ if (attrs.page && import.meta.prerender) {
 }
 
 // "STATE"
-const currentPage = ref(1)
 const documentsPerPage = 15 // show 15 search results at a time
-const totalPages = ref(0)
 const totalResults = ref(0)
 const noResultsFound = ref(false)
-const isLoading = ref<boolean>(false)
-const isMobile = ref(false)
-const hasMore = ref(true) // Flag to control infinite scroll
 
-const collectionResults = ref([])
+// "STATE"
+const collectionFetchFunction = async () => {
+  const { paginatedCollectionSearchFilters } = useListSearchFilter() // composable
+
+  const currpage = currentPage.value
+  const size = documentsPerPage
+  let results: any = {}
+
+  results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
+
+  return results
+}
+
+const onResults = (results) => {
+  if (results && results.hits && results?.hits?.hits?.length > 0) {
+    const newCollectionResults = results.hits.hits || []
+    totalResults.value = results.hits.total.value
+
+    if (isMobile.value) {
+      totalPages.value = 0
+      mobileItemList.value.push(...newCollectionResults)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      desktopItemList.value = newCollectionResults
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+    }
+    noResultsFound.value = false
+  } else {
+    noResultsFound.value = true
+    totalPages.value = 0
+    hasMore.value = false
+  }
+}
+
+// INFINITE SCROLL
+const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
+
 // format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
-  if (collectionResults.value.length === 0) return []
-  return collectionResults.value.map((obj) => {
+  if (currentList.value.length === 0) return []
+  return currentList.value.map((obj) => {
     const objImage = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
     return {
       ...obj._source,
@@ -78,7 +113,9 @@ const sortDropdownData = {
   label: 'Sort by',
   fieldName: 'sortField'
 }
+
 const selectedSortFilters = ref({ sortField: 'asc' })
+
 function updateSort(newSort) {
   router.push({
     path: route.path,
@@ -102,7 +139,9 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
   }
   return parsedfilters
 }
+
 const searchFilters = ref([])
+
 function parseAggRes(response: Aggregations) {
   // console.log('parseAggRes response', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
@@ -128,6 +167,7 @@ function parseAggRes(response: Aggregations) {
 
   return filters
 }
+
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
@@ -142,12 +182,14 @@ async function setFilters() {
     searchAggsResponse
   )
 }
+
 const selectedFilters = ref({}) // initialise with empty filter
 // Object w key filter label and value ESFieldName for selected filter lookup
 const fieldNamefromLabel = {
   'Filter by Topic': 'ftvaCollectionGroup.title.keyword',
   'Filter by Season': 'episodeSeason.keyword'
 }
+
 function updateFilters(newFilter) {
   const newFilterValue = Object.values(newFilter)[0]
   if (newFilterValue === '(none selected)') {
@@ -169,6 +211,7 @@ function updateFilters(newFilter) {
     })
   }
 }
+
 const titleForSearch = computed(() => {
   // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
   if (route.path.endsWith('filmography')) {
@@ -179,41 +222,6 @@ const titleForSearch = computed(() => {
     return collectionTitle.value
   }
 })
-
-// ELASTIC SEARCH FUNCTION
-async function searchES() {
-  if (isLoading.value || !hasMore.value) return
-
-  isLoading.value = true
-
-  try {
-    const currpage = currentPage.value
-    const size = documentsPerPage
-    let results: any = {}
-
-    const { paginatedCollectionSearchFilters } = useListSearchFilter()
-
-    results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
-    if (results && results.hits && results.hits.hits.length > 0) {
-      const newCollectionResults = results.hits.hits || []
-
-      collectionResults.value = newCollectionResults
-      totalResults.value = results.hits.total.value
-      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
-
-      noResultsFound.value = false
-    } else {
-      noResultsFound.value = true
-      hasMore.value = false
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error fetching data:', error)
-    hasMore.value = false
-  } finally {
-    isLoading.value = false
-  }
-}
 
 // WATCHERS
 // This watcher is called when router pushes updates the query params
@@ -261,7 +269,6 @@ useHead({
         :title="attrs.page.title"
         to="/collections"
       />
-      <!-- TODO scrollElem used for infinite scrolling -->
       <SectionWrapper
         ref="scrollElem"
         :section-title="attrs.page.title"

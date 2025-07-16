@@ -2,7 +2,7 @@
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
-import { format } from 'date-fns/format'
+import { format } from 'date-fns'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
