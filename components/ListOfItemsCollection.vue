@@ -227,6 +227,7 @@ const titleForSearch = computed(() => {
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    isLoading.value = false
     // console.log('Route query params changed:', newVal, oldVal)
     // set filters from query params
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')

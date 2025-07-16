@@ -153,7 +153,7 @@ const onResults = (results) => {
 }
 
 // INFINITE SCROLL
-const { isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(eventFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(eventFetchFunction, onResults)
 
 // STICKY FILTERS HANDLING
 const sectionTeaserListElem = ref(null) // Element intersection target to unstick filters
@@ -210,6 +210,8 @@ const route = useRoute()
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    isLoading.value = false
+
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
 
     userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
