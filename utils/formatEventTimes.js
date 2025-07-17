@@ -6,7 +6,7 @@
  * @returns {String}
  */
 
-import format from 'date-fns/format'
+import { format } from 'date-fns'
 
 function formatTimes(startDate = '', endDate = '') {
   const start = format(new Date(startDate), 'h:mm aaa')

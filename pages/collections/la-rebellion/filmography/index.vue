@@ -19,7 +19,7 @@ const routeNameToSectionMap = {
 
 const { data, error } = await useAsyncData(`${route.path}-filmography`, async () => {
   // lookup slug based on routeNameToSlugMap
-  const data = await $graphql.default.request(FTVACollectionFilmography, { section: routeNameToSectionMap[route.path] })
+  const data: any = await $graphql.default.request(FTVACollectionFilmography, { section: routeNameToSectionMap[route.path] })
   return data
 })
 

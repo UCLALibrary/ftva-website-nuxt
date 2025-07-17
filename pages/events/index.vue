@@ -2,10 +2,13 @@
 // HELPERS
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
-import { useElementBounding, useWindowSize, useInfiniteScroll } from '@vueuse/core'
+import { useElementBounding } from '@vueuse/core'
+
+import FTVAEventList from '../gql/queries/FTVAEventList.gql'
+
+import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 // UTILS
-import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 import getEventFilterLabels from '@/utils/getEventFilterLabels'
 import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
@@ -13,7 +16,7 @@ import parseImage from '@/utils/parseImage'
 // GQL
 const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('event-list', async () => {
-  const data = await $graphql.default.request(FTVAEventList)
+  const data: any = await $graphql.default.request(FTVAEventList)
   return data
 })
 
@@ -72,7 +75,6 @@ watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   heading.value = _get(newVal, 'entry', {})
 })
-// GQL - End
 
 // TYPES
 interface FilterItem {
@@ -104,46 +106,64 @@ interface FilterGroup {
   options: string[]; // The options available for this filter group.
 }
 
-// State Management
-const desktopPage = useState<number>('desktopPage', () => 1) // Persist desktop page
-
-// STATE
-const desktopEvents = ref([]) // Desktop events list
-const mobileEvents = ref([]) // Mobile events list
-const events = computed((): EventItem[] => (isMobile.value ? mobileEvents.value : desktopEvents.value))
-// userFilterSelection is used by FilterDropdown component to display selected filters, but also update selected items in filter groups
-// therefore, it MUST always have a key for each filter group in the dropdown, even if the value is an empty array
+// FILTERS
+// userFilterSelection is used by FilterDropdown component to display selected filters, but also update selected items in filter groups; therefore, it MUST always have a key for each filter group in the dropdown, even if the value is an empty array
 const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
 const userDateSelection = ref<string[]>([])
 const allFilters = ref<FilterItem>({})
 const userViewSelection = ref<string>('list')
+
+// "STATE"
 const documentsPerPage = 10
-const totalPages = ref<number>(0)
-const currentPage = ref<number>(1)
-const route = useRoute()
 const noResultsFound = ref<boolean>(false)
-const isLoading = ref<boolean>(false)
-const isMobile = ref<boolean>(false)
-const hasMore = ref(true) // Flag to control infinite scroll
+
+const eventFetchFunction = async () => {
+  const page = currentPage.value
+  const size = 10
+  let results: any = {}
+
+  if (userViewSelection.value === 'list') {
+    const { paginatedSearchFilters } = useListSearchFilter()
+    results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+  } else {
+    //  Calendar View code
+    const { paginatedSearchFilters } = useCalendarSearchFilter()
+    results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+  }
+  return results
+}
+
+const onResults = (results) => {
+  if (results && results.hits && results?.hits?.hits?.length > 0) {
+    const newEvents = results.hits.hits || []
+
+    if (isMobile.value) {
+      mobileItemList.value.push(...newEvents)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      desktopItemList.value = newEvents
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+    }
+    noResultsFound.value = false
+  } else {
+    noResultsFound.value = true
+    if (!isMobile.value) totalPages.value = 0
+    hasMore.value = false
+  }
+}
+
+// INFINITE SCROLL
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(eventFetchFunction, onResults)
+
+// STICKY FILTERS HANDLING
 const sectionTeaserListElem = ref(null) // Element intersection target to unstick filters
 const makeFiltersSticky = ref(false)
-
-// Window Size Handling
-const { width } = useWindowSize()
-// Sticky Filters Handling
 const { bottom } = useElementBounding(sectionTeaserListElem)
 
-watch([width, bottom], ([newWidth, newBottom]) => {
-  const wasMobile = isMobile.value
-  isMobile.value = newWidth <= 1024
+watch(bottom, (newBottom) => {
+  // On mobile, when bottom of SectionTeaserList is less than 250px away
+  // from the top edge of the viewport, unstick the filters
 
-  // Reinitialize only when transitioning between mobile and desktop
-  if (wasMobile !== isMobile.value) {
-    handleScreenTransition()
-  }
-
-  /* On mobile, when bottom of SectionTeaserList is less than 250px away
-  from the top edge of the viewport, unstick the filters */
   if ((isMobile.value && bottom.value <= 250)) {
     makeFiltersSticky.value = false
   } else if (isMobile.value) {
@@ -156,26 +176,6 @@ watch([width, bottom], ([newWidth, newBottom]) => {
 const stickyClass = computed(() => {
   return makeFiltersSticky.value ? 'is-sticky' : ''
 })
-
-// Handle screen transitions
-function handleScreenTransition() {
-  if (isMobile.value) {
-    // Switching to mobile: save desktop page, clear query param
-    desktopPage.value = currentPage.value
-    currentPage.value = 1
-    mobileEvents.value = []
-    hasMore.value = true
-    const { page, ...remainingQuery } = route.query
-    useRouter().push({ query: remainingQuery })
-  } else {
-    // Switching to desktop: restore query param
-    if (totalPages.value === 1) desktopPage.value = 1
-    const restoredPage = desktopPage.value || 1
-    useRouter().push({ query: { ...route.query, page: restoredPage.toString() } })
-    currentPage.value = restoredPage
-    desktopEvents.value = []
-  }
-}
 
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
@@ -204,10 +204,14 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 
+const route = useRoute()
+
 // This watcher is called when router pushes updates the query params
 watch(
   () => route.query,
   (newVal, oldVal) => {
+    isLoading.value = false
+
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
 
     userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
@@ -222,7 +226,7 @@ watch(
     allFilters.value = parsedRemoveSearchFilters.value
     // console.log('userDateSelection.value', userDateSelection.value)
 
-    isMobile.value ? mobileEvents.value = [] : desktopEvents.value = []
+    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
     hasMore.value = true
     searchES()
   }, { deep: true, immediate: true }
@@ -255,17 +259,18 @@ onMounted(async () => {
   dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
 })
 
-const el = ref<HTMLElement | null>(null)
-const { reset } = useInfiniteScroll(
-  el,
-  async () => {
-    if (isMobile.value && hasMore.value && !isLoading.value) {
-      currentPage.value++
-      await searchES()
+// COMPUTED EVENTS
+const parsedEvents = computed(() => {
+  if (currentList.value.length === 0) return []
+  return currentList.value.map((obj) => {
+    return {
+      ...obj._source,
+      tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
+      to: `/${obj._source.uri}`,
+      image: parseImage(obj)
     }
-  },
-  { distance: 100 }
-)
+  })
+})
 
 function parseDateFromURL(datesParam: string): string[] {
   // console.log('datesParam', datesParam)
@@ -292,62 +297,6 @@ function addHighlightState(tagLabels) {
   }
   return tagLabels
 }
-
-// ELASTIC SEARCH FUNCTION
-async function searchES() {
-  if (isLoading.value || !hasMore.value) return
-
-  isLoading.value = true
-
-  try {
-    const page = currentPage.value
-    const size = 10
-    let results: any = {}
-
-    if (userViewSelection.value === 'list') {
-      const { paginatedSearchFilters } = useListSearchFilter()
-      results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-    } else {
-      //  Calendar View code
-      const { paginatedSearchFilters } = useCalendarSearchFilter()
-      results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-    }
-
-    if (results && results.hits && results.hits.hits.length > 0) {
-      const newEvents = results.hits.hits || []
-      if (isMobile.value) {
-        mobileEvents.value.push(...newEvents)
-        hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
-      } else {
-        desktopEvents.value = newEvents
-        totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
-      }
-      noResultsFound.value = false
-    } else {
-      noResultsFound.value = true
-      if (!isMobile.value) totalPages.value = 0
-      hasMore.value = false
-    }
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('Error fetching data:', error)
-    hasMore.value = false
-  } finally {
-    isLoading.value = false
-  }
-}
-
-const parsedEvents = computed(() => {
-  if (events.value.length === 0) return []
-  return events.value.map((obj) => {
-    return {
-      ...obj._source,
-      tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
-      to: `/${obj._source.uri}`,
-      image: parseImage(obj)
-    }
-  })
-})
 
 function transformEsResponseToFilterGroups(aggregations: Aggregations): FilterGroup[] {
   // Initialize the filterGroups array
@@ -406,8 +355,8 @@ const parsedInitialDates = computed(() => {
 
 // This is event handler which is invoked by datefilter component selections
 function applyDateFilterSelectionToRouteURL(data) {
-  desktopEvents.value = []
-  mobileEvents.value = []
+  desktopItemList.value = []
+  mobileItemList.value = []
   // console.log('Data from Date filters', data)
 
   // Function to format date to yyyy-MM-dd
@@ -456,8 +405,9 @@ function applyDateFilterSelectionToRouteURL(data) {
 // This is event handler which is invoked by dropdownfilters component selections
 function applyEventFilterSelectionToRouteURL(data) {
   // Use router.push to navigate with query params
-  desktopEvents.value = []
-  mobileEvents.value = []
+  desktopItemList.value = []
+  mobileItemList.value = []
+
   const eventFilters = []
   for (const key in data) {
     if (data[key].length > 0) {
@@ -476,8 +426,9 @@ function applyEventFilterSelectionToRouteURL(data) {
 
 function applyChangesToSearch() {
   const eventFilters = []
-  desktopEvents.value = []
-  mobileEvents.value = []
+  desktopItemList.value = []
+  mobileItemList.value = []
+
   let dateFilters = ''
   // console.log('applyChangesToSearch allFilters.value', allFilters.value)
   // separate dates and event filters
@@ -529,7 +480,7 @@ const parseFirstEventMonth = computed(() => {
         :section-title="heading.titleGeneral"
       />
       <SectionWrapper
-        ref="el"
+        ref="scrollElem"
         class="main"
         theme="paleblue"
       >

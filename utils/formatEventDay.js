@@ -6,7 +6,7 @@
  * @returns {String}
  */
 
-import format from 'date-fns/format'
+import { format } from 'date-fns'
 
 function formatDay(startDate = '') {
   return format(new Date(startDate), 'dd')

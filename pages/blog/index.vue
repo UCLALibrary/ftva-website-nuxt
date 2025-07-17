@@ -98,14 +98,14 @@ const onResults = (results) => {
   }
 }
 
+// INFINITE SCROLL
 const documentsPerPage = 10
-// mostly provided by 'useMobileOnlyInfiniteScroll' composable
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    console.log('In watch route query', newVal, oldVal)
+    // console.log('In watch route query', newVal, oldVal)
     isLoading.value = false
 
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
