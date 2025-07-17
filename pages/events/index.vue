@@ -16,7 +16,7 @@ import parseImage from '@/utils/parseImage'
 // GQL
 const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('event-list', async () => {
-  const data = await ($graphql as { default: { request: Function } }).default.request(FTVAEventList)
+  const data: any = await $graphql.default.request(FTVAEventList)
   return data
 })
 
