@@ -11,7 +11,7 @@ const documentsPerPage = 10
 const totalResults = ref<number>(0)
 // const currentPage = ref<number>(1)
 const noResultsFound = ref<boolean>(false)
-const { paginatedSiteSearchQuery } = useSiteSearch()
+const { paginatedSiteSearchQuery, fetchAggregationForKeyword } = useSiteSearch()
 // const searchResults = ref([] as any)
 
 interface AggregationBucket {
@@ -34,30 +34,33 @@ interface Option {
 interface FilterResult {
   name: string // The name of the filter group (e.g., "Event Type").
   searchField: string // The corresponding search field in Elasticsearch.
-  options: Option[] // The options available for this filter group.
+  desktopOptions: Option[] // The options available for this filter group.
+  options: string[] // Optional string options for the filter group, for mobile dropdown
 
 }
-const searchFilters = ref<FilterResult>(resetSearchFilters())
+const resetSearchFilters: FilterResult = {
 
-function resetSearchFilters(): FilterResult {
-  return {
-    name: 'groupName.keyword',
-    searchField: 'groupName.keyword',
-    options: [
-      { value: 'Collections', label: 'Collections', labelDesktop: 'Collections (0)', highlighted: false, count: 0 },
-      { value: 'Articles', label: 'Articles', labelDesktop: 'Articles (0)', highlighted: false, count: 0 },
-      { value: 'Events', label: 'Events', labelDesktop: 'Events (0)', highlighted: false, count: 0 },
-      { value: 'Series', label: 'Series', labelDesktop: 'Series (0)', highlighted: false, count: 0 },
-      { value: 'General Content', label: 'General Content', labelDesktop: 'General Content (0)', highlighted: false, count: 0 }
-    ]
-  }
+  name: 'Filter Results',
+  searchField: 'groupName.keyword',
+  desktopOptions: [
+    { value: 'Collections', label: 'Collections', labelDesktop: 'Collections (0)', highlighted: false, count: 0 },
+    { value: 'Articles', label: 'Articles', labelDesktop: 'Articles (0)', highlighted: false, count: 0 },
+    { value: 'Events', label: 'Events', labelDesktop: 'Events (0)', highlighted: false, count: 0 },
+    { value: 'Series', label: 'Series', labelDesktop: 'Series (0)', highlighted: false, count: 0 },
+    { value: 'General Content', label: 'General Content', labelDesktop: 'General Content (0)', highlighted: false, count: 0 }
+  ],
+  options: ['Collections (0)', 'Articles (0)', 'Events (0)', 'Series (0)', 'General Content (0)'] // Optional string options for the filter group, for mobile dropdown
+
 }
+const searchFilters = ref<FilterResult>(resetSearchFilters)
+
+
 // TYPES
 interface FilterItem {
   [key: string]: string[]
 }
 const userFilterSelection = ref<FilterItem>({})
-const selectedGroupNameFilters = ref<{ 'groupName.keyword': string }>({ 'groupName.keyword': '' })
+const selectedGroupNameFilters = ref<{ 'groupName.keyword': string[] }>({ 'groupName.keyword': [] })
 const selectedSortFilters = ref<{ sortField: string }>({ sortField: '' })
 const sortField = ref('_score') // default sort field
 const orderBy = ref('desc') // default order by
@@ -66,6 +69,25 @@ const searchResultsFetchFunction = async (page: number) => {
   console.log('searchResultsFetchFunction called with page:', userFilterSelection.value)
   const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
   if (queryQ && queryQ !== '') {
+    const currentFilterField = searchFilters.value.searchField
+    const selectedFilters = userFilterSelection.value[currentFilterField] || []
+
+    const aggregations: Aggregations = await fetchAggregationForKeyword(queryQ)
+    let updatedOptions: Option[] = []
+    // Iterate over the aggregations in the Elasticsearch response
+    for (const [key, value] of Object.entries(aggregations)) {
+      // Extract the bucket keys as options
+      updatedOptions = value.buckets.map((bucket) => {
+        return {
+          count: bucket.doc_count, // Count of documents in this bucket
+          value: bucket.key,
+          label: bucket.key, // Label for the option, including the count
+          labelDesktop: bucket.key + ` (${bucket.doc_count})`, // no count initally, will be updated later
+          highlighted: selectedFilters.includes(bucket.key) // Initially set to false, will be updated later if needed
+        }
+      })
+    }
+    resetSearchFilters.desktopOptions = [...updatedOptions] // Reset the options to the updated ones
     const results = await paginatedSiteSearchQuery(
       queryQ,
       page,
@@ -81,7 +103,7 @@ const searchResultsFetchFunction = async (page: number) => {
     noResultsFound.value = true
     totalResults.value = 0
     totalPages.value = 0
-    searchFilters.value = resetSearchFilters()
+    searchFilters.value = resetSearchFilters
     // console.log('No query provided, resetting search results and filters')
   }
   return {}
@@ -101,10 +123,13 @@ const onResults = (results) => {
       desktopItemList.value = newSearchResults
       mobileItemList.value = []
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+
       searchFilters.value = addHighlightStateAndCountToFilters(results.aggregations || {})
       totalResults.value = results.hits.total.value
     }
-
+    userFilterSelection.value['groupName.keyword'] = updateCountInFilters(
+      searchFilters.value.desktopOptions
+    )
     noResultsFound.value = false
   } else {
     mobileItemList.value = []
@@ -112,7 +137,7 @@ const onResults = (results) => {
     noResultsFound.value = true
     totalPages.value = 0
     totalResults.value = 0
-    searchFilters.value = resetSearchFilters()
+    searchFilters.value = resetSearchFilters
     hasMore.value = false
   }
 }
@@ -139,7 +164,7 @@ watch(
 
     hasMore.value = true
     userFilterSelection.value = parseFilters(route.query.filters || '')
-    selectedGroupNameFilters.value['groupName.keyword'] = userFilterSelection.value['groupName.keyword'] ? userFilterSelection.value['groupName.keyword'][0] : ''
+    selectedGroupNameFilters.value['groupName.keyword'] = userFilterSelection.value['groupName.keyword'] ? userFilterSelection.value['groupName.keyword'] : []
     console.log('userFilterSelection updated', userFilterSelection.value)
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     // set sort & page # from query params
@@ -168,9 +193,10 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
   const selectedFilters = userFilterSelection.value[currentFilterField] || []
   // console.log('selectedFilters', selectedFilters, userFilterSelection.value)
   const filters = {
-    name: currentFilterField,
+    name: "Filter Results", // The name of the filter group (e.g., "Event Type").
     searchField: currentFilterField,
-    options: updatedOptions,
+    options: [],
+    desktopOptions: updatedOptions
   }
   // Iterate over the aggregations in the Elasticsearch response
   for (const [key, value] of Object.entries(aggregations)) {
@@ -185,14 +211,23 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
       }
     })
   }
-  for (const item of resetSearchFilters().options) {
+  /* if (selectedFilters.length === 0) {
+
+     resetSearchFilters.options = [...updatedOptions]// Reset the options to the updated ones
+     console.log('No filters selected, using updated options from aggregations:', resetSearchFilters.options)
+   }*/
+
+  for (const item of resetSearchFilters.desktopOptions) {
     const existingOption = updatedOptions.find(opt => opt.value === item.value)
     if (!existingOption) {
       updatedOptions.push(item) // Add the initial options if they don't exist in the aggregations
     }
   }
 
-  filters.options = updatedOptions
+  filters.options = updatedOptions.map((option) => {
+    return `${option.label} (${option.count})`
+  })
+  filters.desktopOptions = updatedOptions
   return filters
 }
 
@@ -224,7 +259,7 @@ function updateGroupNameFilters(newFilter) {
     path: route.path,
     query: {
       q: route.query.q,
-      filters: 'groupName.keyword' + ':(' + newFilter['groupName.keyword'] + ')',
+      filters: 'groupName.keyword' + ':(' + newFilter['groupName.keyword'].join(',') + ')',
       sort: selectedSortFilters.value.sortField,
       // ignore page, we want to clear page # when filter is cleared
     }
@@ -243,21 +278,59 @@ function updateSort(newSort) {
   })
 }
 
+
+function parseFilterStringToObject(filterString: string): { [key: string]: string[] } {
+  if (!filterString) return {}
+
+  const [field, values] = filterString.split(':(')
+  if (!field || !values) return {}
+
+  return { [field]: values.replace(')', '').split(',') }
+}
+
 function omitParam(query: any, option: Option) {
-  // Clone the current query object
   const { page, filters, ...rest } = query
 
+  const filterObj = parseFilterStringToObject(filters)
+  const field = Object.keys(filterObj)[0] || 'groupName.keyword'
+
+  // Make sure the filter array exists
+  if (!filterObj[field]) {
+    filterObj[field] = []
+  }
+
   if (option.highlighted) {
-    // If highlighted, remove both page and filters
-    return { ...rest }
-  } else {
-    // If not highlighted, remove page, and set filters to groupName.keyword:(option.value)
+    // Remove the selected filter (toggle off)
+    filterObj[field] = filterObj[field].filter(value => value !== option.labelDesktop)
+
+    if (filterObj[field].length === 0) {
+      // If no values left for this field, remove the field
+      delete filterObj[field]
+
+      // If no filters left at all, return query without filters
+      if (Object.keys(filterObj).length === 0) {
+        return { ...rest }
+      }
+    }
+
+    // Return updated query with remaining filters
     return {
       ...rest,
-      filters: `groupName.keyword:(${option.value})`
+      filters: `${field}:(${filterObj[field].join(',')})`
     }
   }
+
+  // If filter not selected, add it (toggle on)
+  if (!filterObj[field].includes(option.labelDesktop)) {
+    filterObj[field].push(option.labelDesktop)
+  }
+
+  return {
+    ...rest,
+    filters: `${field}:(${filterObj[field].join(',')})`
+  }
 }
+
 const startCount = computed(() => {
   if ((currentPage.value - 1) * documentsPerPage === 0) return 1
   return (currentPage.value - 1) * documentsPerPage + 1
@@ -267,6 +340,12 @@ const totalResultsDisplay = computed(() => {
   return `${startCount.value} - ${((currentPage.value - 1) * documentsPerPage) + currentList.value.length} of ${totalResults.value} Results`
 })
 
+function updateCountInFilters(desktopOptions: Option[]): string[] {
+  // Returns an array of filter values that are highlighted (selected)
+  return desktopOptions
+    .filter(option => option.highlighted)
+    .map(option => `${option.value} (${option.count})`)
+}
 </script>
 <template>
   <main class="page page-detail page-detail--paleblue search-page">
@@ -301,7 +380,7 @@ const totalResultsDisplay = computed(() => {
         </h4>
 
         <div
-          v-for="option in searchFilters.options"
+          v-for="option in searchFilters.desktopOptions"
           :key="option.value"
           class="filter-option"
         >
@@ -364,17 +443,23 @@ const totalResultsDisplay = computed(() => {
             <div class="sort-and-results">
               <!-- mobile filters -->
               <span class="dropdown-wrapper">
-                <DropdownSingleSelect
-                  v-show="isMobile"
-                  v-model:selected-filters="selectedGroupNameFilters"
-                  label="Filter Results"
-                  :options="searchFilters.options"
-                  field-name="groupName.keyword"
+                <filters-dropdown
+                  v-if="isMobile"
+                  v-model:selected-filters="userFilterSelection"
+                  :filter-groups="[searchFilters]"
+                  data-test="filters-dropdown"
                   class="sort-dropdown"
                   @update-display="(newFilterSelection) => {
                     updateGroupNameFilters(newFilterSelection)
                   }"
                 />
+                <!--DropdownSingleSelect
+                  v-show="isMobile"
+                  v-model:selected-filters="selectedGroupNameFilters"
+                  label="Filter Results"
+                  :options="searchFilters.options"
+                  field-name="groupName.keyword"
+                /-->
                 <DropdownSingleSelect
                   v-model:selected-filters="selectedSortFilters"
                   :label="sortDropdownData.label"
