@@ -30,8 +30,6 @@ if (!data.value.entry) {
   })
 }
 
-// const route = useRoute()
-
 if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
@@ -43,7 +41,6 @@ if (data.value.entry && import.meta.prerender) {
       uri: '/collections/la-rebellion/filmmakers/',
       sectionHandle: data.value.entry.sectionHandle,
       groupName: 'Collections',
-      // postDate: data.value.entry.postDate,
     }
 
     // Index the event data using the composable during static build
@@ -57,7 +54,6 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-
 console.log('page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
@@ -80,6 +76,29 @@ useHead({
     }
   ]
 })
+
+// TESTING COMPOSABLE
+const currentPage = ref(1)
+const documentsPerPage = 12
+const totalDocuments = ref()
+const filmmakers = ref([])
+const { paginatedFilmmakersQuery } = useFilmmakersListSearch()
+
+onMounted(async () => {
+  const esOutput = await paginatedFilmmakersQuery(
+    currentPage.value,
+    documentsPerPage,
+    'postDate',
+    'asc'
+  )
+
+  totalDocuments.value = esOutput.hits.total.value
+  filmmakers.value = esOutput.hits.hits
+
+  console.log('ES current page hits: ', esOutput.hits.hits) // 12
+  console.log('ES total hits: ', esOutput.hits.total.value) // 327
+})
+
 </script>
 
 <template>
@@ -87,23 +106,26 @@ useHead({
     class="page page-filmmakers"
     style="padding: 25px 100px;"
   >
-    <section-wrapper section-title="LA Rebellion Filmmakers">
+    <SectionWrapper section-title="LA Rebellion Filmmakers">
       <template v-if="showSummary">
         <RichText :rich-text-content="page.summary" />
       </template>
-      <!--<div
-        v-for="filmmaker in filmmakers"
-        :key="filmmaker?.id"
+      <DividerWayFinder />
+      <h2>Filmmaker Listing Count: {{ totalDocuments }}</h2>
+      <br>
+      <h3>First {{ documentsPerPage }} entries:</h3>
+      <br>
+      <div
+        v-for="filmmaker, index in filmmakers"
+        :key="index"
       >
-        <NuxtLink :to="`/${filmmaker?.to}`">
-          {{ filmmaker?.title }}
-        </NuxtLink> <br>
-        <h4>to: <code>{{ filmmaker?.to }}</code></h4>
-        <h4>richText: <code>{{ filmmaker?.richText }}</code></h4>
-        <h4>associatedFilms: <code>{{ filmmaker?.associatedFilms }}</code></h4>
-        <divider-general />
-      </div>-->
-    </section-wrapper>
+        <NuxtLink :to="`/${filmmaker?._source.to}`">
+          <h3>{{ filmmaker?._source.title }}</h3>
+        </NuxtLink>
+        <p>{{ filmmaker?._source.richText }}</p>
+        <DividerGeneral />
+      </div>
+    </SectionWrapper>
   </div>
 </template>
 
