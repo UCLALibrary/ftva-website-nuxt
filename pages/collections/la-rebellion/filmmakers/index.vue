@@ -12,7 +12,6 @@ const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('la-rebellion-filmmakers', async () => {
   const data = await $graphql.default.request(FTVALARebellionFilmmakersList)
-  // console.log('data', data)
   return data
 })
 
@@ -22,7 +21,7 @@ if (error.value) {
   })
 }
 
-if (!data.value.entries) {
+if (!data.value.entry) {
   // console.log('no data')
   throw createError({
     statusCode: 404,
@@ -30,30 +29,36 @@ if (!data.value.entries) {
     fatal: true
   })
 }
-const route = useRoute()
 
-// TODO This is creating an index of the content for ES search
-// TODO FIX THE INDEXING DATA LOOK AT OTHER LISTING PAGES
+// const route = useRoute()
+
 if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
-    data.value.entry.groupName = 'Collections'
-    // Index the event data using the composable during static build
-    await indexContent(data.value.entry, route.params.slug)
 
-    // TODO index entries as well?
-    // await indexContent(data.value.entries, route.params.slug)
+    const doc = {
+      title: data.value.entry.title,
+      text: data.value.entry.summary,
+      uri: '/collections/la-rebellion/filmmakers/',
+      sectionHandle: data.value.entry.sectionHandle,
+      groupName: 'Collections',
+      // postDate: data.value.entry.postDate,
+    }
+
+    // Index the event data using the composable during static build
+    await indexContent(doc, 'filmmaker-listing')
 
     // console.log('Article indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('FAILED TO INDEX ARTICLES during static build:', error)
+    console.error('FAILED TO INDEX FILMMAKER LISTING during static build:', error)
   }
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-const filmmakers = ref(_get(data.value, 'entries', []))
+
+console.log('page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -64,6 +69,7 @@ watch(data, (newVal, oldVal) => {
 const showSummary = computed(() => {
   return page.value?.summary && page.value?.displaySummary === 'yes'
 })
+
 useHead({
   title: page.value?.title || '... loading',
   meta: [
@@ -85,7 +91,7 @@ useHead({
       <template v-if="showSummary">
         <RichText :rich-text-content="page.summary" />
       </template>
-      <div
+      <!--<div
         v-for="filmmaker in filmmakers"
         :key="filmmaker?.id"
       >
@@ -96,7 +102,7 @@ useHead({
         <h4>richText: <code>{{ filmmaker?.richText }}</code></h4>
         <h4>associatedFilms: <code>{{ filmmaker?.associatedFilms }}</code></h4>
         <divider-general />
-      </div>
+      </div>-->
     </section-wrapper>
   </div>
 </template>

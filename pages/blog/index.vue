@@ -1,7 +1,6 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
-import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 

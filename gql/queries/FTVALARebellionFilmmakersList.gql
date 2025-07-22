@@ -7,16 +7,4 @@ query FTVALARebellionFilmmakersList {
     summary
     displaySummary
   }
-  entries(section: ["ftvaLARebellionIndividual"], orderBy: "postDate DESC") {
-    id
-    to: uri
-    typeHandle
-    sectionHandle
-    postDate
-    title
-    richText
-    associatedFilms {
-      titleGeneral
-    }
-  }
 }
