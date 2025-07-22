@@ -88,7 +88,7 @@ onMounted(async () => {
   const esOutput = await paginatedFilmmakersQuery(
     currentPage.value,
     documentsPerPage,
-    'postDate',
+    'title.keyword',
     'asc'
   )
 
