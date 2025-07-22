@@ -66,11 +66,12 @@ const sortField = ref('_score') // default sort field
 const orderBy = ref('desc') // default order by
 // "STATE"
 const searchResultsFetchFunction = async (page: number) => {
-  console.log('searchResultsFetchFunction called with page:', userFilterSelection.value)
+  // console.log('searchResultsFetchFunction called with page:', userFilterSelection.value)
   const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
   if (queryQ && queryQ !== '') {
     const currentFilterField = searchFilters.value.searchField
-    const selectedFilters = userFilterSelection.value[currentFilterField] || []
+    const selectedFilters = selectedGroupNameFilters.value[currentFilterField] || []
+    // console.log('selectedFilters', selectedFilters, userFilterSelection.value)
 
     const aggregations: Aggregations = await fetchAggregationForKeyword(queryQ)
     let updatedOptions: Option[] = []
@@ -92,7 +93,7 @@ const searchResultsFetchFunction = async (page: number) => {
       queryQ,
       page,
       documentsPerPage,
-      userFilterSelection.value,
+      selectedGroupNameFilters.value,
       sortField.value,
       orderBy.value,
     )
@@ -104,7 +105,7 @@ const searchResultsFetchFunction = async (page: number) => {
     totalResults.value = 0
     totalPages.value = 0
     searchFilters.value = resetSearchFilters
-    // console.log('No query provided, resetting search results and filters')
+    // console.log('No query provided, resetting search results and filters', searchFilters.value)
   }
   return {}
 }
@@ -131,6 +132,8 @@ const onResults = (results) => {
       searchFilters.value.desktopOptions
     )
     noResultsFound.value = false
+    // console.log('searchFilters updated', searchFilters.value)
+    // console.log('userFilterSelection updated', userFilterSelection.value)
   } else {
     mobileItemList.value = []
     desktopItemList.value = []
@@ -138,6 +141,7 @@ const onResults = (results) => {
     totalPages.value = 0
     totalResults.value = 0
     searchFilters.value = resetSearchFilters
+    // console.log('No results found, resetting search results and filters', searchFilters.value)
     hasMore.value = false
   }
 }
@@ -163,9 +167,10 @@ watch(
     isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
 
     hasMore.value = true
-    userFilterSelection.value = parseFilters(route.query.filters || '')
-    selectedGroupNameFilters.value['groupName.keyword'] = userFilterSelection.value['groupName.keyword'] ? userFilterSelection.value['groupName.keyword'] : []
-    console.log('userFilterSelection updated', userFilterSelection.value)
+    const queryFilters = parseFilters(route.query.filters || '')
+    selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
+    console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
+    // console.log('userFilterSelection updated', userFilterSelection.value)
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     // set sort & page # from query params
     selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
@@ -190,7 +195,7 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
   let updatedOptions: Option[] = []
 
   const currentFilterField = searchFilters.value.searchField
-  const selectedFilters = userFilterSelection.value[currentFilterField] || []
+  const selectedFilters = selectedGroupNameFilters.value[currentFilterField] || []
   // console.log('selectedFilters', selectedFilters, userFilterSelection.value)
   const filters = {
     name: "Filter Results", // The name of the filter group (e.g., "Event Type").
@@ -232,7 +237,7 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
 }
 
 const parsedResults = computed(() => {
-  // console.log('searchResults.value', searchResults.value)
+  // console.log('searchResults.value', currentList.value)
 
   return currentList.value.map((obj) => {
     return {
@@ -253,13 +258,26 @@ const parsedResults = computed(() => {
 const router = useRouter()
 
 function updateGroupNameFilters(newFilter) {
-  // console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter), newFilter[0])
+  console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter))
+  console.log('resetSearchFilters:', resetSearchFilters.desktopOptions)
+  // Extract valid option values from desktopOptions (without counts)
+  const validOptions = resetSearchFilters.desktopOptions.map(option => option.value)
+  console.log('validOptions:', validOptions)
 
+  newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map(item => {
+    const match = validOptions.find(valid => item.trim().startsWith(valid))
+    return match || null
+  }).filter(Boolean)
+  const newFilterString = newFilter['groupName.keyword'].length > 0
+    ? `groupName.keyword:(${newFilter['groupName.keyword'].join(',')})`
+    : ''
+
+  console.log('newFilter after processing:', newFilter)
   router.push({
     path: route.path,
     query: {
       q: route.query.q,
-      filters: 'groupName.keyword' + ':(' + newFilter['groupName.keyword'].join(',') + ')',
+      filters: newFilterString,
       sort: selectedSortFilters.value.sortField,
       // ignore page, we want to clear page # when filter is cleared
     }
@@ -301,7 +319,7 @@ function omitParam(query: any, option: Option) {
 
   if (option.highlighted) {
     // Remove the selected filter (toggle off)
-    filterObj[field] = filterObj[field].filter(value => value !== option.labelDesktop)
+    filterObj[field] = filterObj[field].filter(value => value !== option.value)
 
     if (filterObj[field].length === 0) {
       // If no values left for this field, remove the field
@@ -321,8 +339,8 @@ function omitParam(query: any, option: Option) {
   }
 
   // If filter not selected, add it (toggle on)
-  if (!filterObj[field].includes(option.labelDesktop)) {
-    filterObj[field].push(option.labelDesktop)
+  if (!filterObj[field].includes(option.value)) {
+    filterObj[field].push(option.value)
   }
 
   return {
@@ -444,7 +462,7 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
               <!-- mobile filters -->
               <span class="dropdown-wrapper">
                 <filters-dropdown
-                  v-if="isMobile"
+                  v-show="isMobile"
                   v-model:selected-filters="userFilterSelection"
                   :filter-groups="[searchFilters]"
                   data-test="filters-dropdown"
