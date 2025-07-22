@@ -54,7 +54,6 @@ const resetSearchFilters: FilterResult = {
 }
 const searchFilters = ref<FilterResult>(resetSearchFilters)
 
-
 // TYPES
 interface FilterItem {
   [key: string]: string[]
@@ -198,7 +197,7 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
   const selectedFilters = selectedGroupNameFilters.value[currentFilterField] || []
   // console.log('selectedFilters', selectedFilters, userFilterSelection.value)
   const filters = {
-    name: "Filter Results", // The name of the filter group (e.g., "Event Type").
+    name: 'Filter Results', // The name of the filter group (e.g., "Event Type").
     searchField: currentFilterField,
     options: [],
     desktopOptions: updatedOptions
@@ -220,7 +219,7 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
 
      resetSearchFilters.options = [...updatedOptions]// Reset the options to the updated ones
      console.log('No filters selected, using updated options from aggregations:', resetSearchFilters.options)
-   }*/
+   } */
 
   for (const item of resetSearchFilters.desktopOptions) {
     const existingOption = updatedOptions.find(opt => opt.value === item.value)
@@ -264,7 +263,7 @@ function updateGroupNameFilters(newFilter) {
   const validOptions = resetSearchFilters.desktopOptions.map(option => option.value)
   console.log('validOptions:', validOptions)
 
-  newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map(item => {
+  newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map((item) => {
     const match = validOptions.find(valid => item.trim().startsWith(valid))
     return match || null
   }).filter(Boolean)
@@ -295,7 +294,6 @@ function updateSort(newSort) {
     }
   })
 }
-
 
 function parseFilterStringToObject(filterString: string): { [key: string]: string[] } {
   if (!filterString) return {}
@@ -448,7 +446,7 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >
