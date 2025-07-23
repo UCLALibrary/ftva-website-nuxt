@@ -75,7 +75,7 @@ const isDevelopment = computed(() => import.meta.dev)
             An error occurred
           </h1>
 
-          <p>
+          <p class="body-text">
             <!-- nuxt link or mailto link?-->
             We can’t find the page you are looking for. Please try using the navigation or search above. If you need
             further assistance, please <nuxt-link to="/">contact us</nuxt-link>.
@@ -103,6 +103,13 @@ const isDevelopment = computed(() => import.meta.dev)
 
       .blue-accent {
         color: $accent-blue;
+      }
+
+      p.body-text {
+        @include ftva-body-2;
+        font-size: 18px;
+        color: var(--dark-navy);
+        padding-top: 8px;
       }
     }
   }
