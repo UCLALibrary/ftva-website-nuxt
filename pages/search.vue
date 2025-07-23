@@ -66,6 +66,9 @@ const orderBy = ref('desc') // default order by
 // "STATE"
 const searchResultsFetchFunction = async (page: number) => {
   // console.log('searchResultsFetchFunction called with page:', userFilterSelection.value)
+  if (page === 2 && totalResults.value <= 10) {
+    page = 1 // reset to page 1 if total results are less than or equal to 10
+  }
   const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
   if (queryQ && queryQ !== '') {
     const currentFilterField = searchFilters.value.searchField
@@ -103,8 +106,9 @@ const searchResultsFetchFunction = async (page: number) => {
     noResultsFound.value = true
     totalResults.value = 0
     totalPages.value = 0
+    console.log('No query provided, resetting search results and filters', resetSearchFilters)
     searchFilters.value = resetSearchFilters
-    // console.log('No query provided, resetting search results and filters', searchFilters.value)
+    console.log('No query provided, resetting search results and filters', searchFilters.value)
   }
   return {}
 }
@@ -145,7 +149,7 @@ const onResults = (results) => {
   }
 }
 // mostly provided by 'useMobileOnlyInfiniteScroll' composable
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
 
 // SORT SETUP - uses static data
 const sortDropdownData = {
@@ -388,7 +392,7 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
     </SectionWrapper>
     <div class="two-column">
       <div
-        v-if="!isMobile"
+        v-if="!isMobile && !noResultsFound && parsedResults.length !== 0"
         class="sidebar"
       >
         <h4 class="filter-results">
@@ -638,6 +642,7 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
         align-content: center;
         align-items: center;
         gap: 1rem;
+        margin-bottom: 30px;
 
         .no-results-title {
           @include ftva-h4;
@@ -755,6 +760,23 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
         .molecule-no-image {
           display: none;
         }
+      }
+
+      :deep(.ftva.mobile-drawer .mobile-button) {
+        border-color: #115daf;
+        color: #0b6ab7;
+      }
+
+      :deep(.filter-summary) {
+        color: #115daf;
+      }
+
+      :deep(.filters-dropdown .mobile-button) {
+        padding: 10px;
+      }
+
+      :deep(.ftva.filters-dropdown .icon-svgsvg path.svg__fill--accent-blue) {
+        fill: #0b6ab7;
       }
     }
   }

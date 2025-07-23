@@ -19,7 +19,10 @@
 
 import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 
-export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve({}), onResults) {
+export default function useMobileInfiniteScroll<T = any>(
+  fetchFn: (page: number) => Promise<T>,
+  onResults: (results: T) => void
+) {
   // DESKTOP STATE
   const desktopPage = useState('desktopPage', () => 1) // Persist desktop page #
   const desktopItemList = ref([]) // Persist desktop item list
@@ -34,7 +37,7 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
   const currentList = computed(() => (isMobile.value ? mobileItemList.value : desktopItemList.value))
   const currentPage = ref(1)
   const totalPages = ref(0)
-  const scrollElem = ref(null)
+  const scrollElem = ref<HTMLElement | null>(null)
   const route = useRoute()
 
   // ES SEARCH FUNCTION
@@ -45,6 +48,7 @@ export default function useMobileInfiniteScroll(fetchFn = () => Promise.resolve(
 
     try {
       // use callbback fetchFn to get search results
+      console.log(`Fetching data for page ${currentPage.value}...`)
       const results = await fetchFn(currentPage.value)
       onResults(results)
     } catch (err) {
