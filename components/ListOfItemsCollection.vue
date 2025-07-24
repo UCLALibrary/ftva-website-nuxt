@@ -390,7 +390,7 @@ main.blue-main {
 
       // results pill
       .total-results {
-        background-color: #132941; // navyblue
+        background-color: var(--dark-navy);
         margin-left: auto; // pins the total results to the right
         margin-right: 26px;
         text-align: center;
