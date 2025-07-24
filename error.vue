@@ -97,10 +97,12 @@ const isDevelopment = computed(() => import.meta.dev)
       h1 {
         @include ftva-h2;
         padding-top: 40px;
+        font-weight: 400;
       }
 
       .blue-accent {
         color: $accent-blue;
+        font-weight: 700
       }
 
       p.body-text {
