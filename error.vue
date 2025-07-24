@@ -24,10 +24,6 @@ const isDevelopment = computed(() => import.meta.dev)
         theme="paleblue"
         class="error-wrapper"
       >
-        <!-- <p class="error">
-          {{ error?.statusCode }}
-        </p> -->
-
         <h2
           v-if="isDevelopment"
           class="actual-error"
@@ -76,9 +72,11 @@ const isDevelopment = computed(() => import.meta.dev)
           </h1>
 
           <p class="body-text">
-            <!-- nuxt link or mailto link?-->
             We can’t find the page you are looking for. Please try using the navigation or search above. If you need
-            further assistance, please <nuxt-link to="/contact">contact us</nuxt-link>.
+            further assistance, please <nuxt-link
+              class="link"
+              to="/contact"
+            >contact us</nuxt-link>.
           </p>
         </div>
       </SectionWrapper>
@@ -110,6 +108,13 @@ const isDevelopment = computed(() => import.meta.dev)
         font-size: 18px;
         color: var(--dark-navy);
         padding-top: 8px;
+      }
+
+      .link {
+        &:hover {
+          color: $accent-blue;
+          text-decoration: underline;
+        }
       }
     }
   }
