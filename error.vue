@@ -92,7 +92,7 @@ const isDevelopment = computed(() => import.meta.dev)
   padding: var(--space-3xl) var(--unit-gutter);
   background-color: var(--pale-blue);
 
-  .error-wrapper {
+  .section-wrapper.error-wrapper {
     div.user-error-display {
       text-align: center;
       max-width: 580px;
