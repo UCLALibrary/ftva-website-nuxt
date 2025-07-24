@@ -78,7 +78,7 @@ const isDevelopment = computed(() => import.meta.dev)
           <p class="body-text">
             <!-- nuxt link or mailto link?-->
             We can’t find the page you are looking for. Please try using the navigation or search above. If you need
-            further assistance, please <nuxt-link to="/">contact us</nuxt-link>.
+            further assistance, please <nuxt-link to="/contact">contact us</nuxt-link>.
           </p>
         </div>
       </SectionWrapper>
@@ -113,11 +113,5 @@ const isDevelopment = computed(() => import.meta.dev)
       }
     }
   }
-
-  //   @media #{$small} {
-  //     .error {
-  //       font-size: 128px;
-  //     }
-  //   }
 }
 </style>
