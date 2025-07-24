@@ -67,7 +67,7 @@ const showSummary = computed(() => {
 })
 
 useHead({
-  title: page.value?.title || '... loading',
+  title: page.value ? page.value.title : '... loading',
   meta: [
     {
       hid: 'description',
@@ -106,7 +106,7 @@ onMounted(async () => {
     class="page page-filmmakers"
     style="padding: 25px 100px;"
   >
-    <SectionWrapper section-title="LA Rebellion Filmmakers">
+    <SectionWrapper :section-title="page.title">
       <template v-if="showSummary">
         <RichText :rich-text-content="page.summary" />
       </template>
@@ -116,8 +116,8 @@ onMounted(async () => {
       <h3>First {{ documentsPerPage }} entries:</h3>
       <br>
       <div
-        v-for="filmmaker, index in filmmakers"
-        :key="index"
+        v-for="filmmaker in filmmakers"
+        :key="filmmaker?._source.id"
       >
         <NuxtLink :to="`/${filmmaker?._source.to}`">
           <h3>{{ filmmaker?._source.title }}</h3>

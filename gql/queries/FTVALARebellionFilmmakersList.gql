@@ -3,7 +3,7 @@ query FTVALARebellionFilmmakersList {
     id
     typeHandle
     sectionHandle
-    titleGeneral
+    title: titleGeneral
     summary
     displaySummary
   }
