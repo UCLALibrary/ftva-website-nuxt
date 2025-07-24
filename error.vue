@@ -4,7 +4,7 @@ import type { NuxtError } from '#app'
 // IMAGE
 import ErrorImage from 'ucla-library-design-tokens/assets/svgs/graphic-ftva-error-no-signal.svg'
 
-const props = defineProps({
+const { error } = defineProps({
   error: {
     type: Object as () => NuxtError,
     default: () => ({ statusCode: 500, message: 'An unexpected error occurred' }),
@@ -62,17 +62,20 @@ const isDevelopment = computed(() => import.meta.dev)
             v-if="error?.statusCode === 404"
             class="error-title"
           >
-            <span class="blue-accent">404</span> Page not found
+            <span class="blue-accent">{{ error?.statusCode }}</span> Page not found
           </h1>
           <h1
             v-else
             class="error-title"
           >
-            An error occurred
+            <span
+              v-if="error?.statusCode"
+              class="blue-accent"
+            >{{ error?.statusCode }}</span> An error occurred
           </h1>
 
           <p class="body-text">
-            We can’t find the page you are looking for. Please try using the navigation or search above. If you need
+            We can’t find the page you're looking for. Please try using the navigation or search above. If you need
             further assistance, please <nuxt-link
               class="link"
               to="/contact"
@@ -93,6 +96,7 @@ const isDevelopment = computed(() => import.meta.dev)
     div.user-error-display {
       text-align: center;
       max-width: 580px;
+      margin-top: -20px; //bump content 20px up
 
       h1 {
         @include ftva-h2;
