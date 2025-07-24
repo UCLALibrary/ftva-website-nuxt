@@ -12,7 +12,6 @@ const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('la-rebellion-filmmakers', async () => {
   const data = await $graphql.default.request(FTVALARebellionFilmmakersList)
-  // console.log('data', data)
   return data
 })
 
@@ -22,7 +21,7 @@ if (error.value) {
   })
 }
 
-if (!data.value.entries) {
+if (!data.value.entry) {
   // console.log('no data')
   throw createError({
     statusCode: 404,
@@ -30,30 +29,32 @@ if (!data.value.entries) {
     fatal: true
   })
 }
-const route = useRoute()
 
-// TODO This is creating an index of the content for ES search
-// TODO FIX THE INDEXING DATA LOOK AT OTHER LISTING PAGES
 if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
-    data.value.entry.groupName = 'Collections'
-    // Index the event data using the composable during static build
-    await indexContent(data.value.entry, route.params.slug)
 
-    // TODO index entries as well?
-    // await indexContent(data.value.entries, route.params.slug)
+    const doc = {
+      title: data.value.entry.title,
+      text: data.value.entry.summary,
+      uri: '/collections/la-rebellion/filmmakers/',
+      sectionHandle: data.value.entry.sectionHandle,
+      groupName: 'Collections',
+    }
+
+    // Index the event data using the composable during static build
+    await indexContent(doc, 'filmmaker-listing')
 
     // console.log('Article indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
-    console.error('FAILED TO INDEX ARTICLES during static build:', error)
+    console.error('FAILED TO INDEX FILMMAKER LISTING during static build:', error)
   }
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-const filmmakers = ref(_get(data.value, 'entries', []))
+console.log('page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -64,8 +65,9 @@ watch(data, (newVal, oldVal) => {
 const showSummary = computed(() => {
   return page.value?.summary && page.value?.displaySummary === 'yes'
 })
+
 useHead({
-  title: page.value?.title || '... loading',
+  title: page.value ? page.value.title : '... loading',
   meta: [
     {
       hid: 'description',
@@ -74,6 +76,29 @@ useHead({
     }
   ]
 })
+
+// TESTING COMPOSABLE
+const currentPage = ref(1)
+const documentsPerPage = 12
+const totalDocuments = ref()
+const filmmakers = ref([])
+const { paginatedFilmmakersQuery } = useFilmmakersListSearch()
+
+onMounted(async () => {
+  const esOutput = await paginatedFilmmakersQuery(
+    currentPage.value,
+    documentsPerPage,
+    'title.keyword',
+    'asc'
+  )
+
+  totalDocuments.value = esOutput.hits.total.value
+  filmmakers.value = esOutput.hits.hits
+
+  console.log('ES current page hits: ', esOutput.hits.hits) // 12
+  console.log('ES total hits: ', esOutput.hits.total.value) // 327
+})
+
 </script>
 
 <template>
@@ -81,23 +106,26 @@ useHead({
     class="page page-filmmakers"
     style="padding: 25px 100px;"
   >
-    <section-wrapper section-title="LA Rebellion Filmmakers">
+    <SectionWrapper :section-title="page.title">
       <template v-if="showSummary">
         <RichText :rich-text-content="page.summary" />
       </template>
+      <DividerWayFinder />
+      <h2>Filmmaker Listing Count: {{ totalDocuments }}</h2>
+      <br>
+      <h3>First {{ documentsPerPage }} entries:</h3>
+      <br>
       <div
         v-for="filmmaker in filmmakers"
-        :key="filmmaker?.id"
+        :key="filmmaker?._source.id"
       >
-        <NuxtLink :to="`/${filmmaker?.to}`">
-          {{ filmmaker?.title }}
-        </NuxtLink> <br>
-        <h4>to: <code>{{ filmmaker?.to }}</code></h4>
-        <h4>richText: <code>{{ filmmaker?.richText }}</code></h4>
-        <h4>associatedFilms: <code>{{ filmmaker?.associatedFilms }}</code></h4>
-        <divider-general />
+        <NuxtLink :to="`/${filmmaker?._source.to}`">
+          <h3>{{ filmmaker?._source.title }}</h3>
+        </NuxtLink>
+        <p>{{ filmmaker?._source.richText }}</p>
+        <DividerGeneral />
       </div>
-    </section-wrapper>
+    </SectionWrapper>
   </div>
 </template>
 
