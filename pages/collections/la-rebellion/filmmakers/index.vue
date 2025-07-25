@@ -54,16 +54,10 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-console.log('page: ', page.value)
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
-  filmmakers.value = _get(newVal, 'entries', [])
-})
-
-const showSummary = computed(() => {
-  return page.value?.summary && page.value?.displaySummary === 'yes'
 })
 
 useHead({
@@ -77,58 +71,149 @@ useHead({
   ]
 })
 
-// TESTING COMPOSABLE
-const currentPage = ref(1)
+// "STATE"
 const documentsPerPage = 12
-const totalDocuments = ref()
-const filmmakers = ref([])
-const { paginatedFilmmakersQuery } = useFilmmakersListSearch()
 
-onMounted(async () => {
-  const esOutput = await paginatedFilmmakersQuery(
-    currentPage.value,
+const filmmakersFetchFunction = async (page) => {
+  const { paginatedFilmmakersQuery } = useFilmmakersListSearch()
+  const results = await paginatedFilmmakersQuery(
+    page,
     documentsPerPage,
     'title.keyword',
-    'asc'
+    'asc',
+    ['*']
   )
+  return results
+}
 
-  totalDocuments.value = esOutput.hits.total.value
-  filmmakers.value = esOutput.hits.hits
+const onResults = (results) => {
+  if (results?.hits?.hits?.length > 0) {
+    const newListings = results.hits.hits || []
 
-  console.log('ES current page hits: ', esOutput.hits.hits) // 12
-  console.log('ES total hits: ', esOutput.hits.total.value) // 327
+    if (isMobile.value) {
+      totalPages.value = 0
+      mobileItemList.value.push(...newListings)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      desktopItemList.value = newListings
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+    }
+  } else {
+    totalPages.value = 0
+    hasMore.value = false
+  }
+}
+
+// INFINITE SCROLL
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(filmmakersFetchFunction, onResults)
+
+const route = useRoute()
+
+watch(() => route.query,
+  (newVal, oldVal) => {
+    isLoading.value = false
+    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+    hasMore.value = true
+
+    searchES()
+  }, { deep: true, immediate: true }
+)
+
+// COMPUTED LISTINGS
+const parsedFilmmakerListings = computed(() => {
+  if (currentList.value.length === 0) return []
+
+  return currentList.value.map((obj) => {
+    let filmmakerDescription
+
+    if (!isMobile.value) {
+      filmmakerDescription = obj._source.richText
+    } else {
+      filmmakerDescription = null
+    }
+
+    return {
+      to: `/${obj._source.to}`,
+      title: obj._source.title,
+      description: filmmakerDescription,
+      image: parseImage(obj),
+    }
+  })
+})
+
+const pageClasses = computed(() => {
+  return ['page', 'page-filmmakers']
 })
 
 </script>
 
 <template>
-  <div
-    class="page page-filmmakers"
-    style="padding: 25px 100px;"
+  <main
+    id="main"
+    :class="pageClasses"
   >
-    <SectionWrapper :section-title="page.title">
-      <template v-if="showSummary">
-        <RichText :rich-text-content="page.summary" />
-      </template>
-      <DividerWayFinder />
-      <h2>Filmmaker Listing Count: {{ totalDocuments }}</h2>
-      <br>
-      <h3>First {{ documentsPerPage }} entries:</h3>
-      <br>
-      <div
-        v-for="filmmaker in filmmakers"
-        :key="filmmaker?._source.id"
+    <div class="one-column">
+      <NavBreadcrumb data-test="breadcrumb" />
+
+      <SectionWrapper
+        ref="scrollElem"
+        class="header"
+        :section-title="page.title"
+        :section-summary="page.summary"
+        theme="paleblue"
+        data-test="page-heading"
       >
-        <NuxtLink :to="`/${filmmaker?._source.to}`">
-          <h3>{{ filmmaker?._source.title }}</h3>
-        </NuxtLink>
-        <p>{{ filmmaker?._source.richText }}</p>
-        <DividerGeneral />
-      </div>
-    </SectionWrapper>
-  </div>
+        <SectionStaffArticleList
+          :items="parsedFilmmakerListings"
+          data-test="page-listings"
+        />
+
+        <SectionPagination
+          v-if="
+            totalPages !== 1 && !isMobile"
+          :pages="totalPages"
+          :initial-current-page="currentPage"
+        />
+      </SectionWrapper>
+    </div>
+  </main>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
+
+.page-filmmakers {
+  position: relative;
+  background-color: var(--pale-blue);
+
+  .section-wrapper {
+    padding-inline: 0;
+
+    :deep(.section-title) {
+      @include ftva-h5;
+      color: $heading-grey;
+    }
+
+    :deep(.section-summary) {
+      margin-inline: 0;
+      max-width: 100%;
+    }
+  }
+
+  :deep(.section-pagination) {
+    background-color: white;
+    padding: 2.5%;
+  }
+
+  @media #{$medium} {
+    .section-wrapper {
+      :deep(div.section-header) {
+        margin-bottom: var(--space-xl);
+      }
+    }
+  }
+
+  @media #{$small} {}
+}
 </style>

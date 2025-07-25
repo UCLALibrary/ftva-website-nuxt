@@ -226,6 +226,8 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 // PAGE STYLES
 .page-article-detail {
   position: relative;
@@ -304,6 +306,4 @@ useHead({
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>
