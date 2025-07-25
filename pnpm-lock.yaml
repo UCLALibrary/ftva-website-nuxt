@@ -73,8 +73,8 @@ importers:
         specifier: ^1.66.1
         version: 1.80.3
       ucla-library-design-tokens:
-        specifier: ^5.33.0
-        version: 5.33.0
+        specifier: ^5.34.0
+        version: 5.34.0
       vite-svg-loader:
         specifier: ^5.1.0
         version: 5.1.0(vue@3.5.12(typescript@5.6.3))
@@ -4580,8 +4580,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  ucla-library-design-tokens@5.33.0:
-    resolution: {integrity: sha512-AaaqfRvhIhySrT80dJKmajaR0BwpcbhQiZrCVKaY32UelY8b1xdwT7W4oThDizdU8i54hCCadZeFNvsSOjUtlw==}
+  ucla-library-design-tokens@5.34.0:
+    resolution: {integrity: sha512-UhvqjE1ShSBfxet8Z9qUKxUGalocBky/rCrRg0LG0RCcJxT965/wvndGNDoviREl7KwHmgDi7OVh3SOFrf9XFQ==}
 
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
@@ -10320,7 +10320,7 @@ snapshots:
 
   typescript@5.6.3: {}
 
-  ucla-library-design-tokens@5.33.0: {}
+  ucla-library-design-tokens@5.34.0: {}
 
   ufo@1.5.4: {}
 
