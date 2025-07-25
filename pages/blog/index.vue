@@ -286,8 +286,7 @@ useHead({
   }
 
   .header>:deep(.section-header) {
-    margin-top: 20px;
-    margin-bottom: 0px;
+    margin-block: 0;
 
     h2.section-title {
       color: $heading-grey;
