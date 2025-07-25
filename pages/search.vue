@@ -7,6 +7,7 @@ import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScro
 
 const route = useRoute()
 const documentsPerPage = 10
+
 // const totalPages = ref<number>(0)
 const totalResults = ref<number>(0)
 // const currentPage = ref<number>(1)
@@ -162,6 +163,7 @@ const sortDropdownData = {
   label: 'Sort by',
   fieldName: 'sortField'
 }
+
 // This watcher is called when router push updates the query params
 watch(
   () => route.query,
@@ -189,7 +191,6 @@ watch(
       orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
       // console.log('orderBy updated', orderBy.value)
     }
-
     searchES()
   }, { deep: true, immediate: true }
 )
@@ -366,6 +367,26 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
     .filter(option => option.highlighted)
     .map(option => `${option.value} (${option.count})`)
 }
+function handleFilterUpdate(updatedFilters) {
+  selectedGroupNameFilters.value = updatedFilters
+  console.log('Filters updated:', selectedGroupNameFilters.value)
+}
+
+function applyChangesToSearch() {
+  console.log('applyChangesToSearch called')
+
+  const newFilterString = selectedGroupNameFilters['groupName.keyword'] && selectedGroupNameFilters['groupName.keyword'].length > 0
+    ? `groupName.keyword:(${selectedGroupNameFilters['groupName.keyword'].join(',')})`
+    : ''
+
+  useRouter().push({
+    path: route.path,
+    query: {
+      q: route.query.q,
+      filters: newFilterString
+    }
+  })
+}
 </script>
 <template>
   <main class="page page-detail page-detail--paleblue search-page">
@@ -491,6 +512,13 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
                   }"
                 />
               </span>
+              <section-remove-search-filter
+                v-if="isMobile && Object.keys(selectedGroupNameFilters).length > 0"
+                :filters="selectedGroupNameFilters"
+                class="remove-filters"
+                @update:filters="handleFilterUpdate"
+                @remove-selected="applyChangesToSearch"
+              />
               <DividerWayFinder
                 v-if="isMobile"
                 class="divider"
@@ -591,7 +619,7 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        // align-items: center;
         margin-bottom: 35px;
         // margin-right: 1rem;
 
@@ -747,6 +775,12 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
           }
         }
 
+        .remove-filters {
+          margin-top: 0;
+          margin-bottom: 0;
+          padding-top: 20px;
+        }
+
         .divider {
           width: 100%;
           padding-left: 0px;
@@ -775,7 +809,7 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
         padding: 10px;
       }
 
-      :deep(.ftva.filters-dropdown .icon-svgsvg path.svg__fill--accent-blue) {
+      :deep(.ftva.filters-dropdown .icon-svg svg path.svg__fill--accent-blue) {
         fill: #0b6ab7;
       }
     }
