@@ -176,7 +176,7 @@ const parsedEventSeries = computed(() => {
 </script>
 
 <template>
-  <div class="page page-event-series">
+  <main class="page page-event-series">
     <div class="full-width">
       <SectionWrapper
         ref="scrollElem"
@@ -249,7 +249,7 @@ const parsedEventSeries = computed(() => {
         />
       </SectionWrapper>
     </div>
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
