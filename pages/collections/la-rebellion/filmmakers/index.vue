@@ -213,5 +213,7 @@ const pageClasses = computed(() => {
       }
     }
   }
+
+  @media #{$small} {}
 }
 </style>

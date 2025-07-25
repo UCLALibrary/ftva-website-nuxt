@@ -261,7 +261,7 @@ useHead({
 })
 </script>
 <template>
-  <main class="blue-main page page-collections-list-of-items">
+  <main class="page page-collections-list-of-items">
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
