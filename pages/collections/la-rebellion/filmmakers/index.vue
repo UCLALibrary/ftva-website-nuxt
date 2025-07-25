@@ -163,8 +163,12 @@ const pageClasses = computed(() => {
         :section-title="page.title"
         :section-summary="page.summary"
         theme="paleblue"
+        data-test="page-heading"
       >
-        <SectionStaffArticleList :items="parsedFilmmakerListings" />
+        <SectionStaffArticleList
+          :items="parsedFilmmakerListings"
+          data-test="page-listings"
+        />
 
         <SectionPagination
           v-if="
