@@ -126,17 +126,24 @@ const parsedFilmmakerListings = computed(() => {
   if (currentList.value.length === 0) return []
 
   return currentList.value.map((obj) => {
+    let filmmakerDescription
+
+    if (!isMobile.value) {
+      filmmakerDescription = obj._source.richText
+    } else {
+      filmmakerDescription = null
+    }
+
     return {
-      ...obj._source,
       to: `/${obj._source.uri}`,
       title: obj._source.title,
-      description: obj._source.richText,
+      description: filmmakerDescription,
       image: parseImage(obj),
     }
   })
 })
 
-const pageClass = computed(() => {
+const pageClasses = computed(() => {
   return ['page', 'page-filmmakers']
 })
 
@@ -145,7 +152,7 @@ const pageClass = computed(() => {
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb data-test="breadcrumb" />
