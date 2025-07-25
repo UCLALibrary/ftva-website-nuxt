@@ -195,5 +195,13 @@ const pageClass = computed(() => {
     background-color: white;
     padding: 2.5%;
   }
+
+  @media #{$medium} {
+    .section-wrapper {
+      :deep(div.section-header) {
+        margin-bottom: var(--space-xl);
+      }
+    }
+  }
 }
 </style>
