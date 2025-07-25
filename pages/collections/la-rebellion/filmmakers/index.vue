@@ -135,7 +135,7 @@ const parsedFilmmakerListings = computed(() => {
     }
 
     return {
-      to: `/${obj._source.uri}`,
+      to: `/${obj._source.to}`,
       title: obj._source.title,
       description: filmmakerDescription,
       image: parseImage(obj),
