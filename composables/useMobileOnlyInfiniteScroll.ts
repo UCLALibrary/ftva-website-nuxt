@@ -65,6 +65,7 @@ export default function useMobileInfiniteScroll<T = any>(
     async () => {
       if (isMobile.value && hasMore.value && !isLoading.value) {
         currentPage.value++
+        // eslint-disable-next-line no-console
         console.log(`Loading more items for page ${currentPage.value}...`)
         await searchES()
       }
@@ -104,8 +105,9 @@ export default function useMobileInfiniteScroll<T = any>(
       currentPage.value = restoredPage
       desktopItemList.value = []
     }
+
+    // eslint-disable-next-line no-console
     console.log(`Switched to ${isMobile.value ? 'mobile' : 'desktop'} view`)
-    // searchES()
   }
 
   return {

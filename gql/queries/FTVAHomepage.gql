@@ -54,15 +54,24 @@ query FTVAHomepage {
         }
       }
       ftvaFeaturedEntries {
-        id 
-        title
+        id
+        typeHandle
         uri
+        title
+        ftvaHomepageTitle
+        ftvaHomepageDescription
+        # FOR EVENT SERIES
+        startDate
+        endDate
+        ongoing
+				# FOR EVENT
+      	startDateWithTime
         ftvaImage {
           ...Image
         }
       }
-      ftvaFeaturedCollectionsSection {
-        ... on ftvaFeaturedCollectionsSection_featuredCollections_BlockType {
+      ftvaFeaturedCollectionsSectionSingle {
+        ... on ftvaFeaturedCollectionsSectionSingle_featuredCollections_BlockType {
           id
           sectionTitle
           sectionDescription
@@ -94,10 +103,38 @@ query FTVAHomepage {
             id
             title
             uri
+            ftvaHomepageDescription
             ftvaImage {
               ...Image
             }
           }
+        }
+      }
+      beforeAfterImageCarousel {
+        ... on beforeAfterImageCarousel_imageCarousel_BlockType {
+          beforeImage {
+            ... on mediaAndDocuments_Asset {
+              id
+              src: url
+              altText
+              focalPoint
+              height
+              width
+              srcset(sizes: ["375", "960", "1280", "1920", "2560"])
+            }
+          }
+          afterImage {
+            ... on mediaAndDocuments_Asset {
+              id
+              src: url
+              altText
+              focalPoint
+              height
+              width
+              srcset(sizes: ["375", "960", "1280", "1920", "2560"])
+            }
+          }
+          caption
         }
       }
     }

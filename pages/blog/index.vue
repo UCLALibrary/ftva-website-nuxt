@@ -1,7 +1,6 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
-import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
@@ -80,10 +79,7 @@ const articleFetchFunction = async (page) => {
   return results
 }
 const onResults = (results) => {
-  // console.log('searchResults', results)
   if (results && results.hits && results?.hits?.hits?.length > 0) {
-    console.log('results', results)
-
     const newArticles = results.hits.hits || []
 
     if (isMobile.value) {
@@ -91,7 +87,7 @@ const onResults = (results) => {
       mobileItemList.value.push(...newArticles)
       hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
-      console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
+      // console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
       desktopItemList.value = newArticles
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     }
@@ -101,14 +97,14 @@ const onResults = (results) => {
   }
 }
 
+// INFINITE SCROLL
 const documentsPerPage = 10
-// mostly provided by 'useMobileOnlyInfiniteScroll' composable
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    console.log('In watch route query', newVal, oldVal)
+    // console.log('In watch route query', newVal, oldVal)
     isLoading.value = false
 
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
