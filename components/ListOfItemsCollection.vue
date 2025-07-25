@@ -261,8 +261,8 @@ useHead({
 })
 </script>
 <template>
-  <main class="blue-main">
-    <div class="page page-collections-list-of-items">
+  <main class="blue-main page page-collections-list-of-items">
+    <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
         class="breadcrumb"
@@ -272,7 +272,6 @@ useHead({
       <SectionWrapper
         ref="scrollElem"
         :section-title="attrs.page.title"
-        class="header"
         theme="paleblue"
         data-test="complex-collections-page-title"
       >
@@ -341,14 +340,10 @@ useHead({
   </main>
 </template>
 <style lang="scss" scoped>
-@import '~/assets/styles/slug-pages.scss';
-
-main.blue-main {
-  background-color: var(--pale-blue);
-}
+@import 'assets/styles/listing-pages.scss';
 
 .page-collections-list-of-items {
-
+  background-color: var(--pale-blue);
   padding-bottom: 20px; // add 20px at bottom per UX review
 
   label.select-label,
@@ -363,6 +358,8 @@ main.blue-main {
   }
 
   .section-wrapper {
+    padding-inline: 0;
+
     .section-header {
       text-align: center;
     }
