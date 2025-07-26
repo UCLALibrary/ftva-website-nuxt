@@ -368,17 +368,28 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
     .map(option => `${option.value} (${option.count})`)
 }
 function handleFilterUpdate(updatedFilters) {
-  selectedGroupNameFilters.value = updatedFilters
-  console.log('Filters updated:', selectedGroupNameFilters.value)
+  console.log('Filters :', JSON.stringify(userFilterSelection.value), updatedFilters)
+  userFilterSelection.value = updatedFilters
+  console.log('Filters updated:', JSON.stringify(userFilterSelection.value))
 }
 
 function applyChangesToSearch() {
-  console.log('applyChangesToSearch called')
+  console.log('applyChangesToSearch called', JSON.stringify(userFilterSelection.value))
+  const newFilter = { 'groupName.keyword': userFilterSelection.value['groupName.keyword'] || [] }
+  // Extract valid option values from desktopOptions (without counts)
+  const validOptions = resetSearchFilters.desktopOptions.map(option => option.value)
+  console.log('validOptions:', validOptions)
 
-  const newFilterString = selectedGroupNameFilters['groupName.keyword'] && selectedGroupNameFilters['groupName.keyword'].length > 0
-    ? `groupName.keyword:(${selectedGroupNameFilters['groupName.keyword'].join(',')})`
+  newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map((item) => {
+    const match = validOptions.find(valid => item.trim().startsWith(valid))
+    return match || null
+  }).filter(Boolean)
+  const newFilterString = newFilter['groupName.keyword'].length > 0
+    ? `groupName.keyword:(${newFilter['groupName.keyword'].join(',')})`
     : ''
 
+  console.log('newFilter after processing:', newFilter)
+  console.log('newFilterString:', newFilterString)
   useRouter().push({
     path: route.path,
     query: {
@@ -513,8 +524,8 @@ function applyChangesToSearch() {
                 />
               </span>
               <section-remove-search-filter
-                v-if="isMobile && Object.keys(selectedGroupNameFilters).length > 0"
-                :filters="selectedGroupNameFilters"
+                v-if="isMobile && Object.keys(userFilterSelection).length > 0"
+                :filters="userFilterSelection"
                 class="remove-filters"
                 @update:filters="handleFilterUpdate"
                 @remove-selected="applyChangesToSearch"
