@@ -5,12 +5,13 @@ import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 
 const { enabled, state } = usePreviewMode()
+
+const layoutCustomProps = useAttrs()
+const globalStore = useGlobalStore()
 const isApiLocked = computed(() => {
   const host = useRuntimeConfig().public.craftGraphqlURL
   return host.includes('test')
 })
-const layoutCustomProps = useAttrs()
-const globalStore = useGlobalStore()
 
 const classes = ref(['layout',
   'layout-default',])
