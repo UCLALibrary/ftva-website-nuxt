@@ -469,8 +469,7 @@ function applyChangesToSearch() {
             No results found.
           </h4>
           <p class="no-results-text">
-            Not finding what you’re looking for? Try searching for another term or search using
-            UC Library Search
+            Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at
           </p>
           <button-link
             label="UC Library Search"
@@ -482,7 +481,7 @@ function applyChangesToSearch() {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -560,7 +559,7 @@ function applyChangesToSearch() {
     >
       <block-call-to-action
         class=""
-        v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
+        v-bind="{ title: 'Looking for a specific collection item?', text: 'Search the UCLA Film & Television Archive Catalog.', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
       />
     </SectionWrapper>
   </main>
@@ -573,10 +572,10 @@ function applyChangesToSearch() {
 .search-page {
   .one-column {
 
-    .breadcrumb {
+    /*.breadcrumb {
       padding-top: 2rem;
       padding-left: 2rem;
-    }
+    }*/
 
     .search-title {
       padding-left: 2rem;
@@ -618,6 +617,7 @@ function applyChangesToSearch() {
     max-width: var(--ftva-container-max-width);
     position: relative;
     width: 100%;
+    min-height: 500px;
 
     margin: 0 auto;
     margin-top: 60px;
@@ -759,6 +759,7 @@ function applyChangesToSearch() {
       .results {
         margin-left: 20px;
         margin-right: 20px;
+
 
         .sort-and-results {
           flex-direction: column;
