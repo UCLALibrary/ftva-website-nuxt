@@ -481,7 +481,7 @@ function applyChangesToSearch() {
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >
@@ -759,7 +759,6 @@ function applyChangesToSearch() {
       .results {
         margin-left: 20px;
         margin-right: 20px;
-
 
         .sort-and-results {
           flex-direction: column;
