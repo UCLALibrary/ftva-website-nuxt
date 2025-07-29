@@ -565,6 +565,10 @@ function applyChangesToSearch() {
   </main>
 </template>
 <style lang="scss" scoped>
+:deep(.ftva.section-wrapper.top-level.theme-paleblue) {
+  padding-top: var(--space-m);
+}
+
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
