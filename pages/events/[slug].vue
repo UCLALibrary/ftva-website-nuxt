@@ -378,7 +378,7 @@ useHead({
     }
 
     :deep(.guestSpeaker p) {
-      color: #132941;
+      color: var(--dark-navy);
       font-size: 16px;
       font-weight: 500;
       line-height: normal;

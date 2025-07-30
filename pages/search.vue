@@ -643,7 +643,7 @@ function applyChangesToSearch() {
             text-align: center;
           }
 
-          background-color: #132941; // navyblue
+          background-color: var(--dark-navy);
         }
       }
 
