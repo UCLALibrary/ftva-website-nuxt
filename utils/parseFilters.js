@@ -7,7 +7,7 @@ function parseFilters(filtersString) {
   conditions.forEach((condition) => {
     const [key, value] = condition.split(':(')
     const cleanedKey = key.trim()
-    const values = value.replace(')', '').split(' OR ').map(v => v.trim())
+    const values = value.replace(')', '').split(',').map(v => v.trim())
 
     filters[cleanedKey] = values
   })

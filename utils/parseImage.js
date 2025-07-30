@@ -1,5 +1,5 @@
 export default function parseImage(obj) {
-  const listingImage = obj._source.image
+  const listingImage = obj._source.image || obj._source.ftvaImage
 
   const carouselImage = obj._source.imageCarousel
 

@@ -7,11 +7,12 @@ import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScro
 
 const route = useRoute()
 const documentsPerPage = 10
+
 // const totalPages = ref<number>(0)
 const totalResults = ref<number>(0)
 // const currentPage = ref<number>(1)
 const noResultsFound = ref<boolean>(false)
-const { paginatedSiteSearchQuery } = useSiteSearch()
+const { paginatedSiteSearchQuery, fetchAggregationForKeyword } = useSiteSearch()
 // const searchResults = ref([] as any)
 
 interface AggregationBucket {
@@ -34,43 +35,68 @@ interface Option {
 interface FilterResult {
   name: string // The name of the filter group (e.g., "Event Type").
   searchField: string // The corresponding search field in Elasticsearch.
-  options: Option[] // The options available for this filter group.
+  desktopOptions: Option[] // The options available for this filter group.
+  options: string[] // Optional string options for the filter group, for mobile dropdown
 
 }
-const searchFilters = ref<FilterResult>(resetSearchFilters())
+const resetSearchFilters: FilterResult = {
 
-function resetSearchFilters(): FilterResult {
-  return {
-    name: 'groupName.keyword',
-    searchField: 'groupName.keyword',
-    options: [
-      { value: 'Collections', label: 'Collections', labelDesktop: 'Collections (0)', highlighted: false, count: 0 },
-      { value: 'Articles', label: 'Articles', labelDesktop: 'Articles (0)', highlighted: false, count: 0 },
-      { value: 'Events', label: 'Events', labelDesktop: 'Events (0)', highlighted: false, count: 0 },
-      { value: 'Series', label: 'Series', labelDesktop: 'Series (0)', highlighted: false, count: 0 },
-      { value: 'General Content', label: 'General Content', labelDesktop: 'General Content (0)', highlighted: false, count: 0 }
-    ]
-  }
+  name: 'Filter Results',
+  searchField: 'groupName.keyword',
+  desktopOptions: [
+    { value: 'Collections', label: 'Collections', labelDesktop: 'Collections (0)', highlighted: false, count: 0 },
+    { value: 'Articles', label: 'Articles', labelDesktop: 'Articles (0)', highlighted: false, count: 0 },
+    { value: 'Events', label: 'Events', labelDesktop: 'Events (0)', highlighted: false, count: 0 },
+    { value: 'Series', label: 'Series', labelDesktop: 'Series (0)', highlighted: false, count: 0 },
+    { value: 'General Content', label: 'General Content', labelDesktop: 'General Content (0)', highlighted: false, count: 0 }
+  ],
+  options: ['Collections (0)', 'Articles (0)', 'Events (0)', 'Series (0)', 'General Content (0)'] // Optional string options for the filter group, for mobile dropdown
+
 }
+const searchFilters = ref<FilterResult>(resetSearchFilters)
+
 // TYPES
 interface FilterItem {
   [key: string]: string[]
 }
 const userFilterSelection = ref<FilterItem>({})
-const selectedGroupNameFilters = ref<{ 'groupName.keyword': string }>({ 'groupName.keyword': '' })
+const selectedGroupNameFilters = ref<{ 'groupName.keyword': string[] }>({ 'groupName.keyword': [] })
 const selectedSortFilters = ref<{ sortField: string }>({ sortField: '' })
 const sortField = ref('_score') // default sort field
 const orderBy = ref('desc') // default order by
 // "STATE"
 const searchResultsFetchFunction = async (page: number) => {
-  console.log('searchResultsFetchFunction called with page:', userFilterSelection.value)
+  // console.log('searchResultsFetchFunction called with page:', userFilterSelection.value)
+  if (page === 2 && totalResults.value <= 10) {
+    page = 1 // reset to page 1 if total results are less than or equal to 10
+  }
   const queryQ = Array.isArray(route.query.q) ? route.query.q[0] : (route.query.q || '')
   if (queryQ && queryQ !== '') {
+    const currentFilterField = searchFilters.value.searchField
+    const selectedFilters = selectedGroupNameFilters.value[currentFilterField] || []
+    // console.log('selectedFilters', selectedFilters, userFilterSelection.value)
+
+    const aggregations: Aggregations = await fetchAggregationForKeyword(queryQ)
+    let updatedOptions: Option[] = []
+    // Iterate over the aggregations in the Elasticsearch response
+    for (const [key, value] of Object.entries(aggregations)) {
+      // Extract the bucket keys as options
+      updatedOptions = value.buckets.map((bucket) => {
+        return {
+          count: bucket.doc_count, // Count of documents in this bucket
+          value: bucket.key,
+          label: bucket.key, // Label for the option, including the count
+          labelDesktop: bucket.key + ` (${bucket.doc_count})`, // no count initally, will be updated later
+          highlighted: selectedFilters.includes(bucket.key) // Initially set to false, will be updated later if needed
+        }
+      })
+    }
+    resetSearchFilters.desktopOptions = [...updatedOptions] // Reset the options to the updated ones
     const results = await paginatedSiteSearchQuery(
       queryQ,
       page,
       documentsPerPage,
-      userFilterSelection.value,
+      selectedGroupNameFilters.value,
       sortField.value,
       orderBy.value,
     )
@@ -81,8 +107,9 @@ const searchResultsFetchFunction = async (page: number) => {
     noResultsFound.value = true
     totalResults.value = 0
     totalPages.value = 0
-    searchFilters.value = resetSearchFilters()
-    // console.log('No query provided, resetting search results and filters')
+    console.log('No query provided, resetting search results and filters', resetSearchFilters)
+    searchFilters.value = resetSearchFilters
+    console.log('No query provided, resetting search results and filters', searchFilters.value)
   }
   return {}
 }
@@ -101,23 +128,29 @@ const onResults = (results) => {
       desktopItemList.value = newSearchResults
       mobileItemList.value = []
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+
       searchFilters.value = addHighlightStateAndCountToFilters(results.aggregations || {})
       totalResults.value = results.hits.total.value
     }
-
+    userFilterSelection.value['groupName.keyword'] = updateCountInFilters(
+      searchFilters.value.desktopOptions
+    )
     noResultsFound.value = false
+    // console.log('searchFilters updated', searchFilters.value)
+    // console.log('userFilterSelection updated', userFilterSelection.value)
   } else {
     mobileItemList.value = []
     desktopItemList.value = []
     noResultsFound.value = true
     totalPages.value = 0
     totalResults.value = 0
-    searchFilters.value = resetSearchFilters()
+    searchFilters.value = resetSearchFilters
+    // console.log('No results found, resetting search results and filters', searchFilters.value)
     hasMore.value = false
   }
 }
 // mostly provided by 'useMobileOnlyInfiniteScroll' composable
-const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = await useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
 
 // SORT SETUP - uses static data
 const sortDropdownData = {
@@ -130,6 +163,7 @@ const sortDropdownData = {
   label: 'Sort by',
   fieldName: 'sortField'
 }
+
 // This watcher is called when router push updates the query params
 watch(
   () => route.query,
@@ -138,9 +172,10 @@ watch(
     isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
 
     hasMore.value = true
-    userFilterSelection.value = parseFilters(route.query.filters || '')
-    selectedGroupNameFilters.value['groupName.keyword'] = userFilterSelection.value['groupName.keyword'] ? userFilterSelection.value['groupName.keyword'][0] : ''
-    console.log('userFilterSelection updated', userFilterSelection.value)
+    const queryFilters = parseFilters(route.query.filters || '')
+    selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
+    console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
+    // console.log('userFilterSelection updated', userFilterSelection.value)
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     // set sort & page # from query params
     selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
@@ -156,7 +191,6 @@ watch(
       orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
       // console.log('orderBy updated', orderBy.value)
     }
-
     searchES()
   }, { deep: true, immediate: true }
 )
@@ -165,12 +199,13 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
   let updatedOptions: Option[] = []
 
   const currentFilterField = searchFilters.value.searchField
-  const selectedFilters = userFilterSelection.value[currentFilterField] || []
+  const selectedFilters = selectedGroupNameFilters.value[currentFilterField] || []
   // console.log('selectedFilters', selectedFilters, userFilterSelection.value)
   const filters = {
-    name: currentFilterField,
+    name: 'Filter Results', // The name of the filter group (e.g., "Event Type").
     searchField: currentFilterField,
-    options: updatedOptions,
+    options: [],
+    desktopOptions: updatedOptions
   }
   // Iterate over the aggregations in the Elasticsearch response
   for (const [key, value] of Object.entries(aggregations)) {
@@ -185,19 +220,28 @@ function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterR
       }
     })
   }
-  for (const item of resetSearchFilters().options) {
+  /* if (selectedFilters.length === 0) {
+
+     resetSearchFilters.options = [...updatedOptions]// Reset the options to the updated ones
+     console.log('No filters selected, using updated options from aggregations:', resetSearchFilters.options)
+   } */
+
+  for (const item of resetSearchFilters.desktopOptions) {
     const existingOption = updatedOptions.find(opt => opt.value === item.value)
     if (!existingOption) {
       updatedOptions.push(item) // Add the initial options if they don't exist in the aggregations
     }
   }
 
-  filters.options = updatedOptions
+  filters.options = updatedOptions.map((option) => {
+    return `${option.label} (${option.count})`
+  })
+  filters.desktopOptions = updatedOptions
   return filters
 }
 
 const parsedResults = computed(() => {
-  // console.log('searchResults.value', searchResults.value)
+  // console.log('searchResults.value', currentList.value)
 
   return currentList.value.map((obj) => {
     return {
@@ -218,13 +262,26 @@ const parsedResults = computed(() => {
 const router = useRouter()
 
 function updateGroupNameFilters(newFilter) {
-  // console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter), newFilter[0])
+  console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter))
+  console.log('resetSearchFilters:', resetSearchFilters.desktopOptions)
+  // Extract valid option values from desktopOptions (without counts)
+  const validOptions = resetSearchFilters.desktopOptions.map(option => option.value)
+  console.log('validOptions:', validOptions)
 
+  newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map((item) => {
+    const match = validOptions.find(valid => item.trim().startsWith(valid))
+    return match || null
+  }).filter(Boolean)
+  const newFilterString = newFilter['groupName.keyword'].length > 0
+    ? `groupName.keyword:(${newFilter['groupName.keyword'].join(',')})`
+    : ''
+
+  console.log('newFilter after processing:', newFilter)
   router.push({
     path: route.path,
     query: {
       q: route.query.q,
-      filters: 'groupName.keyword' + ':(' + newFilter['groupName.keyword'] + ')',
+      filters: newFilterString,
       sort: selectedSortFilters.value.sortField,
       // ignore page, we want to clear page # when filter is cleared
     }
@@ -243,21 +300,58 @@ function updateSort(newSort) {
   })
 }
 
+function parseFilterStringToObject(filterString: string): { [key: string]: string[] } {
+  if (!filterString) return {}
+
+  const [field, values] = filterString.split(':(')
+  if (!field || !values) return {}
+
+  return { [field]: values.replace(')', '').split(',') }
+}
+
 function omitParam(query: any, option: Option) {
-  // Clone the current query object
   const { page, filters, ...rest } = query
 
+  const filterObj = parseFilterStringToObject(filters)
+  const field = Object.keys(filterObj)[0] || 'groupName.keyword'
+
+  // Make sure the filter array exists
+  if (!filterObj[field]) {
+    filterObj[field] = []
+  }
+
   if (option.highlighted) {
-    // If highlighted, remove both page and filters
-    return { ...rest }
-  } else {
-    // If not highlighted, remove page, and set filters to groupName.keyword:(option.value)
+    // Remove the selected filter (toggle off)
+    filterObj[field] = filterObj[field].filter(value => value !== option.value)
+
+    if (filterObj[field].length === 0) {
+      // If no values left for this field, remove the field
+      delete filterObj[field]
+
+      // If no filters left at all, return query without filters
+      if (Object.keys(filterObj).length === 0) {
+        return { ...rest }
+      }
+    }
+
+    // Return updated query with remaining filters
     return {
       ...rest,
-      filters: `groupName.keyword:(${option.value})`
+      filters: `${field}:(${filterObj[field].join(',')})`
     }
   }
+
+  // If filter not selected, add it (toggle on)
+  if (!filterObj[field].includes(option.value)) {
+    filterObj[field].push(option.value)
+  }
+
+  return {
+    ...rest,
+    filters: `${field}:(${filterObj[field].join(',')})`
+  }
 }
+
 const startCount = computed(() => {
   if ((currentPage.value - 1) * documentsPerPage === 0) return 1
   return (currentPage.value - 1) * documentsPerPage + 1
@@ -267,6 +361,43 @@ const totalResultsDisplay = computed(() => {
   return `${startCount.value} - ${((currentPage.value - 1) * documentsPerPage) + currentList.value.length} of ${totalResults.value} Results`
 })
 
+function updateCountInFilters(desktopOptions: Option[]): string[] {
+  // Returns an array of filter values that are highlighted (selected)
+  return desktopOptions
+    .filter(option => option.highlighted)
+    .map(option => `${option.value} (${option.count})`)
+}
+function handleFilterUpdate(updatedFilters) {
+  console.log('Filters :', JSON.stringify(userFilterSelection.value), updatedFilters)
+  userFilterSelection.value = updatedFilters
+  console.log('Filters updated:', JSON.stringify(userFilterSelection.value))
+}
+
+function applyChangesToSearch() {
+  console.log('applyChangesToSearch called', JSON.stringify(userFilterSelection.value))
+  const newFilter = { 'groupName.keyword': userFilterSelection.value['groupName.keyword'] || [] }
+  // Extract valid option values from desktopOptions (without counts)
+  const validOptions = resetSearchFilters.desktopOptions.map(option => option.value)
+  console.log('validOptions:', validOptions)
+
+  newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map((item) => {
+    const match = validOptions.find(valid => item.trim().startsWith(valid))
+    return match || null
+  }).filter(Boolean)
+  const newFilterString = newFilter['groupName.keyword'].length > 0
+    ? `groupName.keyword:(${newFilter['groupName.keyword'].join(',')})`
+    : ''
+
+  console.log('newFilter after processing:', newFilter)
+  console.log('newFilterString:', newFilterString)
+  useRouter().push({
+    path: route.path,
+    query: {
+      q: route.query.q,
+      filters: newFilterString
+    }
+  })
+}
 </script>
 <template>
   <main class="page page-detail page-detail--paleblue search-page">
@@ -293,7 +424,7 @@ const totalResultsDisplay = computed(() => {
     </SectionWrapper>
     <div class="two-column">
       <div
-        v-if="!isMobile"
+        v-if="!isMobile && !noResultsFound && parsedResults.length !== 0"
         class="sidebar"
       >
         <h4 class="filter-results">
@@ -301,7 +432,7 @@ const totalResultsDisplay = computed(() => {
         </h4>
 
         <div
-          v-for="option in searchFilters.options"
+          v-for="option in searchFilters.desktopOptions"
           :key="option.value"
           class="filter-option"
         >
@@ -338,8 +469,7 @@ const totalResultsDisplay = computed(() => {
             No results found.
           </h4>
           <p class="no-results-text">
-            Not finding what you’re looking for? Try searching for another term or search using
-            UC Library Search
+            Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at
           </p>
           <button-link
             label="UC Library Search"
@@ -351,7 +481,7 @@ const totalResultsDisplay = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >
@@ -364,17 +494,23 @@ const totalResultsDisplay = computed(() => {
             <div class="sort-and-results">
               <!-- mobile filters -->
               <span class="dropdown-wrapper">
-                <DropdownSingleSelect
+                <filters-dropdown
                   v-show="isMobile"
-                  v-model:selected-filters="selectedGroupNameFilters"
-                  label="Filter Results"
-                  :options="searchFilters.options"
-                  field-name="groupName.keyword"
+                  v-model:selected-filters="userFilterSelection"
+                  :filter-groups="[searchFilters]"
+                  data-test="filters-dropdown"
                   class="sort-dropdown"
                   @update-display="(newFilterSelection) => {
                     updateGroupNameFilters(newFilterSelection)
                   }"
                 />
+                <!--DropdownSingleSelect
+                  v-show="isMobile"
+                  v-model:selected-filters="selectedGroupNameFilters"
+                  label="Filter Results"
+                  :options="searchFilters.options"
+                  field-name="groupName.keyword"
+                /-->
                 <DropdownSingleSelect
                   v-model:selected-filters="selectedSortFilters"
                   :label="sortDropdownData.label"
@@ -386,6 +522,13 @@ const totalResultsDisplay = computed(() => {
                   }"
                 />
               </span>
+              <section-remove-search-filter
+                v-if="isMobile && Object.keys(userFilterSelection).length > 0"
+                :filters="userFilterSelection"
+                class="remove-filters"
+                @update:filters="handleFilterUpdate"
+                @remove-selected="applyChangesToSearch"
+              />
               <DividerWayFinder
                 v-if="isMobile"
                 class="divider"
@@ -416,12 +559,16 @@ const totalResultsDisplay = computed(() => {
     >
       <block-call-to-action
         class=""
-        v-bind="{ title: 'Not finding what you are looking for?', text: 'Try searching using UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
+        v-bind="{ title: 'Looking for a specific collection item?', text: 'Search the UCLA Film & Television Archive Catalog.', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
       />
     </SectionWrapper>
   </main>
 </template>
 <style lang="scss" scoped>
+:deep(.ftva.section-wrapper.top-level.theme-paleblue) {
+  padding-top: var(--space-m);
+}
+
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
@@ -429,10 +576,10 @@ const totalResultsDisplay = computed(() => {
 .search-page {
   .one-column {
 
-    .breadcrumb {
+    /*.breadcrumb {
       padding-top: 2rem;
       padding-left: 2rem;
-    }
+    }*/
 
     .search-title {
       padding-left: 2rem;
@@ -474,6 +621,7 @@ const totalResultsDisplay = computed(() => {
     max-width: var(--ftva-container-max-width);
     position: relative;
     width: 100%;
+    min-height: 500px;
 
     margin: 0 auto;
     margin-top: 60px;
@@ -486,7 +634,7 @@ const totalResultsDisplay = computed(() => {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center;
+        // align-items: center;
         margin-bottom: 35px;
         // margin-right: 1rem;
 
@@ -537,6 +685,7 @@ const totalResultsDisplay = computed(() => {
         align-content: center;
         align-items: center;
         gap: 1rem;
+        margin-bottom: 30px;
 
         .no-results-title {
           @include ftva-h4;
@@ -641,6 +790,12 @@ const totalResultsDisplay = computed(() => {
           }
         }
 
+        .remove-filters {
+          margin-top: 0;
+          margin-bottom: 0;
+          padding-top: 20px;
+        }
+
         .divider {
           width: 100%;
           padding-left: 0px;
@@ -654,6 +809,23 @@ const totalResultsDisplay = computed(() => {
         .molecule-no-image {
           display: none;
         }
+      }
+
+      :deep(.ftva.mobile-drawer .mobile-button) {
+        border-color: #115daf;
+        color: #0b6ab7;
+      }
+
+      :deep(.filter-summary) {
+        color: #115daf;
+      }
+
+      :deep(.filters-dropdown .mobile-button) {
+        padding: 10px;
+      }
+
+      :deep(.ftva.filters-dropdown .icon-svg svg path.svg__fill--accent-blue) {
+        fill: #0b6ab7;
       }
     }
   }
