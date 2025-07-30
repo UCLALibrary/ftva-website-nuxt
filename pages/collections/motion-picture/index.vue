@@ -363,7 +363,7 @@ useHead({
 
     h2 {
       display: inline;
-      background-color: #132941;
+      background-color: var(--dark-navy);
       border-radius: 20px;
       padding: 8px 16px;
       font-size: 15px;
