@@ -73,6 +73,7 @@ useHead({
 
 // "STATE"
 const documentsPerPage = 12
+const selectedSortFilters = ref({ sortField: 'asc' })
 
 const filmmakersFetchFunction = async (page) => {
   const { paginatedFilmmakersQuery } = useFilmmakersListSearch()
@@ -80,7 +81,7 @@ const filmmakersFetchFunction = async (page) => {
     page,
     documentsPerPage,
     'title.keyword',
-    'asc',
+    selectedSortFilters.value.sortField,
     ['*']
   )
   return results
@@ -142,6 +143,29 @@ const parsedFilmmakerListings = computed(() => {
   })
 })
 
+// SORT
+const sortDropdownData = {
+  options: [
+    { label: 'First Name (A - Z)', value: 'asc' },
+    { label: 'First Name (Z - A)', value: 'desc' },
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
+
+const router = useRouter()
+
+function updateSort(newSort) {
+  router.push({
+    path: route.path,
+    query: {
+      filters: route.query.filters,
+      sort: newSort.sortField,
+      page: route.query.page
+    }
+  })
+}
+
 const pageClasses = computed(() => {
   return ['page', 'page-filmmakers']
 })
@@ -164,6 +188,22 @@ const pageClasses = computed(() => {
         theme="paleblue"
         data-test="page-heading"
       >
+        <DividerWayFinder />
+        <div
+          v-if="parsedFilmmakerListings.length"
+          class="sort-fields"
+        >
+          <DropdownSingleSelect
+            v-model:selected-filters="selectedSortFilters"
+            :label="sortDropdownData.label"
+            :options="sortDropdownData.options"
+            :field-name="sortDropdownData.fieldName"
+            @update-display="(newSort) => {
+              updateSort(newSort)
+            }"
+          />
+        </div>
+
         <SectionStaffArticleList
           :items="parsedFilmmakerListings"
           data-test="page-listings"
@@ -206,6 +246,15 @@ const pageClasses = computed(() => {
     padding: 2.5%;
   }
 
+  .sort-fields {
+    width: 100%;
+    margin-bottom: 2rem;
+
+    :deep(.button-dropdown-modal-wrapper.is-expanded) {
+      z-index: 5;
+    }
+  }
+
   :deep(.ftva.block-staff-article-item .image),
   :deep(.block-staff-article-item .molecule-no-image) {
     min-width: 284px;
@@ -222,6 +271,10 @@ const pageClasses = computed(() => {
   }
 
   @media #{$small} {
+    :deep(.dropdown-single-select .mobile-button) {
+      width: 100%;
+    }
+
     .ftva.section-staff-article-list {
       background-color: var(--color-white);
       padding: 24px;
