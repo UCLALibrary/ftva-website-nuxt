@@ -9,6 +9,10 @@ import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScro
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
+const router = useRouter()
+
+// Store scroll position for blog pagination
+const savedScrollPosition = ref(0)
 
 const { data, error } = await useAsyncData('article-list', async () => {
   const data = await $graphql.default.request(FTVAArticleList)
@@ -98,7 +102,7 @@ const onResults = (results) => {
       console.log('Desktop: setting totalPages to:', calculatedTotalPages)
       desktopItemList.value = newArticles
       totalPages.value = calculatedTotalPages
-      hasMore.value = currentPage.value < calculatedTotalPages
+      hasMore.value = false
       console.log('Desktop: hasMore set to:', hasMore.value)
 
       // TO DO CHECK if we need to set value for hasMore to false here
@@ -113,6 +117,14 @@ const onResults = (results) => {
 // INFINITE SCROLL
 const documentsPerPage = 10
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
+
+// Log scroll position before navigation
+router.beforeEach((to, from) => {
+  if (to.path === '/blog' && from.path === '/blog' && to.query.page !== from.query.page) {
+    console.log('Saving scroll position before navigation:', window.scrollY)
+    savedScrollPosition.value = window.scrollY
+  }
+})
 
 watch(
   () => route.query,
@@ -134,6 +146,29 @@ watch(
 
     hasMore.value = true
     searchES()
+
+    // Restore scroll position with 100ms delay
+    if (savedScrollPosition.value > 0) {
+      console.log('Restoring scroll position:', savedScrollPosition.value)
+      nextTick(() => {
+        setTimeout(() => {
+          // check total content height
+          const contentHeight = document.documentElement.scrollHeight
+          const windowHeight = window.innerHeight
+          console.log('Content height:', contentHeight)
+          if (savedScrollPosition.value + windowHeight < contentHeight) {
+            window.scrollTo(0, savedScrollPosition.value)
+          } else {
+            // scroll to #blog-section-title
+            const blogSectionTitle = document.getElementById('blog-section-title')
+            if (blogSectionTitle) {
+              blogSectionTitle.scrollIntoView({ behavior: 'smooth' })
+            }
+          }
+          savedScrollPosition.value = 0 // Reset after restoration
+        }, 100)
+      })
+    }
   }, { deep: true, immediate: true }
 )
 
@@ -269,7 +304,10 @@ useHead({
       theme="paleblue"
       :level="3"
     >
-      <SectionHeader :level="3">
+      <SectionHeader
+        id="blog-section-title"
+        :level="3"
+      >
         Latest Blogs
       </SectionHeader>
 
