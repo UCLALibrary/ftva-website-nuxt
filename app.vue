@@ -27,6 +27,28 @@ onMounted(async () => {
     await $layoutData()
   }
 })
+
+// set title
+useHead({
+  titleTemplate: (titleChunk) => {
+    return titleChunk === 'Homepage'
+      ? 'UCLA Film & Television Archive'
+      : `${titleChunk || 'Error'} | UCLA Film & Television Archive`
+  },
+  htmlAttrs: {
+    lang: 'en',
+  },
+  meta: [
+    { charset: 'utf-8' },
+    {
+      name: 'viewport',
+      content: 'width=device-width, initial-scale=1.0, minimum-scale=1.0',
+    },
+  ],
+  link: [
+    { rel: 'icon', type: 'image/svg', href: '/icon-ucla-favicon.svg' },
+  ],
+})
 </script>
 
 <template>
