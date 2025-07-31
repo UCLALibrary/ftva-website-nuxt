@@ -265,7 +265,8 @@ const pageClasses = computed(() => {
 
   :deep(.ftva.block-staff-article-item .image),
   :deep(.block-staff-article-item .molecule-no-image) {
-    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
     height: 180px;
   }
 
@@ -278,7 +279,9 @@ const pageClasses = computed(() => {
   }
 
   @media #{$small} {
-    :deep(.dropdown-single-select) {
+
+    :deep(.dropdown-single-select),
+    :deep(.dropdown-single-select .mobile-button) {
       width: 100%;
     }
 
@@ -296,8 +299,10 @@ const pageClasses = computed(() => {
 
         .molecule-no-image,
         .image {
-          width: 100px;
+          min-width: 100px;
+          max-width: 100px;
           height: 100px;
+          margin-right: var(--space-l);
         }
 
         .molecule-no-image {
