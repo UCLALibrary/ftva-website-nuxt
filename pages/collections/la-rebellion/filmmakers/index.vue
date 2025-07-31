@@ -255,7 +255,7 @@ const pageClasses = computed(() => {
     }
   }
 
-  deep(.ftva.block-staff-article-item) {
+  :deep(.ftva.block-staff-article-item) {
     align-items: unset;
   }
 
