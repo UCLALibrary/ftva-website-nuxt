@@ -98,6 +98,10 @@ const onResults = (results) => {
       console.log('Desktop: setting totalPages to:', calculatedTotalPages)
       desktopItemList.value = newArticles
       totalPages.value = calculatedTotalPages
+      hasMore.value = currentPage.value < calculatedTotalPages
+      console.log('Desktop: hasMore set to:', hasMore.value)
+
+      // TO DO CHECK if we need to set value for hasMore to false here
     }
   } else {
     console.log('No results found, setting totalPages to 0 and hasMore to false')
