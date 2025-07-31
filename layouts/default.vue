@@ -5,8 +5,13 @@ import { provideTheme } from '@/composables/provideTheme'
 provideTheme()
 
 const { enabled, state } = usePreviewMode()
+
 const layoutCustomProps = useAttrs()
 const globalStore = useGlobalStore()
+const isApiLocked = computed(() => {
+  const host = useRuntimeConfig().public.craftGraphqlURL
+  return host.includes('test')
+})
 
 const classes = ref(['layout',
   'layout-default',])
@@ -28,7 +33,12 @@ onMounted(async () => {
 
   if (!import.meta.dev && layoutCustomProps['is-error']) {
     // console.log('In SSG refresh layout data as state is not maintained after an error response')
-    await $layoutData()
+    if (isApiLocked.value) {
+      console.log('API is locked, not fetching layout data')
+    } else {
+      // Fetch layout data only if the API is not locked
+      await $layoutData()
+    }
   }
 
   classes.value.push({ 'has-scrolled': globalStore.sTop })

@@ -387,7 +387,7 @@ function applyDateFilterSelectionToRouteURL(data) {
   const eventFilters = []
   for (const key in userFilterSelection.value) {
     if (userFilterSelection.value[key].length > 0) {
-      eventFilters.push(`${key}:(${userFilterSelection.value[key].join(' OR ')})`)
+      eventFilters.push(`${key}:(${userFilterSelection.value[key].join(',')})`)
     }
   }
 
@@ -411,7 +411,7 @@ function applyEventFilterSelectionToRouteURL(data) {
   const eventFilters = []
   for (const key in data) {
     if (data[key].length > 0) {
-      eventFilters.push(`${key}:(${data[key].join(' OR ')})`)
+      eventFilters.push(`${key}:(${data[key].join(',')})`)
     }
   }
   useRouter().push({
@@ -435,7 +435,7 @@ function applyChangesToSearch() {
   for (const key in allFilters.value) {
     if (allFilters.value[key].length > 0) {
       if (key !== 'dates')
-        eventFilters.push(`${key}:(${allFilters.value[key].join(' OR ')})`)
+        eventFilters.push(`${key}:(${allFilters.value[key].join(',')})`)
       else
         dateFilters = allFilters.value[key][0]
     }
