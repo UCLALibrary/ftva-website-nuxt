@@ -31,6 +31,7 @@ onMounted(async () => {
 // set title
 useHead({
   titleTemplate: (titleChunk) => {
+    // If undefined or blank then we don't need the pipe and space
     return titleChunk === 'Homepage'
       ? 'UCLA Film & Television Archive'
       : `${titleChunk || 'Error'} | UCLA Film & Television Archive`
