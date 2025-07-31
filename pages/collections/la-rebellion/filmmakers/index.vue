@@ -255,11 +255,15 @@ const pageClasses = computed(() => {
     }
   }
 
+  deep(.ftva.block-staff-article-item) {
+    align-items: unset;
+  }
+
   :deep(.ftva.block-staff-article-item .image),
   :deep(.block-staff-article-item .molecule-no-image) {
-    min-width: 284px;
-    max-width: 284px;
-    height: 213px;
+    min-width: 180px;
+    max-width: 180px;
+    height: 180px;
   }
 
   @media #{$medium} {
@@ -268,13 +272,13 @@ const pageClasses = computed(() => {
         margin-bottom: var(--space-xl);
       }
     }
-  }
 
-  @media #{$small} {
     :deep(.dropdown-single-select .mobile-button) {
       width: 100%;
     }
+  }
 
+  @media #{$small} {
     .ftva.section-staff-article-list {
       background-color: var(--color-white);
       padding: 24px;
@@ -289,10 +293,9 @@ const pageClasses = computed(() => {
 
         .molecule-no-image,
         .image {
-          min-width: 180px;
-          height: 200px;
+          width: 100px;
+          height: 100px;
           margin-right: var(--space-l);
-          width: calc(25% - var(--space-xl));
         }
 
         .molecule-no-image {
@@ -304,7 +307,7 @@ const pageClasses = computed(() => {
         }
 
         .meta {
-          width: calc(50% - var(--space-xl));
+          width: calc(60% - var(--space-xl));
           height: unset;
           padding: 0;
         }
