@@ -70,7 +70,13 @@ export default function useMobileInfiniteScroll<T = any>(
         await searchES()
       }
     },
-    { distance: 100 }
+    { 
+      distance: 100,
+      canLoadMore: () => {
+        // Only allow infinite scroll on mobile and when there's more content
+        return isMobile.value && hasMore.value && !isLoading.value
+      }
+    }
   )
 
   // HANDLE WINDOW SIZING

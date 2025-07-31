@@ -1,6 +1,7 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
+// import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
@@ -79,19 +80,27 @@ const articleFetchFunction = async (page) => {
   return results
 }
 const onResults = (results) => {
+  console.log('onResults called with:', results)
+  console.log('Current page:', currentPage.value, 'Is mobile:', isMobile.value)
+
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newArticles = results.hits.hits || []
+    const calculatedTotalPages = Math.ceil(results.hits.total.value / documentsPerPage)
+
+    console.log('Total hits:', results.hits.total.value, 'Documents per page:', documentsPerPage, 'Calculated total pages:', calculatedTotalPages)
 
     if (isMobile.value) {
       totalPages.value = 0
       mobileItemList.value.push(...newArticles)
-      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+      hasMore.value = currentPage.value < calculatedTotalPages
+      console.log('Mobile: hasMore set to:', hasMore.value)
     } else {
-      // console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
+      console.log('Desktop: setting totalPages to:', calculatedTotalPages)
       desktopItemList.value = newArticles
-      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+      totalPages.value = calculatedTotalPages
     }
   } else {
+    console.log('No results found, setting totalPages to 0 and hasMore to false')
     totalPages.value = 0
     hasMore.value = false
   }
@@ -104,12 +113,20 @@ const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPage
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    // console.log('In watch route query', newVal, oldVal)
+    console.log('In watch route query', newVal, oldVal)
+    console.log('Current page:', currentPage.value, 'New page:', route.query.page ? parseInt(route.query.page) : 1)
+    console.log('Is mobile:', isMobile.value)
+
     isLoading.value = false
 
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
 
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+    // Clear the lists when route changes
+    if (isMobile.value) {
+      mobileItemList.value = []
+    } else {
+      desktopItemList.value = []
+    }
 
     hasMore.value = true
     searchES()
