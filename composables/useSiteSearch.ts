@@ -45,6 +45,46 @@ export default function useSiteSearch() {
     const data = await response.json()
     return data.aggregations
   }
+
+  async function fetchAggregationForKeyword(keyword = '*',) {
+    const response = await fetch(
+      `${config.public.esURL}/${config.public.esAlias}/_search`, {
+        headers: {
+          Authorization: `ApiKey ${config.public.esReadKey}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          size: 0,
+          query: {
+            bool: {
+              must: [{
+                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
+              },
+              {
+                multi_match: {
+                  query: keyword,
+                  fields: [...searchFields],
+                  type: 'best_fields',
+                },
+              },
+              ]
+            }
+          },
+          aggs: {
+            'Filter Results': {
+              terms: {
+                field: 'groupName.keyword',
+                size: 100
+              }
+            }
+          }
+        })
+      })
+    const data = await response.json()
+    return data.aggregations
+  }
+
   type FilterItem = { [key: string]: string[] }
 
   async function paginatedSiteSearchQuery(
@@ -171,31 +211,34 @@ export default function useSiteSearch() {
       ]
   }
   function parseFilterQuery(filters) {
-    if (!filters || filters.length === 0) return []
+    if (!filters || Object.keys(filters).length === 0) return []
     const boolQuery = []
-    /* Example structure to return for ES
-      [
-        {
-          "term": {
-            "locations.title.keyword":"Powell"
-          }
+    /*
+      bool.should
+      Allows you to wrap multiple filter groups together inside filter
+      Lets you later add complex logic (like boost, minimum_should_match) if needed
+      Easier to extend when adding aggregation self-exclusion patterns
+      {
+        "bool": {
+          "should": [
+            { "term": { "groupName.keyword": "Events" } },
+            { "term": { "groupName.keyword": "Collections" } }
+          ]
         }
-      ]
+      }
     */
     for (const key in filters) {
       // console.log(key)
       if (Array.isArray(filters[key]) && filters[key].length > 0) {
-        const filterObj = {
-          terms: {}
-        }
-        filterObj.terms[key] = filters[key]
-        boolQuery.push(filterObj)
+        boolQuery.push({
+          bool: {
+            should: filters[key].map(val => ({
+              term: { [key]: val }
+            }))
+          }
+        })
       } else if (!Array.isArray(filters[key]) && filters[key] !== '') {
-        const filterObj = {
-          term: {}
-        }
-        filterObj.term[key] = filters[key]
-        boolQuery.push(filterObj)
+        boolQuery.push({ term: { [key]: filters[key] } })
       }
     }
     // console.log("bool query:"+JSON.stringify(boolQuery))
@@ -248,5 +291,5 @@ export default function useSiteSearch() {
     return await response.json()
   }
 
-  return { paginatedSiteSearchQuery, aggregationsQuery }
+  return { paginatedSiteSearchQuery, aggregationsQuery, fetchAggregationForKeyword }
 }
