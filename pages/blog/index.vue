@@ -9,10 +9,7 @@ import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScro
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-const router = useRouter()
-
-// Store scroll position for blog pagination
-const savedScrollPosition = ref(0)
+// const router = useRouter()
 
 const { data, error } = await useAsyncData('article-list', async () => {
   const data = await $graphql.default.request(FTVAArticleList)
@@ -118,9 +115,12 @@ const onResults = (results) => {
 const documentsPerPage = 10
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
-// Log scroll position before navigation
-router.beforeEach((to, from) => {
-  if (to.path === '/blog' && from.path === '/blog' && to.query.page !== from.query.page) {
+// Track scroll position for blog pagination
+const savedScrollPosition = ref(0)
+
+// Save scroll position before route update
+onBeforeRouteUpdate((to, from) => {
+  if (to.query.page !== from.query.page) {
     console.log('Saving scroll position before navigation:', window.scrollY)
     savedScrollPosition.value = window.scrollY
   }
@@ -154,9 +154,9 @@ watch(
         setTimeout(() => {
           // check total content height
           const contentHeight = document.documentElement.scrollHeight
-          const windowHeight = window.innerHeight
-          console.log('Content height:', contentHeight)
-          if (savedScrollPosition.value + windowHeight < contentHeight) {
+          // const windowHeight = window.innerHeight
+          console.log('Total Content height:', contentHeight)
+          if (savedScrollPosition.value < contentHeight) {
             window.scrollTo(0, savedScrollPosition.value)
           } else {
             // scroll to #blog-section-title
@@ -166,7 +166,7 @@ watch(
             }
           }
           savedScrollPosition.value = 0 // Reset after restoration
-        }, 100)
+        }, 250) // 250ms delay to ensure content is loaded
       })
     }
   }, { deep: true, immediate: true }
