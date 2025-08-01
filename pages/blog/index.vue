@@ -1,7 +1,6 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
-// import { useWindowSize, useInfiniteScroll } from '@vueuse/core'
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
@@ -9,7 +8,6 @@ import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScro
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-// const router = useRouter()
 
 const { data, error } = await useAsyncData('article-list', async () => {
   const data = await $graphql.default.request(FTVAArticleList)
@@ -23,7 +21,6 @@ if (error.value) {
 }
 
 if (!data.value.entry) {
-  // console.log('no data')
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -81,28 +78,17 @@ const articleFetchFunction = async (page) => {
   return results
 }
 const onResults = (results) => {
-  console.log('onResults called with:', results)
-  console.log('Current page:', currentPage.value, 'Is mobile:', isMobile.value)
-
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newArticles = results.hits.hits || []
     const calculatedTotalPages = Math.ceil(results.hits.total.value / documentsPerPage)
-
-    console.log('Total hits:', results.hits.total.value, 'Documents per page:', documentsPerPage, 'Calculated total pages:', calculatedTotalPages)
 
     if (isMobile.value) {
       totalPages.value = 0
       mobileItemList.value.push(...newArticles)
       hasMore.value = currentPage.value < calculatedTotalPages
-      console.log('Mobile: hasMore set to:', hasMore.value)
     } else {
-      console.log('Desktop: setting totalPages to:', calculatedTotalPages)
       desktopItemList.value = newArticles
       totalPages.value = calculatedTotalPages
-      hasMore.value = false
-      console.log('Desktop: hasMore set to:', hasMore.value)
-
-      // TO DO CHECK if we need to set value for hasMore to false here
     }
   } else {
     console.log('No results found, setting totalPages to 0 and hasMore to false')
@@ -121,7 +107,7 @@ const savedScrollPosition = ref(0)
 // Save scroll position before route update
 onBeforeRouteUpdate((to, from) => {
   if (to.query.page !== from.query.page) {
-    console.log('Saving scroll position before navigation:', window.scrollY)
+    // console.log('Saving scroll position before navigation:', window.scrollY)
     savedScrollPosition.value = window.scrollY
   }
 })
@@ -129,20 +115,16 @@ onBeforeRouteUpdate((to, from) => {
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    console.log('In watch route query', newVal, oldVal)
-    console.log('Current page:', currentPage.value, 'New page:', route.query.page ? parseInt(route.query.page) : 1)
-    console.log('Is mobile:', isMobile.value)
+    // console.log('In watch route query', newVal, oldVal)
+    // console.log('Current page:', currentPage.value, 'New page:', route.query.page ? parseInt(route.query.page) : 1)
+    // console.log('Is mobile:', isMobile.value)
 
     isLoading.value = false
 
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
 
     // Clear the lists when route changes
-    if (isMobile.value) {
-      mobileItemList.value = []
-    } else {
-      desktopItemList.value = []
-    }
+    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
 
     hasMore.value = true
     searchES()
