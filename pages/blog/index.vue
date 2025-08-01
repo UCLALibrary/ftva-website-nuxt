@@ -99,7 +99,7 @@ const onResults = (results) => {
 
 // INFINITE SCROLL
 const documentsPerPage = 10
-const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
 watch(
   () => route.query,
@@ -286,8 +286,7 @@ useHead({
   }
 
   .header>:deep(.section-header) {
-    margin-top: 20px;
-    margin-bottom: 0px;
+    margin-block: 0;
 
     h2.section-title {
       color: $heading-grey;
