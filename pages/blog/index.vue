@@ -107,7 +107,6 @@ const savedScrollPosition = ref(0)
 // Save scroll position before route update
 onBeforeRouteUpdate((to, from) => {
   if (to.query.page !== from.query.page) {
-    // console.log('Saving scroll position before navigation:', window.scrollY)
     savedScrollPosition.value = window.scrollY
   }
 })
@@ -115,10 +114,6 @@ onBeforeRouteUpdate((to, from) => {
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    // console.log('In watch route query', newVal, oldVal)
-    // console.log('Current page:', currentPage.value, 'New page:', route.query.page ? parseInt(route.query.page) : 1)
-    // console.log('Is mobile:', isMobile.value)
-
     isLoading.value = false
 
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
@@ -129,23 +124,15 @@ watch(
     hasMore.value = true
     searchES()
 
-    // Restore scroll position with 100ms delay
+    // Restore scroll position
     if (savedScrollPosition.value > 0) {
       console.log('Restoring scroll position:', savedScrollPosition.value)
       nextTick(() => {
         setTimeout(() => {
-          // check total content height
-          const contentHeight = document.documentElement.scrollHeight
-          // const windowHeight = window.innerHeight
-          console.log('Total Content height:', contentHeight)
-          if (savedScrollPosition.value < contentHeight) {
-            window.scrollTo(0, savedScrollPosition.value)
-          } else {
-            // scroll to #blog-section-title
-            const blogSectionTitle = document.getElementById('blog-section-title')
-            if (blogSectionTitle) {
-              blogSectionTitle.scrollIntoView({ behavior: 'smooth' })
-            }
+          // scroll to #blog-section-title
+          const blogSectionTitle = document.getElementById('blog-section-title')
+          if (blogSectionTitle) {
+            blogSectionTitle.scrollIntoView({ behavior: 'smooth' })
           }
           savedScrollPosition.value = 0 // Reset after restoration
         }, 250) // 250ms delay to ensure content is loaded
