@@ -3,6 +3,7 @@
 import _get from 'lodash/get'
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
+import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 // GQL
 const { $graphql } = useNuxtApp()
@@ -21,7 +22,6 @@ if (error.value) {
 }
 
 if (!data.value.entry) {
-  // console.log('no data')
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -81,17 +81,18 @@ const articleFetchFunction = async (page) => {
 const onResults = (results) => {
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newArticles = results.hits.hits || []
+    const calculatedTotalPages = Math.ceil(results.hits.total.value / documentsPerPage)
 
     if (isMobile.value) {
       totalPages.value = 0
       mobileItemList.value.push(...newArticles)
-      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+      hasMore.value = currentPage.value < calculatedTotalPages
     } else {
-      // console.log('desktop results total pages', Math.ceil(results.hits.total.value / documentsPerPage))
       desktopItemList.value = newArticles
-      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+      totalPages.value = calculatedTotalPages
     }
   } else {
+    console.log('No results found, setting totalPages to 0 and hasMore to false')
     totalPages.value = 0
     hasMore.value = false
   }
@@ -101,18 +102,24 @@ const onResults = (results) => {
 const documentsPerPage = 10
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
+// PAGINATION SCROLL HANDLING
+const { restoreScrollPosition } = usePaginationScroll('blog-section-title')
+
 watch(
   () => route.query,
   (newVal, oldVal) => {
-    // console.log('In watch route query', newVal, oldVal)
     isLoading.value = false
 
     currentPage.value = route.query.page ? parseInt(route.query.page) : 1
 
+    // Clear the lists when route changes
     isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
 
     hasMore.value = true
     searchES()
+
+    // Restore scroll position
+    restoreScrollPosition()
   }, { deep: true, immediate: true }
 )
 
@@ -248,7 +255,10 @@ useHead({
       theme="paleblue"
       :level="3"
     >
-      <SectionHeader :level="3">
+      <SectionHeader
+        id="blog-section-title"
+        :level="3"
+      >
         Latest Blogs
       </SectionHeader>
 

@@ -79,7 +79,9 @@ const isDevelopment = computed(() => import.meta.dev)
             further assistance, please <nuxt-link
               class="link"
               to="/contact"
-            >contact us</nuxt-link>.
+            >
+              contact us
+            </nuxt-link>.
           </p>
         </div>
       </SectionWrapper>
