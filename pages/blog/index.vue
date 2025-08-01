@@ -3,6 +3,7 @@
 import _get from 'lodash/get'
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
+import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 // GQL
 const { $graphql } = useNuxtApp()
@@ -101,15 +102,8 @@ const onResults = (results) => {
 const documentsPerPage = 10
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = await useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
-// Track scroll position for blog pagination
-const savedScrollPosition = ref(0)
-
-// Save scroll position before route update
-onBeforeRouteUpdate((to, from) => {
-  if (to.query.page !== from.query.page) {
-    savedScrollPosition.value = window.scrollY
-  }
-})
+// PAGINATION SCROLL HANDLING
+const { restoreScrollPosition } = usePaginationScroll('blog-section-title')
 
 watch(
   () => route.query,
@@ -125,19 +119,7 @@ watch(
     searchES()
 
     // Restore scroll position
-    if (savedScrollPosition.value > 0) {
-      console.log('Restoring scroll position:', savedScrollPosition.value)
-      nextTick(() => {
-        setTimeout(() => {
-          // scroll to #blog-section-title
-          const blogSectionTitle = document.getElementById('blog-section-title')
-          if (blogSectionTitle) {
-            blogSectionTitle.scrollIntoView({ behavior: 'smooth' })
-          }
-          savedScrollPosition.value = 0 // Reset after restoration
-        }, 250) // 250ms delay to ensure content is loaded
-      })
-    }
+    restoreScrollPosition()
   }, { deep: true, immediate: true }
 )
 
