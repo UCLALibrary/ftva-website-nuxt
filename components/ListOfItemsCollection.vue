@@ -5,6 +5,7 @@ import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
+import usePaginationScroll from '@/composables/usePaginationScroll'
 
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
 
@@ -80,6 +81,9 @@ const onResults = (results) => {
 
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
+
+// PAGINATION SCROLL HANDLING
+const { restoreScrollPosition } = usePaginationScroll('collection-items-section-title')
 
 // Format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
@@ -242,6 +246,9 @@ watch(
     selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
     searchES()
+
+    // Restore scroll position
+    restoreScrollPosition()
   }, { deep: true, immediate: true }
 )
 
@@ -270,6 +277,7 @@ useHead({
         to="/collections"
       />
       <SectionWrapper
+        id="collection-items-section-title"
         ref="scrollElem"
         :section-title="attrs.page.title"
         class="header"
