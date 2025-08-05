@@ -50,7 +50,7 @@ onMounted(async () => {
 <template lang="html">
   <div :class="classes">
     <!-- site brand bar only shows on desktop -->
-    <site-brand-bar class="brand-bar" />
+    <site-brand-bar />
     <header-sticky
       v-if="primaryMenuItems"
       class="primary"
@@ -81,8 +81,9 @@ onMounted(async () => {
   flex: 1 1 auto;
 
   .brand-bar {
-    width: 100%;
-    z-index: 100;
+    // display: none;
+    // width: 100%;
+    // z-index: 100;
   }
 
   .primary {
@@ -91,8 +92,18 @@ onMounted(async () => {
   }
 
   @media #{$small} {
-    .brand-bar {
-      display: none;
+    // .brand-bar {
+    // display: none;
+    // }
+
+    :deep(.nav-background-fill) {
+      background-color: red !important;
+    }
+
+    // :deep(.nav-primary .more-menu > .close-button) {
+    .header-sticky .close-button {
+      right: 50px;
+      position: static;
     }
   }
 }
