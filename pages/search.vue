@@ -398,6 +398,17 @@ function applyChangesToSearch() {
     }
   })
 }
+
+// title
+useHead({
+  title: 'Search',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+    }
+  ]
+})
 </script>
 <template>
   <main class="page page-detail page-detail--paleblue search-page">
@@ -481,7 +492,7 @@ function applyChangesToSearch() {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
