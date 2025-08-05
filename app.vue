@@ -103,6 +103,10 @@ useHead({
     .brand-bar {
       display: none;
     }
+
+    :deep(.ftva.nav-primary.primary .more-menu .close-button) {
+      z-index: 1001;
+    }
   }
 }
 </style>
