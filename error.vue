@@ -12,6 +12,18 @@ const { error } = defineProps({
 })
 
 const isDevelopment = computed(() => import.meta.dev)
+
+// set title
+useHead({
+  title: 'Error | UCLA Film & Television Archive',
+  meta: [
+    {
+      hid: 'error',
+      name: 'error',
+      content: 'There was a problem loading the page.'
+    }
+  ]
+})
 </script>
 
 <template>
