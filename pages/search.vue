@@ -399,13 +399,20 @@ function applyChangesToSearch() {
   })
 }
 
-// title
+// Use search query for title
 useHead({
-  title: 'Search',
+  title: computed(() => {
+    const q = Array.isArray(route.query.q) ? route.query.q[0] : route.query.q
+    return q ? `Search for ${q}` : 'Search'
+  }),
   meta: [
     {
       hid: 'description',
       name: 'description',
+      content: computed(() => {
+        const q = Array.isArray(route.query.q) ? route.query.q[0] : route.query.q
+        return q ? `Results for search query "${q}".` : 'Search results page.'
+      })
     }
   ]
 })
