@@ -74,7 +74,7 @@ interface Metadata {
   'Episode Title'?: string
   'Episode Season'?: string
   'Episode Number'?: string
-  'Collection Group'?: string[]
+  // 'Collection Group'?: string[]
   Tags?: string[]
   Director?: LinkedIndividual[],
   Year?: string
@@ -91,7 +91,7 @@ const parsedMetadataList = computed((): Metadata => {
     'Episode Title': page.value.episodeTitle,
     'Episode Season': page.value.episodeSeason,
     'Episode Number': page.value.episodeNumber,
-    'Collection Group': getObjectValue(page.value.ftvaCollectionGroup, 'title'),
+    // 'Collection Group': getObjectValue(page.value.ftvaCollectionGroup, 'title'),
     Tags: getObjectValue(page.value.ftvaCollectionTags, 'title'),
     Director: getLinkedIndividual(page.value.director),
     Year: page.value.year,
