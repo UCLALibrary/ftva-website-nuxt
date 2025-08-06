@@ -6,6 +6,7 @@ import _get from 'lodash/get'
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
+import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 const { $graphql } = useNuxtApp()
 
@@ -141,6 +142,9 @@ const onResults = (results) => {
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(seriesFetchFunction, onResults)
 
+// PAGINATION SCROLL HANDLING
+const { restoreScrollPosition } = usePaginationScroll('series-section-title')
+
 watch(() => route.query,
   (newVal, oldVal) => {
     isLoading.value = false
@@ -149,6 +153,9 @@ watch(() => route.query,
     hasMore.value = true
 
     searchES()
+
+    // Restore scroll position
+    restoreScrollPosition()
   }, { deep: true, immediate: true }
 )
 
@@ -179,6 +186,7 @@ const parsedEventSeries = computed(() => {
   <main class="page page-event-series">
     <div class="full-width">
       <SectionWrapper
+        id="series-section-title"
         ref="scrollElem"
         class="header"
         :section-title="heading.titleGeneral"

@@ -5,6 +5,7 @@ import _get from 'lodash/get'
 
 import FTVACollectionTypeListing from '../gql/queries/FTVACollectionTypeListing.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
+import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 const { $graphql } = useNuxtApp()
 
@@ -127,6 +128,9 @@ const onResults = (results) => {
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
+// PAGINATION SCROLL HANDLING
+const { restoreScrollPosition } = usePaginationScroll('collection-section-title')
+
 function browseBySelectedLetter(letter) {
   desktopItemList.value = []
   mobileItemList.value = []
@@ -166,6 +170,9 @@ watch(() => route.query,
     }
 
     searchES()
+
+    // Restore scroll position
+    restoreScrollPosition()
   }, { deep: true, immediate: true }
 )
 
@@ -236,6 +243,7 @@ useHead({
       />
 
       <SectionWrapper
+        id="collection-section-title"
         ref="scrollElem"
         :section-title="pageTitle"
         class="section-wrapper__page-header"

@@ -4,6 +4,7 @@ import SvgGlyphX from 'ucla-library-design-tokens/assets/svgs/icon-ftva-xtag.svg
 import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
+import usePaginationScroll from '@/composables/usePaginationScroll'
 
 const route = useRoute()
 const documentsPerPage = 10
@@ -152,6 +153,9 @@ const onResults = (results) => {
 // mostly provided by 'useMobileOnlyInfiniteScroll' composable
 const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
 
+// PAGINATION SCROLL HANDLING
+const { restoreScrollPosition } = usePaginationScroll('search-section-title')
+
 // SORT SETUP - uses static data
 const sortDropdownData = {
   options: [
@@ -192,6 +196,9 @@ watch(
       // console.log('orderBy updated', orderBy.value)
     }
     searchES()
+
+    // Restore scroll position
+    restoreScrollPosition()
   }, { deep: true, immediate: true }
 )
 
@@ -420,6 +427,7 @@ useHead({
 <template>
   <main class="page page-detail page-detail--paleblue search-page">
     <SectionWrapper
+      id="search-section-title"
       ref="scrollElem"
       theme="paleblue"
       class="one-column"
