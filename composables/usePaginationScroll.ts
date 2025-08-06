@@ -9,7 +9,9 @@ export default function usePaginationScroll(elementId: string) {
 
   // Save scroll position before route update
   onBeforeRouteUpdate((to, from) => {
+    console.log('onBeforeRouteUpdate', to, from)
     if (to.query.page !== from.query.page) {
+      console.log('Saving scroll position:', window.scrollY)
       savedScrollPosition.value = window.scrollY
     }
   })
