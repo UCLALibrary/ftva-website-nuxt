@@ -236,83 +236,88 @@ useHead({
     id="main"
     :class="pageClass"
   >
-    <SectionWrapper theme="paleblue">
+    <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
         :title="pageTitle"
       />
-    </SectionWrapper>
 
-    <SectionWrapper
-      id="collection-section-title"
-      ref="scrollElem"
-      :section-title="pageTitle"
-      class="section-wrapper__page-header"
-      theme="paleblue"
-      data-test="page-title"
-    >
-      <RichText :rich-text-content="pageSummary" />
-    </SectionWrapper>
+      <SectionWrapper
+        id="collection-section-title"
+        ref="scrollElem"
+        :section-title="pageTitle"
+        class="section-wrapper__page-header"
+        theme="paleblue"
+        data-test="page-title"
+      >
+        <RichText :rich-text-content="pageSummary" />
+      </SectionWrapper>
 
-    <SectionWrapper
-      theme="paleblue"
-      class="section-wrapper__divider"
-    >
-      <DividerWayFinder />
-    </SectionWrapper>
+      <SectionWrapper
+        theme="paleblue"
+        class="section-wrapper__divider"
+      >
+        <DividerWayFinder />
+      </SectionWrapper>
 
-    <SectionWrapper
-      theme="paleblue"
-      class="section-wrapper__collection-list"
-    >
-      <h2 class="browse-heading">
-        Browse by Alphabetical Order
-      </h2>
-      <AlphabeticalBrowseBy
-        class="browse-margin"
-        :selected-letter-prop="selectedLetterProp"
-        data-test="collection-browse"
-        @selected-letter="browseBySelectedLetter"
-      />
+      <SectionWrapper
+        theme="paleblue"
+        class="section-wrapper__collection-list"
+      >
+        <h2 class="browse-heading">
+          Browse by Alphabetical Order
+        </h2>
+        <AlphabeticalBrowseBy
+          class="browse-margin"
+          :selected-letter-prop="selectedLetterProp"
+          data-test="collection-browse"
+          @selected-letter="browseBySelectedLetter"
+        />
 
-      <div class="browse-results">
-        <h2>{{ hits }} {{ hits > 1 ? `results` : `result` }} shown</h2>
-      </div>
+        <div class="browse-results">
+          <h2>{{ hits }} {{ hits > 1 ? `results` : `result` }} shown</h2>
+        </div>
 
-      <SectionTeaserCard
-        :items="parsedCollectionList"
-        data-test="collection-list"
-      />
+        <SectionTeaserCard
+          :items="parsedCollectionList"
+          data-test="collection-list"
+        />
 
-      <SectionPagination
-        v-if="totalPages !== 1 && !isMobile"
-        :pages="totalPages"
-        :initial-current-page="currentPage"
-      />
-    </SectionWrapper>
+        <SectionPagination
+          v-if="totalPages !== 1 && !isMobile"
+          :pages="totalPages"
+          :initial-current-page="currentPage"
+        />
+      </SectionWrapper>
 
-    <SectionWrapper
-      v-if="parsedGeneralContentPages"
-      theme="paleblue"
-      class="section-wrapper__general-content"
-    >
-      <DividerWayFinder />
-      <SectionPostSmall
-        :items="parsedGeneralContentPages"
-        :full-width="false"
-        :section-title="parsedGeneralContentHeader.title"
-        :section-summary="parsedGeneralContentHeader.summary"
-      />
-    </SectionWrapper>
+      <SectionWrapper
+        v-if="parsedGeneralContentPages"
+        theme="paleblue"
+        class="section-wrapper__general-content"
+      >
+        <DividerWayFinder />
+        <SectionPostSmall
+          :items="parsedGeneralContentPages"
+          :full-width="false"
+          :section-title="parsedGeneralContentHeader.title"
+          :section-summary="parsedGeneralContentHeader.summary"
+        />
+      </SectionWrapper>
+    </div>
   </main>
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/listing-pages.scss';
+
 .page-collection-type {
   position: relative;
   background-color: var(--pale-blue);
 
-  .section-wrapper__page-header,
+  .section-wrapper {
+    padding-inline: 0;
+  }
+
   .section-wrapper__divider,
   .section-wrapper__collection-list {
     padding-top: 0;
@@ -332,6 +337,7 @@ useHead({
     align-items: center;
     text-align: center;
     max-width: 787px;
+    padding-bottom: 0;
 
     :deep(.section-header) {
       margin-bottom: 24px;
