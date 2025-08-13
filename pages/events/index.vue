@@ -203,13 +203,17 @@ const parsedRemoveSearchFilters = computed(() => {
   // console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
   return removefilters
 })
-
 const route = useRoute()
+// PAGINATION SCROLL HANDLING
+// Element reference for the scroll target
+const resultsSection = ref<HTMLElement>(null)
+// usePaginationScroll composable
 
-// This watcher is called when router pushes updates the query params
-watch(
-  () => route.query,
-  (newVal, oldVal) => {
+usePaginationScroll(resultsSection, {
+  isMobile,
+  hasResults: computed(() => parsedEvents.value.length > 0),
+  offset: 300,
+  onPageChange: async () => {
     isLoading.value = false
 
     const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
@@ -228,9 +232,9 @@ watch(
 
     isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
     hasMore.value = true
-    searchES()
-  }, { deep: true, immediate: true }
-)
+    await searchES()
+  },
+})
 
 // SEARCH
 const searchFilters = ref([] as FilterGroup[])
@@ -478,6 +482,10 @@ const parseFirstEventMonth = computed(() => {
         class="header"
         theme="paleblue"
         :section-title="heading.titleGeneral"
+      />
+      <div
+        ref="resultsSection"
+        class="for-pagination-scroll"
       />
       <SectionWrapper
         ref="scrollElem"

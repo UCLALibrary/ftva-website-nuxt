@@ -49,7 +49,7 @@ export default function usePaginationScroll(anchorRef: Ref<HTMLElement | null>,
     const top = el.getBoundingClientRect().top + window.scrollY - offset
     y.value = top
   }
-
+  // This watcher is called when router pushes updates the query params
   watch(
     () => route.query,
     async () => {

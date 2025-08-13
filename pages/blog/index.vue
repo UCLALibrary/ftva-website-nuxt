@@ -141,30 +141,6 @@ usePaginationScroll(resultsSection, {
   },
 })
 
-/* watch(
-  () => route.query,
-  async (newVal, oldVal) => {
-    isLoading.value = false
-
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-
-    // Clear the lists when route changes
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-
-    hasMore.value = true
-    await searchES()
-
-    // Restore scroll position
-    // Scroll after DOM updates
-    await nextTick()
-    if (!isMobile.value && route.query.page && resultsSection.value && parsedArticles.value.length > 0) {
-      await scrollTo(resultsSection)
-    }
-  }, { deep: true, immediate: true }
-) */
-
-//
-
 // PAGE SUMMARY
 const showPageSummary = computed(() => {
   return page.value?.summary && page.value?.displaySummary === 'yes'
