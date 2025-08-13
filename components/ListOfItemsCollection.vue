@@ -5,7 +5,6 @@ import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll'
 
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
 
@@ -82,9 +81,6 @@ const onResults = (results) => {
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
-// PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('collection-items-section-title')
-
 // Format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
   if (currentList.value.length === 0) return []
@@ -99,7 +95,32 @@ const parsedCollectionResults = computed(() => {
     }
   })
 })
-
+// PAGINATION SCROLL HANDLING
+// Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+usePaginationScroll(resultsSection, {
+  isMobile: isMobile.value,
+  hasResults: parsedCollectionResults.value.length > 0, // or parsedResults for the search page
+  offset: 300,
+  onPageChange: async () => {
+    isLoading.value = false
+    // console.log('Route query params changed:', newVal, oldVal)
+    // set filters from query params
+    const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+    if (Object.keys(selectedFiltersFromRoute).length === 0) {
+      // if object is empty, set selectedFilters to empty object
+      selectedFilters.value = {}
+    } else {
+      // else destructure the selectedFiltersFromRoute object and convert first value from array to string
+      selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
+    }
+    // set sort & page # from query params
+    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
+    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+    await searchES()
+  },
+})
 // Format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
   return totalResults.value + ' Video Clip' + (totalResults.value > 1 ? 's' : '')
@@ -228,9 +249,9 @@ const titleForSearch = computed(() => {
 
 // WATCHERS
 // This watcher is called when router pushes updates the query params
-watch(
+/* watch(
   () => route.query,
-  (newVal, oldVal) => {
+  async (newVal, oldVal) => {
     isLoading.value = false
     // console.log('Route query params changed:', newVal, oldVal)
     // set filters from query params
@@ -245,12 +266,16 @@ watch(
     // set sort & page # from query params
     selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
     currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    searchES()
+    await searchES()
 
     // Restore scroll position
-    restoreScrollPosition()
+    // Scroll after DOM updates
+    await nextTick()
+    if (!isMobile.value && route.query.page && resultsSection.value && parsedCollectionResults.value.length > 0) {
+      await scrollTo(resultsSection)
+    }
   }, { deep: true, immediate: true }
-)
+) */
 
 onMounted(async () => {
   await setFilters()
@@ -333,6 +358,7 @@ useHead({
         </template>
         <template v-else>
           <SectionTeaserCard
+            ref="resultsSection"
             class="search-results-list"
             :items="parsedCollectionResults"
             :grid-layout="true"
