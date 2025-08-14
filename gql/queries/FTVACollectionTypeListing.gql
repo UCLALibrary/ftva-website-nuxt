@@ -9,6 +9,7 @@ query FTVACollectionsListing($section: [String!]) {
     postDate
     title: titleGeneral
     summary
+    displaySummary
     sectionHeader {
       sectionTitle
       sectionSummary
