@@ -62,11 +62,6 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-// PAGE SUMMARY
-const showPageSummary = computed(() => {
-  return page.value?.summary && page.value?.displaySummary === 'yes'
-})
-
 const pageClass = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', route.path.slice(1)]
 })
@@ -144,9 +139,6 @@ useHead({
       class="header"
       data-test=""
     >
-      <template v-if="showPageSummary">
-        <RichText :rich-text-content="page.summary" />
-      </template>
     </SectionWrapper>
 
     <FlexibleBlocks
