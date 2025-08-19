@@ -54,7 +54,6 @@ if (data.value.entry && import.meta.prerender) {
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 const pageTitle = page.value.title
-const pageSummary = page.value.summary
 const featuredArticles = page.value.ftvaFeaturedArticles
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
@@ -62,7 +61,6 @@ watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
   pageTitle.value = page.value.title
-  pageSummary.value = page.value.summary
   featuredArticles.value = page.value.ftvaFeaturedArticles
 })
 
@@ -200,7 +198,10 @@ useHead({
       data-test="blog-page-title"
     >
       <template v-if="showPageSummary">
-        <RichText :rich-text-content="pageSummary" />
+        <RichText
+          :rich-text-content="page.summary"
+          data-test="page-description"
+        />
       </template>
     </SectionWrapper>
 
