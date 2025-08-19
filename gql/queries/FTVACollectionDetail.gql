@@ -41,6 +41,14 @@ query FTVACollectionDetail($slug: [String!]) {
       ftvaImage {
         ...Image
       }
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+          creditText
+        }
+      }
       title
       richText
       uri

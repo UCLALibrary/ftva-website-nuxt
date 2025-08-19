@@ -89,7 +89,7 @@ const { restoreScrollPosition } = usePaginationScroll('collection-items-section-
 const parsedCollectionResults = computed(() => {
   if (currentList.value.length === 0) return []
   return currentList.value.map((obj) => {
-    const objImage = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
+    const objImage = parseImage(obj)
     return {
       ...obj._source,
       title: obj._source.title,

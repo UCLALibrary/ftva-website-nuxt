@@ -182,7 +182,7 @@ const parsedRelatedContent = computed(() => {
 
   return filteredRelatedContent.slice(0, 3).map((obj) => {
     return {
-      image: obj.ftvaImage[0],
+      image: parseImage(obj),
       title: obj.title,
       to: obj.slug,
       videoEmbed: obj.videoEmbed

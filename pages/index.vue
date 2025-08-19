@@ -95,7 +95,7 @@ const parsedNowShowing = computed(() => {
     return {
       ...item,
       to: `/${item.uri}`,
-      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
+      image: parseImage(item),
       startDate: item.startDateWithTime || item.startDate,
     }
   })
@@ -110,7 +110,7 @@ const parsedQuickLinks = computed(() => {
       title: item.titleGeneral,
       to: item.urlLink,
       text: item.description,
-      image: item.image[0],
+      image: item.image[0], // quicklinks are not using parseImage, they have an image field that overrides the image / carousel field in parseImage
     }
   })
 })
@@ -126,7 +126,7 @@ const parsedArchiveBlogs = computed(() => {
     blogTitle: obj.featuredArticles[0]?.title,
     blogUri: obj.featuredArticles[0].uri,
     blogSummary: obj.featuredArticles[0].ftvaHomepageDescription,
-    image: obj.featuredArticles[0].ftvaImage
+    image: [parseImage(obj.featuredArticles[0])] // parseImage results must be wrapped in an array for BlockMediaWithText component
   }
 })
 
@@ -138,7 +138,7 @@ const parsedFeaturedCollections = computed(() => {
     return {
       title: item.title,
       to: item.uri,
-      image: item.imageCarousel && item.imageCarousel.length > 0 ? item.imageCarousel[0].image[0] : null,
+      image: parseImage(item)
     }
   })
 

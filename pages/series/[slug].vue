@@ -104,7 +104,7 @@ const parsedUpcomingEvents = computed(() => {
       ...item,
       tagLabels: parsedTagLabels,
       to: `/${item.to}`,
-      image: item.image && item.image.length > 0 ? item.image[0] : null
+      image: parseImage(item)
     }
   })
 })
@@ -122,7 +122,7 @@ const parsedPastEvents = computed(() => {
       ...item,
       tagLabels: parsedTagLabels,
       to: `/${item.to}`,
-      image: item.image && item.image.length > 0 ? item.image[0] : null
+      image: parseImage(item) // item.image && item.image.length > 0 ? item.image[0] : null // parseImage
     }
   })
 })
@@ -158,7 +158,7 @@ const parsedOtherSeries = computed(() => {
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
       sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
-      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
+      image: parseImage(item) // item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null, // parseImage
     }
   })
   return otherSeries

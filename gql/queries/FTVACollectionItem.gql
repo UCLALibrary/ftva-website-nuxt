@@ -15,6 +15,14 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
     ftvaImage {
       ...Image
     }
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
     videoEmbed
     richText
     externalResourceUrl
@@ -67,6 +75,14 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
     uri
     ftvaImage {
       ...Image
+    }
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
     }
      videoEmbed
   }

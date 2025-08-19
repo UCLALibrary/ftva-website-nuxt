@@ -138,9 +138,8 @@ const parsedFeaturedArticles = computed(() => {
 
   return featuredArticles.map((obj) => {
     const parsedTitle = parseRichTextTitle(obj)
-
     return {
-      image: obj.image[0],
+      image: parseImage(obj),
       to: `/${obj.uri}`,
       title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),

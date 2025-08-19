@@ -190,7 +190,7 @@ const parsedGeneralContentPages = computed(() => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,
-      image: obj.ftvaImage[0]
+      image: parseImage(obj)
     }
   })
 })
