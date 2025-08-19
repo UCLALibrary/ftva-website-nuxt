@@ -60,6 +60,11 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+// PAGE SUMMARY
+const showPageSummary = computed(() => {
+  return page.value?.summary && page.value?.displaySummary === 'yes'
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -184,7 +189,7 @@ const pageClasses = computed(() => {
         ref="scrollElem"
         class="header"
         :section-title="page.title"
-        :section-summary="page.summary"
+        :section-summary="showPageSummary ? page.summary : ''"
         theme="paleblue"
         data-test="page-heading"
       >
