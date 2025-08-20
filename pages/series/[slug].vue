@@ -122,7 +122,7 @@ const parsedPastEvents = computed(() => {
       ...item,
       tagLabels: parsedTagLabels,
       to: `/${item.to}`,
-      image: parseImage(item) // item.image && item.image.length > 0 ? item.image[0] : null // parseImage
+      image: parseImage(item)
     }
   })
 })
@@ -158,7 +158,7 @@ const parsedOtherSeries = computed(() => {
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
       sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
-      image: parseImage(item) // item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null, // parseImage
+      image: parseImage(item)
     }
   })
   return otherSeries
