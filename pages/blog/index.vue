@@ -120,8 +120,6 @@ const parsedArticles = computed(() => {
 const documentsPerPage = 10
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
-
-
 // PAGINATION SCROLL HANDLING
 // // Element reference for the scroll target
 const resultsSection = ref(null)
@@ -142,7 +140,6 @@ watch(() => route.query, async (newVal, oldVal) => {
     await scrollTo(resultsSection)
   }
 }, { deep: true, immediate: true })
-
 
 // PAGE SUMMARY
 const showPageSummary = computed(() => {

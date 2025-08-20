@@ -114,7 +114,6 @@ const resultsSection = ref(null)
 const { scrollTo } = usePaginationScroll()
 
 watch(() => route.query, async (newVal, oldVal) => {
-
   isLoading.value = false
   // console.log('Route query params changed:', newVal, oldVal)
   // set filters from query params
