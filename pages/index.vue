@@ -81,7 +81,8 @@ const parsedCarouselData = computed(() => {
       tag: parseFTVATypeHandles(obj.typeHandle),
       captionText: obj.ftvaHomepageDescription,
       captionTitle: obj.title,
-      itemDate: parseDatesAndTimes(obj.typeHandle, obj.startDate, obj.endDate, obj.startDateWithTime, obj.ongoing)
+      itemDate: parseDatesAndTimes(obj.typeHandle, obj.startDate, obj.endDate, obj.startDateWithTime, obj.ongoing),
+      linkUrl: `/${obj.uri}`,
     }
   })
 })
