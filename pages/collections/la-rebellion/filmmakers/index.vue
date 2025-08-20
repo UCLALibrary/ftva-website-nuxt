@@ -111,24 +111,26 @@ const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPage
 const route = useRoute()
 
 // PAGINATION SCROLL HANDLING
-// Element reference for the scroll target
+// // Element reference for the scroll target
 const resultsSection = ref(null)
 // usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-usePaginationScroll(resultsSection, {
-  isMobile,
-  hasResults: computed(() => parsedFilmmakerListings.value.length > 0),
-  offset: 300,
-  onPageChange: async () => {
-    console.log('onPageChange called in filmmakers page')
-    isLoading.value = false
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-    hasMore.value = true
+watch(() => route.query, async (newVal, oldVal) => {
+  console.log('onPageChange called in filmmakers page')
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
 
-    await searchES()
-  },
-})
+  await searchES()
+  // Restore scroll position
+  // // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedFilmmakerListings.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 // COMPUTED LISTINGS
 const parsedFilmmakerListings = computed(() => {

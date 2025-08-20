@@ -108,31 +108,34 @@ const parsedCollectionResults = computed(() => {
 const selectedFilters = ref({}) // initialise with empty filter
 const selectedSortFilters = ref({ sortField: 'asc' })
 // PAGINATION SCROLL HANDLING
-// Element reference for the scroll target
-const resultsSection = ref<HTMLElement>(null)
+// // Element reference for the scroll target
+const resultsSection = ref(null)
 // usePaginationScroll composable
-usePaginationScroll(resultsSection, {
-  isMobile,
-  hasResults: computed(() => parsedCollectionResults.value.length > 0), // or parsedResults for the search page
-  offset: 300,
-  onPageChange: async () => {
-    isLoading.value = false
-    // console.log('Route query params changed:', newVal, oldVal)
-    // set filters from query params
-    const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
-    if (Object.keys(selectedFiltersFromRoute).length === 0) {
-      // if object is empty, set selectedFilters to empty object
-      selectedFilters.value = {}
-    } else {
-      // else destructure the selectedFiltersFromRoute object and convert first value from array to string
-      selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
-    }
-    // set sort & page # from query params
-    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
-    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    await searchES()
-  },
-})
+const { scrollTo } = usePaginationScroll()
+
+watch(() => route.query, async (newVal, oldVal) => {
+
+  isLoading.value = false
+  // console.log('Route query params changed:', newVal, oldVal)
+  // set filters from query params
+  const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+  if (Object.keys(selectedFiltersFromRoute).length === 0) {
+    // if object is empty, set selectedFilters to empty object
+    selectedFilters.value = {}
+  } else {
+    // else destructure the selectedFiltersFromRoute object and convert first value from array to string
+    selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
+  }
+  // set sort & page # from query params
+  selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+  await searchES()
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedCollectionResults.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
+
 // Format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
   return totalResults.value + ' Video Clip' + (totalResults.value > 1 ? 's' : '')

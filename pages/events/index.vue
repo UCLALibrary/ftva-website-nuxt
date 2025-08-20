@@ -208,33 +208,35 @@ const route = useRoute()
 // Element reference for the scroll target
 const resultsSection = ref<HTMLElement>(null)
 // usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-usePaginationScroll(resultsSection, {
-  isMobile,
-  hasResults: computed(() => parsedEvents.value.length > 0),
-  offset: 300,
-  onPageChange: async () => {
-    isLoading.value = false
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
 
-    const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+  const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
 
-    userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
+  userFilterSelection.value = { 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [], ...selectedFiltersFromRoute } // ensure all filter groups are present
 
-    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
 
-    userViewSelection.value = (route.query.view as string | undefined) || 'list'
-    // console.log('route.query.dates', route?.query?.dates)
+  userViewSelection.value = (route.query.view as string | undefined) || 'list'
+  // console.log('route.query.dates', route?.query?.dates)
 
-    userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
+  userDateSelection.value = parseDateFromURL(route.query.dates as string | undefined) || []
 
-    allFilters.value = parsedRemoveSearchFilters.value
-    // console.log('userDateSelection.value', userDateSelection.value)
+  allFilters.value = parsedRemoveSearchFilters.value
+  // console.log('userDateSelection.value', userDateSelection.value)
 
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-    hasMore.value = true
-    await searchES()
-  },
-})
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
+  await searchES()
+  // Restore scroll position
+  // // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedEvents.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 // SEARCH
 const searchFilters = ref([] as FilterGroup[])

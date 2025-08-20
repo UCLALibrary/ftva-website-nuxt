@@ -128,33 +128,35 @@ const onResults = (results) => {
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
 // PAGINATION SCROLL HANDLING
-// Element reference for the scroll target
+// // Element reference for the scroll target
 const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-usePaginationScroll(resultsSection, {
-  isMobile,
-  hasResults: computed(() => parsedCollectionList.value.length > 0),
-  offset: 300,
-  onPageChange: async () => {
-    isLoading.value = false
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-    hasMore.value = true
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
 
-    const filterLetter = route.query.filters
+  const filterLetter = route.query.filters
 
-    // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
-    if (filterLetter && filterLetter !== '*') {
-      selectedLetterProp.value = filterLetter
-      extraSearchFilter.value = filterLetter
-    } else {
-      selectedLetterProp.value = 'All'
-      extraSearchFilter.value = '*'
-    }
+  // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
+  if (filterLetter && filterLetter !== '*') {
+    selectedLetterProp.value = filterLetter
+    extraSearchFilter.value = filterLetter
+  } else {
+    selectedLetterProp.value = 'All'
+    extraSearchFilter.value = '*'
+  }
 
-    await searchES()
-  },
-})
+  await searchES()
+
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedCollectionList.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 function browseBySelectedLetter(letter) {
   desktopItemList.value = []

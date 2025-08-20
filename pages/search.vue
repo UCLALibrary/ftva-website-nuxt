@@ -156,38 +156,38 @@ const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemLi
 // Element reference for the scroll target
 const resultsSection = ref<HTMLElement>(null)
 // usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-usePaginationScroll(resultsSection, {
-  isMobile,
-  hasResults: computed(() => parsedResults.value.length > 0),
-  offset: 300,
-  onPageChange: async () => {
-    isLoading.value = false
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
 
-    hasMore.value = true
-    const queryFilters = parseFilters(route.query.filters || '')
-    selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
-    console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
-    // console.log('userFilterSelection updated', userFilterSelection.value)
-    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    // set sort & page # from query params
-    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
-    // console.log('selectedSortFilters updated', selectedSortFilters.value)
-    if (selectedSortFilters.value.sortField === '') {
-      sortField.value = '_score'
-      // console.log('sortField updated', sortField.value)
-      orderBy.value = 'desc'
-      // console.log('orderBy updated', orderBy.value)
-    } else {
-      sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
-      // console.log('sortField updated', sortField.value)
-      orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
-      // console.log('orderBy updated', orderBy.value)
-    }
-    await searchES()
-  },
-})
+  hasMore.value = true
+  const queryFilters = parseFilters(route.query.filters || '')
+  selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
+  console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
+  // console.log('userFilterSelection updated', userFilterSelection.value)
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+  // set sort & page # from query params
+  selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
+  // console.log('selectedSortFilters updated', selectedSortFilters.value)
+  if (selectedSortFilters.value.sortField === '') {
+    sortField.value = '_score'
+    // console.log('sortField updated', sortField.value)
+    orderBy.value = 'desc'
+    // console.log('orderBy updated', orderBy.value)
+  } else {
+    sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
+    // console.log('sortField updated', sortField.value)
+    orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
+    // console.log('orderBy updated', orderBy.value)
+  }
+  await searchES()
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedResults.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 // SORT SETUP - uses static data
 const sortDropdownData = {
@@ -544,7 +544,7 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >

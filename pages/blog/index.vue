@@ -122,24 +122,29 @@ const parsedArticles = computed(() => {
 const documentsPerPage = 10
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
+
+
 // PAGINATION SCROLL HANDLING
-// Element reference for the scroll target
+// // Element reference for the scroll target
 const resultsSection = ref(null)
 // usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-usePaginationScroll(resultsSection, {
-  isMobile,
-  hasResults: computed(() => parsedArticles.value.length > 0),
-  offset: 300,
-  onPageChange: async () => {
-    isLoading.value = false
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    // Clear the lists when route changes
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-    hasMore.value = true
-    await searchES()
-  },
-})
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  // Clear the lists when route changes
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
+  await searchES()
+  // Restore scroll position
+  // // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedArticles.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
+
 
 // PAGE SUMMARY
 const showPageSummary = computed(() => {
