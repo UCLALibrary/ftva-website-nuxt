@@ -71,7 +71,6 @@ if (data.value.entry && import.meta.prerender) {
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 const pageTitle = page.value.title
-const pageSummary = page.value.summary
 const generalContentPagesSection = page.value.sectionHeader[0]
 const generalContentPages = page.value.associatedGeneralContentPagesFtva
 
@@ -79,9 +78,13 @@ const generalContentPages = page.value.associatedGeneralContentPagesFtva
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
   pageTitle.value = page.value.title
-  pageSummary.value = page.value.summary
   generalContentPagesSection.value = page.value.sectionHeader[0]
   generalContentPages.value = page.value.associatedGeneralContentPagesFtva
+})
+
+// PAGE SUMMARY
+const showPageSummary = computed(() => {
+  return page.value?.summary && page.value?.displaySummary === 'yes'
 })
 
 // ELASTIC SEARCH
@@ -252,7 +255,12 @@ useHead({
         theme="paleblue"
         data-test="page-title"
       >
-        <RichText :rich-text-content="pageSummary" />
+        <template v-if="showPageSummary">
+          <RichText
+            :rich-text-content="page.summary"
+            data-test="page-description"
+          />
+        </template>
       </SectionWrapper>
 
       <SectionWrapper

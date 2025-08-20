@@ -69,6 +69,11 @@ watch(data, (newVal, oldVal) => {
   heading.value = _get(newVal, 'entry', {})
 })
 
+// PAGE SUMMARY
+const showPageSummary = computed(() => {
+  return heading.value?.summary && heading.value?.displaySummary === 'yes'
+})
+
 // "STATE"
 const route = useRoute()
 const currentView = computed(() => route.query.view || 'current') // Tracks 'current' or 'past'
@@ -193,7 +198,7 @@ const parsedEventSeries = computed(() => {
         ref="scrollElem"
         class="header"
         :section-title="heading.titleGeneral"
-        :section-summary="heading.summary"
+        :section-summary="showPageSummary ? heading.summary : ''"
         theme="paleblue"
       />
       <div
