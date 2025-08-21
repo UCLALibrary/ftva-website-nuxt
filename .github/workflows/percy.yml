@@ -47,7 +47,7 @@ jobs:
               with:
                   start: pnpm dlx serve .output/public
                   install: false
-                  command: 'percy exec -- pnpm run cypress:run'
+                  command: pnpm dlx @percy/cli exec -- pnpm run cypress:run
                   wait-on: http://localhost:3000
                   wait-on-timeout: 110
               env:
