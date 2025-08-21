@@ -65,6 +65,7 @@ jobs:
           install: false
           command-prefix: env -u NODE_OPTIONS        # ← hard-clear the var
           command: npx --no-install percy exec -- pnpm run cypress-run
+          publish-summary: true
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
           PERCY_TARGET_BRANCH: main
