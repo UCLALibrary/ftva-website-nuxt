@@ -192,7 +192,7 @@ const parsedGeneralContentPages = computed(() => {
   return generalContentPages.map((obj) => {
     return {
       title: obj.title,
-      to: `/${obj.uri}`,
+      to: obj.uri.startsWith('/') ? obj.uri : `/${obj.uri}`,
       image: obj.ftvaImage[0]
     }
   })
@@ -203,7 +203,7 @@ const parsedCollectionList = computed(() => {
 
   return currentList.value.map((obj) => {
     return {
-      to: `/${obj._source.to}`,
+      to: obj._source.to.startsWith('/') ? obj._source.to : `/${obj._source.to}`,
       title: obj._source.title,
       text: obj._source.ftvaHomepageDescription,
       ftvaCollectionType: obj._source.ftvaCollectionType,
