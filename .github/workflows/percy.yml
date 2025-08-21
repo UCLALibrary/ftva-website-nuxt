@@ -78,12 +78,17 @@ jobs:
       - name: Wait for server
         run: npx wait-on http://localhost:3000
 
+      - name: Show npm node-options
+        run: |
+          npm config get node-options || true
+          pnpm config get node-options || true
+
       # 3) Run Percy + Cypress with NODE_OPTIONS cleared in a real shell
       - name: Percy + Cypress
         shell: bash
         run: |
-          NPM_CONFIG_NODE_OPTIONS= \
-          NODE_OPTIONS= \
+          NPM_CONFIG_NODE_OPTIONS='--import=tsx' \
+          NODE_OPTIONS='--import=tsx' \
           npx --no-install percy exec -- ./node_modules/.bin/cypress run
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
