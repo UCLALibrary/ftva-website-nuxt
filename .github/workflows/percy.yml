@@ -1,95 +1,54 @@
 name: Submit screenshots to Percy for visual regression testing.
 
 on:
-  push:
-    branches: [main]
-  workflow_dispatch:
+    push:
+        branches: [main]
+    workflow_dispatch:
+        inputs: {}
 
 jobs:
-  percy:
-    name: Percy - Nuxt3.x Site
-    runs-on: ubuntu-latest
-    timeout-minutes: 40
-
-    steps:
-      # Checkout once (composite no longer checks out)
-      - uses: actions/checkout@v4
-
-      # Workspace setup: Node 18, pnpm 9.12.1, caches, install deps
-      - uses: ./.github/workflows/setup-workspace
-
-      # Cache prerendered static site
-      - name: Cache built static site
-        id: cache-nuxt3
-        uses: actions/cache@v3
-        with:
-          path: .output/public
-          key: nuxt3-site-${{ github.sha }}
-
-      # ES alias per branch
-      - name: Set env vars for PR preview
-        if: github.ref_name != 'main'
-        run: echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}-percy-tests-${{ github.head_ref || github.ref_name }}" >> $GITHUB_ENV
-
-      - name: Set env vars for main
-        if: github.ref_name == 'main'
-        run: echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}" >> $GITHUB_ENV
-
-      # Generate only on cache miss
-      - name: Generate site
-        if: steps.cache-nuxt3.outputs.cache-hit != 'true'
-        run: pnpm run generate
-        env:
-          CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
-          S3_BUCKET: "https://static.library.ucla.edu/"
-          ES_URL: ${{ secrets.ES_URL }}
-          ESApiKey: ${{ secrets.ESApiKey }}
-          ES_READ_KEY: ${{ secrets.ES_READ_KEY_TEST }}
-          ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
-          ES_ALIAS: ${{ env.ES_ALIAS }}
-          ES_INDEX_PREFIX: ${{ secrets.ES_INDEX_PREFIX_TEST }}
-
-      # Optional: cache Cypress binary for speed
-      - name: Cache Cypress binary
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-15
-
-      # Run Percy + Cypress. Use local @percy/cli (devDep). Clear NODE_OPTIONS.
-      #- uses: cypress-io/github-action@v5
-       # with:
-        #  start: pnpm dlx serve .output/public
-         # wait-on: http://localhost:3000
-          #wait-on-timeout: 110
-          #install: false
-          #command-prefix: bash -lc
-          #command: 'export NODE_OPTIONS=; npx --no-install percy exec -- pnpm run cypress-run'
-          #publish-summary: true
-        #env:
-          #PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
-          #PERCY_TARGET_BRANCH: main
-
-      # 1) Start the static server in background
-      - name: Start static server
-        run: pnpm dlx serve .output/public &
-
-      # 2) Wait for it
-      - name: Wait for server
-        run: npx wait-on http://localhost:3000
-
-      - name: Show npm node-options
-        run: |
-          npm config get node-options || true
-          pnpm config get node-options || true
-
-      # 3) Run Percy + Cypress with NODE_OPTIONS cleared in a real shell
-      - name: Percy + Cypress
-        shell: bash
-        run: |
-          NPM_CONFIG_NODE_OPTIONS='--import=tsx' \
-          NODE_OPTIONS='--import=tsx' \
-          npx --no-install percy exec -- ./node_modules/.bin/cypress run
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
-          PERCY_TARGET_BRANCH: main
+    percy:
+        name: Percy - Nuxt3.x Site
+        runs-on: ubuntu-latest
+        timeout-minutes: 40
+        steps:
+            - uses: actions/checkout@v3
+            - uses: ./.github/workflows/setup-workspace
+            - name: Cache built static site
+              id: cache-nuxt3
+              uses: actions/cache@v3
+              with:
+                  path: .output/public
+                  key: nuxt3-site-${{ github.sha }}
+            - name: Sets env vars for PR preview
+              run: |
+                echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}-percy-tests-${{ github.head_ref || github.ref_name }}" >> $GITHUB_ENV
+              if: github.ref_name!='main'
+            - name: Sets env vars for nuxt3.x merge
+              run: |
+                echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}" >> $GITHUB_ENV
+              if: github.ref_name=='main'
+            - run: pnpm run generate
+              if: steps.cache-nuxt3.outputs.cache-hit != 'true'
+              env:
+                  CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
+                  S3_BUCKET: "https://static.library.ucla.edu/"
+                  ES_URL: ${{ secrets.ES_URL }}
+                  ESApiKey: ${{ secrets.ESApiKey }}
+                  ES_READ_KEY: ${{ secrets.ES_READ_KEY_TEST }}
+                  ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
+                  ES_ALIAS: ${{ env.ES_ALIAS }}
+                  ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
+            - name: Install pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 8
+            - uses: cypress-io/github-action@v3
+              with:
+                  start: pnpm dlx serve .output/public
+                  install: false
+                  command-prefix: 'percy exec -- pnpx'
+                  wait-on: http://localhost:3000
+                  wait-on-timeout: 110
+              env:
+                  PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
