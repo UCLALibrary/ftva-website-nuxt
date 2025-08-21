@@ -4,7 +4,6 @@ import SvgGlyphX from 'ucla-library-design-tokens/assets/svgs/icon-ftva-xtag.svg
 import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll'
 
 const route = useRoute()
 const documentsPerPage = 10
@@ -154,7 +153,41 @@ const onResults = (results) => {
 const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
 
 // PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('search-section-title')
+// Element reference for the scroll target
+const resultsSection = ref<HTMLElement>(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
+
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+
+  hasMore.value = true
+  const queryFilters = parseFilters(route.query.filters || '')
+  selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
+  console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
+  // console.log('userFilterSelection updated', userFilterSelection.value)
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+  // set sort & page # from query params
+  selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
+  // console.log('selectedSortFilters updated', selectedSortFilters.value)
+  if (selectedSortFilters.value.sortField === '') {
+    sortField.value = '_score'
+    // console.log('sortField updated', sortField.value)
+    orderBy.value = 'desc'
+    // console.log('orderBy updated', orderBy.value)
+  } else {
+    sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
+    // console.log('sortField updated', sortField.value)
+    orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
+    // console.log('orderBy updated', orderBy.value)
+  }
+  await searchES()
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedResults.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 // SORT SETUP - uses static data
 const sortDropdownData = {
@@ -169,9 +202,9 @@ const sortDropdownData = {
 }
 
 // This watcher is called when router push updates the query params
-watch(
+/* watch(
   () => route.query,
-  (newVal, oldVal) => {
+  async (newVal, oldVal) => {
     isLoading.value = false
     isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
 
@@ -195,12 +228,16 @@ watch(
       orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
       // console.log('orderBy updated', orderBy.value)
     }
-    searchES()
+    await searchES()
 
     // Restore scroll position
-    restoreScrollPosition()
+    // Scroll after DOM updates
+    await nextTick()
+    if (!isMobile.value && route.query.page && resultsSection.value && parsedResults.value.length > 0) {
+      await scrollTo(resultsSection)
+    }
   }, { deep: true, immediate: true }
-)
+) */
 
 function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterResult {
   let updatedOptions: Option[] = []
@@ -507,13 +544,14 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >
           <!--p>Results will be displayed here.</p-->
           <div
             v-if="parsedResults.length > 0"
+            ref="resultsSection"
             class="results-container"
           >
             <!-- Sort by -->
