@@ -70,7 +70,7 @@ const parsedCollections = computed(() => {
     const parsedSelectedCollectionItems = collection.featuredCollections.map((item) => {
       return {
         ...item,
-        to: item.uri,
+        to: item.uri.startsWith('/') ? item.uri : `/${item.uri}`,
         image: item.imageCarousel[0]?.image[0]
       }
     })
