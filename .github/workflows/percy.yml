@@ -55,22 +55,36 @@ jobs:
         with:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}-15
-      # Add a quick debug echo just before the action
-      - name: Debug NODE_OPTIONS
-        run: |
-          echo "Top-level NODE_OPTIONS='${NODE_OPTIONS}'"
-          node -p "process.execArgv"
 
       # Run Percy + Cypress. Use local @percy/cli (devDep). Clear NODE_OPTIONS.
-      - uses: cypress-io/github-action@v5
-        with:
-          start: pnpm dlx serve .output/public
-          wait-on: http://localhost:3000
-          wait-on-timeout: 110
-          install: false
-          command-prefix: bash -lc
-          command: 'export NODE_OPTIONS=; npx --no-install percy exec -- pnpm run cypress-run'
-          publish-summary: true
+      #- uses: cypress-io/github-action@v5
+       # with:
+        #  start: pnpm dlx serve .output/public
+         # wait-on: http://localhost:3000
+          #wait-on-timeout: 110
+          #install: false
+          #command-prefix: bash -lc
+          #command: 'export NODE_OPTIONS=; npx --no-install percy exec -- pnpm run cypress-run'
+          #publish-summary: true
+        #env:
+          #PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
+          #PERCY_TARGET_BRANCH: main
+
+      # 1) Start the static server in background
+      - name: Start static server
+        run: pnpm dlx serve .output/public &
+
+      # 2) Wait for it
+      - name: Wait for server
+        run: npx wait-on http://localhost:3000
+
+      # 3) Run Percy + Cypress with NODE_OPTIONS cleared in a real shell
+      - name: Percy + Cypress
+        shell: bash
+        run: |
+          unset NODE_OPTIONS
+          export NODE_OPTIONS=
+          npx --no-install percy exec -- pnpm run cypress-run
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
           PERCY_TARGET_BRANCH: main
