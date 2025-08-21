@@ -69,7 +69,10 @@ jobs:
           wait-on-timeout: 110
           install: false
           # Use a shell so we can unset for the whole subprocess tree
-          command: bash -lc 'unset NODE_OPTIONS; export NODE_OPTIONS=; npx --no-install percy exec -- pnpm run cypress-run'
+          command-prefix: bash -lc                       # 👈 run the command via bash
+          command: |
+            unset NODE_OPTIONS; export NODE_OPTIONS=;    # 👈 clear loader flag for all children
+            npx --no-install percy exec -- pnpm run cypress-run
           publish-summary: true
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
