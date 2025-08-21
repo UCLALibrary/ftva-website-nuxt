@@ -63,7 +63,7 @@ jobs:
           wait-on: http://localhost:3000
           wait-on-timeout: 110
           install: false
-          command: npx --no-install percy exec -- pnpm run cypress-run
+          command-prefix: 'percy exec -- pnpx'
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
           PERCY_TARGET_BRANCH: main
