@@ -71,7 +71,7 @@ const parsedCollections = computed(() => {
       return {
         ...item,
         to: item.uri,
-        image: item.imageCarousel[0]?.image[0]
+        image: parseImage(item)
       }
     })
 
@@ -89,7 +89,7 @@ const parsedResources = computed(() => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,
-      image: obj.image[0]
+      image: parseImage(obj)
     }
   })
 })
@@ -101,7 +101,7 @@ const parsedAboutCollections = computed(() => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,
-      image: obj.image[0]
+      image: parseImage(obj)
     }
   })
 })

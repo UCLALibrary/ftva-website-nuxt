@@ -21,6 +21,15 @@ query FTVAArticleList($slug: [String!]) {
       image: ftvaImage {
         ...Image
       }
+
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+          creditText
+        }
+      }
     }
   }
 }

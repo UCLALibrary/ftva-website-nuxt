@@ -83,6 +83,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
       image: ftvaImage {
         ...Image
       }
+      imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+        }
+      }
       ftvaScreeningFormatFilters {
         id
         title
@@ -104,6 +111,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     image: ftvaImage {
       ...Image
     }
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+      }
+    }
     ftvaScreeningFormatFilters {
       id
       title
@@ -123,6 +137,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     ftvaImage {
       ...Image
     }
+    imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+        }
+    }
   }
   otherSeriesUpcoming: entries(section: "ftvaEventSeries", limit: 3, endDate: ">=now", orderBy: "startDate ASC") {
     uri
@@ -133,6 +154,13 @@ query FTVAEventSeriesDetail ($slug: [String!]) {
     ongoing
     ftvaImage {
       ...Image
+    }
+    imageCarousel {
+        ... on imageCarousel_imageCarousel_BlockType {
+          image {
+            ...Image
+          }
+        }
     }
   }
 }
