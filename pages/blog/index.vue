@@ -1,9 +1,12 @@
 <script setup>
+// Composables
+// import { useWindowScroll } from '@vueuse/core'
 // HELPERS
 import _get from 'lodash/get'
+
+// GQL
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 // GQL
 const { $graphql } = useNuxtApp()
@@ -95,33 +98,48 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
+// PARSED ARTICLE LIST
+const parsedArticles = computed(() => {
+  if (currentList.value === undefined || currentList.value.length === 0) return []
+  return currentList.value.map((obj) => {
+    return {
+      ...obj._source,
+      to: `/${obj._source.uri}`,
+      title: obj._source.title,
+      category: parseArticleCategories(obj._source.articleCategories),
+      description: obj._source.aboutTheAuthor,
+      date: obj._source.postDate,
+
+      image: parseImage(obj),
+      sectionHandle: obj._source.sectionHandle,
+    }
+  })
+})
 
 // INFINITE SCROLL
 const documentsPerPage = 10
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
 
 // PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('blog-section-title')
+// // Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-watch(
-  () => route.query,
-  (newVal, oldVal) => {
-    isLoading.value = false
-
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-
-    // Clear the lists when route changes
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-
-    hasMore.value = true
-    searchES()
-
-    // Restore scroll position
-    restoreScrollPosition()
-  }, { deep: true, immediate: true }
-)
-
-//
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  // Clear the lists when route changes
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
+  await searchES()
+  // Restore scroll position
+  // // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedArticles.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 // PAGE SUMMARY
 const showPageSummary = computed(() => {
@@ -144,24 +162,6 @@ const parsedFeaturedArticles = computed(() => {
       category: parseArticleCategories(obj.articleCategories),
       text: obj.ftvaHomepageDescription,
       dateCreated: obj.postDate
-    }
-  })
-})
-
-// PARSED ARTICLE LIST
-const parsedArticles = computed(() => {
-  if (currentList.value === undefined || currentList.value.length === 0) return []
-  return currentList.value.map((obj) => {
-    return {
-      ...obj._source,
-      to: `/${obj._source.uri}`,
-      title: obj._source.title,
-      category: parseArticleCategories(obj._source.articleCategories),
-      description: obj._source.aboutTheAuthor,
-      date: obj._source.postDate,
-
-      image: parseImage(obj),
-      sectionHandle: obj._source.sectionHandle,
     }
   })
 })
@@ -263,7 +263,10 @@ useHead({
         Latest Blogs
       </SectionHeader>
 
-      <div class="articles-list-wrapper">
+      <div
+        ref="resultsSection"
+        class="articles-list-wrapper"
+      >
         <SectionStaffArticleList
           :items="parsedArticles"
           data-test="latest-blogs"
