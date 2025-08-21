@@ -102,7 +102,7 @@ const parsedRecentPosts = computed(() => {
   const recentPostsWImage = ftvaRecentPosts.value.map((item, index) => {
     return {
       ...item,
-      image: item.imageCarousel && item.imageCarousel.length > 0 ? item.imageCarousel[0].image[0] : null,
+      image: parseImage(item)
     }
   })
   return recentPostsWImage.filter(item => !item.to.includes(route.params.slug)).slice(0, 3)

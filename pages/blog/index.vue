@@ -1,9 +1,12 @@
 <script setup>
+// Composables
+// import { useWindowScroll } from '@vueuse/core'
 // HELPERS
 import _get from 'lodash/get'
+
+// GQL
 import FTVAArticleList from '../gql/queries/FTVAArticleList.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 // GQL
 const { $graphql } = useNuxtApp()
@@ -95,59 +98,6 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
-
-// INFINITE SCROLL
-const documentsPerPage = 10
-const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
-
-// PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('blog-section-title')
-
-watch(
-  () => route.query,
-  (newVal, oldVal) => {
-    isLoading.value = false
-
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-
-    // Clear the lists when route changes
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-
-    hasMore.value = true
-    searchES()
-
-    // Restore scroll position
-    restoreScrollPosition()
-  }, { deep: true, immediate: true }
-)
-
-//
-
-// PAGE SUMMARY
-const showPageSummary = computed(() => {
-  return page.value?.summary && page.value?.displaySummary === 'yes'
-})
-
-// PARSED FEATURED ARTICLES
-const parsedFeaturedArticles = computed(() => {
-  if (featuredArticles.length === 0) {
-    return
-  }
-
-  return featuredArticles.map((obj) => {
-    const parsedTitle = parseRichTextTitle(obj)
-
-    return {
-      image: obj.image[0],
-      to: `/${obj.uri}`,
-      title: parsedTitle,
-      category: parseArticleCategories(obj.articleCategories),
-      text: obj.ftvaHomepageDescription,
-      dateCreated: obj.postDate
-    }
-  })
-})
-
 // PARSED ARTICLE LIST
 const parsedArticles = computed(() => {
   if (currentList.value === undefined || currentList.value.length === 0) return []
@@ -162,6 +112,55 @@ const parsedArticles = computed(() => {
 
       image: parseImage(obj),
       sectionHandle: obj._source.sectionHandle,
+    }
+  })
+})
+
+// INFINITE SCROLL
+const documentsPerPage = 10
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(articleFetchFunction, onResults)
+
+// PAGINATION SCROLL HANDLING
+// // Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
+
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  // Clear the lists when route changes
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
+  await searchES()
+  // Restore scroll position
+  // // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedArticles.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
+
+// PAGE SUMMARY
+const showPageSummary = computed(() => {
+  return page.value?.summary && page.value?.displaySummary === 'yes'
+})
+
+// PARSED FEATURED ARTICLES
+const parsedFeaturedArticles = computed(() => {
+  if (featuredArticles.length === 0) {
+    return
+  }
+
+  return featuredArticles.map((obj) => {
+    const parsedTitle = parseRichTextTitle(obj)
+    return {
+      image: parseImage(obj),
+      to: `/${obj.uri}`,
+      title: parsedTitle,
+      category: parseArticleCategories(obj.articleCategories),
+      text: obj.ftvaHomepageDescription,
+      dateCreated: obj.postDate
     }
   })
 })
@@ -263,7 +262,10 @@ useHead({
         Latest Blogs
       </SectionHeader>
 
-      <div class="articles-list-wrapper">
+      <div
+        ref="resultsSection"
+        class="articles-list-wrapper"
+      >
         <SectionStaffArticleList
           :items="parsedArticles"
           data-test="latest-blogs"

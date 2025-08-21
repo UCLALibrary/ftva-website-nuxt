@@ -5,7 +5,6 @@ import { useCollectionAggregator } from '../composables/useCollectionAggregator'
 import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll'
 
 const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
 
@@ -78,18 +77,25 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
-
+const collectionTitle = ref(attrs.page.title || '')
+const titleForSearch = computed(() => {
+  // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
+  if (route.path.endsWith('filmography')) {
+    return route.path.split('/').includes('la-rebellion')
+      ? 'L.A. Rebellion' :
+      route.path.split('/').includes('in-the-life') ? 'In the Life' : collectionTitle.value
+  } else {
+    return collectionTitle.value
+  }
+})
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
-
-// PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('collection-items-section-title')
 
 // Format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
   if (currentList.value.length === 0) return []
   return currentList.value.map((obj) => {
-    const objImage = obj._source.ftvaImage.length ? obj._source.ftvaImage[0] : null
+    const objImage = parseImage(obj)
     return {
       ...obj._source,
       title: obj._source.title,
@@ -99,13 +105,40 @@ const parsedCollectionResults = computed(() => {
     }
   })
 })
+const selectedFilters = ref({}) // initialise with empty filter
+const selectedSortFilters = ref({ sortField: 'asc' })
+// PAGINATION SCROLL HANDLING
+// // Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
+
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  // console.log('Route query params changed:', newVal, oldVal)
+  // set filters from query params
+  const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+  if (Object.keys(selectedFiltersFromRoute).length === 0) {
+    // if object is empty, set selectedFilters to empty object
+    selectedFilters.value = {}
+  } else {
+    // else destructure the selectedFiltersFromRoute object and convert first value from array to string
+    selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
+  }
+  // set sort & page # from query params
+  selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+  await searchES()
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedCollectionResults.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 // Format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
   return totalResults.value + ' Video Clip' + (totalResults.value > 1 ? 's' : '')
 })
-
-const collectionTitle = ref(attrs.page.title || '')
 
 // SORT SETUP - uses static data
 const sortDropdownData = {
@@ -116,8 +149,6 @@ const sortDropdownData = {
   label: 'Sort by',
   fieldName: 'sortField'
 }
-
-const selectedSortFilters = ref({ sortField: 'asc' })
 
 function updateSort(newSort) {
   router.push({
@@ -156,7 +187,7 @@ function parseAggRes(response: Aggregations) {
   }))
 
   filters.forEach((filter) => {
-    if (filter.label !== 'Filter by Season') return
+    if (filter?.label !== 'Filter by Season') return
     // Special case for 'Filter by Season' to sort options numerically
     filter.options.sort((a, b) => {
       return parseInt(a.value) - parseInt(b.value)
@@ -186,7 +217,6 @@ async function setFilters() {
   )
 }
 
-const selectedFilters = ref({}) // initialise with empty filter
 // Object w key filter label and value ESFieldName for selected filter lookup
 const fieldNamefromLabel = {
   'Filter by Topic': 'ftvaCollectionGroup.title.keyword',
@@ -207,50 +237,13 @@ function updateFilters(newFilter) {
     router.push({
       path: route.path,
       query: {
-        filters: [fieldNamefromLabel[searchFilters.value[0].label]] + ':(' + newFilterValue + ')',
+        filters: [fieldNamefromLabel[searchFilters.value[0]?.label]] + ':(' + newFilterValue + ')',
         sort: selectedSortFilters.value.sortField,
         // ignore page, we want to clear page # when filter is cleared
       }
     })
   }
 }
-
-const titleForSearch = computed(() => {
-  // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
-  if (route.path.endsWith('filmography')) {
-    return route.path.split('/').includes('la-rebellion')
-      ? 'L.A. Rebellion' :
-      route.path.split('/').includes('in-the-life') ? 'In the Life' : collectionTitle.value
-  } else {
-    return collectionTitle.value
-  }
-})
-
-// WATCHERS
-// This watcher is called when router pushes updates the query params
-watch(
-  () => route.query,
-  (newVal, oldVal) => {
-    isLoading.value = false
-    // console.log('Route query params changed:', newVal, oldVal)
-    // set filters from query params
-    const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
-    if (Object.keys(selectedFiltersFromRoute).length === 0) {
-      // if object is empty, set selectedFilters to empty object
-      selectedFilters.value = {}
-    } else {
-      // else destructure the selectedFiltersFromRoute object and convert first value from array to string
-      selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
-    }
-    // set sort & page # from query params
-    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
-    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    searchES()
-
-    // Restore scroll position
-    restoreScrollPosition()
-  }, { deep: true, immediate: true }
-)
 
 onMounted(async () => {
   await setFilters()
@@ -289,6 +282,10 @@ useHead({
           :rich-text-content="attrs.page.ftvaHomepageDescription"
         />
         <DividerWayFinder />
+        <div
+          ref="resultsSection"
+          class="for-pagination-scroll"
+        />
 
         <span
           v-if="!isLoading"
@@ -297,9 +294,9 @@ useHead({
           <!-- Filter by -->
           <DropdownSingleSelect
             v-model:selected-filters="selectedFilters"
-            :label="searchFilters[0].label"
-            :options="searchFilters[0].options"
-            :field-name="fieldNamefromLabel[searchFilters[0].label]"
+            :label="searchFilters[0]?.label"
+            :options="searchFilters[0]?.options"
+            :field-name="fieldNamefromLabel[searchFilters[0]?.label]"
             @update-display="(newFilter) => {
               updateFilters(newFilter)
             }"
@@ -307,7 +304,7 @@ useHead({
           <!-- Sort by -->
           <DropdownSingleSelect
             v-model:selected-filters="selectedSortFilters"
-            :label="sortDropdownData.label"
+            :label="sortDropdownData?.label"
             :options="sortDropdownData.options"
             :field-name="sortDropdownData.fieldName"
             @update-display="(newSort) => {

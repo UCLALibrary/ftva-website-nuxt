@@ -6,7 +6,6 @@ import _get from 'lodash/get'
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 const { $graphql } = useNuxtApp()
 
@@ -148,21 +147,25 @@ const onResults = (results) => {
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(seriesFetchFunction, onResults)
 
 // PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('series-section-title')
+// Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-watch(() => route.query,
-  (newVal, oldVal) => {
-    isLoading.value = false
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-    hasMore.value = true
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
 
-    searchES()
-
-    // Restore scroll position
-    restoreScrollPosition()
-  }, { deep: true, immediate: true }
-)
+  await searchES()
+  // Restore scroll position
+  // // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedEventSeries.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
@@ -197,6 +200,10 @@ const parsedEventSeries = computed(() => {
         :section-title="heading.titleGeneral"
         :section-summary="showPageSummary ? heading.summary : ''"
         theme="paleblue"
+      />
+      <div
+        ref="resultsSection"
+        class="for-pagination-scroll"
       />
 
       <SectionWrapper theme="paleblue">

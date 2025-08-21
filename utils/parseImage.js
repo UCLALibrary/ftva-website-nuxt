@@ -1,7 +1,13 @@
 export default function parseImage(obj) {
-  const listingImage = obj._source.image || obj._source.ftvaImage
-
-  const carouselImage = obj._source.imageCarousel
+  let listingImage
+  let carouselImage
+  if (obj._source) {
+    listingImage = obj._source.image || obj._source.ftvaImage
+    carouselImage = obj._source.imageCarousel || obj.imageCarousel
+  } else {
+    listingImage = obj.image || obj.ftvaImage
+    carouselImage = obj.imageCarousel
+  }
 
   if (listingImage !== undefined && listingImage.length === 1) {
     // Use Listing Image

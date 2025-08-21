@@ -49,6 +49,13 @@ query FTVAHomepage {
           ftvaImage {
             ...Image
           }
+          imageCarousel {
+            ... on imageCarousel_imageCarousel_BlockType {
+              image {
+                ...Image
+              }
+            }
+          }
         }
         }
         }
@@ -106,6 +113,14 @@ query FTVAHomepage {
             ftvaHomepageDescription
             ftvaImage {
               ...Image
+            }
+            imageCarousel {
+              ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                  ...Image
+                }
+                altText
+              }
             }
           }
         }

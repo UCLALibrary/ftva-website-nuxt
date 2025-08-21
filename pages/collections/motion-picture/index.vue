@@ -5,7 +5,6 @@ import _get from 'lodash/get'
 
 import FTVACollectionTypeListing from '../gql/queries/FTVACollectionTypeListing.gql'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 const { $graphql } = useNuxtApp()
 
@@ -132,7 +131,35 @@ const onResults = (results) => {
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
 // PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('collection-section-title')
+// // Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
+
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
+
+  const filterLetter = route.query.filters
+
+  // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
+  if (filterLetter && filterLetter !== '*') {
+    selectedLetterProp.value = filterLetter
+    extraSearchFilter.value = filterLetter
+  } else {
+    selectedLetterProp.value = 'All'
+    extraSearchFilter.value = '*'
+  }
+
+  await searchES()
+
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedCollectionList.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 function browseBySelectedLetter(letter) {
   desktopItemList.value = []
@@ -154,31 +181,6 @@ function browseBySelectedLetter(letter) {
   })
 }
 
-watch(() => route.query,
-  (newVal, oldVal) => {
-    isLoading.value = false
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-    hasMore.value = true
-
-    const filterLetter = route.query.filters
-
-    // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
-    if (filterLetter && filterLetter !== '*') {
-      selectedLetterProp.value = filterLetter
-      extraSearchFilter.value = filterLetter
-    } else {
-      selectedLetterProp.value = 'All'
-      extraSearchFilter.value = '*'
-    }
-
-    searchES()
-
-    // Restore scroll position
-    restoreScrollPosition()
-  }, { deep: true, immediate: true }
-)
-
 const parsedGeneralContentHeader = computed(() => {
   return {
     title: generalContentPagesSection.sectionTitle || '',
@@ -193,7 +195,7 @@ const parsedGeneralContentPages = computed(() => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,
-      image: obj.ftvaImage[0]
+      image: parseImage(obj)
     }
   })
 })
@@ -282,7 +284,10 @@ useHead({
           @selected-letter="browseBySelectedLetter"
         />
 
-        <div class="browse-results">
+        <div
+          ref="resultsSection"
+          class="browse-results"
+        >
           <h2>{{ hits }} {{ hits > 1 ? `results` : `result` }} shown</h2>
         </div>
 
