@@ -82,9 +82,9 @@ jobs:
       - name: Percy + Cypress
         shell: bash
         run: |
-          unset NODE_OPTIONS
-          export NODE_OPTIONS=
-          npx --no-install percy exec -- pnpm run cypress-run
+          NPM_CONFIG_NODE_OPTIONS= \
+          NODE_OPTIONS= \
+          npx --no-install percy exec -- ./node_modules/.bin/cypress run
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
           PERCY_TARGET_BRANCH: main
