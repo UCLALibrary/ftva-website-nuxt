@@ -63,7 +63,8 @@ jobs:
           wait-on: http://localhost:3000
           wait-on-timeout: 110
           install: false
-          command: NODE_OPTIONS= npx --no-install percy exec -- pnpm run cypress-run
+          command-prefix: env -u NODE_OPTIONS        # ← hard-clear the var
+          command: npx --no-install percy exec -- pnpm run cypress-run
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN_E2E }}
           PERCY_TARGET_BRANCH: main
