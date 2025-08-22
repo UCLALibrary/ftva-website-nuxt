@@ -449,9 +449,8 @@ useHead({
 
   :deep(.ftva.block-staff-article-item) {
     .ftva-date {
-      color: #676767;
+      color: $subtitle-grey;
       font-family: "proxima-nova", Helvetica, Arial, sans-serif;
-      ;
       font-size: 16px;
       font-style: normal;
       font-weight: 400;
@@ -476,7 +475,7 @@ useHead({
     }
   }
 
-  @media screen and (max-width: 750px) {
+  @media #{$small} {
     :deep(.ftva.section-staff-article-list) {
       background-color: #e7edf2;
       padding: 0 16px;
@@ -532,7 +531,7 @@ useHead({
     }
   }
 
-  @media screen and (max-width: 1024px) {
+  @media #{$medium} {
     :deep(.ftva.block-staff-article-item .meta .ftva-description) {
       display: none;
     }

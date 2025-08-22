@@ -313,7 +313,7 @@ const pageClasses = computed(() => {
     }
   }
 
-  @media screen and (max-width: 750px) {
+  @media #{$small} {
     :deep(.ftva.section-staff-article-list) {
       padding: 16px;
 

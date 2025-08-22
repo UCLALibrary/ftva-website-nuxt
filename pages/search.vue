@@ -771,7 +771,7 @@ useHead({
     }
   }
 
-  @media only screen and (max-width: 750px) {
+  @media only #{$small} {
     :deep(.ftva.section-staff-article-list .block-staff-article-list) {
       padding: 16px;
     }
