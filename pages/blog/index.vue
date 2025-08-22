@@ -378,10 +378,6 @@ useHead({
     margin-bottom: 20px;
   }
 
-  :deep(.ftva.block-staff-article-item:last-child .date) {
-    height: auto;
-  }
-
   .ftva.section-pagination {
     margin-inline: auto;
     padding: 2.5%;
@@ -413,9 +409,7 @@ useHead({
   @media (max-width: 749px) {
 
     :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container),
-    :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image),
-    :deep(.ftva.block-staff-article-item .image),
-    :deep(.block-staff-article-item .molecule-no-image) {
+    :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image) {
       min-width: 100%;
       height: 255px;
     }
@@ -451,20 +445,96 @@ useHead({
         font-weight: 500;
       }
     }
+  }
 
-    :deep(.ftva.block-staff-article-item .image),
-    :deep(.block-staff-article-item .molecule-no-image) {
-      min-width: 284px;
-      height: 213px;
+  :deep(.ftva.block-staff-article-item) {
+    .ftva-date {
+      color: #676767;
+      font-family: "proxima-nova", Helvetica, Arial, sans-serif;
+      ;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      text-transform: unset;
     }
   }
 
-  @media (min-width: 1000px) {
+  @media screen and (max-width: 450px) {
 
-    :deep(.ftva.block-staff-article-item .image),
-    :deep(.block-staff-article-item .molecule-no-image) {
-      min-width: 400px;
-      height: 300px;
+    :deep(.ftva.block-staff-article-item .image) {
+      --image-aspect-ratio: 16/9;
+      aspect-ratio: 16/9;
+
+      .sizer {
+        padding-bottom: 0 !important;
+      }
+    }
+
+    :deep(.ftva.block-staff-article-item .molecule-no-image) {
+      --image-aspect-ratio: 16/9;
+      aspect-ratio: 16/9;
+    }
+  }
+
+  @media screen and (max-width: 750px) {
+    :deep(.ftva.section-staff-article-list) {
+      background-color: #e7edf2;
+      padding: 0 16px;
+    }
+
+    :deep(.ftva.section-staff-article-list .block-staff-article-list .block-staff-article-item) {
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    :deep(.ftva.block-staff-article-item .image) {
+      min-width: 100%;
+      height: auto;
+      margin: 0;
+    }
+
+    :deep(.ftva.block-staff-article-item .molecule-no-image) {
+      min-width: 100%;
+      height: auto;
+      margin: 0;
+    }
+
+    :deep(.ftva.block-staff-article-item .meta) {
+      height: auto;
+      padding: 30px;
+      margin: 0;
+    }
+
+    :deep(.ftva.block-staff-article-item .category) {
+      font-size: 18px;
+      margin-bottom: -14px;
+      line-height: 1.4;
+    }
+
+    :deep(.ftva.block-staff-article-item .title) {
+      font-size: 21px;
+      line-height: 1.2;
+    }
+
+    :deep(.ftva.block-staff-article-item .meta .ftva-description) {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 834px) {
+
+    :deep(.ftva.block-staff-article-item .image) {
+      --image-min-width: 240px;
+    }
+
+    :deep(.ftva.block-staff-article-item .molecule-no-image) {
+      --image-min-width: 240px;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    :deep(.ftva.block-staff-article-item .meta .ftva-description) {
+      display: none;
     }
   }
 }
