@@ -506,7 +506,7 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -771,7 +771,7 @@ useHead({
     }
   }
 
-  @media only #{$small} {
+  @media #{$small} {
     :deep(.ftva.section-staff-article-list .block-staff-article-list) {
       padding: 16px;
     }
