@@ -319,30 +319,60 @@ const parsedEventSeries = computed(() => {
     padding: 2.5%;
   }
 
-  @media #{$medium} {
+  :deep(.ftva.block-staff-article-item) {
+    .meta {
+      margin: 0;
+    }
+  }
 
-    :deep(.block-staff-article-item .image),
-    :deep(.block-staff-article-item .image .media) {
-      aspect-ratio: 1.69/1;
-      height: auto;
-      margin-bottom: 0;
+  @media screen and (max-width: 834px) {
+
+    :deep(.ftva.block-staff-article-item .image),
+    :deep(.ftva.block-staff-article-item .molecule-no-image) {
+      --image-min-width: 240px;
     }
 
-    :deep(.block-staff-article-item .meta) {
-      padding: 20px;
-      height: auto;
-
-      .title {
-        font-size: 26px;
-      }
-
-      .date {
-        position: initial;
-      }
+    :deep(.ftva.block-staff-article-item .title) {
+      -webkit-line-clamp: 2;
     }
+  }
 
-    :deep(.block-staff-article-item .responsive-image .sizer) {
-      padding-bottom: 0 !important;
+  @media #{$small} {
+    :deep(.ftva.section-staff-article-list) {
+      background-color: #e7edf2;
+      padding: 0 16px;
+
+      .ftva.block-staff-article-item {
+        margin-bottom: 16px;
+      }
+
+      .ftva.block-staff-article-item .image {
+        --image-aspect-ratio: 16/9;
+        aspect-ratio: 16/9;
+        height: auto;
+        margin-bottom: 0;
+
+        .sizer {
+          padding-bottom: 0 !important;
+        }
+      }
+
+      .meta {
+        margin: 0;
+        padding: 20px;
+
+        .title {
+          font-size: 21px;
+        }
+
+        .ftva-description {
+          display: none;
+        }
+
+        .ftva-date {
+          font-size: 20px;
+        }
+      }
     }
   }
 
