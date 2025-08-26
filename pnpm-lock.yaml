@@ -46,8 +46,8 @@ importers:
         specifier: ^18.17.3
         version: 18.19.59
       '@ucla-library/component-library-nuxt-module':
-        specifier: 1.2.47
-        version: 1.2.47(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+        specifier: 1.2.54
+        version: 1.2.54(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
       '@zadigetvoltaire/nuxt-gtm':
         specifier: ^0.0.13
         version: 0.0.13(magicast@0.3.5)(nuxt@3.13.2(@parcel/watcher@2.4.1)(@types/node@18.19.59)(eslint@8.57.1)(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.24.0)(sass@1.80.3)(terser@5.36.0)(typescript@5.6.3)(vite@5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0))(webpack-sources@3.2.3))(rollup@4.24.0)(vue@3.5.12(typescript@5.6.3))(webpack-sources@3.2.3)
@@ -1305,15 +1305,15 @@ packages:
     resolution: {integrity: sha512-JJtkDduxLi9bivAB+cYOVMtbkqdPOhZ+ZI5LC47MIRrDV4Yn2o+ZnW10Nkmr28xRpSpdJ6Sm42Hjf2+REYXm0A==}
     engines: {node: ^16.0.0 || >=18.0.0}
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.26.3':
-    resolution: {integrity: sha512-V23ExJJD7po6IfA4SbnkeAg8spgqJq3PWPS6s2jBC/Bfa/wuIpOVjrDD+f5NEdcpreeAbONRdpTJxEjcdvitgA==}
+  '@ucla-library-monorepo/ucla-library-website-components@1.28.3':
+    resolution: {integrity: sha512-vEIXQtCgW7RMpICRb1KcgNHqMoOXYQzD5ZQzVmoJcr1vQwWiMh7jfMyULSN0plrsF/UhGJ7C4Lsu5iCx0AIpuA==}
     engines: {pnpm: ^9.12.1}
     peerDependencies:
       vue: ^3.5.12
       vuetify: ^3.7.4
 
-  '@ucla-library/component-library-nuxt-module@1.2.47':
-    resolution: {integrity: sha512-K2mR9/rbY4ylQzJxwXyLuKnCFXiZgEbSQnt0K9nMVLCgoanRB8z28+e8rUiBRKdss5gCbAFuqvpxQV4PiCHPcg==}
+  '@ucla-library/component-library-nuxt-module@1.2.54':
+    resolution: {integrity: sha512-DXH+p9MwpKY9x9frB1B7kmwtT6ZseBYo8I3zpYHGo4Z7TMMm2N6NuVckHoHbZwJOYEjRYDHKgdOUyg7IUp5IxQ==}
     engines: {pnpm: ^9.12.1}
 
   '@ungap/structured-clone@1.2.0':
@@ -5802,16 +5802,16 @@ snapshots:
 
   '@nuxt/devtools-wizard@1.6.0':
     dependencies:
-      consola: 3.2.3
+      consola: 3.4.0
       diff: 7.0.0
       execa: 7.2.0
       global-directory: 4.0.1
       magicast: 0.3.5
       pathe: 1.1.2
-      pkg-types: 1.2.1
+      pkg-types: 1.3.1
       prompts: 2.4.2
       rc9: 2.1.2
-      semver: 7.6.3
+      semver: 7.7.1
 
   '@nuxt/devtools@1.6.0(rollup@4.24.0)(vite@5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0))(vue@3.5.12(typescript@5.6.3))(webpack-sources@3.2.3)':
     dependencies:
@@ -6388,7 +6388,7 @@ snapshots:
       estree-walker: 2.0.2
       glob: 8.1.0
       is-reference: 1.2.1
-      magic-string: 0.30.12
+      magic-string: 0.30.17
     optionalDependencies:
       rollup: 4.24.0
 
@@ -6404,7 +6404,7 @@ snapshots:
     dependencies:
       '@rollup/pluginutils': 5.1.3(rollup@4.24.0)
       estree-walker: 2.0.2
-      magic-string: 0.30.12
+      magic-string: 0.30.17
     optionalDependencies:
       rollup: 4.24.0
 
@@ -6427,7 +6427,7 @@ snapshots:
   '@rollup/plugin-replace@5.0.7(rollup@4.24.0)':
     dependencies:
       '@rollup/pluginutils': 5.1.3(rollup@4.24.0)
-      magic-string: 0.30.12
+      magic-string: 0.30.17
     optionalDependencies:
       rollup: 4.24.0
 
@@ -6627,7 +6627,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       eslint-visitor-keys: 3.4.3
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.26.3(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library-monorepo/ucla-library-website-components@1.28.3(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@vuepic/vue-datepicker': 8.8.1(vue@3.5.12(typescript@5.6.3))
       '@vueuse/components': 11.3.0(vue@3.5.12(typescript@5.6.3))
@@ -6643,10 +6643,10 @@ snapshots:
       - '@vue/composition-api'
       - typescript
 
-  '@ucla-library/component-library-nuxt-module@1.2.47(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library/component-library-nuxt-module@1.2.54(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@nuxt/kit': 3.16.0(magicast@0.3.5)
-      '@ucla-library-monorepo/ucla-library-website-components': 1.26.3(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+      '@ucla-library-monorepo/ucla-library-website-components': 1.28.3(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
     transitivePeerDependencies:
       - '@vue/composition-api'
       - magicast
@@ -6688,8 +6688,8 @@ snapshots:
     dependencies:
       '@mapbox/node-pre-gyp': 1.0.11
       '@rollup/pluginutils': 4.2.1
-      acorn: 8.12.1
-      acorn-import-attributes: 1.9.5(acorn@8.12.1)
+      acorn: 8.14.1
+      acorn-import-attributes: 1.9.5(acorn@8.14.1)
       async-sema: 3.1.1
       bindings: 1.5.0
       estree-walker: 2.0.2
@@ -6895,9 +6895,9 @@ snapshots:
     dependencies:
       event-target-shim: 5.0.1
 
-  acorn-import-attributes@1.9.5(acorn@8.12.1):
+  acorn-import-attributes@1.9.5(acorn@8.14.1):
     dependencies:
-      acorn: 8.12.1
+      acorn: 8.14.1
 
   acorn-jsx@5.3.2(acorn@8.13.0):
     dependencies:
@@ -7283,7 +7283,7 @@ snapshots:
 
   citty@0.1.6:
     dependencies:
-      consola: 3.2.3
+      consola: 3.4.0
 
   clean-regexp@1.0.0:
     dependencies:
@@ -8235,7 +8235,7 @@ snapshots:
   externality@1.0.2:
     dependencies:
       enhanced-resolve: 5.17.1
-      mlly: 1.7.2
+      mlly: 1.7.4
       pathe: 1.1.2
       ufo: 1.5.4
 
@@ -8475,7 +8475,7 @@ snapshots:
   giget@1.2.3:
     dependencies:
       citty: 0.1.6
-      consola: 3.2.3
+      consola: 3.4.0
       defu: 6.1.4
       node-fetch-native: 1.6.4
       nypm: 0.3.12
@@ -9028,17 +9028,17 @@ snapshots:
       '@parcel/watcher-wasm': 2.4.1
       citty: 0.1.6
       clipboardy: 4.0.0
-      consola: 3.2.3
+      consola: 3.4.0
       crossws: 0.2.4
       defu: 6.1.4
       get-port-please: 3.1.2
       h3: 1.13.0
       http-shutdown: 1.2.2
-      jiti: 2.3.3
-      mlly: 1.7.2
+      jiti: 2.4.2
+      mlly: 1.7.4
       node-forge: 1.3.1
       pathe: 1.1.2
-      std-env: 3.7.0
+      std-env: 3.8.1
       ufo: 1.5.4
       untun: 0.1.3
       uqr: 0.1.2
@@ -9062,8 +9062,8 @@ snapshots:
 
   local-pkg@0.5.0:
     dependencies:
-      mlly: 1.7.2
-      pkg-types: 1.2.1
+      mlly: 1.7.4
+      pkg-types: 1.3.1
 
   local-pkg@1.1.1:
     dependencies:
@@ -9641,7 +9641,7 @@ snapshots:
   openapi-typescript@6.7.6:
     dependencies:
       ansi-colors: 4.1.3
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       js-yaml: 4.1.0
       supports-color: 9.4.0
       undici: 5.28.4
@@ -10538,7 +10538,7 @@ snapshots:
   terser@5.36.0:
     dependencies:
       '@jridgewell/source-map': 0.3.6
-      acorn: 8.12.1
+      acorn: 8.14.1
       commander: 2.20.3
       source-map-support: 0.5.21
 
@@ -10820,7 +10820,7 @@ snapshots:
   untun@0.1.3:
     dependencies:
       citty: 0.1.6
-      consola: 3.2.3
+      consola: 3.4.0
       pathe: 1.1.2
 
   untyped@1.5.1:
@@ -10845,11 +10845,11 @@ snapshots:
 
   unwasm@0.3.9(webpack-sources@3.2.3):
     dependencies:
-      knitwork: 1.1.0
-      magic-string: 0.30.12
-      mlly: 1.7.2
+      knitwork: 1.2.0
+      magic-string: 0.30.17
+      mlly: 1.7.4
       pathe: 1.1.2
-      pkg-types: 1.2.1
+      pkg-types: 1.3.1
       unplugin: 1.14.1(webpack-sources@3.2.3)
     transitivePeerDependencies:
       - webpack-sources
@@ -10911,7 +10911,7 @@ snapshots:
       chalk: 4.1.2
       chokidar: 3.6.0
       commander: 8.3.0
-      fast-glob: 3.3.2
+      fast-glob: 3.3.3
       fs-extra: 11.2.0
       npm-run-path: 4.0.1
       strip-ansi: 6.0.1
@@ -10954,7 +10954,7 @@ snapshots:
       '@vue/babel-plugin-jsx': 1.2.5(@babel/core@7.25.9)
       '@vue/compiler-dom': 3.5.12
       kolorist: 1.8.0
-      magic-string: 0.30.12
+      magic-string: 0.30.17
       vite: 5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0)
     transitivePeerDependencies:
       - supports-color
