@@ -266,6 +266,8 @@ const parsedEventSeries = computed(() => {
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
+          :fixed-page-width-mode="true"
+          :fixed-page-width-num="10"
         />
       </SectionWrapper>
     </div>

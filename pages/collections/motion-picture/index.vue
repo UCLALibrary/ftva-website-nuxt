@@ -300,6 +300,8 @@ useHead({
           v-if="totalPages !== 1 && !isMobile"
           :pages="totalPages"
           :initial-current-page="currentPage"
+          :fixed-page-width-mode="true"
+          :fixed-page-width-num="10"
         />
       </SectionWrapper>
 

@@ -532,7 +532,8 @@ useHead({
             No results found.
           </h4>
           <p class="no-results-text">
-            Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at
+            Looking for a specific collection item? Search the UCLA Film & Television Archive
+            Catalog at
           </p>
           <button-link
             label="UC Library Search"
@@ -544,7 +545,7 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -612,6 +613,8 @@ useHead({
               v-if="totalPages !== 1 && !isMobile"
               :pages="totalPages"
               :initial-current-page="currentPage"
+              :fixed-page-width-mode="true"
+              :fixed-page-width-num="10"
             />
           </div>
         </div>
