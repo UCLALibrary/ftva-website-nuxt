@@ -686,6 +686,12 @@ useHead({
         .ftva.block-staff-article-item {
           --image-min-width: 240px;
 
+          .image {
+            .sizer {
+              padding-bottom: 0 !important;
+            }
+          }
+
           .meta {
             margin: 0;
           }

@@ -325,6 +325,12 @@ const parsedEventSeries = computed(() => {
     }
   }
 
+  :deep(.ftva.section-staff-article-list) {
+    .sizer {
+      padding-bottom: 0 !important;
+    }
+  }
+
   @media screen and (max-width: 834px) {
 
     :deep(.ftva.block-staff-article-item .image),
