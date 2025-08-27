@@ -609,16 +609,25 @@ useHead({
               class="search-results-list"
             />
 
-            <SectionPagination
+            <!-- <SectionPagination
               v-if="totalPages !== 1 && !isMobile"
               :pages="totalPages"
               :initial-current-page="currentPage"
               :fixed-page-width-mode="true"
               :fixed-page-width-num="10"
-            />
+            /> -->
           </div>
         </div>
       </div>
+    </div>
+    <div class="one-column-pagination">
+      <SectionPagination
+        v-if="totalPages !== 1 && !isMobile"
+        :pages="totalPages"
+        :initial-current-page="currentPage"
+        :fixed-page-width-mode="true"
+        :fixed-page-width-num="10"
+      />
     </div>
     <SectionWrapper
       v-if="!noResultsFound && parsedResults.length !== 0"
@@ -813,6 +822,17 @@ useHead({
           text-decoration: none;
         }
       }
+    }
+  }
+
+  .one-column-pagination {
+    width: 100%;
+    max-width: var(--ftva-container-max-width);
+    padding: 2.5%;
+    margin: 0 auto;
+
+    .section-pagination {
+      padding-left: 0;
     }
   }
 
