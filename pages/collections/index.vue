@@ -71,7 +71,7 @@ const parsedCollections = computed(() => {
       return {
         ...item,
         to: item.uri.startsWith('/') ? item.uri : `/${item.uri}`,
-        image: item.imageCarousel[0]?.image[0]
+        image: parseImage(item)
       }
     })
 
@@ -91,7 +91,7 @@ const parsedResources = computed(() => {
       to: obj.uri
         ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
         : '/',
-      image: obj.image[0]
+      image: parseImage(obj)
     }
   })
 })
@@ -105,7 +105,7 @@ const parsedAboutCollections = computed(() => {
       to: obj.uri
         ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
         : '/',
-      image: obj.image[0]
+      image: parseImage(obj)
     }
   })
 })
