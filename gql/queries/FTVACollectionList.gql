@@ -63,6 +63,14 @@ query FTVACollectionList {
             image: ftvaImage {
               ...Image
             }
+            imageCarousel {
+              ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                  ...Image
+                }
+                creditText
+              }
+            }
           }
         }
       }
@@ -76,6 +84,14 @@ query FTVACollectionList {
             uri
             image: ftvaImage {
               ...Image
+            }
+            imageCarousel {
+              ... on imageCarousel_imageCarousel_BlockType {
+                image {
+                  ...Image
+                }
+                creditText
+              }
             }
           }
         }

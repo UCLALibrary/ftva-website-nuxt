@@ -4,7 +4,6 @@ import SvgGlyphX from 'ucla-library-design-tokens/assets/svgs/icon-ftva-xtag.svg
 import parseFilters from '@/utils/parseFilters'
 import parseImage from '@/utils/parseImage'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll'
 
 const route = useRoute()
 const documentsPerPage = 10
@@ -154,7 +153,41 @@ const onResults = (results) => {
 const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, reset, searchES } = useMobileOnlyInfiniteScroll(searchResultsFetchFunction, onResults)
 
 // PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('search-section-title')
+// Element reference for the scroll target
+const resultsSection = ref<HTMLElement>(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
+
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+
+  hasMore.value = true
+  const queryFilters = parseFilters(route.query.filters || '')
+  selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
+  console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
+  // console.log('userFilterSelection updated', userFilterSelection.value)
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
+  // set sort & page # from query params
+  selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
+  // console.log('selectedSortFilters updated', selectedSortFilters.value)
+  if (selectedSortFilters.value.sortField === '') {
+    sortField.value = '_score'
+    // console.log('sortField updated', sortField.value)
+    orderBy.value = 'desc'
+    // console.log('orderBy updated', orderBy.value)
+  } else {
+    sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
+    // console.log('sortField updated', sortField.value)
+    orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
+    // console.log('orderBy updated', orderBy.value)
+  }
+  await searchES()
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedResults.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 // SORT SETUP - uses static data
 const sortDropdownData = {
@@ -167,40 +200,6 @@ const sortDropdownData = {
   label: 'Sort by',
   fieldName: 'sortField'
 }
-
-// This watcher is called when router push updates the query params
-watch(
-  () => route.query,
-  (newVal, oldVal) => {
-    isLoading.value = false
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-
-    hasMore.value = true
-    const queryFilters = parseFilters(route.query.filters || '')
-    selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
-    console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
-    // console.log('userFilterSelection updated', userFilterSelection.value)
-    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    // set sort & page # from query params
-    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
-    // console.log('selectedSortFilters updated', selectedSortFilters.value)
-    if (selectedSortFilters.value.sortField === '') {
-      sortField.value = '_score'
-      // console.log('sortField updated', sortField.value)
-      orderBy.value = 'desc'
-      // console.log('orderBy updated', orderBy.value)
-    } else {
-      sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
-      // console.log('sortField updated', sortField.value)
-      orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
-      // console.log('orderBy updated', orderBy.value)
-    }
-    searchES()
-
-    // Restore scroll position
-    restoreScrollPosition()
-  }, { deep: true, immediate: true }
-)
 
 function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterResult {
   let updatedOptions: Option[] = []
@@ -254,7 +253,7 @@ const parsedResults = computed(() => {
     return {
       ...obj._source,
       category: obj._source.groupName !== 'Series' ? obj._source.groupName.replace(/s$/, '') : obj._source.groupName,
-      date: obj._source.sectionHandle !== 'ftvaEvent' && obj._source.sectionHandle !== 'ftvaEventSeries' ? obj._source.postDate || '' : '', // TODO rethink date field in blockstafarticlelist component, refactor to use another customslot for fva dates for postdate in sectionstaffarticlelist
+      date: obj._source.sectionHandle !== 'ftvaEvent' && obj._source.sectionHandle !== 'ftvaEventSeries' && obj._source.groupName !== 'Collections' && obj._source.groupName !== 'General Content' ? obj._source.postDate || '' : '', // TODO rethink date field in blockstafarticlelist component, refactor to use another customslot for fva dates for postdate in sectionstaffarticlelist
       startDate: obj._source.startDate || '',
       enddate: obj._source.endDate || '',
       ongoing: obj._source.ongoing || false,
@@ -514,6 +513,7 @@ useHead({
           <!--p>Results will be displayed here.</p-->
           <div
             v-if="parsedResults.length > 0"
+            ref="resultsSection"
             class="results-container"
           >
             <!-- Sort by -->
@@ -675,26 +675,34 @@ useHead({
 
       :deep(.ftva.section-staff-article-list) {
         padding: 0;
-        // margin-right: 1rem;
 
         li.block-staff-article-item {
           &:not(:last-child) {
             border-bottom: 1px solid var(--pale-blue);
           }
 
-          .category {
-            @include ftva-subtitle-1;
-            color: $accent-blue;
+        }
+
+        .ftva.block-staff-article-item {
+          --image-min-width: 240px;
+
+          .image {
+            .sizer {
+              padding-bottom: 0 !important;
+            }
           }
 
-          .title {
-            @include truncate(2);
+          .meta {
+            margin: 0;
           }
 
-          .molecule-no-image {
-            width: 500px;
-            height: 213px;
-            aspect-ratio: 3 / 1;
+          .ftva-date {
+            color: #676767;
+            font-family: "proxima-nova", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            text-transform: unset;
           }
         }
       }
@@ -722,19 +730,6 @@ useHead({
           @include ftva-breadcrumb-inactive;
           color: $heading-grey;
         }
-      }
-
-      :deep(.ftva.block-staff-article-item:last-child) {
-        .date {
-          height: auto;
-          @include ftva-subtitle-2;
-          color: $subtitle-grey;
-        }
-      }
-
-      :deep(.ftva.block-staff-article-item .date) {
-        @include ftva-subtitle-2;
-        color: $subtitle-grey;
       }
 
       .ftva.section-pagination {
@@ -771,6 +766,69 @@ useHead({
         a {
           text-decoration: none;
         }
+      }
+    }
+  }
+
+  @media screen and (max-width: 834px) {
+
+    :deep(.ftva.block-staff-article-item .title) {
+      -webkit-line-clamp: 2;
+    }
+  }
+
+  @media #{$small} {
+    :deep(.ftva.section-staff-article-list .block-staff-article-list) {
+      padding: 16px;
+    }
+
+    :deep(.ftva.section-staff-article-list .block-staff-article-list .block-staff-article-item) {
+      border-radius: 0;
+
+      .meta {
+        padding: 0;
+        gap: 8px;
+
+        .category {
+          font-size: 18px;
+        }
+
+        .title {
+          -webkit-line-clamp: unset;
+        }
+
+        .ftva-description {
+          margin-bottom: 0;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          font-size: 16px;
+          line-height: 1.5;
+        }
+
+        .ftva-date {
+          font-size: 18px;
+          font-weight: 500;
+          font-family: Karbon;
+          margin-top: 4px;
+        }
+      }
+    }
+
+    :deep(.ftva.section-staff-article-list .block-staff-article-list .block-staff-article-item) {
+      &:not(:last-child) {
+        border-bottom: 1px solid #e7edf2;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+      }
+    }
+
+    :deep(.ftva.block-staff-article-item) {
+
+      figure,
+      .molecule-no-image {
+        display: none;
       }
     }
   }
@@ -826,14 +884,6 @@ useHead({
           width: 100%;
           padding-left: 0px;
           padding-right: 0px;
-        }
-      }
-
-      :deep(li.block-staff-article-item) {
-
-        figure,
-        .molecule-no-image {
-          display: none;
         }
       }
 

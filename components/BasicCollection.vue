@@ -123,7 +123,7 @@ const parsedRelatedCollections = computed(() => {
       category: 'collection',
       // Remove image tags inside byline rich text
       bylineOne: item.richText.replace(/<img.*?>/ig, ''),
-      image: item.ftvaImage && item.ftvaImage.length > 0 ? item.ftvaImage[0] : null,
+      image: parseImage(item)
     }
   })
   return relatedCollections

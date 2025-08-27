@@ -6,7 +6,6 @@ import _get from 'lodash/get'
 import FTVAEventSeriesList from '../gql/queries/FTVAEventSeriesList.gql'
 
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-import usePaginationScroll from '@/composables/usePaginationScroll.ts'
 
 const { $graphql } = useNuxtApp()
 
@@ -148,21 +147,25 @@ const onResults = (results) => {
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(seriesFetchFunction, onResults)
 
 // PAGINATION SCROLL HANDLING
-const { restoreScrollPosition } = usePaginationScroll('series-section-title')
+// Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
 
-watch(() => route.query,
-  (newVal, oldVal) => {
-    isLoading.value = false
-    currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-    hasMore.value = true
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
 
-    searchES()
-
-    // Restore scroll position
-    restoreScrollPosition()
-  }, { deep: true, immediate: true }
-)
+  await searchES()
+  // Restore scroll position
+  // // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && parsedEventSeries.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
 
 const parseViewSelection = computed(() => {
   return currentView.value === 'current' ? 1 : 0
@@ -197,6 +200,10 @@ const parsedEventSeries = computed(() => {
         :section-title="heading.titleGeneral"
         :section-summary="showPageSummary ? heading.summary : ''"
         theme="paleblue"
+      />
+      <div
+        ref="resultsSection"
+        class="for-pagination-scroll"
       />
 
       <SectionWrapper theme="paleblue">
@@ -312,30 +319,66 @@ const parsedEventSeries = computed(() => {
     padding: 2.5%;
   }
 
-  @media #{$medium} {
-
-    :deep(.block-staff-article-item .image),
-    :deep(.block-staff-article-item .image .media) {
-      aspect-ratio: 1.69/1;
-      height: auto;
-      margin-bottom: 0;
+  :deep(.ftva.block-staff-article-item) {
+    .meta {
+      margin: 0;
     }
+  }
 
-    :deep(.block-staff-article-item .meta) {
-      padding: 20px;
-      height: auto;
-
-      .title {
-        font-size: 26px;
-      }
-
-      .date {
-        position: initial;
-      }
-    }
-
-    :deep(.block-staff-article-item .responsive-image .sizer) {
+  :deep(.ftva.section-staff-article-list) {
+    .sizer {
       padding-bottom: 0 !important;
+    }
+  }
+
+  @media screen and (max-width: 834px) {
+
+    :deep(.ftva.block-staff-article-item .image),
+    :deep(.ftva.block-staff-article-item .molecule-no-image) {
+      --image-min-width: 240px;
+    }
+
+    :deep(.ftva.block-staff-article-item .title) {
+      -webkit-line-clamp: 2;
+    }
+  }
+
+  @media #{$small} {
+    :deep(.ftva.section-staff-article-list) {
+      background-color: #e7edf2;
+      padding: 0 16px;
+
+      .ftva.block-staff-article-item {
+        margin-bottom: 16px;
+      }
+
+      .ftva.block-staff-article-item .image {
+        --image-aspect-ratio: 16/9;
+        aspect-ratio: 16/9;
+        height: auto;
+        margin-bottom: 0;
+
+        .sizer {
+          padding-bottom: 0 !important;
+        }
+      }
+
+      .meta {
+        margin: 0;
+        padding: 20px;
+
+        .title {
+          font-size: 21px;
+        }
+
+        .ftva-description {
+          display: none;
+        }
+
+        .ftva-date {
+          font-size: 20px;
+        }
+      }
     }
   }
 

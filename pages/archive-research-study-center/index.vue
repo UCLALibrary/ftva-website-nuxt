@@ -138,8 +138,7 @@ useHead({
       :section-title="page.title"
       class="header"
       data-test=""
-    >
-    </SectionWrapper>
+    />
 
     <FlexibleBlocks
       class="flexible-content"
