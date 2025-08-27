@@ -201,44 +201,6 @@ const sortDropdownData = {
   fieldName: 'sortField'
 }
 
-// This watcher is called when router push updates the query params
-/* watch(
-  () => route.query,
-  async (newVal, oldVal) => {
-    isLoading.value = false
-    isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
-
-    hasMore.value = true
-    const queryFilters = parseFilters(route.query.filters || '')
-    selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
-    console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
-    // console.log('userFilterSelection updated', userFilterSelection.value)
-    currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
-    // set sort & page # from query params
-    selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || '') }
-    // console.log('selectedSortFilters updated', selectedSortFilters.value)
-    if (selectedSortFilters.value.sortField === '') {
-      sortField.value = '_score'
-      // console.log('sortField updated', sortField.value)
-      orderBy.value = 'desc'
-      // console.log('orderBy updated', orderBy.value)
-    } else {
-      sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
-      // console.log('sortField updated', sortField.value)
-      orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
-      // console.log('orderBy updated', orderBy.value)
-    }
-    await searchES()
-
-    // Restore scroll position
-    // Scroll after DOM updates
-    await nextTick()
-    if (!isMobile.value && route.query.page && resultsSection.value && parsedResults.value.length > 0) {
-      await scrollTo(resultsSection)
-    }
-  }, { deep: true, immediate: true }
-) */
-
 function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterResult {
   let updatedOptions: Option[] = []
 
@@ -291,7 +253,7 @@ const parsedResults = computed(() => {
     return {
       ...obj._source,
       category: obj._source.groupName !== 'Series' ? obj._source.groupName.replace(/s$/, '') : obj._source.groupName,
-      date: obj._source.sectionHandle !== 'ftvaEvent' && obj._source.sectionHandle !== 'ftvaEventSeries' ? obj._source.postDate || '' : '', // TODO rethink date field in blockstafarticlelist component, refactor to use another customslot for fva dates for postdate in sectionstaffarticlelist
+      date: obj._source.sectionHandle !== 'ftvaEvent' && obj._source.sectionHandle !== 'ftvaEventSeries' && obj._source.groupName !== 'Collections' && obj._source.groupName !== 'General Content' ? obj._source.postDate || '' : '', // TODO rethink date field in blockstafarticlelist component, refactor to use another customslot for fva dates for postdate in sectionstaffarticlelist
       startDate: obj._source.startDate || '',
       enddate: obj._source.endDate || '',
       ongoing: obj._source.ongoing || false,
@@ -725,26 +687,34 @@ useHead({
 
       :deep(.ftva.section-staff-article-list) {
         padding: 0;
-        // margin-right: 1rem;
 
         li.block-staff-article-item {
           &:not(:last-child) {
             border-bottom: 1px solid var(--pale-blue);
           }
 
-          .category {
-            @include ftva-subtitle-1;
-            color: $accent-blue;
+        }
+
+        .ftva.block-staff-article-item {
+          --image-min-width: 240px;
+
+          .image {
+            .sizer {
+              padding-bottom: 0 !important;
+            }
           }
 
-          .title {
-            @include truncate(2);
+          .meta {
+            margin: 0;
           }
 
-          .molecule-no-image {
-            width: 500px;
-            height: 213px;
-            aspect-ratio: 3 / 1;
+          .ftva-date {
+            color: #676767;
+            font-family: "proxima-nova", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            text-transform: unset;
           }
         }
       }
@@ -772,19 +742,6 @@ useHead({
           @include ftva-breadcrumb-inactive;
           color: $heading-grey;
         }
-      }
-
-      :deep(.ftva.block-staff-article-item:last-child) {
-        .date {
-          height: auto;
-          @include ftva-subtitle-2;
-          color: $subtitle-grey;
-        }
-      }
-
-      :deep(.ftva.block-staff-article-item .date) {
-        @include ftva-subtitle-2;
-        color: $subtitle-grey;
       }
 
       .ftva.section-pagination {
@@ -887,14 +844,6 @@ useHead({
           width: 100%;
           padding-left: 0px;
           padding-right: 0px;
-        }
-      }
-
-      :deep(li.block-staff-article-item) {
-
-        figure,
-        .molecule-no-image {
-          display: none;
         }
       }
 
