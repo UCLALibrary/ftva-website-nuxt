@@ -70,7 +70,7 @@ const parsedCollections = computed(() => {
     const parsedSelectedCollectionItems = collection.featuredCollections.map((item) => {
       return {
         ...item,
-        to: item.uri,
+        to: item.uri.startsWith('/') ? item.uri : `/${item.uri}`,
         image: parseImage(item)
       }
     })
@@ -88,7 +88,9 @@ const parsedResources = computed(() => {
   return page.value.otherResources[0].featuredResources.map((obj) => {
     return {
       title: obj.title,
-      to: `/${obj.uri}`,
+      to: obj.uri
+        ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
+        : '/',
       image: parseImage(obj)
     }
   })
@@ -100,7 +102,9 @@ const parsedAboutCollections = computed(() => {
   return page.value.aboutOurCollections[0].collectionsInformation.map((obj) => {
     return {
       title: obj.title,
-      to: `/${obj.uri}`,
+      to: obj.uri
+        ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
+        : '/',
       image: parseImage(obj)
     }
   })
