@@ -1,6 +1,7 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
+
 // GQL
 import FTVAARSCIMCS from '../gql/queries/FTVAEntryARSCIMCS.gql'
 
@@ -85,12 +86,9 @@ definePageMeta({
   alias: ['/instructional-media-collections-services']
 })
 
-const headTitle = ref('Loading ...') // computed(() => page.value?.title || 'Loading...')
+const headTitle = ref('Loading ...')
 
 onMounted(() => {
-  // watch(() => store.productName, (newVal) => {
-  //   title.value = newVal;
-  // }, { immediate: true });
   headTitle.value = page.value?.title
 })
 
