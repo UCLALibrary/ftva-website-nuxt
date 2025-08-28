@@ -85,8 +85,17 @@ definePageMeta({
   alias: ['/instructional-media-collections-services']
 })
 
+const headTitle = ref('Loading ...') // computed(() => page.value?.title || 'Loading...')
+
+onMounted(() => {
+  // watch(() => store.productName, (newVal) => {
+  //   title.value = newVal;
+  // }, { immediate: true });
+  headTitle.value = page.value?.title
+})
+
 useHead({
-  title: computed(() => page.value?.title || 'Archive Research Study Center'),
+  title: headTitle,
   meta: [
     {
       hid: 'description',
