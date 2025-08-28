@@ -1,7 +1,6 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
-// COMMENT
 // GQL
 import FTVAARSCIMCS from '../gql/queries/FTVAEntryARSCIMCS.gql'
 
@@ -87,12 +86,12 @@ definePageMeta({
 })
 
 useHead({
-  title: page.value ? page.value.title : '... loading',
+  title: computed(() => page.value?.title || 'Archive Research Study Center'),
   meta: [
     {
       hid: 'description',
       name: 'description',
-      content: removeTags(page.value.summary)
+      content: computed(() => page.value?.summary ? removeTags(page.value.summary) : '')
     }
   ]
 })
@@ -103,36 +102,38 @@ useHead({
     :class="pageClass"
   >
     <div class="one-column">
-      <ResponsiveImage
-        v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
-        data-test="single-image"
-        :media="parsedImage[0]?.image[0]"
-        :aspect-ratio="43.103"
-      >
-        <template
-          v-if="parsedImage[0]?.creditText"
-          #credit
+      <ClientOnly>
+        <ResponsiveImage
+          v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
+          data-test="single-image"
+          :media="parsedImage[0]?.image[0]"
+          :aspect-ratio="43.103"
         >
-          {{ parsedImage[0]?.creditText }}
-        </template>
-      </ResponsiveImage>
-      <div
-        v-else-if="parsedCarouselData && parsedCarouselData.length > 0 && parsedImage[0]?.image && parsedImage[0].image.length !== 0"
-        class="lightbox-container"
-      >
-        <FlexibleMediaGalleryNewLightbox
-          data-test="image-carousel"
-          :items="parsedCarouselData"
-          inline="true"
-        >
-          <template #default="slotProps">
-            <BlockTag
-              data-test="credit-text"
-              :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
-            />
+          <template
+            v-if="parsedImage[0]?.creditText"
+            #credit
+          >
+            {{ parsedImage[0]?.creditText }}
           </template>
-        </FlexibleMediaGalleryNewLightbox>
-      </div>
+        </ResponsiveImage>
+        <div
+          v-else-if="parsedCarouselData && parsedCarouselData.length > 0 && parsedImage[0]?.image && parsedImage[0].image.length !== 0"
+          class="lightbox-container"
+        >
+          <FlexibleMediaGalleryNewLightbox
+            data-test="image-carousel"
+            :items="parsedCarouselData"
+            inline="true"
+          >
+            <template #default="slotProps">
+              <BlockTag
+                data-test="credit-text"
+                :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
+              />
+            </template>
+          </FlexibleMediaGalleryNewLightbox>
+        </div>
+      </ClientOnly>
     </div>
     <SectionWrapper
       :section-title="page.title"
