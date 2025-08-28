@@ -494,7 +494,8 @@ useHead({
             No results found.
           </h4>
           <p class="no-results-text">
-            Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at
+            Looking for a specific collection item? Search the UCLA Film & Television Archive
+            Catalog at
           </p>
           <button-link
             label="UC Library Search"
@@ -569,15 +570,18 @@ useHead({
               :items="parsedResults"
               class="search-results-list"
             />
-
-            <SectionPagination
-              v-if="totalPages !== 1 && !isMobile"
-              :pages="totalPages"
-              :initial-current-page="currentPage"
-            />
           </div>
         </div>
       </div>
+    </div>
+    <div class="one-column-pagination">
+      <SectionPagination
+        v-if="totalPages !== 1 && !isMobile"
+        :pages="totalPages"
+        :initial-current-page="currentPage"
+        :fixed-page-width-mode="true"
+        :fixed-page-width-num="10"
+      />
     </div>
     <SectionWrapper
       v-if="!noResultsFound && parsedResults.length !== 0"
@@ -601,11 +605,6 @@ useHead({
 
 .search-page {
   .one-column {
-
-    /*.breadcrumb {
-      padding-top: 2rem;
-      padding-left: 2rem;
-    }*/
 
     .search-title {
       padding-left: 2rem;
@@ -660,9 +659,7 @@ useHead({
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        // align-items: center;
         margin-bottom: 35px;
-        // margin-right: 1rem;
 
         .total-results {
           :deep(.label) {
@@ -743,7 +740,6 @@ useHead({
       margin-bottom: 0;
       flex-basis: 33%;
       max-width: 275px;
-      // padding: 0 1rem;
       padding-bottom: 60px;
 
       .filter-results {
@@ -767,6 +763,18 @@ useHead({
           text-decoration: none;
         }
       }
+    }
+  }
+
+  .one-column-pagination {
+    width: 100%;
+    max-width: var(--ftva-container-max-width);
+    padding: 2.5%;
+    margin: 0 auto;
+
+    .section-pagination {
+      padding-left: 0;
+      margin: 0 auto;
     }
   }
 
@@ -831,9 +839,7 @@ useHead({
         display: none;
       }
     }
-  }
 
-  @media #{$small} {
     .two-column {
 
       .content {
