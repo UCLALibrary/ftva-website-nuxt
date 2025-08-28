@@ -235,7 +235,7 @@ const pageClasses = computed(() => {
           :pages="totalPages"
           :initial-current-page="currentPage"
           :fixed-page-width-mode="true"
-          :fixed-page-width-num="6"
+          :fixed-page-width-num="10"
         />
       </SectionWrapper>
     </div>
