@@ -778,7 +778,68 @@ useHead({
     }
   }
 
+  @media screen and (max-width: 834px) {
+
+    :deep(.ftva.block-staff-article-item .title) {
+      -webkit-line-clamp: 2;
+    }
+  }
+
   @media #{$small} {
+    :deep(.ftva.section-staff-article-list .block-staff-article-list) {
+      padding: 16px;
+    }
+
+    :deep(.ftva.section-staff-article-list .block-staff-article-list .block-staff-article-item) {
+      border-radius: 0;
+
+      .meta {
+        padding: 0;
+        gap: 8px;
+
+        .category {
+          font-size: 18px;
+        }
+
+        .title {
+          -webkit-line-clamp: unset;
+        }
+
+        .ftva-description {
+          margin-bottom: 0;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          font-size: 16px;
+          line-height: 1.5;
+        }
+
+        .ftva-date {
+          font-size: 18px;
+          font-weight: 500;
+          font-family: Karbon;
+          margin-top: 4px;
+        }
+      }
+    }
+
+    :deep(.ftva.section-staff-article-list .block-staff-article-list .block-staff-article-item) {
+      &:not(:last-child) {
+        border-bottom: 1px solid #e7edf2;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+      }
+    }
+
+    :deep(.ftva.block-staff-article-item) {
+
+      figure,
+      .molecule-no-image {
+        display: none;
+      }
+    }
+
     .two-column {
 
       .content {
