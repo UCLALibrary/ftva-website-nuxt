@@ -426,6 +426,7 @@ useHead({
 
   .section-pagination {
     padding-top: 12px;
+    justify-content: center;
   }
 }
 </style>

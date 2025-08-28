@@ -319,6 +319,7 @@ const parsedEventSeries = computed(() => {
     background-color: white;
     max-width: unset;
     padding: 2.5%;
+    justify-content: center;
   }
 
   :deep(.ftva.block-staff-article-item) {

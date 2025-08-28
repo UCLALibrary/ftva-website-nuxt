@@ -434,6 +434,7 @@ useHead({
 
   .section-pagination {
     margin-top: 32px;
+    justify-content: center;
   }
 
   :deep(.section-post-small .grid-wrapper) {

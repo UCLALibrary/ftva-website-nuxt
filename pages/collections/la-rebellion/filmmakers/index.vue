@@ -266,6 +266,7 @@ const pageClasses = computed(() => {
   :deep(.section-pagination) {
     background-color: white;
     padding: 2.5%;
+    justify-content: center;
   }
 
   .sort-fields {

@@ -570,14 +570,6 @@ useHead({
               :items="parsedResults"
               class="search-results-list"
             />
-
-            <!-- <SectionPagination
-              v-if="totalPages !== 1 && !isMobile"
-              :pages="totalPages"
-              :initial-current-page="currentPage"
-              :fixed-page-width-mode="true"
-              :fixed-page-width-num="10"
-            /> -->
           </div>
         </div>
       </div>
@@ -613,11 +605,6 @@ useHead({
 
 .search-page {
   .one-column {
-
-    /*.breadcrumb {
-      padding-top: 2rem;
-      padding-left: 2rem;
-    }*/
 
     .search-title {
       padding-left: 2rem;
@@ -672,9 +659,7 @@ useHead({
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        // align-items: center;
         margin-bottom: 35px;
-        // margin-right: 1rem;
 
         .total-results {
           :deep(.label) {
@@ -755,7 +740,6 @@ useHead({
       margin-bottom: 0;
       flex-basis: 33%;
       max-width: 275px;
-      // padding: 0 1rem;
       padding-bottom: 60px;
 
       .filter-results {
@@ -790,6 +774,7 @@ useHead({
 
     .section-pagination {
       padding-left: 0;
+      margin: 0 auto;
     }
   }
 
