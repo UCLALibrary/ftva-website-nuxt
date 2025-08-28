@@ -266,6 +266,8 @@ const parsedEventSeries = computed(() => {
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
+          :fixed-page-width-mode="true"
+          :fixed-page-width-num="10"
         />
       </SectionWrapper>
     </div>
@@ -317,6 +319,7 @@ const parsedEventSeries = computed(() => {
     background-color: white;
     max-width: unset;
     padding: 2.5%;
+    justify-content: center;
   }
 
   :deep(.ftva.block-staff-article-item) {

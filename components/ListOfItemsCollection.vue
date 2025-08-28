@@ -338,6 +338,8 @@ useHead({
             v-if="totalPages !== 1 && !isMobile"
             :pages="totalPages"
             :initial-current-page="currentPage"
+            :fixed-page-width-mode="true"
+            :fixed-page-width-num="10"
           />
         </template>
       </SectionWrapper>
@@ -424,6 +426,7 @@ useHead({
 
   .section-pagination {
     padding-top: 12px;
+    justify-content: center;
   }
 }
 </style>
