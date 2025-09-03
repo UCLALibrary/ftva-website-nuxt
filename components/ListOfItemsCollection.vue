@@ -6,7 +6,18 @@ import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
-const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
+const attrs = useAttrs() as {
+  page?: {
+    title: string,
+    ftvaFilters: string[],
+    ftvaHomepageDescription: string,
+    titleBrowse: string,
+    groupName: string
+  },
+  breadcrumbs
+}
+console.log('page attr:', attrs.page)
+console.log('breadcrumb attr:', attrs.breadcrumbs)
 
 const route = useRoute()
 const router = useRouter()
@@ -274,6 +285,7 @@ useHead({
         data-test="breadcrumb"
         class="breadcrumb"
         :title="attrs.page.title"
+        :override-title-group="attrs.breadcrumbs"
         to="/collections"
       />
       <SectionWrapper

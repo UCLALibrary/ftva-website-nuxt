@@ -108,6 +108,13 @@ useHead({
     }
   ]
 })
+
+const breadcrumbOverride = [
+  {
+    titleLevel: 2,
+    updatedTitle: 'L.A. Rebellion'
+  }
+]
 </script>
 
 <template>
@@ -120,6 +127,7 @@ useHead({
         class="breadcrumb"
         data-test="breadcrumb"
         :title="page?.title"
+        :override-title-group="breadcrumbOverride"
       />
 
       <ResponsiveImage

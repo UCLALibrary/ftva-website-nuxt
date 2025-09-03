@@ -45,6 +45,17 @@ if (!data.value.entry) {
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 
+console.log('page: ', page.value)
+
+const bcTest = ref([
+  {
+    titleLevel: 2,
+    updatedTitle: 'L.A. Rebellion'
+  }
+])
+
+console.log('breadcrumb: ', bcTest.value)
+
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
@@ -69,7 +80,10 @@ useHead({
 </script>
 <template>
   <div class="page-component-wrapper">
-    <ListOfItemsCollection :page="page" />
+    <ListOfItemsCollection
+      :page="page"
+      :breadcrumbs="bcTest"
+    />
   </div>
 </template>
 <style scoped>

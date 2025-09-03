@@ -182,6 +182,13 @@ function updateSort(newSort) {
   })
 }
 
+const breadcrumbOverride = [
+  {
+    titleLevel: 2,
+    updatedTitle: 'L.A. Rebellion'
+  }
+]
+
 const pageClasses = computed(() => {
   return ['page', 'page-filmmakers']
 })
@@ -194,7 +201,10 @@ const pageClasses = computed(() => {
     :class="pageClasses"
   >
     <div class="one-column">
-      <NavBreadcrumb data-test="breadcrumb" />
+      <NavBreadcrumb
+        data-test="breadcrumb"
+        :override-title-group="breadcrumbOverride"
+      />
 
       <SectionWrapper
         ref="scrollElem"
