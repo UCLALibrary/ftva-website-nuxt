@@ -14,7 +14,9 @@ const route = useRoute()
 // routes this template/page supports:
 const routeNameToSectionMap = {
   '/collections/la-rebellion/filmography': 'ftvaCollectionListingLARebellion',
-  '/collections/in-the-life/filmography': 'ftvaCollectionListingInTheLife'
+  '/collections/in-the-life/filmography': 'ftvaCollectionListingInTheLife',
+  '/collections/la-rebellion/filmography/': 'ftvaCollectionListingLARebellion',
+  '/collections/in-the-life/filmography/': 'ftvaCollectionListingInTheLife'
 }
 
 const { data, error } = await useAsyncData(`${route.path}-filmography`, async () => {
