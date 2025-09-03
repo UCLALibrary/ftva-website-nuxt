@@ -8,7 +8,7 @@ describe('Collection Filmography List Page', () => {
   })
 
   it('Visits the `In The Life` Filmography', () => {
-    cy.visit('/collections/in-the-life/filmography')
+    cy.visit('/collections/in-the-life/episodes')
     cy.getByData('breadcrumb').should('be.visible')
     cy.getByData('complex-collections-page-title').should('be.visible')
   })
