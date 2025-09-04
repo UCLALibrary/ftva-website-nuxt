@@ -90,7 +90,6 @@ definePageMeta({
 
 const headTitle = computed(() => page.value?.title || 'Loading ...')
 
-
 useHead({
   title: headTitle.value,
   meta: [
@@ -108,7 +107,6 @@ useHead({
     :class="pageClass"
   >
     <div class="one-column">
-
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
         data-test="single-image"
@@ -139,7 +137,6 @@ useHead({
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
-
     </div>
     <SectionWrapper
       :section-title="page.title"
