@@ -113,11 +113,15 @@ onMounted(() => {
         v-else
         class="lightbox-container"
       >
+        <!-- do not use inline=true, if inline is boolean use :inline=true -->
+        <!-- fix:  Invalid prop: type check failed for prop "inline". Expected Boolean, got String with value "true".
+  at <NewLightbox data-test="image-carousel" items= (2) [{…}, {…}] inline="true" >-->
+
         <FlexibleMediaGalleryNewLightbox
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           data-test="image-carousel"
           :items="parsedCarouselData"
-          inline="true"
+          :inline="true"
         >
           <template #default="slotProps">
             <BlockTag

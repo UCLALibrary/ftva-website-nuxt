@@ -139,7 +139,7 @@ const pageClass = computed(() => {
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           data-test="image-carousel"
           :items="parsedCarouselData"
-          inline="true"
+          :inline="true"
         >
           <template #default="slotProps">
             <BlockTag

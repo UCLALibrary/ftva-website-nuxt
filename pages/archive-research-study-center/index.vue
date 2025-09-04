@@ -88,14 +88,11 @@ definePageMeta({
   alias: ['/instructional-media-collections-services']
 })
 
-const headTitle = ref('Loading ...')
+const headTitle = computed(() => page.value?.title || 'Loading ...')
 
-onMounted(() => {
-  headTitle.value = page.value?.title
-})
 
 useHead({
-  title: headTitle,
+  title: headTitle.value,
   meta: [
     {
       hid: 'description',
@@ -111,38 +108,38 @@ useHead({
     :class="pageClass"
   >
     <div class="one-column">
-      <ClientOnly>
-        <ResponsiveImage
-          v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
-          data-test="single-image"
-          :media="parsedImage[0]?.image[0]"
-          :aspect-ratio="43.103"
+
+      <ResponsiveImage
+        v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
+        data-test="single-image"
+        :media="parsedImage[0]?.image[0]"
+        :aspect-ratio="43.103"
+      >
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
         >
-          <template
-            v-if="parsedImage[0]?.creditText"
-            #credit
-          >
-            {{ parsedImage[0]?.creditText }}
+          {{ parsedImage[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
+      <div
+        v-else-if="parsedCarouselData && parsedCarouselData.length > 0 && parsedImage[0]?.image && parsedImage[0].image.length !== 0"
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox
+          data-test="image-carousel"
+          :items="parsedCarouselData"
+          :inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag
+              data-test="credit-text"
+              :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
+            />
           </template>
-        </ResponsiveImage>
-        <div
-          v-else-if="parsedCarouselData && parsedCarouselData.length > 0 && parsedImage[0]?.image && parsedImage[0].image.length !== 0"
-          class="lightbox-container"
-        >
-          <FlexibleMediaGalleryNewLightbox
-            data-test="image-carousel"
-            :items="parsedCarouselData"
-            inline="true"
-          >
-            <template #default="slotProps">
-              <BlockTag
-                data-test="credit-text"
-                :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
-              />
-            </template>
-          </FlexibleMediaGalleryNewLightbox>
-        </div>
-      </ClientOnly>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
+
     </div>
     <SectionWrapper
       :section-title="page.title"

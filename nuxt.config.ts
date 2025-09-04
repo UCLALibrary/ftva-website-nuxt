@@ -42,7 +42,7 @@ export default defineNuxtConfig({
       failOnError: false,
       concurrency: 50,
       interval: 1000,
-      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/la-rebellion/filmmakers/', '/series/', '/blog/', '/archive-research-study-center/', '/billy-wilder-theater/', '/search/'],
+      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/television/', '/collections/watch-listen-online/', '/collections/la-rebellion/filmmakers/', '/collections/in-the-life/episodes', '/series/', '/blog/', '/archive-research-study-center/', '/instructional-media-collections-services/', '/billy-wilder-theater/', '/search/'],
     },
     hooks: {
       'prerender:generate'(route) {
@@ -79,15 +79,15 @@ export default defineNuxtConfig({
 
         if (allRoutes.length) {
           for (const route of allRoutes) {
-            routes.add(route)
+            // routes.add(route)
           }
-          routes.add('/instructional-media-collections-services')
-          routes.add('/archive-research-study-center')
-          routes.add('/collections/motion-picture')
-          routes.add('/collections/television')
-          routes.add('/collections/watch-listen-online')
-          routes.add('/collections/la-rebellion/filmography')
-          routes.add('/collections/in-the-life/episodes')
+          // routes.add('/instructional-media-collections-services')
+          // routes.add('/archive-research-study-center')
+          // routes.add('/collections/motion-picture')
+          // routes.add('/collections/television')
+          // routes.add('/collections/watch-listen-online')
+          // routes.add('/collections/la-rebellion/filmography')
+          // routes.add('/collections/in-the-life/episodes')
         }
         // eslint-disable-next-line no-console
         console.log('prerender:routes ctx.routes', routes)
