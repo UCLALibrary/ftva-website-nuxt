@@ -11,7 +11,9 @@ const route = useRoute()
 // routes this page supports:
 const routeNameToSectionMap = {
   '/archive-research-study-center': 'ftvaArchiveResearchAndStudyCenter',
-  '/instructional-media-collections-services': 'ftvaInstructionalMediaCollectionsAndServices'
+  '/instructional-media-collections-services': 'ftvaInstructionalMediaCollectionsAndServices',
+  '/archive-research-study-center/': 'ftvaArchiveResearchAndStudyCenter',
+  '/instructional-media-collections-services/': 'ftvaInstructionalMediaCollectionsAndServices'
 }
 const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap

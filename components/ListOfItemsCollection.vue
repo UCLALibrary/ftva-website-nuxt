@@ -82,9 +82,14 @@ const titleForSearch = computed(() => {
   // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
   if (route.path.endsWith('filmography')) {
     return route.path.split('/').includes('la-rebellion')
-      ? 'L.A. Rebellion' :
-      route.path.split('/').includes('in-the-life') ? 'In the Life' : collectionTitle.value
-  } else {
+      ? 'L.A. Rebellion'
+      : collectionTitle.value
+  } else if (route.path.endsWith('episodes')) {
+    return route.path.split('/').includes('in-the-life')
+      ? 'In the Life'
+      : collectionTitle.value
+  }
+  else {
     return collectionTitle.value
   }
 })

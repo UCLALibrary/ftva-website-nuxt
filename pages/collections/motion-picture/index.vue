@@ -12,13 +12,25 @@ const route = useRoute()
 
 // routes this page template supports:
 const routeNameToSectionMap = {
+  '/collections/motion-picture/': {
+    sectionName: 'ftvaListingMotionPictureCollections',
+    collection: 'motionPicture'
+  },
   '/collections/motion-picture': {
     sectionName: 'ftvaListingMotionPictureCollections',
     collection: 'motionPicture'
   },
+  '/collections/television/': {
+    sectionName: 'ftvaListingTelevisionCollections',
+    collection: 'television'
+  },
   '/collections/television': {
     sectionName: 'ftvaListingTelevisionCollections',
     collection: 'television'
+  },
+  '/collections/watch-listen-online/': {
+    sectionName: 'ftvaListingWatchAndListenOnline',
+    collection: 'watchAndListenOnline'
   },
   '/collections/watch-listen-online': {
     sectionName: 'ftvaListingWatchAndListenOnline',
