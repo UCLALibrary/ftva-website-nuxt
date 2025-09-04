@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
@@ -19,15 +19,14 @@ const isMobile = ref(false)
 const { data, error } = await useAsyncData('home-page', async () => {
   const data = await $graphql.default.request(FTVAHomepage)
   return data
-})
-
+}) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 if (error.value) {
   throw createError({
     statusCode: error.value.statusCode, statusMessage: error.value.statusMessage + error.value, fatal: true
   })
 }
 
-if (!data.value.entry) {
+if (!data.value?.entry) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -92,7 +91,7 @@ const parsedNowShowing = computed(() => {
     return null
   }
 
-  return page.value.ftvaFeaturedEventsSection[0].featuredEvents.map((item, index) => {
+  return page.value.ftvaFeaturedEventsSection[0]?.featuredEvents?.map((item, index) => {
     return {
       ...item,
       to: `/${item.uri}`,
@@ -117,7 +116,7 @@ const parsedQuickLinks = computed(() => {
 })
 
 const parsedArchiveBlogs = computed(() => {
-  if (page.value.ftvaFeaturedArticlesSection.length === 0)
+  if (page.value.ftvaFeaturedArticlesSection?.length === 0 || page.value.ftvaFeaturedArticlesSection[0]?.featuredArticles?.length === 0)
     return null
 
   const obj = page.value.ftvaFeaturedArticlesSection[0]
@@ -125,17 +124,17 @@ const parsedArchiveBlogs = computed(() => {
     sectionTitle: obj.sectionTitle,
     sectionCta: obj.seeAllText,
     blogTitle: obj.featuredArticles[0]?.title,
-    blogUri: obj.featuredArticles[0].uri,
-    blogSummary: obj.featuredArticles[0].ftvaHomepageDescription,
-    image: [parseImage(obj.featuredArticles[0])] // parseImage results must be wrapped in an array for BlockMediaWithText component
+    blogUri: obj.featuredArticles[0]?.uri,
+    blogSummary: obj.featuredArticles[0]?.ftvaHomepageDescription,
+    image: [parseImage(obj?.featuredArticles[0])] // parseImage results must be wrapped in an array for BlockMediaWithText component
   }
 })
 
 const parsedFeaturedCollections = computed(() => {
-  if (page.value.ftvaFeaturedCollectionsSectionSingle.length === 0)
+  if (page.value.ftvaFeaturedCollectionsSectionSingle.length === 0 || page.value.ftvaFeaturedCollectionsSectionSingle[0]?.featuredCollections?.length === 0)
     return null
 
-  const collections = page.value.ftvaFeaturedCollectionsSectionSingle[0].featuredCollections.map((item) => {
+  const collections = page.value.ftvaFeaturedCollectionsSectionSingle[0]?.featuredCollections?.map((item) => {
     return {
       title: item.title,
       to: item.uri,
@@ -144,9 +143,9 @@ const parsedFeaturedCollections = computed(() => {
   })
 
   return {
-    sectionTitle: page.value.ftvaFeaturedCollectionsSectionSingle[0].sectionTitle,
-    sectionSummary: page.value.ftvaFeaturedCollectionsSectionSingle[0].sectionDescription,
-    sectionCta: page.value.ftvaFeaturedCollectionsSectionSingle[0].seeAllText,
+    sectionTitle: page.value.ftvaFeaturedCollectionsSectionSingle[0]?.sectionTitle,
+    sectionSummary: page.value.ftvaFeaturedCollectionsSectionSingle[0]?.sectionDescription,
+    sectionCta: page.value.ftvaFeaturedCollectionsSectionSingle[0]?.seeAllText,
     collections
   }
 })
@@ -208,7 +207,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
   if (ongoing)
     return 'Ongoing'
   if (typeHandle === 'ftvaEvent')
-    return `${formatEventDates(startDateWithTime, startDateWithTime, 'longWithYear')} - ${formatEventTime(startDateWithTime)}`
+    return `${formatEventSeriesDates(startDateWithTime, startDateWithTime, 'longWithYear')} - ${formatEventTime(startDateWithTime)}`
   if (typeHandle === 'eventSeries')
     return formatSeriesDates(startDate, endDate, 'longWithYear')
 
