@@ -79,7 +79,7 @@ export default defineNuxtConfig({
 
         if (allRoutes.length) {
           for (const route of allRoutes) {
-            // routes.add(route)
+            routes.add(route)
           }
           // routes.add('/instructional-media-collections-services')
           // routes.add('/archive-research-study-center')
