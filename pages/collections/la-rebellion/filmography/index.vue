@@ -14,7 +14,9 @@ const route = useRoute()
 // routes this template/page supports:
 const routeNameToSectionMap = {
   '/collections/la-rebellion/filmography': 'ftvaCollectionListingLARebellion',
-  '/collections/in-the-life/filmography': 'ftvaCollectionListingInTheLife'
+  '/collections/la-rebellion/filmography/': 'ftvaCollectionListingLARebellion',
+  '/collections/in-the-life/episodes': 'ftvaCollectionListingInTheLife',
+  '/collections/in-the-life/episodes/': 'ftvaCollectionListingInTheLife'
 }
 
 const { data, error } = await useAsyncData(`${route.path}-filmography`, async () => {
@@ -48,7 +50,7 @@ watch(data, (newVal, oldVal) => {
 definePageMeta({
   layout: 'default',
   path: '/collections/la-rebellion/filmography',
-  alias: ['/collections/in-the-life/filmography']
+  alias: ['/collections/in-the-life/episodes']
 })
 
 useHead({
