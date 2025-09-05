@@ -45,7 +45,7 @@ export default defineNuxtConfig({
       failOnError: false,
       concurrency: 50,
       interval: 1000,
-      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/television/', '/collections/watch-listen-online/', '/collections/la-rebellion/filmmakers/', '/collections/in-the-life/episodes/', '/series/', '/blog/', '/archive-research-study-center/', '/instructional-media-collections-services/', '/billy-wilder-theater/', '/search/'],
+      routes: ['/', '/events/', '/collections/', '/collections/motion-picture/', '/collections/television/', '/collections/watch-listen-online/', '/collections/la-rebellion/filmmakers/', '/collections/la-rebellion/filmography/', '/collections/in-the-life/episodes/', '/series/', '/blog/', '/archive-research-study-center/', '/instructional-media-collections-services/', '/billy-wilder-theater/', '/search/'],
     },
     hooks: {
       'prerender:generate'(route) {

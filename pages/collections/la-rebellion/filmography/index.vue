@@ -10,18 +10,21 @@ import ListOfItemsCollection from '~/components/ListOfItemsCollection.vue'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
+/** 1) Normalize the path once (remove trailing slash), keep '/' for root */
+const normalizedPath = computed(() => {
+  const p = route.path.replace(/\/+$/, '')
+  return p === '' ? '/' : p
+})
 
-// routes this template/page supports:
+/** 2) Map canonical paths only (no trailing slashes) */
 const routeNameToSectionMap = {
   '/collections/la-rebellion/filmography': 'ftvaCollectionListingLARebellion',
-  '/collections/la-rebellion/filmography/': 'ftvaCollectionListingLARebellion',
   '/collections/in-the-life/episodes': 'ftvaCollectionListingInTheLife',
-  '/collections/in-the-life/episodes/': 'ftvaCollectionListingInTheLife'
 }
-
-const { data, error } = await useAsyncData(`${route.path}-filmography`, async () => {
+const sectionHandle = computed(() => routeNameToSectionMap[normalizedPath.value])
+const { data, error } = await useAsyncData(`${normalizedPath.value}-filmography`, async () => {
   // lookup slug based on routeNameToSlugMap
-  const data: any = await $graphql.default.request(FTVACollectionFilmography, { section: routeNameToSectionMap[route.path] })
+  const data: any = await $graphql.default.request(FTVACollectionFilmography, { section: sectionHandle.value })
   return data
 })
 
@@ -50,7 +53,7 @@ watch(data, (newVal, oldVal) => {
 definePageMeta({
   layout: 'default',
   path: '/collections/la-rebellion/filmography',
-  alias: ['/collections/in-the-life/episodes']
+  alias: ['/collections/la-rebellion/filmography/', '/collections/in-the-life/episodes', '/collections/in-the-life/episodes/']
 })
 
 useHead({

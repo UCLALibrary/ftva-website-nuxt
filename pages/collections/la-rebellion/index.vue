@@ -10,15 +10,21 @@ const { $graphql } = useNuxtApp()
 
 const route = useRoute()
 
+/** 1) Normalize the path once (remove trailing slash), keep '/' for root */
+const normalizedPath = computed(() => {
+  const p = route.path.replace(/\/+$/, '')
+  return p === '' ? '/' : p
+})
+
 // routes this template/page supports:
 const routeNameToSlugMap = {
   '/collections/la-rebellion': 'la-rebellion',
   '/collections/in-the-life': 'in-the-life'
 }
-
-const { data, error } = await useAsyncData(`collections-story-${route.path}`, async () => {
+const sectionHandle = computed(() => routeNameToSlugMap[normalizedPath.value])
+const { data, error } = await useAsyncData(`collections-story-${normalizedPath.value}`, async () => {
   // lookup slug based on routeNameToSlugMap
-  const data = await $graphql.default.request(FTVACollectionStory, { slug: routeNameToSlugMap[route.path] })
+  const data = await $graphql.default.request(FTVACollectionStory, { slug: sectionHandle.value })
   return data
 })
 
@@ -78,7 +84,7 @@ const parsedAdditionalResources = computed(() => {
 definePageMeta({
   layout: 'default',
   path: '/collections/la-rebellion',
-  alias: ['/collections/in-the-life']
+  alias: ['/collections/la-rebellion/', '/collections/in-the-life', '/collections/in-the-life/']
 })
 
 useHead({
