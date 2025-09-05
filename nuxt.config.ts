@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   // when using local pnpm link with component library uncomment this line
   vite: {
     define: {
-      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": true,
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
     },
     plugins: [svgLoader()],
     // ADDED FOLLOWING LINE TO RESOLVE CROSS-FETCH ERROR
