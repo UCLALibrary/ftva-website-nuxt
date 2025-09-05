@@ -8,17 +8,29 @@ import FTVAARSCIMCS from '../gql/queries/FTVAEntryARSCIMCS.gql'
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-// routes this page supports:
-const routeNameToSectionMap = {
+
+/** 1) Normalize the path once (remove trailing slash), keep '/' for root */
+const normalizedPath = computed(() => {
+  const p = route.path.replace(/\/+$/, '')
+  return p === '' ? '/' : p
+})
+
+/** 2) Map canonical paths only (no trailing slashes) */
+const routeToSection = {
   '/archive-research-study-center': 'ftvaArchiveResearchAndStudyCenter',
   '/instructional-media-collections-services': 'ftvaInstructionalMediaCollectionsAndServices',
-  '/archive-research-study-center/': 'ftvaArchiveResearchAndStudyCenter',
-  '/instructional-media-collections-services/': 'ftvaInstructionalMediaCollectionsAndServices'
 }
-const { data, error } = await useAsyncData(route.path, async () => {
-  // lookup section based on routeNameToSectionMap
-  const data = await $graphql.default.request(FTVAARSCIMCS, { section: routeNameToSectionMap[route.path] })
-  return data
+
+const sectionHandle = computed(() => routeToSection[normalizedPath.value])
+
+/** 3) Use normalized path for the async key (stable between /foo and /foo/) */
+const { data, error } = await useAsyncData(normalizedPath.value, async () => {
+  if (!sectionHandle.value) {
+    // No match → 404
+    throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
+  }
+  const res = await $graphql.default.request(FTVAARSCIMCS, { section: sectionHandle.value })
+  return res
 })
 
 if (error.value) {
@@ -44,7 +56,7 @@ if (data.value.entry && import.meta.prerender) {
       title: data.value.entry.title,
       text: data.value.entry.summary,
       uri: route.path,
-      sectionHandle: routeNameToSectionMap[route.path]?.sectionName,
+      sectionHandle: sectionHandle.value,
       groupName: 'General Content',
     }
     // Index the collection type data using the composable during static build
@@ -64,28 +76,30 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+/** 7) Make a safe, CSS-friendly class from the path */
 const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', route.path.slice(1)]
+  const slugClass = normalizedPath.value.slice(1).replaceAll('/', '-')
+  return ['page', 'page-detail', 'page-detail--paleblue', slugClass]
 })
+/** 5) Always return an array */
+const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel : [])
 
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
-
+/** 5 & 6) Guard and use consistent prop name 'credit' throughout */
 const parsedCarouselData = computed(() => {
-  // map image to item, map creditText to credit
-  return parsedImage.value.map((rawItem, index) => {
+  if (!Array.isArray(parsedImage.value) || parsedImage.value.length === 0) return []
+  return parsedImage.value.map((rawItem) => {
+    const firstImage = rawItem?.image?.[0]
     return {
-      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
-      credit: rawItem?.creditText,
+      item: firstImage ? [{ ...firstImage, kind: 'image' }] : [],
+      credit: rawItem?.creditText ?? '', // keep 'credit' as the single source of truth
     }
   })
 })
-
+/** 4) Canonical path + aliases for alternates */
 definePageMeta({
   layout: 'default',
   path: '/archive-research-study-center',
-  alias: ['/instructional-media-collections-services']
+  alias: ['/archive-research-study-center/', '/instructional-media-collections-services', '/instructional-media-collections-services/']
 })
 
 const headTitle = computed(() => page.value?.title || 'Loading ...')
