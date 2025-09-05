@@ -4,6 +4,9 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   // when using local pnpm link with component library uncomment this line
   vite: {
+    define: {
+      "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": true,
+    },
     plugins: [svgLoader()],
     // ADDED FOLLOWING LINE TO RESOLVE CROSS-FETCH ERROR
     // Uncaught SyntaxError: The requested module '/_nuxt/node_modules/.pnpm/cross-fetch@3.1.8/node_modules/cross-fetch/dist/browser-ponyfill.js?v=4dc3293b'
