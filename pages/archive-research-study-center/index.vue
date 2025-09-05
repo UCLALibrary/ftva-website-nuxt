@@ -108,7 +108,7 @@ useHead({
   >
     <div class="one-column">
       <ResponsiveImage
-        v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
+        v-show="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
@@ -121,7 +121,7 @@ useHead({
         </template>
       </ResponsiveImage>
       <div
-        v-else-if="parsedCarouselData && parsedCarouselData.length > 0 && parsedImage[0]?.image && parsedImage[0].image.length !== 0"
+        v-show="parsedCarouselData && parsedCarouselData.length > 1"
         class="lightbox-container"
       >
         <FlexibleMediaGalleryNewLightbox
