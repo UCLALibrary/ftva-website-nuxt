@@ -79,6 +79,7 @@ const onResults = (results) => {
 }
 const collectionTitle = ref(attrs.page.title || '')
 const titleForSearch = computed(() => {
+  console.log('route.path', route.path)
   // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
   if (route.path.endsWith('filmography')) {
     console.log('route.path', route.path, route.path.split('/').includes('la-rebellion'))
