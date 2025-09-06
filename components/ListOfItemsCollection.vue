@@ -79,6 +79,7 @@ const onResults = (results) => {
 }
 const collectionTitle = ref(attrs.page.title || '')
 const titleForSearch = computed(() => {
+  console.log('route', route.path, route.name)
   if (route.name?.toString().endsWith('filmography')) {
     return route.params.slug === 'la-rebellion'
       ? 'L.A. Rebellion'
