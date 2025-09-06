@@ -81,13 +81,13 @@ const collectionTitle = ref(attrs.page.title || '')
 const titleForSearch = computed(() => {
   console.log('route', route.path, route.name)
   if (route.name?.toString().endsWith('filmography')) {
-    return route.params.slug === 'la-rebellion'
+    return route.name?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
   }
 
   if (route.name?.toString().endsWith('episodes')) {
-    return route.params.slug === 'in-the-life'
+    return route.name?.toString().includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
   }
