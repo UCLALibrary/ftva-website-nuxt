@@ -81,10 +81,13 @@ const collectionTitle = ref(attrs.page.title || '')
 const titleForSearch = computed(() => {
   // TODO: get the title from ES for the slug `in-the-life or la-rebellion`
   if (route.path.endsWith('filmography')) {
+    console.log('route.path', route.path, route.path.split('/').includes('la-rebellion'))
+
     return route.path.split('/').includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
   } else if (route.path.endsWith('episodes')) {
+    console.log('route.path', route.path, route.path.split('/').includes('in-the-life'))
     return route.path.split('/').includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
@@ -93,6 +96,7 @@ const titleForSearch = computed(() => {
     return collectionTitle.value
   }
 })
+console.log('titleForSearch', titleForSearch.value)
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
