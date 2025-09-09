@@ -371,12 +371,11 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
             <template #captionText>
               {{ parsedPreservationData.caption }}
             </template>
+            <!-- craft data doesn't currently support custom beforeLabel and afterLabel
             <template #beforeLabel>
-              Paris 1895
             </template>
             <template #afterLabel>
-              Paris 2013
-            </template>
+            </template> -->
           </ImageSlider>
         </div>
       </SectionWrapper>
