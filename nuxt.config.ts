@@ -84,13 +84,6 @@ export default defineNuxtConfig({
           for (const route of allRoutes) {
             routes.add(route)
           }
-          // routes.add('/instructional-media-collections-services')
-          // routes.add('/archive-research-study-center')
-          // routes.add('/collections/motion-picture')
-          // routes.add('/collections/television')
-          // routes.add('/collections/watch-listen-online')
-          // routes.add('/collections/la-rebellion/filmography')
-          // routes.add('/collections/in-the-life/episodes')
         }
         // eslint-disable-next-line no-console
         console.log('prerender:routes ctx.routes', routes)
