@@ -10,16 +10,16 @@ import { format } from 'date-fns/format'
  */
 
 function formatDates(startDate = '', endDate = '', dateFormat = 'long') {
-  const start = format(new Date(startDate), 'MMMM d, Y')
+  const start = format(new Date(startDate), 'MMMM d, y')
   // console.log(start)
-  const end = format(new Date(endDate), 'MMMM d, Y')
+  const end = format(new Date(endDate), 'MMMM d, y')
 
   // "February 11 2020 – May 31 2021"
   let output = `${start} - ${end}`
 
   if (start === end) {
     // Thursday, January 28
-    output = format(new Date(startDate), 'MMMM d, Y')
+    output = format(new Date(startDate), 'MMMM d, y')
   }
 
   if (!endDate) {
@@ -38,7 +38,7 @@ function formatDates(startDate = '', endDate = '', dateFormat = 'long') {
       // if 'shortWithYear' is selected, add the year to the end date
       // Feb 11 – May 31 2020
       if (dateFormat === 'shortWithYear') {
-        const shortFormatEndDateYear = format(new Date(endDate), 'MMM d, Y')
+        const shortFormatEndDateYear = format(new Date(endDate), 'MMM d, y')
         return `${shortFormatStartDate} - ${shortFormatEndDateYear}`
       }
       return `${shortFormatStartDate} - ${shortFormatEndDate}`

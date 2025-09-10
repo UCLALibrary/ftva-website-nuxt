@@ -75,8 +75,9 @@ const parsedCarouselData = computed(() => {
     return null
 
   return page.value.ftvaFeaturedEntries.map((obj) => {
+    const image = obj.ftvaImage?.length > 0 ? obj.ftvaImage : obj.imageCarousel[0]?.image ? obj.imageCarousel[0]?.image : null
     return {
-      item: parseFTVACarouselImage(obj.ftvaImage),
+      item: parseFTVACarouselImage(image),
       tag: parseFTVATypeHandles(obj.typeHandle),
       captionText: obj.ftvaHomepageDescription,
       captionTitle: obj.title,
@@ -177,6 +178,11 @@ useHead({
 
 // Helpers to parse Carousel
 function parseFTVACarouselImage(imgObj) {
+  console.log('imgObj', imgObj)
+  if (!imgObj) {
+    return null
+  }
+
   return [{
     ...imgObj[0],
     src: imgObj[0]?.url,
