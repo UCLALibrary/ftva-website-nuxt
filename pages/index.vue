@@ -207,7 +207,7 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
   if (ongoing)
     return 'Ongoing'
   if (typeHandle === 'ftvaEvent')
-    return `${formatEventSeriesDates(startDateWithTime, startDateWithTime, 'longWithYear')} - ${formatEventTime(startDateWithTime)}`
+    return `${formatEventDates(startDateWithTime, startDateWithTime, 'longWithYear')} - ${formatEventTime(startDateWithTime)}`
   if (typeHandle === 'eventSeries')
     return formatSeriesDates(startDate, endDate, 'longWithYear')
 
