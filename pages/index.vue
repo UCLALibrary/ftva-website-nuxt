@@ -178,7 +178,6 @@ useHead({
 
 // Helpers to parse Carousel
 function parseFTVACarouselImage(imgObj) {
-  console.log('imgObj', imgObj)
   if (!imgObj) {
     return null
   }
