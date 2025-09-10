@@ -113,11 +113,13 @@ onMounted(() => {
         v-else
         class="lightbox-container"
       >
+        <!-- do not use inline=true, if inline is boolean use :inline=true -->
+
         <FlexibleMediaGalleryNewLightbox
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           data-test="image-carousel"
           :items="parsedCarouselData"
-          inline="true"
+          :inline="true"
         >
           <template #default="slotProps">
             <BlockTag
