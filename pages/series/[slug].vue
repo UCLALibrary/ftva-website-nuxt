@@ -208,7 +208,7 @@ useHead({
         <FlexibleMediaGalleryNewLightbox
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           :items="parsedCarouselData"
-          inline="true"
+          :inline="true"
         >
           <template #default="slotProps">
             <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
