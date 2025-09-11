@@ -443,6 +443,7 @@ main {
       .card-meta {
         height: 275px;
         padding: 40px 30px 25px 30px;
+        position: relative;
       }
 
       img.media {
