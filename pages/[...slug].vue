@@ -93,7 +93,12 @@ onMounted(() => {
     :class="pageClass"
   >
     <div class="one-column">
-      <NavBreadcrumb data-test="breadcrumb" />
+      <NavBreadcrumb
+        :title="page?.title"
+        to="/"
+        parent-title="Home"
+        data-test="breadcrumb"
+      />
 
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
