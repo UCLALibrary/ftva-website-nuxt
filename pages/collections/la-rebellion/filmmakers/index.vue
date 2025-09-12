@@ -122,7 +122,7 @@ const resultsSection = ref(null)
 const { scrollTo } = usePaginationScroll()
 
 watch(() => route.query, async (newVal, oldVal) => {
-  console.log('onPageChange called in filmmakers page')
+  // console.log('onPageChange called in filmmakers page')
   isLoading.value = false
   currentPage.value = route.query.page ? parseInt(route.query.page) : 1
   isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
@@ -182,17 +182,27 @@ function updateSort(newSort) {
   })
 }
 
-const breadcrumbOverride = [
-  {
-    titleLevel: 2,
-    updatedTitle: 'L.A. Rebellion'
-  }
-]
-
 const pageClasses = computed(() => {
   return ['page', 'page-filmmakers']
 })
 
+// BREADCRUMB OVERRIDES
+const breadcrumbOverrides = ref([
+  {
+    titleLevel: 2,
+    updatedTitle: parseSectionHandleForBreadcrumbTitle(page.value.sectionHandle) || null
+  }
+])
+
+function parseSectionHandleForBreadcrumbTitle(str) {
+  // Add extra sectionHandles as needed
+  switch (str) {
+    case 'ftvaListingLaRebellionFilmmakers':
+      return 'L.A. Rebellion'
+    default:
+      return null
+  }
+}
 </script>
 
 <template>
@@ -203,7 +213,7 @@ const pageClasses = computed(() => {
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
-        :override-title-group="breadcrumbOverride"
+        :override-title-group="breadcrumbOverrides"
       />
 
       <SectionWrapper

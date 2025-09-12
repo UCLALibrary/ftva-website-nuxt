@@ -209,6 +209,26 @@ useHead({
   ]
 })
 
+// BREADCRUMB OVERRIDES
+const breadcrumbOverrides = ref([
+  {
+    titleLevel: 2,
+    updatedTitle: parseCollectionSlugForBreadcrumbTitle(collectionSlug) || null
+  }
+])
+
+// Helper to manually set titles for collections that have special characters/punctuations in their titles
+function parseCollectionSlugForBreadcrumbTitle(str) {
+  // Add extra collectionSlugs as needed
+  switch (str) {
+    case 'la-rebellion':
+      return 'L.A. Rebellion'
+    case 'ktla-newsfilm-collection':
+      return 'KTLA Newsfilm Collection'
+    default:
+      return null
+  }
+}
 </script>
 
 <template>
@@ -219,6 +239,7 @@ useHead({
     <div class="collection-item-header">
       <NavBreadcrumb
         :title="page?.title"
+        :override-title-group="breadcrumbOverrides"
         class="breadcrumb"
         data-test="breadcrumb"
       />

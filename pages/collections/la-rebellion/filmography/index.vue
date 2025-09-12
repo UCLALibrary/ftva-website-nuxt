@@ -21,7 +21,9 @@ const routeNameToSectionMap = {
   '/collections/la-rebellion/filmography': 'ftvaCollectionListingLARebellion',
   '/collections/in-the-life/episodes': 'ftvaCollectionListingInTheLife',
 }
+
 const sectionHandle = computed(() => routeNameToSectionMap[normalizedPath.value])
+
 const { data, error } = await useAsyncData(`${normalizedPath.value}-filmography`, async () => {
   // lookup slug based on routeNameToSlugMap
   const data: any = await $graphql.default.request(FTVACollectionFilmography, { section: sectionHandle.value })
@@ -45,17 +47,6 @@ if (!data.value.entry) {
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
 
-console.log('page: ', page.value)
-
-const bcTest = ref([
-  {
-    titleLevel: 2,
-    updatedTitle: 'L.A. Rebellion'
-  }
-])
-
-console.log('breadcrumb: ', bcTest.value)
-
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
@@ -64,7 +55,11 @@ watch(data, (newVal, oldVal) => {
 definePageMeta({
   layout: 'default',
   path: '/collections/la-rebellion/filmography',
-  alias: ['/collections/la-rebellion/filmography/', '/collections/in-the-life/episodes', '/collections/in-the-life/episodes/']
+  alias: [
+    '/collections/la-rebellion/filmography/',
+    '/collections/in-the-life/episodes',
+    '/collections/in-the-life/episodes/'
+  ]
 })
 
 useHead({
@@ -77,12 +72,30 @@ useHead({
     }
   ]
 })
+
+// BREADCRUMB OVERRIDES
+const breadcrumbOverrides = ref([
+  {
+    titleLevel: 2,
+    updatedTitle: parseSectionHandleForBreadcrumbTitle(page.value.sectionHandle) || null
+  }
+])
+
+function parseSectionHandleForBreadcrumbTitle(str) {
+  // Add extra sectionHandles as needed
+  switch (str) {
+    case 'ftvaCollectionListingLARebellion':
+      return 'L.A. Rebellion'
+    default:
+      return null
+  }
+}
 </script>
 <template>
   <div class="page-component-wrapper">
     <ListOfItemsCollection
       :page="page"
-      :breadcrumbs="bcTest"
+      :breadcrumbs="breadcrumbOverrides"
     />
   </div>
 </template>

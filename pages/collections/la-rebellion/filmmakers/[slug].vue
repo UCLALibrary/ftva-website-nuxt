@@ -109,12 +109,23 @@ useHead({
   ]
 })
 
-const breadcrumbOverride = [
+// BREADCRUMB OVERRIDES
+const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: 'L.A. Rebellion'
+    updatedTitle: parseSectionHandleForBreadcrumbTitle(page.value.sectionHandle) || null
   }
-]
+])
+
+function parseSectionHandleForBreadcrumbTitle(str) {
+  // Add extra sectionHandles as needed
+  switch (str) {
+    case 'ftvaLARebellionIndividual':
+      return 'L.A. Rebellion'
+    default:
+      return null
+  }
+}
 </script>
 
 <template>
@@ -127,7 +138,7 @@ const breadcrumbOverride = [
         class="breadcrumb"
         data-test="breadcrumb"
         :title="page?.title"
-        :override-title-group="breadcrumbOverride"
+        :override-title-group="breadcrumbOverrides"
       />
 
       <ResponsiveImage

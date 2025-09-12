@@ -14,10 +14,11 @@ const attrs = useAttrs() as {
     titleBrowse: string,
     groupName: string
   },
-  breadcrumbs
+  breadcrumbs?: {
+    titleLevel: number,
+    updatedTitle: string
+  }[]
 }
-console.log('page attr:', attrs.page)
-console.log('breadcrumb attr:', attrs.breadcrumbs)
 
 const route = useRoute()
 const router = useRouter()
@@ -88,9 +89,11 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
+
 const collectionTitle = ref(attrs.page.title || '')
+
 const titleForSearch = computed(() => {
-  console.log('route', route.path, route.name)
+  // console.log('route', route.path, route.name)
   if (route.name?.toString().endsWith('filmography')) {
     return route.name?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
@@ -105,7 +108,8 @@ const titleForSearch = computed(() => {
 
   return collectionTitle.value
 })
-console.log('titleForSearch', titleForSearch.value)
+// console.log('titleForSearch', titleForSearch.value)
+
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
@@ -123,11 +127,15 @@ const parsedCollectionResults = computed(() => {
     }
   })
 })
+
 const selectedFilters = ref({}) // initialise with empty filter
+
 const selectedSortFilters = ref({ sortField: 'asc' })
+
 // PAGINATION SCROLL HANDLING
-// // Element reference for the scroll target
+// Element reference for the scroll target
 const resultsSection = ref(null)
+
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
 
