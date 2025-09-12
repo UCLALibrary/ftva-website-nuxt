@@ -103,10 +103,11 @@ const parsedNowShowing = computed(() => {
 })
 
 const parsedQuickLinks = computed(() => {
-  if (page.value.ftvaQuickLinks.length === 0)
+  const links = page.value.ftvaQuickLinks || []
+  if (links.length === 0)
     return null
 
-  return page.value.ftvaQuickLinks.map((item) => {
+  return links.map((item) => {
     return {
       title: item.titleGeneral,
       to: item.urlLink,
