@@ -95,8 +95,6 @@ onMounted(() => {
     <div class="one-column">
       <NavBreadcrumb
         :title="page?.title"
-        to="/"
-        parent-title="Home"
         data-test="breadcrumb"
       />
 
@@ -176,7 +174,7 @@ onMounted(() => {
 
   // Apply extra padding to single/solo breadcrumb that has no parent--to keep spacing below nav bar even with other pages
   .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
-    padding: 5px 0;
+    padding: 10px 0;
   }
 
   // Rich Text Image

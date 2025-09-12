@@ -389,9 +389,9 @@ const breadcrumbOverrides = ref([
 
   .collection-item-header {
     background-color: var(--pale-blue);
-    padding-block: 0.5rem;
+    padding-block: 0.005rem;
 
-    .breadcrumb {
+    :deep(.nav-breadcrumb ol) {
       padding: 0;
       max-width: var(--ftva-container-max-width)
     }
