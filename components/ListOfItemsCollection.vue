@@ -6,7 +6,19 @@ import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
-const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
+const attrs = useAttrs() as {
+  page?: {
+    title: string,
+    ftvaFilters: string[],
+    ftvaHomepageDescription: string,
+    titleBrowse: string,
+    groupName: string
+  },
+  breadcrumbs?: {
+    titleLevel: number,
+    updatedTitle: string
+  }[]
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -77,9 +89,11 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
+
 const collectionTitle = ref(attrs.page.title || '')
+
 const titleForSearch = computed(() => {
-  console.log('route', route.path, route.name)
+  // console.log('route', route.path, route.name)
   if (route.name?.toString().endsWith('filmography')) {
     return route.name?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
@@ -94,7 +108,8 @@ const titleForSearch = computed(() => {
 
   return collectionTitle.value
 })
-console.log('titleForSearch', titleForSearch.value)
+// console.log('titleForSearch', titleForSearch.value)
+
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
@@ -112,11 +127,15 @@ const parsedCollectionResults = computed(() => {
     }
   })
 })
+
 const selectedFilters = ref({}) // initialise with empty filter
+
 const selectedSortFilters = ref({ sortField: 'asc' })
+
 // PAGINATION SCROLL HANDLING
-// // Element reference for the scroll target
+// Element reference for the scroll target
 const resultsSection = ref(null)
+
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
 
@@ -274,6 +293,7 @@ useHead({
         data-test="breadcrumb"
         class="breadcrumb"
         :title="attrs.page.title"
+        :override-title-group="attrs.breadcrumbs"
         to="/collections"
       />
       <SectionWrapper

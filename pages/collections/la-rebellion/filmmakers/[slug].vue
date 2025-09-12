@@ -2,6 +2,7 @@
 // HELPERS
 import _get from 'lodash/get'
 import removeTags from '~/utils/removeTags'
+import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
 
 // GQL
 import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmmakersDetail.gql'
@@ -108,6 +109,15 @@ useHead({
     }
   ]
 })
+
+// BREADCRUMB OVERRIDES
+// Add value of new breadcrumb title to switch statement in the utility file
+const breadcrumbOverrides = ref([
+  {
+    titleLevel: 2,
+    updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
+  }
+])
 </script>
 
 <template>
@@ -120,6 +130,7 @@ useHead({
         class="breadcrumb"
         data-test="breadcrumb"
         :title="page?.title"
+        :override-title-group="breadcrumbOverrides"
       />
 
       <ResponsiveImage

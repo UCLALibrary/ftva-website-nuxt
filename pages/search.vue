@@ -436,7 +436,6 @@ useHead({
         data-test="breadcrumb"
         title="Search Results"
         to="/"
-        parent-title="Home"
       />
       <h3
         v-if="route.query.q"
@@ -507,7 +506,7 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -596,7 +595,7 @@ useHead({
 </template>
 <style lang="scss" scoped>
 :deep(.ftva.section-wrapper.top-level.theme-paleblue) {
-  padding-top: var(--space-m);
+  padding-top: var(--space-xs);
 }
 
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
@@ -605,6 +604,10 @@ useHead({
 
 .search-page {
   .one-column {
+
+    :deep(.nav-breadcrumb ol) {
+      padding: 0;
+    }
 
     .search-title {
       padding-left: 2rem;
