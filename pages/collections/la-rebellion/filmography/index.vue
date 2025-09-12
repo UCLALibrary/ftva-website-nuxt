@@ -7,6 +7,9 @@ import _get from 'lodash/get'
 import FTVACollectionFilmography from '../gql/queries/FTVACollectionFilmography.gql'
 import ListOfItemsCollection from '~/components/ListOfItemsCollection.vue'
 
+// UTILS
+import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -74,23 +77,15 @@ useHead({
 })
 
 // BREADCRUMB OVERRIDES
+// Add value of new breadcrumb title to switch statement in the utility file
 const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: parseSectionHandleForBreadcrumbTitle(page.value.sectionHandle) || null
+    updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
   }
 ])
-
-function parseSectionHandleForBreadcrumbTitle(str) {
-  // Add extra sectionHandles as needed
-  switch (str) {
-    case 'ftvaCollectionListingLARebellion':
-      return 'L.A. Rebellion'
-    default:
-      return null
-  }
-}
 </script>
+
 <template>
   <div class="page-component-wrapper">
     <ListOfItemsCollection
@@ -99,6 +94,7 @@ function parseSectionHandleForBreadcrumbTitle(str) {
     />
   </div>
 </template>
+
 <style scoped>
 .page-component-wrapper {
   display: flex;
