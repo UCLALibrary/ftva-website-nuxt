@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
@@ -19,15 +19,14 @@ const isMobile = ref(false)
 const { data, error } = await useAsyncData('home-page', async () => {
   const data = await $graphql.default.request(FTVAHomepage)
   return data
-})
-
+}) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 if (error.value) {
   throw createError({
     statusCode: error.value.statusCode, statusMessage: error.value.statusMessage + error.value, fatal: true
   })
 }
 
-if (!data.value.entry) {
+if (!data.value?.entry) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -76,8 +75,15 @@ const parsedCarouselData = computed(() => {
     return null
 
   return page.value.ftvaFeaturedEntries.map((obj) => {
+    let image = null
+    if (obj.ftvaImage?.length > 0) {
+      image = obj.ftvaImage
+    } else if (obj.imageCarousel?.[0]?.image) {
+      image = obj.imageCarousel[0].image
+    }
+
     return {
-      item: parseFTVACarouselImage(obj.ftvaImage),
+      item: parseFTVACarouselImage(image),
       tag: parseFTVATypeHandles(obj.typeHandle),
       captionText: obj.ftvaHomepageDescription,
       captionTitle: obj.title,
@@ -92,7 +98,7 @@ const parsedNowShowing = computed(() => {
     return null
   }
 
-  return page.value.ftvaFeaturedEventsSection[0].featuredEvents.map((item, index) => {
+  return page.value.ftvaFeaturedEventsSection[0]?.featuredEvents?.map((item, index) => {
     return {
       ...item,
       to: `/${item.uri}`,
@@ -103,10 +109,11 @@ const parsedNowShowing = computed(() => {
 })
 
 const parsedQuickLinks = computed(() => {
-  if (page.value.ftvaQuickLinks.length === 0)
+  const links = page.value.ftvaQuickLinks || []
+  if (links.length === 0)
     return null
 
-  return page.value.ftvaQuickLinks.map((item) => {
+  return links.map((item) => {
     return {
       title: item.titleGeneral,
       to: item.urlLink,
@@ -117,7 +124,7 @@ const parsedQuickLinks = computed(() => {
 })
 
 const parsedArchiveBlogs = computed(() => {
-  if (page.value.ftvaFeaturedArticlesSection.length === 0)
+  if (page.value.ftvaFeaturedArticlesSection?.length === 0 || page.value.ftvaFeaturedArticlesSection[0]?.featuredArticles?.length === 0)
     return null
 
   const obj = page.value.ftvaFeaturedArticlesSection[0]
@@ -125,17 +132,17 @@ const parsedArchiveBlogs = computed(() => {
     sectionTitle: obj.sectionTitle,
     sectionCta: obj.seeAllText,
     blogTitle: obj.featuredArticles[0]?.title,
-    blogUri: obj.featuredArticles[0].uri,
-    blogSummary: obj.featuredArticles[0].ftvaHomepageDescription,
-    image: [parseImage(obj.featuredArticles[0])] // parseImage results must be wrapped in an array for BlockMediaWithText component
+    blogUri: obj.featuredArticles[0]?.uri,
+    blogSummary: obj.featuredArticles[0]?.ftvaHomepageDescription,
+    image: [parseImage(obj?.featuredArticles[0])] // parseImage results must be wrapped in an array for BlockMediaWithText component
   }
 })
 
 const parsedFeaturedCollections = computed(() => {
-  if (page.value.ftvaFeaturedCollectionsSectionSingle.length === 0)
+  if (page.value.ftvaFeaturedCollectionsSectionSingle?.length === 0 || page.value.ftvaFeaturedCollectionsSectionSingle[0]?.featuredCollections?.length === 0)
     return null
 
-  const collections = page.value.ftvaFeaturedCollectionsSectionSingle[0].featuredCollections.map((item) => {
+  const collections = page.value.ftvaFeaturedCollectionsSectionSingle[0]?.featuredCollections?.map((item) => {
     return {
       title: item.title,
       to: item.uri,
@@ -144,9 +151,9 @@ const parsedFeaturedCollections = computed(() => {
   })
 
   return {
-    sectionTitle: page.value.ftvaFeaturedCollectionsSectionSingle[0].sectionTitle,
-    sectionSummary: page.value.ftvaFeaturedCollectionsSectionSingle[0].sectionDescription,
-    sectionCta: page.value.ftvaFeaturedCollectionsSectionSingle[0].seeAllText,
+    sectionTitle: page.value.ftvaFeaturedCollectionsSectionSingle[0]?.sectionTitle,
+    sectionSummary: page.value.ftvaFeaturedCollectionsSectionSingle[0]?.sectionDescription,
+    sectionCta: page.value.ftvaFeaturedCollectionsSectionSingle[0]?.seeAllText,
     collections
   }
 })
@@ -178,6 +185,10 @@ useHead({
 
 // Helpers to parse Carousel
 function parseFTVACarouselImage(imgObj) {
+  if (!imgObj) {
+    return null
+  }
+
   return [{
     ...imgObj[0],
     src: imgObj[0]?.url,
@@ -372,12 +383,11 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
             <template #captionText>
               {{ parsedPreservationData.caption }}
             </template>
+            <!-- craft data doesn't currently support custom beforeLabel and afterLabel
             <template #beforeLabel>
-              Paris 1895
             </template>
             <template #afterLabel>
-              Paris 2013
-            </template>
+            </template> -->
           </ImageSlider>
         </div>
       </SectionWrapper>
@@ -443,6 +453,7 @@ main {
       .card-meta {
         height: 275px;
         padding: 40px 30px 25px 30px;
+        position: relative;
       }
 
       img.media {

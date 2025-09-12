@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
 
@@ -10,7 +10,7 @@ const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('collection-list', async () => {
   const data = await $graphql.default.request(FTVACollectionList)
   return data
-})
+}) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 
 if (error.value) {
   throw createError({
@@ -57,7 +57,9 @@ watch(data, (newVal, oldVal) => {
 })
 
 const parsedHeroImage = computed(() => {
-  return page.value.heroImage[0].image
+  if (page.value.heroImage?.length > 0 && page.value.heroImage[0]?.image)
+    return page.value.heroImage[0].image
+  else return []
 })
 
 const showPageSummary = computed(() => {

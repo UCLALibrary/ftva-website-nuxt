@@ -1,4 +1,8 @@
 export default function parseImage(obj) {
+  if (!obj) {
+    return null
+  }
+
   let listingImage
   let carouselImage
   if (obj._source) {

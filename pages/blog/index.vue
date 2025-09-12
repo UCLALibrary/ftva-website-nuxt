@@ -56,8 +56,8 @@ if (data.value.entry && import.meta.prerender) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-const pageTitle = page.value.title
-const featuredArticles = page.value.ftvaFeaturedArticles
+const pageTitle = ref(page.value.title)
+const featuredArticles = ref(page.value.ftvaFeaturedArticles)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
@@ -109,7 +109,6 @@ const parsedArticles = computed(() => {
       category: parseArticleCategories(obj._source.articleCategories),
       description: obj._source.aboutTheAuthor,
       date: obj._source.postDate,
-
       image: parseImage(obj),
       sectionHandle: obj._source.sectionHandle,
     }
@@ -148,11 +147,11 @@ const showPageSummary = computed(() => {
 
 // PARSED FEATURED ARTICLES
 const parsedFeaturedArticles = computed(() => {
-  if (featuredArticles.length === 0) {
+  if (featuredArticles.value.length === 0) {
     return
   }
 
-  return featuredArticles.map((obj) => {
+  return featuredArticles.value.map((obj) => {
     const parsedTitle = parseRichTextTitle(obj)
     return {
       image: parseImage(obj),
