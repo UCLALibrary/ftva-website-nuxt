@@ -1,3 +1,8 @@
+/* STOP-DO-NOT-EDIT-THIS-FILE */
+/* This file is a copy of the util found in the ucla-library-website-components repo,
+it should be kept in sync with the original file. This file should ONLT be updated with any changes made to the original file.
+*/
+
 import { format } from 'date-fns/format'
 
 /**
