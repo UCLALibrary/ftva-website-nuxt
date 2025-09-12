@@ -59,6 +59,7 @@ watch(data, (newVal, oldVal) => {
 const parsedHeroImage = computed(() => {
   if (page.value.heroImage?.length > 0 && page.value.heroImage[0]?.image)
     return page.value.heroImage[0].image
+  else return []
 })
 
 const showPageSummary = computed(() => {
