@@ -75,7 +75,13 @@ const parsedCarouselData = computed(() => {
     return null
 
   return page.value.ftvaFeaturedEntries.map((obj) => {
-    const image = obj.ftvaImage?.length > 0 ? obj.ftvaImage : obj.imageCarousel[0]?.image ? obj.imageCarousel[0]?.image : null
+    let image = null
+    if (obj.ftvaImage?.length > 0) {
+      image = obj.ftvaImage
+    } else if (obj.imageCarousel?.[0]?.image) {
+      image = obj.imageCarousel[0].image
+    }
+
     return {
       item: parseFTVACarouselImage(image),
       tag: parseFTVATypeHandles(obj.typeHandle),
@@ -133,7 +139,7 @@ const parsedArchiveBlogs = computed(() => {
 })
 
 const parsedFeaturedCollections = computed(() => {
-  if (page.value.ftvaFeaturedCollectionsSectionSingle.length === 0 || page.value.ftvaFeaturedCollectionsSectionSingle[0]?.featuredCollections?.length === 0)
+  if (page.value.ftvaFeaturedCollectionsSectionSingle?.length === 0 || page.value.ftvaFeaturedCollectionsSectionSingle[0]?.featuredCollections?.length === 0)
     return null
 
   const collections = page.value.ftvaFeaturedCollectionsSectionSingle[0]?.featuredCollections?.map((item) => {
