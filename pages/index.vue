@@ -251,29 +251,31 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
       </div>
 
       <!-- Now Showing -->
-      <SectionWrapper
-        v-if="parsedNowShowing"
-        :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
-        class="now-showing-section no-padding"
-        theme="paleblue"
-      >
-        <template #top-right>
-          <nuxt-link to="/events">
-            {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;">
-              &#8250;</span>
-          </nuxt-link>
-        </template>
-        <ScrollWrapper class="homepage-scroll-wrapper">
-          <SectionTeaserCard
-            v-if="parsedNowShowing && parsedNowShowing.length > 0"
-            class="now-showing-items hovered-items"
-            :items="parsedNowShowing"
-            :grid-layout="false"
-            data-test="featured-event-items"
-          />
-        </ScrollWrapper>
-        <DividerWayFinder />
-      </SectionWrapper>
+      <ClientOnly>
+        <SectionWrapper
+          v-if="parsedNowShowing"
+          :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
+          class="now-showing-section no-padding"
+          theme="paleblue"
+        >
+          <template #top-right>
+            <nuxt-link to="/events">
+              {{ page.ftvaFeaturedEventsSection[0].seeAllText }} <span style="font-size:1.5em;">
+                &#8250;</span>
+            </nuxt-link>
+          </template>
+          <ScrollWrapper class="homepage-scroll-wrapper">
+            <SectionTeaserCard
+              v-if="parsedNowShowing && parsedNowShowing.length > 0"
+              class="now-showing-items hovered-items"
+              :items="parsedNowShowing"
+              :grid-layout="false"
+              data-test="featured-event-items"
+            />
+          </ScrollWrapper>
+          <DividerWayFinder />
+        </SectionWrapper>
+      </ClientOnly>
 
       <!-- Visit and Learn -->
       <SectionWrapper
