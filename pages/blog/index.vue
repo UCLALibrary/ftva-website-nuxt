@@ -225,14 +225,18 @@ useHead({
           v-for="article, index in parsedFeaturedArticles"
           :key="article.title"
           :image="article.image"
-          :to="article.to"
           :date-created="article.dateCreated"
           :category="article.category"
           class="featured-article"
           :data-test="`featured-blog-${index}`"
         >
           <template #customTitle>
-            <RichText :rich-text-content="article.title" />
+            <NuxtLink
+              :to="article.to"
+              class="custom-title"
+            >
+              <RichText :rich-text-content="article.title" />
+            </NuxtLink>
           </template>
 
           <template #customDescription>
@@ -343,6 +347,18 @@ useHead({
   .featured-article:nth-of-type(2),
   .featured-article:nth-of-type(3) {
     grid-row: 2;
+  }
+
+  .custom-title::after {
+    // TODO move this css styles to component library
+    bottom: 0;
+    content: "";
+    left: 0;
+    min-height: 44px;
+    min-width: 44px;
+    position: absolute;
+    right: 0;
+    top: 0;
   }
 
   :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container),
