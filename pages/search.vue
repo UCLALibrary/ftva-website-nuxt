@@ -585,7 +585,7 @@ useHead({
     >
       <block-call-to-action
         class=""
-        v-bind="{ title: 'Looking for a specific collection item?', text: 'Search the UCLA Film & Television Archive Catalog.', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
+        v-bind="{ title: 'Looking for a specific collection item?', text: 'Search the UCLA Film & Television Archive Catalog at UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
       />
     </SectionWrapper>
   </main>
