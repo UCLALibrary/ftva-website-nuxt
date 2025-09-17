@@ -494,8 +494,8 @@ useHead({
             No results found.
           </h4>
           <p class="no-results-text">
-            Looking for a specific collection item? Search the UCLA Film & Television Archive
-            Catalog at
+            Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at UC Library
+            Search
           </p>
           <button-link
             label="UC Library Search"
