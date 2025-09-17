@@ -54,6 +54,7 @@ const collectionFetchFunction = async () => {
 
   results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
 
+  console.log('Results: ', results)
   return results
 }
 
@@ -68,6 +69,7 @@ const onResults = (results) => {
       hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
     } else {
       desktopItemList.value = newCollectionResults
+      console.log('desktop list: ', desktopItemList.value)
       totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
     }
     noResultsFound.value = false
@@ -77,16 +79,22 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
+
 const collectionTitle = ref(attrs.page.title || '')
+console.log('Collection Title: ', collectionTitle.value)
+
 const titleForSearch = computed(() => {
-  console.log('route', route.path, route.name)
+  console.log('route path: ', route.path)
+  console.log('route name: ', route.name)
   if (route.path?.toString().endsWith('filmography')) {
+    console.log('THIS IS L.A. REBELLION')
     return route.path?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
   }
 
   if (route.path?.toString().endsWith('episodes')) {
+    console.log('THIS IS IN-THE-LIFE')
     return route.path?.toString().includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
@@ -95,8 +103,11 @@ const titleForSearch = computed(() => {
   return collectionTitle.value
 })
 console.log('titleForSearch', titleForSearch.value)
+
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
+
+console.log('Current List: ', currentList.value)
 
 // Format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
@@ -112,6 +123,7 @@ const parsedCollectionResults = computed(() => {
     }
   })
 })
+console.log('Parsed Results: ', parsedCollectionResults.value)
 const selectedFilters = ref({}) // initialise with empty filter
 const selectedSortFilters = ref({ sortField: 'asc' })
 // PAGINATION SCROLL HANDLING
