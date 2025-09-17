@@ -438,13 +438,14 @@ useHead({
         to="/"
         parent-title="Home"
       />
-      <h3
-        v-if="route.query.q"
-        class="search-title"
-      >
-        Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
-      </h3>
-
+      <ClientOnly>
+        <h3
+          v-if="route.query.q"
+          class="search-title"
+        >
+          Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
+        </h3>
+      </ClientOnly>
       <NavSearch />
     </SectionWrapper>
     <div class="two-column">
@@ -486,28 +487,30 @@ useHead({
         </div>
       </div>
       <div class="content">
-        <div
-          v-if="noResultsFound && parsedResults.length === 0"
-          class="no-results"
-        >
-          <h4 class="no-results-title">
-            No results found.
-          </h4>
-          <p class="no-results-text">
-            Looking for a specific collection item? Search the UCLA Film & Television Archive
-            Catalog at
-          </p>
-          <button-link
-            label="UC Library Search"
-            icon-name="svg-arrow-right"
-            to="https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,"
-          />
-        </div>
+        <ClientOnly>
+          <div
+            v-if="noResultsFound && parsedResults.length === 0"
+            class="no-results"
+          >
+            <h4 class="no-results-title">
+              No results found.
+            </h4>
+            <p class="no-results-text">
+              Looking for a specific collection item? Search the UCLA Film & Television Archive
+              Catalog at
+            </p>
+            <button-link
+              label="UC Library Search"
+              icon-name="svg-arrow-right"
+              to="https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,"
+            />
+          </div>
+        </ClientOnly>
         <div
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -531,13 +534,6 @@ useHead({
                     updateGroupNameFilters(newFilterSelection)
                   }"
                 />
-                <!--DropdownSingleSelect
-                  v-show="isMobile"
-                  v-model:selected-filters="selectedGroupNameFilters"
-                  label="Filter Results"
-                  :options="searchFilters.options"
-                  field-name="groupName.keyword"
-                /-->
                 <DropdownSingleSelect
                   v-model:selected-filters="selectedSortFilters"
                   :label="sortDropdownData.label"
