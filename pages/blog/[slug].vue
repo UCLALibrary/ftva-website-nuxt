@@ -41,6 +41,7 @@ if (data.value.ftvaArticle && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     // Index the article data using the composable during static build
+    data.value.entry.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title)
     data.value.ftvaArticle.groupName = 'Articles'
     await indexContent(data.value.ftvaArticle, route.params.slug)
     // console.log('Article indexed successfully during static build')

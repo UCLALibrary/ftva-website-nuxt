@@ -42,6 +42,7 @@ if (data.value.ftvaCollection && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
+    data.value.ftvaCollection.titleSort = normalizeTitleForAlphabeticalBrowse(data.value.ftvaCollection.title)
     data.value.ftvaCollection.titleBrowse = normalizeTitleForAlphabeticalBrowse(data.value.ftvaCollection.title)
     data.value.ftvaCollection.groupName = 'Collections'
 

@@ -1,6 +1,7 @@
 <script setup>
 
 // HELPERS
+import { title } from 'process'
 import _get from 'lodash/get'
 
 import FTVACollectionTypeListing from '../gql/queries/FTVACollectionTypeListing.gql'
@@ -65,6 +66,7 @@ if (data.value.entry && import.meta.prerender) {
     const { indexContent } = useContentIndexer()
     const doc = {
       title: data.value.entry.title,
+      titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
       text: data.value.entry.summary,
       uri: route.path,
       sectionHandle: routeNameToSectionMap[route.path]?.sectionName,
@@ -82,9 +84,9 @@ if (data.value.entry && import.meta.prerender) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-const pageTitle = page.value.title
-const generalContentPagesSection = page.value.sectionHeader[0]
-const generalContentPages = page.value.associatedGeneralContentPagesFtva
+const pageTitle = ref(page.value.title)
+const generalContentPagesSection = ref(page.value.sectionHeader[0])
+const generalContentPages = ref(page.value.associatedGeneralContentPagesFtva)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
@@ -195,15 +197,15 @@ function browseBySelectedLetter(letter) {
 
 const parsedGeneralContentHeader = computed(() => {
   return {
-    title: generalContentPagesSection.sectionTitle || '',
-    summary: generalContentPagesSection.sectionSummary || ''
+    title: generalContentPagesSection.value.sectionTitle || '',
+    summary: generalContentPagesSection.value.sectionSummary || ''
   }
 })
 
 const parsedGeneralContentPages = computed(() => {
-  if (generalContentPages.length === 0) return null
+  if (generalContentPages.value.length === 0) return null
 
-  return generalContentPages.map((obj) => {
+  return generalContentPages.value.map((obj) => {
     return {
       title: obj.title,
       to: obj.uri.startsWith('/') ? obj.uri : `/${obj.uri}`,
@@ -245,6 +247,14 @@ useHead({
       content: removeTags(page.value.summary)
     }
   ]
+})
+
+// PREVIEW WATCHER FOR CRAFT CONTENT
+watch(data, (newVal, oldVal) => {
+  page.value = _get(newVal, 'entry', {})
+  pageTitle.value = page.value.title
+  generalContentPagesSection.value = page.value.sectionHeader[0]
+  generalContentPages.value = page.value.associatedGeneralContentPagesFtva
 })
 </script>
 

@@ -1,5 +1,6 @@
 <script setup>
 // HELPERS
+import { title } from 'process'
 import _get from 'lodash/get'
 
 // GQL
@@ -37,6 +38,7 @@ if (data.value.entry && import.meta.prerender) {
     const { indexContent } = useContentIndexer()
     const doc = {
       title: data.value.entry.title,
+      titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
       text: data.value.entry.summary,
       uri: '/billy-wilder-theater',
       sectionHandle: data.value.entry.sectionHandle,

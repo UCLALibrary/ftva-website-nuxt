@@ -157,6 +157,17 @@ const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemLi
 const resultsSection = ref<HTMLElement>(null)
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
+// SORT SETUP - uses static data
+const sortDropdownData = {
+  options: [
+    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'title.keyword', orderBy: 'asc' },
+    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'title.keyword', orderBy: 'desc' },
+    { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
+    { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
 
 watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
@@ -188,18 +199,6 @@ watch(() => route.query, async (newVal, oldVal) => {
     await scrollTo(resultsSection)
   }
 }, { deep: true, immediate: true })
-
-// SORT SETUP - uses static data
-const sortDropdownData = {
-  options: [
-    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'title.keyword', orderBy: 'asc' },
-    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'title.keyword', orderBy: 'desc' },
-    { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
-    { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
-  ],
-  label: 'Sort by',
-  fieldName: 'sortField'
-}
 
 function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterResult {
   let updatedOptions: Option[] = []
