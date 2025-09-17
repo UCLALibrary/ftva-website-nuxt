@@ -160,8 +160,8 @@ const { scrollTo } = usePaginationScroll()
 // SORT SETUP - uses static data
 const sortDropdownData = {
   options: [
-    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'title.keyword', orderBy: 'asc' },
-    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'title.keyword', orderBy: 'desc' },
+    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'titleSort.keyword', orderBy: 'asc' },
+    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'titleSort.keyword', orderBy: 'desc' },
     { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
     { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
   ],
@@ -506,7 +506,7 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
