@@ -15,7 +15,6 @@ const normalizedPath = computed(() => {
   const p = route.path.replace(/\/+$/, '')
   return p === '' ? '/' : p
 })
-console.log('Normalized path: ', normalizedPath.value)
 
 /** 2) Map canonical paths only (no trailing slashes) */
 const routeNameToSectionMap = {
@@ -23,7 +22,6 @@ const routeNameToSectionMap = {
   '/collections/in-the-life/episodes': 'ftvaCollectionListingInTheLife',
 }
 const sectionHandle = computed(() => routeNameToSectionMap[normalizedPath.value])
-console.log('Section Handle: ', sectionHandle.value)
 
 const { data, error } = await useAsyncData(`${normalizedPath.value}-filmography`, async () => {
   // lookup slug based on routeNameToSlugMap
