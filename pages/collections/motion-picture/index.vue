@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 
 // HELPERS
 import _get from 'lodash/get'
@@ -42,7 +42,7 @@ const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap
   const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path]?.sectionName })
   return data
-})
+}) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 
 if (error.value) {
   throw createError({
@@ -104,8 +104,8 @@ const hits = ref(0)
 const documentsPerPage = 12
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
 
-const extraSearchFilter = ref('*')
-const selectedLetterProp = ref('')
+const extraSearchFilter: Ref<string> = ref('*')
+const selectedLetterProp: Ref<string> = ref('')
 
 // "STATE"
 const collectionFetchFunction = async (page) => {
@@ -123,7 +123,7 @@ const collectionFetchFunction = async (page) => {
 const onResults = (results) => {
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newCollectionList = results.hits.hits || []
-    hits.value = results.hits.total.value
+    hits.value = results.hits.total?.value
 
     if (isMobile.value) {
       totalPages.value = 0
@@ -150,11 +150,11 @@ const { scrollTo } = usePaginationScroll()
 
 watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
-  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
   isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
   hasMore.value = true
 
-  const filterLetter = route.query.filters
+  const filterLetter = route.query.filters as string
 
   // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
   if (filterLetter && filterLetter !== '*') {
@@ -204,9 +204,11 @@ const parsedGeneralContentPages = computed(() => {
   if (generalContentPages.length === 0) return null
 
   return generalContentPages.map((obj) => {
+    const uri = obj.uri ? obj.uri : null
+
     return {
       title: obj.title,
-      to: obj.uri.startsWith('/') ? obj.uri : `/${obj.uri}`,
+      to: uri?.startsWith('/') ? uri : `/${uri}`,
       image: parseImage(obj)
     }
   })
@@ -216,11 +218,14 @@ const parsedCollectionList = computed(() => {
   if (currentList.value.length === 0) return []
 
   return currentList.value.map((obj) => {
+    // TODO
+    const uri = obj._source?.to ? obj._source.to : null
+
     return {
-      to: obj._source.to.startsWith('/') ? obj._source.to : `/${obj._source.to}`,
-      title: obj._source.title,
-      text: obj._source.ftvaHomepageDescription,
-      ftvaCollectionType: obj._source.ftvaCollectionType,
+      to: uri?.startsWith('/') ? uri : `/${uri}`,
+      title: obj._source?.title,
+      text: obj._source?.ftvaHomepageDescription,
+      ftvaCollectionType: obj._source?.ftvaCollectionType,
       image: parseImage(obj)
     }
   })
