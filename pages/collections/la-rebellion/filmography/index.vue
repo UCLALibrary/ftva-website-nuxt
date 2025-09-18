@@ -22,7 +22,6 @@ const routeNameToSectionMap = {
   '/collections/in-the-life/episodes': 'ftvaCollectionListingInTheLife',
 }
 const sectionHandle = computed(() => routeNameToSectionMap[normalizedPath.value])
-
 const { data, error } = await useAsyncData(`${normalizedPath.value}-filmography`, async () => {
   // lookup slug based on routeNameToSlugMap
   const data: any = await $graphql.default.request(FTVACollectionFilmography, { section: sectionHandle.value })

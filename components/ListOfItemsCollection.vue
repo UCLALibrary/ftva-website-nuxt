@@ -95,7 +95,7 @@ const titleForSearch = computed(() => {
 
   return collectionTitle.value
 })
-console.log('titleForSearch', titleForSearch.value)
+// console.log('titleForSearch', titleForSearch.value)
 
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
