@@ -80,27 +80,44 @@ const onResults = (results) => {
   }
 }
 
+console.log('Page attrs: ', attrs.page)
+
 const collectionTitle = ref(attrs.page.title || '')
 console.log('Collection Title: ', collectionTitle.value)
 
 const titleForSearch = computed(() => {
   console.log('route path: ', route.path)
   console.log('route name: ', route.name)
-  if (route.path?.toString().endsWith('filmography')) {
-    console.log('THIS IS L.A. REBELLION')
-    return route.path?.toString().includes('la-rebellion')
+  // if (route.path?.toString().endsWith('filmography')) {
+  //   console.log('THIS IS L.A. REBELLION')
+  //   return route.path?.toString().includes('la-rebellion')
+  //     ? 'L.A. Rebellion'
+  //     : collectionTitle.value
+  // }
+
+  // if (route.path?.toString().endsWith('episodes')) {
+  //   console.log('THIS IS IN-THE-LIFE')
+  //   return route.path?.toString().includes('in-the-life')
+  //     ? 'In the Life'
+  //     : collectionTitle.value
+  // }
+
+  // return collectionTitle.value
+
+  if (route.path.endsWith('filmography')) {
+    console.log('OLD - THIS IS L.A. REBELLION')
+    return route.path.split('/').includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
-  }
-
-  if (route.path?.toString().endsWith('episodes')) {
-    console.log('THIS IS IN-THE-LIFE')
-    return route.path?.toString().includes('in-the-life')
+  } else if (route.path.endsWith('episodes')) {
+    console.log('OLD - THIS IS IN-THE-LIFE')
+    return route.path.split('/').includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
   }
-
-  return collectionTitle.value
+  else {
+    return collectionTitle.value
+  }
 })
 console.log('titleForSearch', titleForSearch.value)
 
