@@ -98,14 +98,14 @@ const titleForSearch = computed(() => {
   console.log('route path ends with episodes: ', route.path?.toString().endsWith('episodes'))
   console.log('route path ends with in-the-life: ', route.path?.toString().includes('in-the-life'))
 
-  if (route.path?.toString().endsWith('filmography')) {
+  if (route.path?.toString().split('/').includes('filmography')) {
     console.log('THIS IS L.A. REBELLION')
     return route.path?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
   }
 
-  if (route.path?.toString().endsWith('episodes')) {
+  if (route.path?.toString().split('/').includes('episodes')) {
     console.log('THIS IS IN-THE-LIFE')
     return route.path?.toString().includes('in-the-life')
       ? 'In the Life'
