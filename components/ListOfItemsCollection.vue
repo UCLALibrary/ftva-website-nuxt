@@ -6,7 +6,7 @@ import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
-const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
+const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string, titleSort: string } }
 
 const route = useRoute()
 const router = useRouter()
@@ -29,6 +29,7 @@ if (attrs.page && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
+    attrs.page.titleSort = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
     attrs.page.titleBrowse = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
     attrs.page.groupName = 'Collections'
     // Index the collection data using the composable during static build
