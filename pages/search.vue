@@ -184,14 +184,14 @@ watch(() => route.query, async (newVal, oldVal) => {
   // console.log('selectedSortFilters updated', selectedSortFilters.value)
   if (selectedSortFilters.value.sortField === '') {
     sortField.value = '_score'
-    console.log('sortField updated', sortField.value)
+    // console.log('sortField updated', sortField.value)
     orderBy.value = 'desc'
-    console.log('orderBy updated', orderBy.value)
+    // console.log('orderBy updated', orderBy.value)
   } else {
     sortField.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.sortBy // Extract the field name
-    console.log('sortField updated', sortField.value)
+    // console.log('sortField updated', sortField.value)
     orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
-    console.log('orderBy updated', orderBy.value)
+    // console.log('orderBy updated', orderBy.value)
   }
 
   await searchES()
@@ -283,7 +283,6 @@ function updateGroupNameFilters(newFilter) {
     : ''
 
   console.log('newFilter after processing:', newFilter)
-  console.log('selectedSortFilters.value.sortField:', selectedSortFilters.value.sortField)
   router.push({
     path: route.path,
     query: {

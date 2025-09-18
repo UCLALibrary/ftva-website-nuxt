@@ -1,6 +1,5 @@
 <script setup>
 // HELPERS
-import { title } from 'process'
 import _get from 'lodash/get'
 
 // GQL

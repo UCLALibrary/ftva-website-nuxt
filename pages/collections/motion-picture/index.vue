@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 
 // HELPERS
-import { title } from 'process'
 import _get from 'lodash/get'
 
 import FTVACollectionTypeListing from '../gql/queries/FTVACollectionTypeListing.gql'
