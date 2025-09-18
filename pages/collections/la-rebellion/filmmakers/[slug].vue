@@ -40,6 +40,7 @@ if (data.value.ftvaLARebellionIndividual && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     // Index the event data using the composable during static build
+    data.value.ftvaLARebellionIndividual.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaLARebellionIndividual.title)
     data.value.ftvaLARebellionIndividual.groupName = 'Collections'
     await indexContent(data.value.ftvaLARebellionIndividual, route.params.slug)
     // console.log('Event indexed successfully during static build')
@@ -50,7 +51,6 @@ if (data.value.ftvaLARebellionIndividual && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'ftvaLARebellionIndividual', {}))
-
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'ftvaLARebellionIndividual', {})
@@ -76,7 +76,7 @@ const parsedAssociatedFilms = computed(() => {
   if (page.value.associatedFilms.length === 0) return []
   return page.value.associatedFilms.map((obj) => {
     // console.log('obj link', obj.filmLink)
-    const newFilmLink = ['/', obj.filmLink[0].uri].join('')
+    const newFilmLink = ['/', obj.filmLink?.[0]?.uri].join('')
     // console.log('newFilmLink', newFilmLink)
     // console.log('new obj', {
     //   ...obj,
@@ -91,7 +91,7 @@ const parsedAssociatedFilms = computed(() => {
       ...obj,
       filmLink: [
         {
-          ...obj.filmLink[0],
+          ...obj.filmLink?.[0],
           uri: newFilmLink
         }
       ]

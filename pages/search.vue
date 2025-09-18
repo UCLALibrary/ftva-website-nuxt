@@ -157,6 +157,17 @@ const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemLi
 const resultsSection = ref<HTMLElement>(null)
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
+// SORT SETUP - uses static data
+const sortDropdownData = {
+  options: [
+    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'titleSort', orderBy: 'asc' },
+    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'titleSort', orderBy: 'desc' },
+    { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
+    { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
 
 watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
@@ -182,24 +193,13 @@ watch(() => route.query, async (newVal, oldVal) => {
     orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
     // console.log('orderBy updated', orderBy.value)
   }
+
   await searchES()
   await nextTick()
   if (!isMobile.value && route.query.page && resultsSection.value && parsedResults.value.length > 0) {
     await scrollTo(resultsSection)
   }
 }, { deep: true, immediate: true })
-
-// SORT SETUP - uses static data
-const sortDropdownData = {
-  options: [
-    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'title.keyword', orderBy: 'asc' },
-    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'title.keyword', orderBy: 'desc' },
-    { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
-    { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
-  ],
-  label: 'Sort by',
-  fieldName: 'sortField'
-}
 
 function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterResult {
   let updatedOptions: Option[] = []
@@ -437,13 +437,14 @@ useHead({
         title="Search Results"
         to="/"
       />
-      <h3
-        v-if="route.query.q"
-        class="search-title"
-      >
-        Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
-      </h3>
-
+      <ClientOnly>
+        <h3
+          v-if="route.query.q"
+          class="search-title"
+        >
+          Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
+        </h3>
+      </ClientOnly>
       <NavSearch />
     </SectionWrapper>
     <div class="two-column">
@@ -485,23 +486,25 @@ useHead({
         </div>
       </div>
       <div class="content">
-        <div
-          v-if="noResultsFound && parsedResults.length === 0"
-          class="no-results"
-        >
-          <h4 class="no-results-title">
-            No results found.
-          </h4>
-          <p class="no-results-text">
-            Looking for a specific collection item? Search the UCLA Film & Television Archive
-            Catalog at
-          </p>
-          <button-link
-            label="UC Library Search"
-            icon-name="svg-arrow-right"
-            to="https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,"
-          />
-        </div>
+        <ClientOnly>
+          <div
+            v-if="noResultsFound && parsedResults.length === 0"
+            class="no-results"
+          >
+            <h4 class="no-results-title">
+              No results found.
+            </h4>
+            <p class="no-results-text">
+              Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at UC Library
+              Search
+            </p>
+            <button-link
+              label="UC Library Search"
+              icon-name="svg-arrow-right"
+              to="https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,"
+            />
+          </div>
+        </ClientOnly>
         <div
           v-show="!noResultsFound
             &&
@@ -530,13 +533,6 @@ useHead({
                     updateGroupNameFilters(newFilterSelection)
                   }"
                 />
-                <!--DropdownSingleSelect
-                  v-show="isMobile"
-                  v-model:selected-filters="selectedGroupNameFilters"
-                  label="Filter Results"
-                  :options="searchFilters.options"
-                  field-name="groupName.keyword"
-                /-->
                 <DropdownSingleSelect
                   v-model:selected-filters="selectedSortFilters"
                   :label="sortDropdownData.label"
@@ -588,7 +584,7 @@ useHead({
     >
       <block-call-to-action
         class=""
-        v-bind="{ title: 'Looking for a specific collection item?', text: 'Search the UCLA Film & Television Archive Catalog.', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
+        v-bind="{ title: 'Looking for a specific collection item?', text: 'Search the UCLA Film & Television Archive Catalog at UC Library Search', name: 'UC Library Search', to: 'https://search.library.ucla.edu/discovery/search?vid=01UCS_LAL:UCLA&tab=Articles_books_more_slot&search_scope=ArticlesBooksMore&lang=en&query=any,contains,', isDark: false, svgName: 'svg-call-to-action-question' }"
       />
     </SectionWrapper>
   </main>

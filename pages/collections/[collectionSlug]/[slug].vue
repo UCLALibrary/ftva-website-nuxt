@@ -43,6 +43,7 @@ if (data.value.entry && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
+    data.value.entry.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title)
     data.value.entry.titleBrowse = normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title)
     data.value.entry.groupName = 'Collections'
     // Index the data using the composable during static build

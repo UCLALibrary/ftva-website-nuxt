@@ -41,6 +41,7 @@ if (attrs.page && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
+    attrs.page.titleSort = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
     attrs.page.titleBrowse = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
     attrs.page.groupName = 'Collections'
     // Index the collection data using the composable during static build

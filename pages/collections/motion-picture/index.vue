@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 
 // HELPERS
 import _get from 'lodash/get'
@@ -42,7 +42,7 @@ const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap
   const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path]?.sectionName })
   return data
-})
+}) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 
 if (error.value) {
   throw createError({
@@ -65,6 +65,7 @@ if (data.value.entry && import.meta.prerender) {
     const { indexContent } = useContentIndexer()
     const doc = {
       title: data.value.entry.title,
+      titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
       text: data.value.entry.summary,
       uri: route.path,
       sectionHandle: routeNameToSectionMap[route.path]?.sectionName,
@@ -82,9 +83,9 @@ if (data.value.entry && import.meta.prerender) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-const pageTitle = page.value.title
-const generalContentPagesSection = page.value.sectionHeader[0]
-const generalContentPages = page.value.associatedGeneralContentPagesFtva
+const pageTitle = ref(page.value.title)
+const generalContentPagesSection = ref(page.value.sectionHeader[0])
+const generalContentPages = ref(page.value.associatedGeneralContentPagesFtva)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
@@ -104,8 +105,8 @@ const hits = ref(0)
 const documentsPerPage = 12
 const collectionType = ref(routeNameToSectionMap[route.path].collection)
 
-const extraSearchFilter = ref('*')
-const selectedLetterProp = ref('')
+const extraSearchFilter: Ref<string> = ref('*')
+const selectedLetterProp: Ref<string> = ref('')
 
 // "STATE"
 const collectionFetchFunction = async (page) => {
@@ -123,7 +124,7 @@ const collectionFetchFunction = async (page) => {
 const onResults = (results) => {
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newCollectionList = results.hits.hits || []
-    hits.value = results.hits.total.value
+    hits.value = results.hits.total?.value
 
     if (isMobile.value) {
       totalPages.value = 0
@@ -150,11 +151,11 @@ const { scrollTo } = usePaginationScroll()
 
 watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
-  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
   isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
   hasMore.value = true
 
-  const filterLetter = route.query.filters
+  const filterLetter = route.query.filters as string
 
   // filterLetter is general wildcard ('*') or lettered (ex: 'A*')
   if (filterLetter && filterLetter !== '*') {
@@ -195,18 +196,20 @@ function browseBySelectedLetter(letter) {
 
 const parsedGeneralContentHeader = computed(() => {
   return {
-    title: generalContentPagesSection.sectionTitle || '',
-    summary: generalContentPagesSection.sectionSummary || ''
+    title: generalContentPagesSection.value.sectionTitle || '',
+    summary: generalContentPagesSection.value.sectionSummary || ''
   }
 })
 
 const parsedGeneralContentPages = computed(() => {
-  if (generalContentPages.length === 0) return null
+  if (generalContentPages.value.length === 0) return null
 
-  return generalContentPages.map((obj) => {
+  return generalContentPages.value.map((obj) => {
+    const uri = obj.uri ? obj.uri : null
+
     return {
       title: obj.title,
-      to: obj.uri.startsWith('/') ? obj.uri : `/${obj.uri}`,
+      to: uri?.startsWith('/') ? uri : `/${uri}`,
       image: parseImage(obj)
     }
   })
@@ -216,11 +219,14 @@ const parsedCollectionList = computed(() => {
   if (currentList.value.length === 0) return []
 
   return currentList.value.map((obj) => {
+    // TODO
+    const uri = obj._source?.to ? obj._source.to : null
+
     return {
-      to: obj._source.to.startsWith('/') ? obj._source.to : `/${obj._source.to}`,
-      title: obj._source.title,
-      text: obj._source.ftvaHomepageDescription,
-      ftvaCollectionType: obj._source.ftvaCollectionType,
+      to: uri?.startsWith('/') ? uri : `/${uri}`,
+      title: obj._source?.title,
+      text: obj._source?.ftvaHomepageDescription,
+      ftvaCollectionType: obj._source?.ftvaCollectionType,
       image: parseImage(obj)
     }
   })
@@ -245,6 +251,14 @@ useHead({
       content: removeTags(page.value.summary)
     }
   ]
+})
+
+// PREVIEW WATCHER FOR CRAFT CONTENT
+watch(data, (newVal, oldVal) => {
+  page.value = _get(newVal, 'entry', {})
+  pageTitle.value = page.value.title
+  generalContentPagesSection.value = page.value.sectionHeader[0]
+  generalContentPages.value = page.value.associatedGeneralContentPagesFtva
 })
 </script>
 
