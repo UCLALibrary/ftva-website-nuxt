@@ -88,36 +88,48 @@ console.log('Collection Title: ', collectionTitle.value)
 const titleForSearch = computed(() => {
   console.log('route path: ', route.path)
   console.log('route name: ', route.name)
-  // if (route.path?.toString().endsWith('filmography')) {
-  //   console.log('THIS IS L.A. REBELLION')
-  //   return route.path?.toString().includes('la-rebellion')
-  //     ? 'L.A. Rebellion'
-  //     : collectionTitle.value
-  // }
 
-  // if (route.path?.toString().endsWith('episodes')) {
-  //   console.log('THIS IS IN-THE-LIFE')
-  //   return route.path?.toString().includes('in-the-life')
-  //     ? 'In the Life'
-  //     : collectionTitle.value
-  // }
+  console.log('route path to string: ', route.path?.toString())
+  console.log('route name to string: ', route.name?.toString())
 
-  // return collectionTitle.value
+  console.log('route path ends with filmography: ', route.path?.toString().endsWith('filmography'))
+  console.log('route path includes la rebellion: ', route.path?.toString().includes('la-rebellion'))
 
-  if (route.path.endsWith('filmography')) {
-    console.log('OLD - THIS IS L.A. REBELLION')
-    return route.path.split('/').includes('la-rebellion')
+  console.log('route path ends with episodes: ', route.path?.toString().endsWith('episodes'))
+  console.log('route path ends with in-the-life: ', route.path?.toString().includes('in-the-life'))
+
+  if (route.path?.toString().endsWith('filmography')) {
+    console.log('THIS IS L.A. REBELLION')
+    return route.path?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
-  } else if (route.path.endsWith('episodes')) {
-    console.log('OLD - THIS IS IN-THE-LIFE')
-    return route.path.split('/').includes('in-the-life')
+  }
+
+  if (route.path?.toString().endsWith('episodes')) {
+    console.log('THIS IS IN-THE-LIFE')
+    return route.path?.toString().includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
   }
-  else {
-    return collectionTitle.value
-  }
+
+  console.log('NEW')
+  return collectionTitle.value
+
+  // if (route.path.endsWith('filmography')) {
+  //   console.log('OLD - THIS IS L.A. REBELLION')
+  //   return route.path.split('/').includes('la-rebellion')
+  //     ? 'L.A. Rebellion'
+  //     : collectionTitle.value
+  // } else if (route.path.endsWith('episodes')) {
+  //   console.log('OLD - THIS IS IN-THE-LIFE')
+  //   return route.path.split('/').includes('in-the-life')
+  //     ? 'In the Life'
+  //     : collectionTitle.value
+  // }
+  // else {
+  //   console.log('OLD')
+  //   return collectionTitle.value
+  // }
 })
 console.log('titleForSearch', titleForSearch.value)
 
