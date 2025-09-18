@@ -185,7 +185,10 @@ useHead({
           </template>
         </CardMeta>
 
-        <h3 class="about-the-author">
+        <h3
+          v-if="page?.aboutTheAuthor"
+          class="about-the-author"
+        >
           About the Author
         </h3>
 
