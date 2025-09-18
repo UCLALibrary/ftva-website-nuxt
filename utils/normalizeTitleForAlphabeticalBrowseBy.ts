@@ -7,6 +7,8 @@
  * Useful for generating fields like `titleBrowse` in search indexes.
  */
 function normalizeTitleForAlphabeticalBrowse(title: string): string {
+  // console.log('Original title:', title)
+  if (title === undefined || title === null) return ''
   return title
     // Normalize curly quotes to straight quotes
     .replace(/[“”]/g, '"')

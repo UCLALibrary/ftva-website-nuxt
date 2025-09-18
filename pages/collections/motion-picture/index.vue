@@ -205,7 +205,7 @@ const parsedGeneralContentHeader = computed(() => {
 const parsedGeneralContentPages = computed(() => {
   if (generalContentPages.value.length === 0) return null
 
-  return generalContentPages.map((obj) => {
+  return generalContentPages.value.map((obj) => {
     const uri = obj.uri ? obj.uri : null
 
     return {

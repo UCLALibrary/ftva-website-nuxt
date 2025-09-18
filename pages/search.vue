@@ -496,7 +496,7 @@ useHead({
             <h4 class="no-results-title">
               No results found.
             </h4>
-              <p class="no-results-text">
+            <p class="no-results-text">
               Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at UC Library
               Search
             </p>
@@ -511,7 +511,7 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >
