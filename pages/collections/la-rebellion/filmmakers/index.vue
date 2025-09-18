@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 import { computed } from 'vue'
 
 // HELPERS & UTILS
@@ -13,7 +13,7 @@ const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('la-rebellion-filmmakers', async () => {
   const data = await $graphql.default.request(FTVALARebellionFilmmakersList)
   return data
-})
+}) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 
 if (error.value) {
   throw createError({
@@ -37,6 +37,7 @@ if (data.value.entry && import.meta.prerender) {
 
     const doc = {
       title: data.value.entry.title,
+      titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
       text: data.value.entry.summary,
       uri: '/collections/la-rebellion/filmmakers/',
       sectionHandle: data.value.entry.sectionHandle,
@@ -78,15 +79,18 @@ useHead({
 
 // "STATE"
 const documentsPerPage = 12
-const selectedSortFilters = ref({ sortField: 'asc' })
+const selectedSortFilters = ref({ sortField: 'nameLast.keyword asc' })
 
 const filmmakersFetchFunction = async (page) => {
   const { paginatedFilmmakersQuery } = useFilmmakersListSearch()
+  // parse the sort field
+  const sortOnField = selectedSortFilters.value.sortField?.split(' ')[0]
+  const orderBy = selectedSortFilters.value.sortField?.split(' ')[1]
   const results = await paginatedFilmmakersQuery(
     page,
     documentsPerPage,
-    'title.keyword',
-    selectedSortFilters.value.sortField,
+    sortOnField,
+    orderBy,
     ['*']
   )
   return results
@@ -161,9 +165,12 @@ const parsedFilmmakerListings = computed(() => {
 
 // SORT
 const sortDropdownData = {
+  // note: 'nameLast' and 'title' are fields on the indexed ftvaLARebellionIndividual object that we are sorting on
   options: [
-    { label: 'First Name (A - Z)', value: 'asc' },
-    { label: 'First Name (Z - A)', value: 'desc' },
+    { label: 'Last Name (A - Z)', value: 'nameLast.keyword asc' },
+    { label: 'Last Name (Z - A)', value: 'nameLast.keyword desc' },
+    { label: 'First Name (A - Z)', value: 'title.keyword asc' },
+    { label: 'First Name (Z - A)', value: 'title.keyword desc' },
   ],
   label: 'Sort by',
   fieldName: 'sortField'

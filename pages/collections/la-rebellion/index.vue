@@ -43,14 +43,29 @@ if (!data.value.entry) {
 }
 
 // TODO This is creating an index of the content for ES search
+if (data.value.entry && import.meta.prerender) {
+  // Call the composable to use the indexing function
+  const { indexContent } = useContentIndexer()
+  const doc = {
+    title: data.value.entry.title,
+    titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
+    text: data.value.entry.summary,
+    uri: route.path,
+    sectionHandle: data.value.entry.sectionHandle,
+    groupName: 'Collections',
+  }
+
+  await indexContent(doc, routeNameToSlugMap[normalizedPath.value])
+}
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-const additionalResources = page.value.ftvaAdditionalResources
+const additionalResources = ref(page.value.ftvaAdditionalResources)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
+  additionalResources.value = page.value.ftvaAdditionalResources
 })
 
 // IMAGE
@@ -70,9 +85,9 @@ const parsedCarouselData = computed(() => {
 })
 
 const parsedAdditionalResources = computed(() => {
-  if (additionalResources.length === 0) return null
+  if (additionalResources.value.length === 0) return null
 
-  return additionalResources.map((obj) => {
+  return additionalResources.value.map((obj) => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,

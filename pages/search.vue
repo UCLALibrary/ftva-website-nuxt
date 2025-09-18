@@ -157,6 +157,17 @@ const { isLoading, isMobile, hasMore, desktopPage, desktopItemList, mobileItemLi
 const resultsSection = ref<HTMLElement>(null)
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
+// SORT SETUP - uses static data
+const sortDropdownData = {
+  options: [
+    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'titleSort', orderBy: 'asc' },
+    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'titleSort', orderBy: 'desc' },
+    { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
+    { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
+  ],
+  label: 'Sort by',
+  fieldName: 'sortField'
+}
 
 watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
@@ -182,24 +193,13 @@ watch(() => route.query, async (newVal, oldVal) => {
     orderBy.value = sortDropdownData.options.find(obj => obj.value === selectedSortFilters.value.sortField)?.orderBy // Extract the order by
     // console.log('orderBy updated', orderBy.value)
   }
+
   await searchES()
   await nextTick()
   if (!isMobile.value && route.query.page && resultsSection.value && parsedResults.value.length > 0) {
     await scrollTo(resultsSection)
   }
 }, { deep: true, immediate: true })
-
-// SORT SETUP - uses static data
-const sortDropdownData = {
-  options: [
-    { label: 'Title (A-Z)', value: 'title asc', sortBy: 'title.keyword', orderBy: 'asc' },
-    { label: 'Title (Z-A)', value: 'title desc', sortBy: 'title.keyword', orderBy: 'desc' },
-    { label: 'Date (oldest)', value: 'date asc', sortBy: 'postDate', orderBy: 'asc' }, // TODO ask @axa which craft date field to use here
-    { label: 'Date (newest)', value: 'date desc', sortBy: 'postDate', orderBy: 'desc' }, // TODO ask @axa which craft date field to use here
-  ],
-  label: 'Sort by',
-  fieldName: 'sortField'
-}
 
 function addHighlightStateAndCountToFilters(aggregations: Aggregations): FilterResult {
   let updatedOptions: Option[] = []
@@ -495,7 +495,7 @@ useHead({
             <h4 class="no-results-title">
               No results found.
             </h4>
-              <p class="no-results-text">
+            <p class="no-results-text">
               Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at UC Library
               Search
             </p>
@@ -510,7 +510,7 @@ useHead({
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >
