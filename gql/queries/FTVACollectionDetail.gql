@@ -32,6 +32,7 @@ query FTVACollectionDetail($slug: [String!]) {
       ... on infoBlock_infoBlock_BlockType {
         icon
         text
+        heading
       }
     }
     heroimage: ftvaHeroImage {
