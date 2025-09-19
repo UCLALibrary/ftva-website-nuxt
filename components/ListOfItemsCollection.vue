@@ -78,24 +78,26 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
+
 const collectionTitle = ref(attrs.page.title || '')
+
 const titleForSearch = computed(() => {
-  console.log('route', route.path, route.name)
-  if (route.name?.toString().endsWith('filmography')) {
-    return route.name?.toString().includes('la-rebellion')
+  if (route.path?.toString().endsWith('filmography') || route.path?.toString().endsWith('/filmography/')) {
+    return route.path?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
   }
 
-  if (route.name?.toString().endsWith('episodes')) {
-    return route.name?.toString().includes('in-the-life')
+  if (route.path?.toString().endsWith('episodes') || route.path?.toString().endsWith('/episodes/')) {
+    return route.path?.toString().includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
   }
 
   return collectionTitle.value
 })
-console.log('titleForSearch', titleForSearch.value)
+// console.log('titleForSearch', titleForSearch.value)
+
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
@@ -113,6 +115,7 @@ const parsedCollectionResults = computed(() => {
     }
   })
 })
+
 const selectedFilters = ref({}) // initialise with empty filter
 const selectedSortFilters = ref({ sortField: 'asc' })
 // PAGINATION SCROLL HANDLING
