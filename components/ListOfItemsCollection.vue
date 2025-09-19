@@ -94,15 +94,14 @@ const onResults = (results) => {
 const collectionTitle = ref(attrs.page.title || '')
 
 const titleForSearch = computed(() => {
-  // console.log('route', route.path, route.name)
-  if (route.name?.toString().endsWith('filmography')) {
-    return route.name?.toString().includes('la-rebellion')
+  if (route.path?.toString().endsWith('filmography') || route.path?.toString().endsWith('/filmography/')) {
+    return route.path?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
   }
 
-  if (route.name?.toString().endsWith('episodes')) {
-    return route.name?.toString().includes('in-the-life')
+  if (route.path?.toString().endsWith('episodes') || route.path?.toString().endsWith('/episodes/')) {
+    return route.path?.toString().includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
   }
