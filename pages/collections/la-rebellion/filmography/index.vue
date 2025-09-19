@@ -7,6 +7,9 @@ import _get from 'lodash/get'
 import FTVACollectionFilmography from '../gql/queries/FTVACollectionFilmography.gql'
 import ListOfItemsCollection from '~/components/ListOfItemsCollection.vue'
 
+// UTILS
+import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -21,7 +24,9 @@ const routeNameToSectionMap = {
   '/collections/la-rebellion/filmography': 'ftvaCollectionListingLARebellion',
   '/collections/in-the-life/episodes': 'ftvaCollectionListingInTheLife',
 }
+
 const sectionHandle = computed(() => routeNameToSectionMap[normalizedPath.value])
+
 const { data, error } = await useAsyncData(`${normalizedPath.value}-filmography`, async () => {
   // lookup slug based on routeNameToSlugMap
   const data: any = await $graphql.default.request(FTVACollectionFilmography, { section: sectionHandle.value })
@@ -53,7 +58,11 @@ watch(data, (newVal, oldVal) => {
 definePageMeta({
   layout: 'default',
   path: '/collections/la-rebellion/filmography',
-  alias: ['/collections/la-rebellion/filmography/', '/collections/in-the-life/episodes', '/collections/in-the-life/episodes/']
+  alias: [
+    '/collections/la-rebellion/filmography/',
+    '/collections/in-the-life/episodes',
+    '/collections/in-the-life/episodes/'
+  ]
 })
 
 useHead({
@@ -66,12 +75,26 @@ useHead({
     }
   ]
 })
+
+// BREADCRUMB OVERRIDES
+// Add value of new breadcrumb title to switch statement in the utility file
+const breadcrumbOverrides = ref([
+  {
+    titleLevel: 2,
+    updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
+  }
+])
 </script>
+
 <template>
   <div class="page-component-wrapper">
-    <ListOfItemsCollection :page="page" />
+    <ListOfItemsCollection
+      :page="page"
+      :breadcrumbs="breadcrumbOverrides"
+    />
   </div>
 </template>
+
 <style scoped>
 .page-component-wrapper {
   display: flex;

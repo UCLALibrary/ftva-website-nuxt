@@ -186,8 +186,6 @@ useHead({
       <NavBreadcrumb
         class="breadcrumb"
         :title="page?.title"
-        to="/series"
-        parent-title="Series"
       />
 
       <ResponsiveImage

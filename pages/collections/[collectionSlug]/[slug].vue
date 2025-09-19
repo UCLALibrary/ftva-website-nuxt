@@ -10,6 +10,7 @@ import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // UTILS
 import normalizeTitleForAlphabeticalBrowseBy from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
+import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
 
 const { $graphql } = useNuxtApp()
 
@@ -210,6 +211,14 @@ useHead({
   ]
 })
 
+// BREADCRUMB OVERRIDES
+// Add value of new breadcrumb title to switch statement in the utility file
+const breadcrumbOverrides = ref([
+  {
+    titleLevel: 2,
+    updatedTitle: parseFieldForBreadcrumbTitleOverride(collectionSlug) || null
+  }
+])
 </script>
 
 <template>
@@ -220,6 +229,7 @@ useHead({
     <div class="collection-item-header">
       <NavBreadcrumb
         :title="page?.title"
+        :override-title-group="breadcrumbOverrides"
         class="breadcrumb"
         data-test="breadcrumb"
       />
@@ -380,9 +390,9 @@ useHead({
 
   .collection-item-header {
     background-color: var(--pale-blue);
-    padding-block: 0.5rem;
+    padding-block: 0.005rem;
 
-    .breadcrumb {
+    :deep(.nav-breadcrumb ol) {
       padding: 0;
       max-width: var(--ftva-container-max-width)
     }
