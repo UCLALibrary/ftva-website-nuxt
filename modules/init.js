@@ -28,6 +28,10 @@ export default defineNuxtModule({
                   titleBrowse: {
                     type: 'keyword',
                     normalizer: 'lowercase_normalizer'
+                  },
+                  titleSort: {
+                    type: 'keyword',
+                    normalizer: 'lowercase_normalizer'
                   }
                 }
               },

@@ -41,6 +41,7 @@ if (data.value.entry && import.meta.prerender) {
     const { indexContent } = useContentIndexer()
     const doc = {
       title: data.value.entry.title,
+      titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
       text: data.value.entry.summary,
       uri: '/',
       groupName: 'General Content',

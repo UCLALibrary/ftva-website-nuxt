@@ -6,7 +6,7 @@ import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
-const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string } }
+const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string, titleSort: string } }
 
 const route = useRoute()
 const router = useRouter()
@@ -29,6 +29,7 @@ if (attrs.page && import.meta.prerender) {
   try {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
+    attrs.page.titleSort = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
     attrs.page.titleBrowse = normalizeTitleForAlphabeticalBrowse(attrs.page.title)
     attrs.page.groupName = 'Collections'
     // Index the collection data using the composable during static build
@@ -77,24 +78,26 @@ const onResults = (results) => {
     hasMore.value = false
   }
 }
+
 const collectionTitle = ref(attrs.page.title || '')
+
 const titleForSearch = computed(() => {
-  console.log('route', route.path, route.name)
-  if (route.name?.toString().endsWith('filmography')) {
-    return route.name?.toString().includes('la-rebellion')
+  if (route.path?.toString().endsWith('filmography') || route.path?.toString().endsWith('/filmography/')) {
+    return route.path?.toString().includes('la-rebellion')
       ? 'L.A. Rebellion'
       : collectionTitle.value
   }
 
-  if (route.name?.toString().endsWith('episodes')) {
-    return route.name?.toString().includes('in-the-life')
+  if (route.path?.toString().endsWith('episodes') || route.path?.toString().endsWith('/episodes/')) {
+    return route.path?.toString().includes('in-the-life')
       ? 'In the Life'
       : collectionTitle.value
   }
 
   return collectionTitle.value
 })
-console.log('titleForSearch', titleForSearch.value)
+// console.log('titleForSearch', titleForSearch.value)
+
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
 
@@ -112,6 +115,7 @@ const parsedCollectionResults = computed(() => {
     }
   })
 })
+
 const selectedFilters = ref({}) // initialise with empty filter
 const selectedSortFilters = ref({ sortField: 'asc' })
 // PAGINATION SCROLL HANDLING

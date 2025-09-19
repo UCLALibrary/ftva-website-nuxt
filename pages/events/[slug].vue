@@ -42,6 +42,7 @@ if (data.value.ftvaEvent && import.meta.prerender) {
     // Call the composable to use the indexing function
     const { indexContent } = useContentIndexer()
     // Index the event data using the composable during static build
+    data.value.ftvaEvent.sortTitle = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaEvent.title)
     data.value.ftvaEvent.groupName = 'Events'
     await indexContent(data.value.ftvaEvent, route.params.slug)
     // console.log('Event indexed successfully during static build')
