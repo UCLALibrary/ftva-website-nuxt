@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
 
@@ -21,7 +21,7 @@ const route = useRoute()
 const { data, error } = await useAsyncData(`collections-detail-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVACollectionDetail, { slug: route.params.slug })
   return data
-})
+}) as { data: Ref<{ ftvaCollection: any } | null>, error: Ref<any> }
 
 if (error.value) {
   throw createError({
@@ -85,8 +85,11 @@ const parsedCarouselData = computed(() => {
 // Map icon names to svg names for infoBlock
 const parsedInfoBlockIconLookup = {
   'icon-download': 'svg-call-to-action-ftva-pdf',
+  'icon-ftva-download': 'svg-call-to-action-ftva-pdf',
   'icon-info': 'svg-call-to-action-ftva-info',
-  'icon-external-link': 'svg-call-to-action-ftva-external-link-dark'
+  'icon-ftva-info': 'svg-call-to-action-ftva-info',
+  'icon-external-link': 'svg-call-to-action-ftva-external-link-dark',
+  'icon-ftva-external-link': 'svg-call-to-action-ftva-external-link-dark'
 }
 
 const parsedInfoBlock = computed(() => {
@@ -97,6 +100,7 @@ const parsedInfoBlock = computed(() => {
   return page.value.infoBlock.map((item, index) => {
     const parsedIcon = parsedInfoBlockIconLookup[item?.icon] ? parsedInfoBlockIconLookup[item.icon] : parsedInfoBlockIconLookup['icon-info']
     return {
+      ...item,
       text: item.text,
       icon: parsedIcon
     }
@@ -234,9 +238,9 @@ useHead({
           :trailer="page.videoEmbed"
         />
         <!-- TODO APPS-3326 can remove the '&& parsedInfoBlock.text' condition when we have a way to support Contact Info Data in this spot -->
-        <DividerWayFinder v-if="parsedInfoBlock && parsedInfoBlock.text" />
+        <DividerWayFinder v-if="parsedInfoBlock && parsedInfoBlock[0]?.text" />
         <div
-          v-if="parsedInfoBlock && parsedInfoBlock.text"
+          v-if="parsedInfoBlock && parsedInfoBlock[0]?.text"
           class="cta-block"
         >
           <BlockCallToAction
@@ -244,6 +248,7 @@ useHead({
             :key="item.text.concat(10)"
             :svg-name="item.icon"
             :text="item.text"
+            :title="item.heading ? item.heading : ''"
             :is-centered="false"
           />
         </div>
