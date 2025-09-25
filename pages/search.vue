@@ -776,9 +776,8 @@ useHead({
     }
   }
 
-  // UPDATE FOOTER
   .section-wrapper:last-of-type {
-    padding-bottom: 0;
+    padding-bottom: 120px; // Footer spacing
   }
 
   @media screen and (max-width: 834px) {

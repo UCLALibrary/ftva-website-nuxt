@@ -399,13 +399,12 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
 <style lang="scss" scoped>
 main {
   background-color: var(--pale-blue);
+  padding-bottom: 120px; // Footer spacing
 }
 
-// UPDATE FOOTER
 .one-column {
   width: 100%;
   margin: 0 auto;
-  // margin: 0 auto 65px auto;
 }
 
 :deep(.section-wrapper:not(:first-of-type)) {

@@ -108,10 +108,6 @@ useHead({
     background-color: red;
   }
 
-  .ftva.footer-main__blue {
-    background-color: blue;
-  }
-
   @media #{$small} {
     .brand-bar {
       display: none;
