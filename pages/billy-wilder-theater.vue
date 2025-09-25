@@ -302,10 +302,7 @@ useHead({
     }
 
     :deep(.rich-text) {
-
-      // UPDATED FOOTER
       .parsed-content {
-        // margin-bottom: 0;
 
         p {
           margin-bottom: 12px;

@@ -66,10 +66,7 @@ useHead({
         :primary-items="primaryMenuItems"
       />
       <NuxtPage />
-      <footer
-        class="ftva-footer"
-        data-test="footer"
-      >
+      <footer data-test="footer">
         <footer-main />
       </footer>
     </div>
