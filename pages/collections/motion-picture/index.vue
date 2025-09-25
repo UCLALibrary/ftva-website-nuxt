@@ -354,6 +354,7 @@ watch(data, (newVal, oldVal) => {
 .page-collection-type {
   position: relative;
   background-color: var(--pale-blue);
+  padding-bottom: 120px; // Footer spacing
 
   .section-wrapper {
     padding-inline: 0;
@@ -366,8 +367,7 @@ watch(data, (newVal, oldVal) => {
   }
 
   .section-wrapper:last-of-type {
-    padding-top: 0;
-    padding-bottom: 100px;
+    padding-block: 0;
   }
 
   .section-wrapper__page-header {
@@ -465,6 +465,10 @@ watch(data, (newVal, oldVal) => {
 
   :deep(.section-post-small .grid-wrapper) {
     gap: 12px;
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

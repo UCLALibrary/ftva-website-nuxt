@@ -218,6 +218,7 @@ const pageClass = computed(() => {
 @import 'assets/styles/general-pages.scss';
 
 .page-storytelling {
+  padding-bottom: 120px; // Footer spacing
 
   :deep(.card-with-image) {
     .block-highlight {
@@ -248,6 +249,10 @@ const pageClass = computed(() => {
     .block-post-small {
       background: var(--pale-blue);
     }
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

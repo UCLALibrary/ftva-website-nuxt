@@ -267,9 +267,11 @@ const breadcrumbOverrides = ref([
 .page-filmmakers {
   position: relative;
   background-color: var(--pale-blue);
+  padding-bottom: 120px; // Footer spacing
 
   .section-wrapper {
     padding-inline: 0;
+    padding-bottom: 0;
 
     :deep(.section-title) {
       @include ftva-h5;
@@ -284,7 +286,7 @@ const breadcrumbOverrides = ref([
 
   :deep(.section-pagination) {
     background-color: white;
-    padding: 2.5%;
+    padding: 15px 2.5% 60px;
     justify-content: center;
   }
 
@@ -306,6 +308,7 @@ const breadcrumbOverrides = ref([
   }
 
   @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
 
     :deep(.dropdown-single-select),
     :deep(.dropdown-single-select .mobile-button) {

@@ -102,12 +102,6 @@ useHead({
     will-change: top;
   }
 
-  // .ftva-footer {
-  .ftva.footer-main {
-    padding-top: 120px;
-    background-color: red;
-  }
-
   @media #{$small} {
     .brand-bar {
       display: none;

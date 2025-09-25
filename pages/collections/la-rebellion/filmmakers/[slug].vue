@@ -243,6 +243,17 @@ const breadcrumbOverrides = ref([
   position: relative;
 
   .two-column {
+    :deep(.primary-section-wrapper) {
+      margin-bottom: 0;
+
+      .parsed-content {
+        margin-bottom: 0
+      }
+    }
+
+    :deep(.sidebar-column) {
+      padding-bottom: 0;
+    }
 
     .ftva.button-dropdown {
       margin-top: 30px;
@@ -255,7 +266,8 @@ const breadcrumbOverrides = ref([
     // when two-column div is not followed by a filmography section
     &:last-child {
       // add 8px of space between the last element in the two-column div and the footer
-      padding-bottom: 8px;
+      // padding-bottom: 8px;
+      padding-bottom: 120px; // Footer spacing
     }
 
     // fix button scrolling over header
@@ -263,6 +275,11 @@ const breadcrumbOverrides = ref([
       position: relative;
       z-index: 1;
     }
+  }
+
+  .filmography-section-wrapper {
+    margin-top: 64px;
+    padding-bottom: 80px; // Footer spacing; (120px - table's padding)
   }
 
   // change filmography section title color
@@ -278,6 +295,14 @@ const breadcrumbOverrides = ref([
     }
 
     font-weight: 800;
+  }
+
+  @media #{$small} {
+    .two-column {
+      &:last-child {
+        padding-bottom: 86px; // Footer spacing
+      }
+    }
   }
 }
 </style>
