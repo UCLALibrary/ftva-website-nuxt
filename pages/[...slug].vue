@@ -94,7 +94,10 @@ onMounted(() => {
     :class="pageClass"
   >
     <div class="one-column">
-      <NavBreadcrumb data-test="breadcrumb" />
+      <NavBreadcrumb
+        :title="page?.title"
+        data-test="breadcrumb"
+      />
 
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
@@ -172,7 +175,7 @@ onMounted(() => {
 
   // Apply extra padding to single/solo breadcrumb that has no parent--to keep spacing below nav bar even with other pages
   .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
-    padding: 5px 0;
+    padding: 10px 0;
   }
 
   // Rich Text Image

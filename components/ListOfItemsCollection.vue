@@ -6,7 +6,19 @@ import config from '~/utils/searchConfig'
 import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
-const attrs = useAttrs() as { page?: { title: string, ftvaFilters: string[], ftvaHomepageDescription: string, titleBrowse: string, groupName: string, titleSort: string } }
+const attrs = useAttrs() as {
+  page?: {
+    title: string,
+    ftvaFilters: string[],
+    ftvaHomepageDescription: string,
+    titleBrowse: string,
+    groupName: string
+  },
+  breadcrumbs?: {
+    titleLevel: number,
+    updatedTitle: string
+  }[]
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -117,10 +129,13 @@ const parsedCollectionResults = computed(() => {
 })
 
 const selectedFilters = ref({}) // initialise with empty filter
+
 const selectedSortFilters = ref({ sortField: 'asc' })
+
 // PAGINATION SCROLL HANDLING
-// // Element reference for the scroll target
+// Element reference for the scroll target
 const resultsSection = ref(null)
+
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
 
@@ -278,6 +293,7 @@ useHead({
         data-test="breadcrumb"
         class="breadcrumb"
         :title="attrs.page.title"
+        :override-title-group="attrs.breadcrumbs"
         to="/collections"
       />
       <SectionWrapper
