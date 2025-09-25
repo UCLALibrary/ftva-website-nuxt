@@ -235,6 +235,7 @@ useHead({
 .page-explore-collections {
   position: relative;
   background-color: var(--pale-blue);
+  padding-bottom: 120px; // Footer spacing
 
   .one-column {
     padding-top: 80px;
@@ -342,7 +343,7 @@ useHead({
     }
 
     &:last-of-type {
-      margin-bottom: 60px;
+      padding-bottom: 0;
     }
   }
 
@@ -353,6 +354,8 @@ useHead({
   }
 
   @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
+
     :deep(.section-wrapper:not(:first-of-type)) {
       .section-header.section-title {
         @include ftva-h5;

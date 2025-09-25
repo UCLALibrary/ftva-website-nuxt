@@ -387,6 +387,7 @@ const breadcrumbOverrides = ref([
 <style lang="scss" scoped>
 .page-collection-item-detail {
   position: relative;
+  padding-bottom: 120px; // Footer spacing
 
   .collection-item-header {
     background-color: var(--pale-blue);
@@ -396,6 +397,18 @@ const breadcrumbOverrides = ref([
       padding: 0;
       max-width: var(--ftva-container-max-width)
     }
+  }
+
+  :deep(.primary-column) {
+
+    .section-wrapper,
+    .parsed-content {
+      margin-bottom: 0;
+    }
+  }
+
+  :deep(.sidebar-column) {
+    padding-bottom: 0;
   }
 
   .two-col-layout__title {
@@ -506,6 +519,10 @@ const breadcrumbOverrides = ref([
         margin-bottom: 0;
       }
     }
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
   }
 }
 

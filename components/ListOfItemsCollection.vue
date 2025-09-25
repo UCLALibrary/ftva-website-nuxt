@@ -378,7 +378,7 @@ useHead({
 
 .page-collections-list-of-items {
   background-color: var(--pale-blue);
-  padding-bottom: 20px; // add 20px at bottom per UX review
+  padding-bottom: 120px; // Footer spacing
 
   label.select-label,
   label.sort-label {
@@ -393,6 +393,7 @@ useHead({
 
   .section-wrapper {
     padding-inline: 0;
+    padding-bottom: 0;
 
     .section-header {
       text-align: center;
@@ -452,8 +453,12 @@ useHead({
   }
 
   .section-pagination {
-    padding-top: 12px;
+    padding: 45px 2.5% 0;
     justify-content: center;
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

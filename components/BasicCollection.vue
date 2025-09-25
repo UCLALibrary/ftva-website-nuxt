@@ -280,21 +280,21 @@ useHead({
 <style lang="scss" scoped>
 .page-collection-detail {
   position: relative;
-
-  .full-width {
-    width: 100%;
-    background-color: var(--pale-blue);
-    margin: 0 auto;
-
-    .section-wrapper.theme-paleblue {
-      background-color: var(--pale-blue);
-    }
-  }
+  padding-bottom: 120px; // Footer spacing
 
   :deep(.primary-column) {
     .svg__icon-ftva-external-link-dark {
       top: 5px;
     }
+
+    .section-wrapper,
+    .parsed-content {
+      margin-bottom: 0;
+    }
+  }
+
+  :deep(.sidebar-column) {
+    padding-bottom: 0;
   }
 
   .cta-block {
@@ -330,6 +330,10 @@ useHead({
       @include truncate(2);
     }
 
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
   }
 }
 
