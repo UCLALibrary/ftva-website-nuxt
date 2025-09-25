@@ -403,7 +403,6 @@ useHead({
 
   .ftva.section-pagination {
     margin-inline: auto;
-    padding-bottom: 45px;
     padding: 15px 2.5% 60px;
   }
 

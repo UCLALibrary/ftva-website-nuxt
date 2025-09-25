@@ -320,6 +320,7 @@ useHead({
 <style lang="scss" scoped>
 .page-event-detail {
   position: relative;
+  padding-bottom: 120px; // Footer spacing
 
   :deep(.lightbox) {
     overflow: hidden;
@@ -345,6 +346,9 @@ useHead({
   }
 
   .two-column {
+    :deep(.sidebar-column) {
+      padding-bottom: 0;
+    }
 
     .button-dropdown {
       margin-top: 30px;
@@ -403,7 +407,8 @@ useHead({
       margin-top: 25px;
     }
 
-    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content),
+    :deep(.block-screening-detail:last-of-type dl) {
       margin-bottom: 0;
     }
   }
@@ -512,6 +517,10 @@ useHead({
         line-height: 110%;
       }
     }
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
   }
 }
 

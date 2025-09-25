@@ -606,6 +606,12 @@ const parseFirstEventMonth = computed(() => {
 
 .page-events {
   position: relative;
+  background-color: var(--pale-blue);
+  padding-bottom: 120px; // Footer spacing
+
+  .section-wrapper:last-of-type {
+    padding-bottom: 0;
+  }
 
   .header {
     display: flex;
@@ -781,7 +787,8 @@ const parseFirstEventMonth = computed(() => {
     /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
     background-color: white;
     max-width: unset;
-    padding: 2.5%;
+    justify-content: center;
+    padding: 15px 2.5% 60px;
   }
 
   @media(min-width: 1025px) {
@@ -871,6 +878,8 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
+
     .date-filter {
       :deep(.vue-date-picker) {
         width: unset;
