@@ -262,13 +262,13 @@ useHead({
 @import 'assets/styles/slug-pages.scss';
 
 .billy-wilder-theater {
+  padding-bottom: 120px; // Footer spacing
+
   .one-column {
     padding-top: 80px;
   }
 
-  // UPDATE FOOTER
   .section-wrapper.section-wrapper2 {
-    // margin-bottom: 100px;
     margin-bottom: 0;
   }
 
@@ -401,11 +401,9 @@ useHead({
   .rich-text {
     padding-right: 0;
 
-    // UPDATED FOR FOOTER
     :deep(.parsed-content) {
       margin-bottom: 0;
     }
-
   }
 
   .page-heading,
@@ -459,6 +457,10 @@ useHead({
         }
       }
     }
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

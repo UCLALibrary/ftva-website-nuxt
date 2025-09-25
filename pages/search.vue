@@ -592,17 +592,12 @@ useHead({
   </main>
 </template>
 <style lang="scss" scoped>
-:deep(.ftva.section-wrapper.top-level.theme-paleblue) {
-  padding-top: var(--space-xs);
-}
-
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }
 
 .search-page {
   .one-column {
-
     :deep(.nav-breadcrumb ol) {
       padding: 0;
     }
@@ -705,10 +700,6 @@ useHead({
         }
       }
 
-      .search-results-list {
-        margin-bottom: 2rem;
-      }
-
       .no-results {
         display: flex;
         flex-direction: column;
@@ -770,7 +761,7 @@ useHead({
   .one-column-pagination {
     width: 100%;
     max-width: var(--ftva-container-max-width);
-    padding: 2.5%;
+    padding: 60px 2.5%;
     margin: 0 auto;
 
     .section-pagination {
@@ -914,6 +905,10 @@ useHead({
       :deep(.ftva.filters-dropdown .icon-svg svg path.svg__fill--accent-blue) {
         fill: #0b6ab7;
       }
+    }
+
+    .section-wrapper:last-of-type {
+      padding-bottom: 86px; // Footer spacing
     }
   }
 }

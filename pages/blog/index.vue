@@ -293,6 +293,7 @@ useHead({
 .page-article-list {
   position: relative;
   background-color: var(--pale-blue);
+  padding-bottom: 120px; // Footer spacing
 
   .header {
     display: flex;
@@ -390,7 +391,6 @@ useHead({
       color: $heading-grey;
     }
 
-    // UPDATE FOOTER
     &:last-of-type {
       padding-bottom: 0;
     }
@@ -403,12 +403,13 @@ useHead({
 
   .ftva.section-pagination {
     margin-inline: auto;
-    // padding: 2.5%;
-    // UPDATE FOOTER
-    // padding-bottom: 0;
+    padding-bottom: 45px;
+    padding: 15px 2.5% 60px;
   }
 
   @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
+
     .featured-articles-wrapper {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr;

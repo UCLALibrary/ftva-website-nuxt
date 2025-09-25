@@ -397,235 +397,237 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
 </template>
 
 <style lang="scss" scoped>
-main {
+.page-home {
   background-color: var(--pale-blue);
   padding-bottom: 120px; // Footer spacing
-}
 
-.one-column {
-  width: 100%;
-  margin: 0 auto;
-}
-
-:deep(.section-wrapper:not(:first-of-type)) {
-  &.no-padding {
-    padding-top: 0;
+  .one-column {
+    width: 100%;
+    margin: 0 auto;
   }
-}
 
-:deep(.section-wrapper) {
-  &.no-padding {
-    padding-bottom: 0;
+  :deep(.section-wrapper:not(:first-of-type)) {
+    &.no-padding {
+      padding-top: 0;
+    }
   }
-}
 
-.lightbox-container {
-  position: relative;
-}
+  :deep(.section-wrapper) {
+    &.no-padding {
+      padding-bottom: 0;
+    }
+  }
 
-:deep(.section-wrapper h2.section-header.section-title) {
-  color: $heading-grey;
-}
+  .lightbox-container {
+    position: relative;
+  }
 
-.now-showing-section {
-  .now-showing-items {
-    background-color: var(--pale-blue);
-    padding-top: 0px;
+  :deep(.section-wrapper h2.section-header.section-title) {
+    color: $heading-grey;
+  }
 
-    // START HomePage specific cardmeta styles
-    :deep(li.block-highlight) {
-      max-width: 340px;
-      flex-direction: column-reverse;
+  .now-showing-section {
+    .now-showing-items {
+      background-color: var(--pale-blue);
+      padding-top: 0px;
 
-      .smart-link.title {
-        @include ftva-card-title-1;
-        color: $heading-grey;
-      }
+      // START HomePage specific cardmeta styles
+      :deep(li.block-highlight) {
+        max-width: 340px;
+        flex-direction: column-reverse;
 
-      .date-time {
-        @include ftva-emphasized-subtitle;
-        color: $accent-blue;
-        margin-bottom: 0px;
+        .smart-link.title {
+          @include ftva-card-title-1;
+          color: $heading-grey;
+        }
 
-        .schedule-item.start-date {
-          margin-right: 26px;
+        .date-time {
+          @include ftva-emphasized-subtitle;
+          color: $accent-blue;
+          margin-bottom: 0px;
+
+          .schedule-item.start-date {
+            margin-right: 26px;
+          }
+        }
+
+        .card-meta {
+          height: 275px;
+          padding: 40px 30px 25px 30px;
+          position: relative;
+        }
+
+        img.media {
+          border-radius: 0 0 10px 10px;
+        }
+
+        figure.responsive-image>.sizer {
+          padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
         }
       }
+    }
 
-      .card-meta {
-        height: 275px;
-        padding: 40px 30px 25px 30px;
-        position: relative;
-      }
-
-      img.media {
-        border-radius: 0 0 10px 10px;
-      }
-
-      figure.responsive-image>.sizer {
-        padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
+    .homepage-scroll-wrapper {
+      :deep(.v-sheet) {
+        background-color: transparent;
       }
     }
   }
 
-  .homepage-scroll-wrapper {
-    :deep(.v-sheet) {
-      background-color: transparent;
-    }
-  }
-}
-
-.now-showing-section,
-.featured-collections-section {
-  .hovered-items {
-    :deep(li.block-highlight) {
-      margin-top: 16px;
-      transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-
-      &:hover {
-        margin-top: 0px;
-      }
-    }
-  }
-}
-
-.visit-learn-section {
-  :deep(.section-teaser-card) {
-    padding-top: 0;
-  }
-
-  :deep(.block-highlight .media) {
-    border-radius: 12px;
-  }
-
-  :deep(.card-meta) {
-    min-height: 0;
-  }
-
-  :deep(.ftva.card-meta a.title) {
-    overflow: initial;
-    @include ftva-h5;
-    color: $heading-grey;
-
-    &:hover {
-      text-decoration: underline;
-      text-decoration-color: #2c91ff;
-      text-decoration-thickness: 3px;
-      text-underline-offset: 4px;
-    }
-  }
-
-  .quicklink-item-mobile {
-    &:not(:last-child) {
-      margin-bottom: 20px;
-    }
-
-    position: relative;
-    height: 100px;
-
-    :deep(a.block-post-small) {
-      background-color: transparent;
-      border-radius: 0px;
-      min-width: auto;
-      min-height: 100px;
-
-      &::after {
-        content: url('ucla-library-design-tokens/assets/svgs/icon-caret-right.svg');
-        position: absolute;
-        filter: brightness(0);
-        right: 0;
-        top: 35px;
-      }
-
-      .image {
-        height: 100px;
-        width: 100px;
-      }
-
-      .title {
-        margin-top: 0px;
-        @include ftva-h5;
-        color: $heading-grey;
+  .now-showing-section,
+  .featured-collections-section {
+    .hovered-items {
+      :deep(li.block-highlight) {
+        margin-top: 16px;
+        transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         &:hover {
-          text-decoration: underline;
-          text-decoration-color: #2c91ff;
-          text-decoration-thickness: 3px;
-          text-underline-offset: 4px;
+          margin-top: 0px;
         }
-      }
-
-      .author {
-        margin-top: 4px;
-        @include ftva-body-2;
-      }
-
-      &:hover {
-        box-shadow: none;
       }
     }
   }
-}
 
-.visit-learn-section.ftva.section-wrapper.top-level.theme-paleblue {
-  :deep(.block-highlight.card) {
-    background-color: transparent;
+  .visit-learn-section {
+    :deep(.section-teaser-card) {
+      padding-top: 0;
+    }
+
+    :deep(.block-highlight .media) {
+      border-radius: 12px;
+    }
+
+    :deep(.card-meta) {
+      min-height: 0;
+    }
+
+    :deep(.ftva.card-meta a.title) {
+      overflow: initial;
+      @include ftva-h5;
+      color: $heading-grey;
+
+      &:hover {
+        text-decoration: underline;
+        text-decoration-color: #2c91ff;
+        text-decoration-thickness: 3px;
+        text-underline-offset: 4px;
+      }
+    }
+
+    .quicklink-item-mobile {
+      &:not(:last-child) {
+        margin-bottom: 20px;
+      }
+
+      position: relative;
+      height: 100px;
+
+      :deep(a.block-post-small) {
+        background-color: transparent;
+        border-radius: 0px;
+        min-width: auto;
+        min-height: 100px;
+
+        &::after {
+          content: url('ucla-library-design-tokens/assets/svgs/icon-caret-right.svg');
+          position: absolute;
+          filter: brightness(0);
+          right: 0;
+          top: 35px;
+        }
+
+        .image {
+          height: 100px;
+          width: 100px;
+        }
+
+        .title {
+          margin-top: 0px;
+          @include ftva-h5;
+          color: $heading-grey;
+
+          &:hover {
+            text-decoration: underline;
+            text-decoration-color: #2c91ff;
+            text-decoration-thickness: 3px;
+            text-underline-offset: 4px;
+          }
+        }
+
+        .author {
+          margin-top: 4px;
+          @include ftva-body-2;
+        }
+
+        &:hover {
+          box-shadow: none;
+        }
+      }
+    }
   }
-}
 
-.featured-collections-section {
-  .section-teaser-card {
-    background-color: var(--pale-blue);
-    padding-top: 0;
+  .visit-learn-section.ftva.section-wrapper.top-level.theme-paleblue {
+    :deep(.block-highlight.card) {
+      background-color: transparent;
+    }
   }
 
-  :deep(.rich-text.section-summary) {
-    @include ftva-body-2;
-  }
+  .featured-collections-section {
+    .section-teaser-card {
+      background-color: var(--pale-blue);
+      padding-top: 0;
+    }
 
-  :deep(.block-highlight .card-meta) {
-    min-height: 0;
-  }
-}
+    :deep(.rich-text.section-summary) {
+      @include ftva-body-2;
+    }
 
-.preservation-section {
-  :deep(.section-header.section-title) {
-    margin-bottom: 40px;
-  }
-
-  :deep(.rich-text p) {
-    @include ftva-body-2;
-  }
-}
-
-.featured-collections-section,
-.preservation-section {
-  :deep(.rich-text.section-summary) {
-    max-width: 100%;
-  }
-}
-
-@media #{$medium} {
-  :deep(.ftva.section-wrapper div.section-header) {
-    margin-bottom: 40px;
-  }
-}
-
-@media #{$small} {
-  .archive-blog-section {
-    :deep(.media-with-text) {
-      margin-top: 16px;
-      max-height: unset;
+    :deep(.block-highlight .card-meta) {
+      min-height: 0;
     }
   }
 
   .preservation-section {
     :deep(.section-header.section-title) {
-      margin-bottom: 10px;
+      margin-bottom: 40px;
     }
 
-    :deep(.section-header .section-link) {
-      margin-bottom: 36px;
+    :deep(.rich-text p) {
+      @include ftva-body-2;
+    }
+  }
+
+  .featured-collections-section,
+  .preservation-section {
+    :deep(.rich-text.section-summary) {
+      max-width: 100%;
+    }
+  }
+
+  @media #{$medium} {
+    :deep(.ftva.section-wrapper div.section-header) {
+      margin-bottom: 40px;
+    }
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px; // Footer spacing
+
+    .archive-blog-section {
+      :deep(.media-with-text) {
+        margin-top: 16px;
+        max-height: unset;
+      }
+    }
+
+    .preservation-section {
+      :deep(.section-header.section-title) {
+        margin-bottom: 10px;
+      }
+
+      :deep(.section-header .section-link) {
+        margin-bottom: 36px;
+      }
     }
   }
 }

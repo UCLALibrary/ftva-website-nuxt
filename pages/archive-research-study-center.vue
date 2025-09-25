@@ -168,20 +168,26 @@ useHead({
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 
-.one-column {
+.archive-research-study-center {
+  padding-bottom: 120px; // Footer spacing
 
-  // if the layout has an image or carousel at the top
-  &:has(> .lightbox-container),
-  &:has(> figure) {
-    padding-top: 80px; // to account for the missing pageanchor on this layout
+  .one-column {
+
+    // if the layout has an image or carousel at the top
+    &:has(> .lightbox-container),
+    &:has(> figure) {
+      padding-top: 80px; // to account for the missing pageanchor on this layout
+    }
   }
-}
 
-// UPDATE FOOTER
-.flexible-content {
-  :deep(div:last-of-type .section-wrapper3) {
-    background-color: pink;
-    margin-bottom: 0;
+  .flexible-content {
+    :deep(div:last-of-type .section-wrapper3) {
+      margin-bottom: 0;
+    }
+  }
+
+  @media #{$small} {
+    padding-bottom: 86px;
   }
 }
 </style>
