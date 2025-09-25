@@ -700,6 +700,10 @@ useHead({
         }
       }
 
+      .search-results-list {
+        margin-bottom: 2rem;
+      }
+
       .no-results {
         display: flex;
         flex-direction: column;
@@ -761,7 +765,7 @@ useHead({
   .one-column-pagination {
     width: 100%;
     max-width: var(--ftva-container-max-width);
-    padding: 60px 2.5%;
+    padding: 28px 2.5% 60px;
     margin: 0 auto;
 
     .section-pagination {
