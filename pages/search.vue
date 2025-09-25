@@ -496,7 +496,9 @@ useHead({
               No results found.
             </h4>
             <p class="no-results-text">
-              Looking for a specific collection item? Search the UCLA Film & Television Archive Catalog at UC Library
+              Looking for a specific collection item? Search the UCLA Film & Television Archive
+              Catalog at
+              UC Library
               Search
             </p>
             <button-link
@@ -772,6 +774,11 @@ useHead({
       padding-left: 0;
       margin: 0 auto;
     }
+  }
+
+  // UPDATE FOOTER
+  .section-wrapper:last-of-type {
+    padding-bottom: 0;
   }
 
   @media screen and (max-width: 834px) {

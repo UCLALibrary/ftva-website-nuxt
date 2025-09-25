@@ -389,6 +389,11 @@ useHead({
       margin-bottom: 48px;
       color: $heading-grey;
     }
+
+    // UPDATE FOOTER
+    &:last-of-type {
+      padding-bottom: 0;
+    }
   }
 
   .articles-list-wrapper {
@@ -398,7 +403,9 @@ useHead({
 
   .ftva.section-pagination {
     margin-inline: auto;
-    padding: 2.5%;
+    // padding: 2.5%;
+    // UPDATE FOOTER
+    // padding-bottom: 0;
   }
 
   @media #{$small} {

@@ -401,9 +401,11 @@ main {
   background-color: var(--pale-blue);
 }
 
+// UPDATE FOOTER
 .one-column {
   width: 100%;
-  margin: 0 auto 65px auto;
+  margin: 0 auto;
+  // margin: 0 auto 65px auto;
 }
 
 :deep(.section-wrapper:not(:first-of-type)) {

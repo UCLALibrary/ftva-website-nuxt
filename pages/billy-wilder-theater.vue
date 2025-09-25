@@ -266,8 +266,10 @@ useHead({
     padding-top: 80px;
   }
 
+  // UPDATE FOOTER
   .section-wrapper.section-wrapper2 {
-    margin-bottom: 100px;
+    // margin-bottom: 100px;
+    margin-bottom: 0;
   }
 
   .page-heading {
@@ -301,8 +303,9 @@ useHead({
 
     :deep(.rich-text) {
 
+      // UPDATED FOOTER
       .parsed-content {
-        margin-bottom: 0;
+        // margin-bottom: 0;
 
         p {
           margin-bottom: 12px;
@@ -397,6 +400,12 @@ useHead({
 
   .rich-text {
     padding-right: 0;
+
+    // UPDATED FOR FOOTER
+    :deep(.parsed-content) {
+      margin-bottom: 0;
+    }
+
   }
 
   .page-heading,

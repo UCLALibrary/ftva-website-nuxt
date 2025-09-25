@@ -176,4 +176,12 @@ useHead({
     padding-top: 80px; // to account for the missing pageanchor on this layout
   }
 }
+
+// UPDATE FOOTER
+.flexible-content {
+  :deep(div:last-of-type .section-wrapper3) {
+    background-color: pink;
+    margin-bottom: 0;
+  }
+}
 </style>

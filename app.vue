@@ -66,7 +66,10 @@ useHead({
         :primary-items="primaryMenuItems"
       />
       <NuxtPage />
-      <footer data-test="footer">
+      <footer
+        class="ftva-footer"
+        data-test="footer"
+      >
         <footer-main />
       </footer>
     </div>
@@ -97,6 +100,16 @@ useHead({
   .primary {
     position: sticky;
     will-change: top;
+  }
+
+  // .ftva-footer {
+  .ftva.footer-main {
+    padding-top: 120px;
+    background-color: red;
+  }
+
+  .ftva.footer-main__blue {
+    background-color: blue;
   }
 
   @media #{$small} {
