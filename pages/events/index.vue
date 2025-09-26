@@ -878,6 +878,16 @@ const pageClasses = computed(() => {
     :deep(.block-card-three-column .meta .title) {
       font-size: 26px;
     }
+
+    :deep(.section-teaser-list .list-item) {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    :deep(.section-pagination) {
+      padding: 2.5%;
+    }
   }
 
   @media #{$small} {

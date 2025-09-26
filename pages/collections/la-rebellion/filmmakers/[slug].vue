@@ -255,8 +255,11 @@ const pageClasses = computed(() => {
       }
     }
 
-    :deep(.sidebar-column) {
-      padding-bottom: 0;
+    // Disable unused elements that are added superfluous spacing
+    :deep(.sidebar-column),
+    :deep(.sidebar-mobile-top),
+    :deep(.sidebar-mobile-bottom) {
+      display: none;
     }
 
     .ftva.button-dropdown {
@@ -269,9 +272,7 @@ const pageClasses = computed(() => {
 
     // when two-column div is not followed by a filmography section
     &:last-child {
-      // add 8px of space between the last element in the two-column div and the footer
-      // padding-bottom: 8px;
-      padding-bottom: 120px; // Footer spacing
+      padding-bottom: 120px; // Page bottom spacing
     }
 
     // fix button scrolling over header
@@ -283,7 +284,7 @@ const pageClasses = computed(() => {
 
   .filmography-section-wrapper {
     margin-top: 64px;
-    padding-bottom: 80px; // Footer spacing; (120px - table's padding)
+    padding-bottom: 80px; // Page bottom spacing: 120px (80px + table's padding)
   }
 
   // change filmography section title color
@@ -304,8 +305,12 @@ const pageClasses = computed(() => {
   @media #{$small} {
     .two-column {
       &:last-child {
-        padding-bottom: 86px; // Footer spacing
+        padding-bottom: 86px; // Page bottom spacing
       }
+    }
+
+    .filmography-section-wrapper {
+      padding-bottom: 86px;
     }
   }
 }

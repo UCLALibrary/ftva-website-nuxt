@@ -355,6 +355,12 @@ const pageClasses = computed(() => {
     }
   }
 
+  @media #{$medium} {
+    :deep(.section-pagination) {
+      padding: 2.5%;
+    }
+  }
+
   @media #{$small} {
     :deep(.ftva.section-staff-article-list) {
       background-color: #e7edf2;
