@@ -118,12 +118,16 @@ const breadcrumbOverrides = ref([
     updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
   }
 ])
+
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-filmmaker-detail']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-filmmaker-detail"
+    :class="pageClass"
   >
     <div class="one-column">
       <NavBreadcrumb

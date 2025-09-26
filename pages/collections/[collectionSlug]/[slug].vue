@@ -219,12 +219,16 @@ const breadcrumbOverrides = ref([
     updatedTitle: parseFieldForBreadcrumbTitleOverride(collectionSlug) || null
   }
 ])
+
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--white', 'page-collection-item-detail', 'footer-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--white page-collection-item-detail"
+    :class="pageClass"
   >
     <div class="collection-item-header">
       <NavBreadcrumb
@@ -387,7 +391,6 @@ const breadcrumbOverrides = ref([
 <style lang="scss" scoped>
 .page-collection-item-detail {
   position: relative;
-  padding-bottom: 120px; // Footer spacing
 
   .collection-item-header {
     background-color: var(--pale-blue);
@@ -519,10 +522,6 @@ const breadcrumbOverrides = ref([
         margin-bottom: 0;
       }
     }
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 

@@ -123,7 +123,7 @@ onMounted(() => {
 })
 
 const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-storytelling', route.path.replace('/collections/', '')]
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-storytelling', route.path.replace('/collections/', ''), 'footer-spacer']
 })
 </script>
 
@@ -218,8 +218,6 @@ const pageClass = computed(() => {
 @import 'assets/styles/general-pages.scss';
 
 .page-storytelling {
-  padding-bottom: 120px; // Footer spacing
-
   :deep(.card-with-image) {
     .block-highlight {
       max-width: 100%;
@@ -249,10 +247,6 @@ const pageClass = computed(() => {
     .block-post-small {
       background: var(--pale-blue);
     }
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

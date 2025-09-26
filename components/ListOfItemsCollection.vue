@@ -285,9 +285,17 @@ useHead({
     }
   ]
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-collections-list-of-items', 'footer-spacer']
+})
 </script>
+
 <template>
-  <main class="page page-collections-list-of-items">
+  <main
+    id="main"
+    :class="pageClass"
+  >
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
@@ -373,12 +381,12 @@ useHead({
     </div>
   </main>
 </template>
+
 <style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
 
 .page-collections-list-of-items {
   background-color: var(--pale-blue);
-  padding-bottom: 120px; // Footer spacing
 
   label.select-label,
   label.sort-label {
@@ -455,10 +463,6 @@ useHead({
   .section-pagination {
     padding: 45px 2.5% 0;
     justify-content: center;
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

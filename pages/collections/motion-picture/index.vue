@@ -233,7 +233,7 @@ const parsedCollectionList = computed(() => {
 })
 
 const pageClass = computed(() => {
-  return ['page', 'page-collection-type', route.path.replace('/collections/', '')]
+  return ['page', 'page-collection-type', route.path.replace('/collections/', ''), 'footer-spacer']
 })
 
 definePageMeta({
@@ -354,7 +354,6 @@ watch(data, (newVal, oldVal) => {
 .page-collection-type {
   position: relative;
   background-color: var(--pale-blue);
-  padding-bottom: 120px; // Footer spacing
 
   .section-wrapper {
     padding-inline: 0;
@@ -465,10 +464,6 @@ watch(data, (newVal, oldVal) => {
 
   :deep(.section-post-small .grid-wrapper) {
     gap: 12px;
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

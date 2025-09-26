@@ -138,8 +138,8 @@ button {
 .footer-spacer {
   padding-bottom: 120px;
 
-  &--paleblue {
-    background-color: var(--pale-blue);
+  &--pale-blue {
+    background-color: var(--pale-blue);;
   }
 
   @media #{$small}{

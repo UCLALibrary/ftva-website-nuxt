@@ -191,7 +191,7 @@ function updateSort(newSort) {
 }
 
 const pageClasses = computed(() => {
-  return ['page', 'page-filmmakers']
+  return ['page', 'page-filmmakers', 'footer-spacer']
 })
 
 // BREADCRUMB OVERRIDES
@@ -267,7 +267,6 @@ const breadcrumbOverrides = ref([
 .page-filmmakers {
   position: relative;
   background-color: var(--pale-blue);
-  padding-bottom: 120px; // Footer spacing
 
   .section-wrapper {
     padding-inline: 0;
@@ -308,7 +307,6 @@ const breadcrumbOverrides = ref([
   }
 
   @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
 
     :deep(.dropdown-single-select),
     :deep(.dropdown-single-select .mobile-button) {

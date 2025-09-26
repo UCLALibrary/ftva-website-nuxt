@@ -422,9 +422,17 @@ useHead({
     }
   ]
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'search-page', 'footer-spacer']
+})
 </script>
+
 <template>
-  <main class="page page-detail page-detail--paleblue search-page">
+  <main
+    id="main"
+    :class="pageClass"
+  >
     <SectionWrapper
       id="search-section-title"
       ref="scrollElem"
@@ -591,7 +599,12 @@ useHead({
     </SectionWrapper>
   </main>
 </template>
+
 <style lang="scss" scoped>
+:deep(.ftva.section-wrapper.top-level.theme-paleblue:first-of-type) {
+  padding-top: var(--space-xs);
+}
+
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 1000;
 }

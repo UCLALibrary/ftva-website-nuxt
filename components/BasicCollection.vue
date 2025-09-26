@@ -157,12 +157,14 @@ useHead({
     }
   ]
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-collection-detail', 'footer-spacer']
+})
 </script>
+
 <template>
-  <main
-    id="main"
-    class="page page-detail page-detail--paleblue page-collection-detail"
-  >
+  <div :class="pageClass">
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
@@ -274,13 +276,12 @@ useHead({
         :grid-layout="false"
       />
     </SectionWrapper>
-  </main>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .page-collection-detail {
   position: relative;
-  padding-bottom: 120px; // Footer spacing
 
   :deep(.primary-column) {
     .svg__icon-ftva-external-link-dark {
@@ -330,10 +331,6 @@ useHead({
       @include truncate(2);
     }
 
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 
