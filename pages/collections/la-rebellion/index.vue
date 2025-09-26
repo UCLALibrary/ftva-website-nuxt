@@ -122,15 +122,15 @@ onMounted(() => {
   }
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-storytelling', route.path.replace('/collections/', ''), 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-storytelling', route.path.replace('/collections/', ''), 'page-bottom-spacer']
 })
 </script>
 
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb

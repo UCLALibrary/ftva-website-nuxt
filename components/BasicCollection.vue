@@ -158,13 +158,13 @@ useHead({
   ]
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-collection-detail', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-collection-detail', 'page-bottom-spacer']
 })
 </script>
 
 <template>
-  <div :class="pageClass">
+  <div :class="pageClasses">
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"

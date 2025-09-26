@@ -119,7 +119,7 @@ const breadcrumbOverrides = ref([
   }
 ])
 
-const pageClass = computed(() => {
+const pageClasses = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', 'page-filmmaker-detail']
 })
 </script>
@@ -127,7 +127,7 @@ const pageClass = computed(() => {
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb

@@ -72,8 +72,8 @@ const parsedCarouselData = computed(() => {
   })
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', 'page-bottom-spacer']
 })
 
 useHead({
@@ -91,7 +91,7 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb

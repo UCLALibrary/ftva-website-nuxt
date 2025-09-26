@@ -107,9 +107,9 @@ const searchResultsFetchFunction = async (page: number) => {
     noResultsFound.value = true
     totalResults.value = 0
     totalPages.value = 0
-    console.log('No query provided, resetting search results and filters', resetSearchFilters)
+    // console.log('No query provided, resetting search results and filters', resetSearchFilters)
     searchFilters.value = resetSearchFilters
-    console.log('No query provided, resetting search results and filters', searchFilters.value)
+    // console.log('No query provided, resetting search results and filters', searchFilters.value)
   }
   return {}
 }
@@ -176,7 +176,7 @@ watch(() => route.query, async (newVal, oldVal) => {
   hasMore.value = true
   const queryFilters = parseFilters(route.query.filters || '')
   selectedGroupNameFilters.value['groupName.keyword'] = queryFilters['groupName.keyword'] ? queryFilters['groupName.keyword'] : []
-  console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
+  // console.log('selectedGroupNameFilters updated', selectedGroupNameFilters.value)
   // console.log('userFilterSelection updated', userFilterSelection.value)
   currentPage.value = route.query.page ? parseInt(route.query.page as string) : 1
   // set sort & page # from query params
@@ -268,11 +268,11 @@ const parsedResults = computed(() => {
 const router = useRouter()
 
 function updateGroupNameFilters(newFilter) {
-  console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter))
-  console.log('resetSearchFilters:', resetSearchFilters.desktopOptions)
+  // console.log('updateGroupNameFilters called with newFilter:', JSON.stringify(newFilter))
+  // console.log('resetSearchFilters:', resetSearchFilters.desktopOptions)
   // Extract valid option values from desktopOptions (without counts)
   const validOptions = resetSearchFilters.desktopOptions.map(option => option.value)
-  console.log('validOptions:', validOptions)
+  // console.log('validOptions:', validOptions)
 
   newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map((item) => {
     const match = validOptions.find(valid => item.trim().startsWith(valid))
@@ -282,7 +282,7 @@ function updateGroupNameFilters(newFilter) {
     ? `groupName.keyword:(${newFilter['groupName.keyword'].join(',')})`
     : ''
 
-  console.log('newFilter after processing:', newFilter)
+  // console.log('newFilter after processing:', newFilter)
   router.push({
     path: route.path,
     query: {
@@ -374,17 +374,17 @@ function updateCountInFilters(desktopOptions: Option[]): string[] {
     .map(option => `${option.value} (${option.count})`)
 }
 function handleFilterUpdate(updatedFilters) {
-  console.log('Filters :', JSON.stringify(userFilterSelection.value), updatedFilters)
+  // console.log('Filters :', JSON.stringify(userFilterSelection.value), updatedFilters)
   userFilterSelection.value = updatedFilters
-  console.log('Filters updated:', JSON.stringify(userFilterSelection.value))
+  // console.log('Filters updated:', JSON.stringify(userFilterSelection.value))
 }
 
 function applyChangesToSearch() {
-  console.log('applyChangesToSearch called', JSON.stringify(userFilterSelection.value))
+  // console.log('applyChangesToSearch called', JSON.stringify(userFilterSelection.value))
   const newFilter = { 'groupName.keyword': userFilterSelection.value['groupName.keyword'] || [] }
   // Extract valid option values from desktopOptions (without counts)
   const validOptions = resetSearchFilters.desktopOptions.map(option => option.value)
-  console.log('validOptions:', validOptions)
+  // console.log('validOptions:', validOptions)
 
   newFilter['groupName.keyword'] = (newFilter['groupName.keyword'] || []).map((item) => {
     const match = validOptions.find(valid => item.trim().startsWith(valid))
@@ -394,8 +394,8 @@ function applyChangesToSearch() {
     ? `groupName.keyword:(${newFilter['groupName.keyword'].join(',')})`
     : ''
 
-  console.log('newFilter after processing:', newFilter)
-  console.log('newFilterString:', newFilterString)
+  // console.log('newFilter after processing:', newFilter)
+  // console.log('newFilterString:', newFilterString)
   useRouter().push({
     path: route.path,
     query: {
@@ -423,15 +423,15 @@ useHead({
   ]
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'search-page', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'search-page']
 })
 </script>
 
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <SectionWrapper
       id="search-section-title"

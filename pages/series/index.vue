@@ -190,13 +190,13 @@ const parsedEventSeries = computed(() => {
   })
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-event-series', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-event-series', 'page-bottom-spacer']
 })
 </script>
 
 <template>
-  <main :class="pageClass">
+  <main :class="pageClasses">
     <div class="full-width">
       <SectionWrapper
         id="series-section-title"

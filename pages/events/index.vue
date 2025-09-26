@@ -474,15 +474,15 @@ const parseFirstEventMonth = computed(() => {
   return null
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-events', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-events', 'page-bottom-spacer']
 })
 </script>
 
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="full-width">
       <SectionWrapper

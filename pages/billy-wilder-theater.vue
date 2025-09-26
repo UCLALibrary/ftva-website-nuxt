@@ -105,15 +105,15 @@ useHead({
   ]
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'billy-wilder-theater', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'billy-wilder-theater', 'page-bottom-spacer']
 })
 </script>
 
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <ResponsiveImage

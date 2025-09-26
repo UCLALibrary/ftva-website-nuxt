@@ -78,9 +78,9 @@ watch(data, (newVal, oldVal) => {
 })
 
 /** 7) Make a safe, CSS-friendly class from the path */
-const pageClass = computed(() => {
+const pageClasses = computed(() => {
   const slugClass = normalizedPath.value.slice(1).replaceAll('/', '-')
-  return ['page', 'page-detail', 'page-detail--paleblue', slugClass, 'footer-spacer']
+  return ['page', 'page-detail', 'page-detail--paleblue', slugClass, 'page-bottom-spacer']
 })
 /** 5) Always return an array */
 const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel : [])
@@ -116,10 +116,11 @@ useHead({
   ]
 })
 </script>
+
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <ResponsiveImage
@@ -165,6 +166,7 @@ useHead({
     />
   </main>
 </template>
+
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 

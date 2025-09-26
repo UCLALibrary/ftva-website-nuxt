@@ -191,7 +191,7 @@ function updateSort(newSort) {
 }
 
 const pageClasses = computed(() => {
-  return ['page', 'page-filmmakers', 'footer-spacer']
+  return ['page', 'page-filmmakers', 'page-bottom-spacer']
 })
 
 // BREADCRUMB OVERRIDES

@@ -220,15 +220,15 @@ const breadcrumbOverrides = ref([
   }
 ])
 
-const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--white', 'page-collection-item-detail', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--white', 'page-collection-item-detail', 'page-bottom-spacer']
 })
 </script>
 
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="collection-item-header">
       <NavBreadcrumb

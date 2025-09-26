@@ -135,7 +135,8 @@ button {
 }
 
 // Spacing above footer
-.footer-spacer {
+// Not applied to search.vue and ~/la-rebellion/filmmakers/[slug].vue
+.page-bottom-spacer {
   padding-bottom: 120px;
 
   &--pale-blue {

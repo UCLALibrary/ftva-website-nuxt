@@ -227,15 +227,15 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
   return null
 }
 
-const pageClass = computed(() => {
-  return ['page', 'page-home', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-home', 'page-bottom-spacer']
 })
 </script>
 
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <div

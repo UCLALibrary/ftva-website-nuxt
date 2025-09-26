@@ -232,8 +232,8 @@ const parsedCollectionList = computed(() => {
   })
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-collection-type', route.path.replace('/collections/', ''), 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-collection-type', route.path.replace('/collections/', ''), 'page-bottom-spacer']
 })
 
 definePageMeta({
@@ -265,7 +265,7 @@ watch(data, (newVal, oldVal) => {
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb

@@ -187,13 +187,13 @@ useHead({
   ]
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-article-list', 'footer-spacer']
+const pageClasses = computed(() => {
+  return ['page', 'page-article-list', 'page-bottom-spacer']
 })
 </script>
 
 <template>
-  <main :class="pageClass">
+  <main :class="pageClasses">
     <SectionWrapper
       ref="scrollElem"
       :section-title="pageTitle"
