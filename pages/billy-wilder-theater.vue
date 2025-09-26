@@ -104,12 +104,16 @@ useHead({
     }
   ]
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'billy-wilder-theater', 'page-bottom-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue billy-wilder-theater"
+    :class="pageClasses"
   >
     <div class="one-column">
       <ResponsiveImage
@@ -267,7 +271,7 @@ useHead({
   }
 
   .section-wrapper.section-wrapper2 {
-    margin-bottom: 100px;
+    margin-bottom: 0;
   }
 
   .page-heading {
@@ -300,9 +304,7 @@ useHead({
     }
 
     :deep(.rich-text) {
-
       .parsed-content {
-        margin-bottom: 0;
 
         p {
           margin-bottom: 12px;
@@ -397,6 +399,10 @@ useHead({
 
   .rich-text {
     padding-right: 0;
+
+    :deep(.parsed-content) {
+      margin-bottom: 0;
+    }
   }
 
   .page-heading,

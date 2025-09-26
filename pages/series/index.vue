@@ -189,10 +189,14 @@ const parsedEventSeries = computed(() => {
     }
   })
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-event-series', 'page-bottom-spacer']
+})
 </script>
 
 <template>
-  <main class="page page-event-series">
+  <main :class="pageClasses">
     <div class="full-width">
       <SectionWrapper
         id="series-section-title"
@@ -282,6 +286,10 @@ const parsedEventSeries = computed(() => {
   position: relative;
   background-color: var(--pale-blue);
 
+  .section-wrapper:last-of-type {
+    padding-bottom: 0;
+  }
+
   .header {
     display: flex;
     flex-direction: column;
@@ -319,7 +327,7 @@ const parsedEventSeries = computed(() => {
     /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
     background-color: white;
     max-width: unset;
-    padding: 2.5%;
+    padding: 15px 2.5% 60px;
     justify-content: center;
   }
 
@@ -344,6 +352,12 @@ const parsedEventSeries = computed(() => {
 
     :deep(.ftva.block-staff-article-item .title) {
       -webkit-line-clamp: 2;
+    }
+  }
+
+  @media #{$medium} {
+    :deep(.section-pagination) {
+      padding: 2.5%;
     }
   }
 
@@ -384,9 +398,7 @@ const parsedEventSeries = computed(() => {
         }
       }
     }
-  }
 
-  @media #{$small} {
     .pagination {
       display: none;
     }

@@ -48,16 +48,21 @@ const pageType = computed(() => {
   }
 })
 </script>
+
 <template>
-  <div class="page-component-wrapper">
+  <main
+    id="main"
+    class="page-component-wrapper"
+  >
     <!-- static div wrapper element is necessary, dynamic component :is element will cause routing issues -->
     <!-- pass page as attrs so ElasticSearch powered pages don't have to fetch craftCMS page data again -->
     <component
       :is="pageType"
       :page="page"
     />
-  </div>
+  </main>
 </template>
+
 <style lang="scss" scoped>
 .page-component-wrapper {
   display: flex;

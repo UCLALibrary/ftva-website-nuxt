@@ -186,10 +186,14 @@ useHead({
     }
   ]
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-article-list', 'page-bottom-spacer']
+})
 </script>
 
 <template>
-  <div class="page page-article-list">
+  <main :class="pageClasses">
     <SectionWrapper
       ref="scrollElem"
       :section-title="pageTitle"
@@ -284,7 +288,7 @@ useHead({
         />
       </div>
     </SectionWrapper>
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
@@ -389,6 +393,10 @@ useHead({
       margin-bottom: 48px;
       color: $heading-grey;
     }
+
+    &:last-of-type {
+      padding-bottom: 0;
+    }
   }
 
   .articles-list-wrapper {
@@ -398,7 +406,7 @@ useHead({
 
   .ftva.section-pagination {
     margin-inline: auto;
-    padding: 2.5%;
+    padding: 15px 2.5% 60px;
   }
 
   @media #{$small} {

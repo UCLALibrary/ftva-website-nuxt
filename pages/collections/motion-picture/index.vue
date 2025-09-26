@@ -232,8 +232,8 @@ const parsedCollectionList = computed(() => {
   })
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-collection-type', route.path.replace('/collections/', '')]
+const pageClasses = computed(() => {
+  return ['page', 'page-collection-type', route.path.replace('/collections/', ''), 'page-bottom-spacer']
 })
 
 definePageMeta({
@@ -265,7 +265,7 @@ watch(data, (newVal, oldVal) => {
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -366,8 +366,7 @@ watch(data, (newVal, oldVal) => {
   }
 
   .section-wrapper:last-of-type {
-    padding-top: 0;
-    padding-bottom: 100px;
+    padding-block: 0;
   }
 
   .section-wrapper__page-header {

@@ -118,12 +118,16 @@ const breadcrumbOverrides = ref([
     updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
   }
 ])
+
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-filmmaker-detail']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-filmmaker-detail"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -243,6 +247,20 @@ const breadcrumbOverrides = ref([
   position: relative;
 
   .two-column {
+    :deep(.primary-section-wrapper) {
+      margin-bottom: 0;
+
+      .parsed-content {
+        margin-bottom: 0
+      }
+    }
+
+    // Disable unused elements that are added superfluous spacing
+    :deep(.sidebar-column),
+    :deep(.sidebar-mobile-top),
+    :deep(.sidebar-mobile-bottom) {
+      display: none;
+    }
 
     .ftva.button-dropdown {
       margin-top: 30px;
@@ -254,8 +272,7 @@ const breadcrumbOverrides = ref([
 
     // when two-column div is not followed by a filmography section
     &:last-child {
-      // add 8px of space between the last element in the two-column div and the footer
-      padding-bottom: 8px;
+      padding-bottom: 120px; // Page bottom spacing
     }
 
     // fix button scrolling over header
@@ -263,6 +280,11 @@ const breadcrumbOverrides = ref([
       position: relative;
       z-index: 1;
     }
+  }
+
+  .filmography-section-wrapper {
+    margin-top: 64px;
+    padding-bottom: 80px; // Page bottom spacing: 120px (80px + table's padding)
   }
 
   // change filmography section title color
@@ -278,6 +300,18 @@ const breadcrumbOverrides = ref([
     }
 
     font-weight: 800;
+  }
+
+  @media #{$small} {
+    .two-column {
+      &:last-child {
+        padding-bottom: 86px; // Page bottom spacing
+      }
+    }
+
+    .filmography-section-wrapper {
+      padding-bottom: 86px;
+    }
   }
 }
 </style>

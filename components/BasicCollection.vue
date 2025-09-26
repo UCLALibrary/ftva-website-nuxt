@@ -157,12 +157,14 @@ useHead({
     }
   ]
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-collection-detail', 'page-bottom-spacer']
+})
 </script>
+
 <template>
-  <main
-    id="main"
-    class="page page-detail page-detail--paleblue page-collection-detail"
-  >
+  <div :class="pageClasses">
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
@@ -274,27 +276,26 @@ useHead({
         :grid-layout="false"
       />
     </SectionWrapper>
-  </main>
+  </div>
 </template>
 
 <style lang="scss" scoped>
 .page-collection-detail {
   position: relative;
 
-  .full-width {
-    width: 100%;
-    background-color: var(--pale-blue);
-    margin: 0 auto;
-
-    .section-wrapper.theme-paleblue {
-      background-color: var(--pale-blue);
-    }
-  }
-
   :deep(.primary-column) {
     .svg__icon-ftva-external-link-dark {
       top: 5px;
     }
+
+    .section-wrapper,
+    .parsed-content {
+      margin-bottom: 0;
+    }
+  }
+
+  :deep(.sidebar-column) {
+    padding-bottom: 0;
   }
 
   .cta-block {

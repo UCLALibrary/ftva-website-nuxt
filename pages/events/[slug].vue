@@ -153,12 +153,16 @@ useHead({
     }
   ]
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-event-detail', 'page-bottom-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-event-detail"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -345,6 +349,13 @@ useHead({
   }
 
   .two-column {
+    :deep(.primary-section-wrapper) {
+      margin-bottom: 0;
+    }
+
+    :deep(.sidebar-column) {
+      padding-bottom: 0;
+    }
 
     .button-dropdown {
       margin-top: 30px;
@@ -403,7 +414,8 @@ useHead({
       margin-top: 25px;
     }
 
-    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content),
+    :deep(.block-screening-detail:last-of-type dl) {
       margin-bottom: 0;
     }
   }
