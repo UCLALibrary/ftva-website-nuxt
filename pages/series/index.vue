@@ -189,10 +189,14 @@ const parsedEventSeries = computed(() => {
     }
   })
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-event-series', 'footer-spacer']
+})
 </script>
 
 <template>
-  <main class="page page-event-series">
+  <main :class="pageClass">
     <div class="full-width">
       <SectionWrapper
         id="series-section-title"
@@ -281,7 +285,6 @@ const parsedEventSeries = computed(() => {
 .page-event-series {
   position: relative;
   background-color: var(--pale-blue);
-  padding-bottom: 120px; // Footer spacing
 
   .section-wrapper:last-of-type {
     padding-bottom: 0;
@@ -353,8 +356,6 @@ const parsedEventSeries = computed(() => {
   }
 
   @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
-
     :deep(.ftva.section-staff-article-list) {
       background-color: #e7edf2;
       padding: 0 16px;

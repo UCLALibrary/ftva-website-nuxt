@@ -473,12 +473,16 @@ const parseFirstEventMonth = computed(() => {
   }
   return null
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-events', 'footer-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-events"
+    :class="pageClass"
   >
     <div class="full-width">
       <SectionWrapper
@@ -607,7 +611,6 @@ const parseFirstEventMonth = computed(() => {
 .page-events {
   position: relative;
   background-color: var(--pale-blue);
-  padding-bottom: 120px; // Footer spacing
 
   .section-wrapper:last-of-type {
     padding-bottom: 0;
@@ -878,8 +881,6 @@ const parseFirstEventMonth = computed(() => {
   }
 
   @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
-
     .date-filter {
       :deep(.vue-date-picker) {
         width: unset;

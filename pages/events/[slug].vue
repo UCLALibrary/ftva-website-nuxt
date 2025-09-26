@@ -153,12 +153,16 @@ useHead({
     }
   ]
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-event-detail', 'footer-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-event-detail"
+    :class="pageClass"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -320,7 +324,6 @@ useHead({
 <style lang="scss" scoped>
 .page-event-detail {
   position: relative;
-  padding-bottom: 120px; // Footer spacing
 
   :deep(.lightbox) {
     overflow: hidden;
@@ -346,6 +349,10 @@ useHead({
   }
 
   .two-column {
+    :deep(.primary-section-wrapper) {
+      margin-bottom: 0;
+    }
+
     :deep(.sidebar-column) {
       padding-bottom: 0;
     }
@@ -517,10 +524,6 @@ useHead({
         line-height: 110%;
       }
     }
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 

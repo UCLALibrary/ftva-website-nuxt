@@ -104,12 +104,16 @@ useHead({
     }
   ]
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'billy-wilder-theater', 'footer-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue billy-wilder-theater"
+    :class="pageClass"
   >
     <div class="one-column">
       <ResponsiveImage
@@ -262,8 +266,6 @@ useHead({
 @import 'assets/styles/slug-pages.scss';
 
 .billy-wilder-theater {
-  padding-bottom: 120px; // Footer spacing
-
   .one-column {
     padding-top: 80px;
   }
@@ -454,10 +456,6 @@ useHead({
         }
       }
     }
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>

@@ -226,12 +226,16 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
 
   return null
 }
+
+const pageClass = computed(() => {
+  return ['page', 'page-home', 'footer-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-home"
+    :class="pageClass"
   >
     <div class="one-column">
       <div
@@ -399,7 +403,6 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
 <style lang="scss" scoped>
 .page-home {
   background-color: var(--pale-blue);
-  padding-bottom: 120px; // Footer spacing
 
   .one-column {
     width: 100%;
@@ -611,8 +614,6 @@ function parseDatesAndTimes(typeHandle, startDate, endDate, startDateWithTime, o
   }
 
   @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
-
     .archive-blog-section {
       :deep(.media-with-text) {
         margin-top: 16px;

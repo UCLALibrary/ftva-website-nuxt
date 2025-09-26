@@ -80,7 +80,7 @@ watch(data, (newVal, oldVal) => {
 /** 7) Make a safe, CSS-friendly class from the path */
 const pageClass = computed(() => {
   const slugClass = normalizedPath.value.slice(1).replaceAll('/', '-')
-  return ['page', 'page-detail', 'page-detail--paleblue', slugClass]
+  return ['page', 'page-detail', 'page-detail--paleblue', slugClass, 'footer-spacer']
 })
 /** 5) Always return an array */
 const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel : [])
@@ -169,8 +169,6 @@ useHead({
 @import 'assets/styles/slug-pages.scss';
 
 .archive-research-study-center {
-  padding-bottom: 120px; // Footer spacing
-
   .one-column {
 
     // if the layout has an image or carousel at the top
@@ -184,10 +182,6 @@ useHead({
     :deep(div:last-of-type .section-wrapper3) {
       margin-bottom: 0;
     }
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px;
   }
 }
 </style>

@@ -186,10 +186,14 @@ useHead({
     }
   ]
 })
+
+const pageClass = computed(() => {
+  return ['page', 'page-article-list', 'footer-spacer']
+})
 </script>
 
 <template>
-  <div class="page page-article-list">
+  <main :class="pageClass">
     <SectionWrapper
       ref="scrollElem"
       :section-title="pageTitle"
@@ -284,7 +288,7 @@ useHead({
         />
       </div>
     </SectionWrapper>
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
@@ -293,7 +297,6 @@ useHead({
 .page-article-list {
   position: relative;
   background-color: var(--pale-blue);
-  padding-bottom: 120px; // Footer spacing
 
   .header {
     display: flex;
@@ -407,8 +410,6 @@ useHead({
   }
 
   @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
-
     .featured-articles-wrapper {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr;

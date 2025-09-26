@@ -73,7 +73,7 @@ const parsedCarouselData = computed(() => {
 })
 
 const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path]
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', 'footer-spacer']
 })
 
 useHead({
@@ -172,7 +172,6 @@ onMounted(() => {
 @import 'assets/styles/general-pages.scss';
 
 .page-general-content {
-  padding-bottom: 120px; // Footer spacing
 
   // Apply extra padding to single/solo breadcrumb that has no parent--to keep spacing below nav bar even with other pages
   .nav-breadcrumb> :not(.breadcrumb-wrapper > a.parent-page-url) {
@@ -203,10 +202,6 @@ onMounted(() => {
         right: 0;
       }
     }
-  }
-
-  @media #{$small} {
-    padding-bottom: 86px; // Footer spacing
   }
 }
 </style>
