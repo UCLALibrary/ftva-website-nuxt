@@ -88,9 +88,9 @@ const pageBlocksNoCountry = computed(() => {
   const dataBlocks = page.value?.blocks || []
 
   return dataBlocks.map((block) => {
-    const b = { ...block }
+    const blockCopy = { ...block }
 
-    let infoBlock = b.infoBlock
+    let infoBlock = blockCopy.infoBlock
 
     // If infoBlock is missing, default to an empty array
     if (!infoBlock) {
@@ -98,14 +98,14 @@ const pageBlocksNoCountry = computed(() => {
     }
 
     // Create a new array by mapping over infoBlock
-    b.infoBlock = infoBlock.map((item) => {
+    blockCopy.infoBlock = infoBlock.map((item) => {
       if (item && item.address) {
         return { ...item, address: stripCountry(item.address) }
       }
       return item
     })
 
-    return b
+    return blockCopy
   })
 })
 
