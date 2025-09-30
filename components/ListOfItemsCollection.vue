@@ -11,6 +11,7 @@ const attrs = useAttrs() as {
     title: string,
     ftvaFilters: string[],
     ftvaHomepageDescription: string,
+    titleSort: string,
     titleBrowse: string,
     groupName: string
   },
