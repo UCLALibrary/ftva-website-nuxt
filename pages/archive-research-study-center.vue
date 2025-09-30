@@ -85,7 +85,7 @@ function stripCountry(html) {
 
 }
 
-// clean page data of address
+// clean page data of country in address
 const cleanedBlocks = computed(() => {
   const blocks = page.value?.blocks || []
 
