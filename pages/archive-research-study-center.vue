@@ -77,6 +77,41 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+// remove country from address
+function stripCountry(html) {
+  if (!html) return html;
+
+  return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '');
+
+}
+
+// clean page data of address
+const cleanedBlocks = computed(() => {
+  const blocks = page.value?.blocks || []
+
+  return blocks.map(block => {
+    const b = { ...block }
+
+    let infoBlock = b.infoBlock
+
+    // If infoBlock is missing, default to an empty array
+    if (!infoBlock) {
+      infoBlock = []
+    }
+
+    // Create a new array by mapping over infoBlock
+    b.infoBlock = infoBlock.map(item => {
+      if (item && item.address) {
+        return { ...item, address: stripCountry(item.address) }
+      }
+      return item
+    })
+
+    return b
+  })
+})
+
+
 /** 7) Make a safe, CSS-friendly class from the path */
 const pageClass = computed(() => {
   const slugClass = normalizedPath.value.slice(1).replaceAll('/', '-')
@@ -161,7 +196,7 @@ useHead({
 
     <FlexibleBlocks
       class="flexible-content"
-      :blocks="page.blocks"
+      :blocks="cleanedBlocks"
     />
   </main>
 </template>
