@@ -79,15 +79,15 @@ watch(data, (newVal, oldVal) => {
 
 // remove country from address
 function stripCountry(html) {
-  if (!html) return html
+  if (!html) return null
   return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '')
 }
 
 // clean page data of country in address
-const cleanedBlocks = computed(() => {
-  const blocks = page.value?.blocks || []
+const pageBlocksNoCountry = computed(() => {
+  const dataBlocks = page.value?.blocks || []
 
-  return blocks.map((block) => {
+  return dataBlocks.map((block) => {
     const b = { ...block }
 
     let infoBlock = b.infoBlock
@@ -193,7 +193,7 @@ useHead({
 
     <FlexibleBlocks
       class="flexible-content"
-      :blocks="cleanedBlocks"
+      :blocks="pageBlocksNoCountry"
     />
   </main>
 </template>
