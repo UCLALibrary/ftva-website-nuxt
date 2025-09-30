@@ -79,17 +79,15 @@ watch(data, (newVal, oldVal) => {
 
 // remove country from address
 function stripCountry(html) {
-  if (!html) return html;
-
-  return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '');
-
+  if (!html) return html
+  return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '')
 }
 
 // clean page data of country in address
 const cleanedBlocks = computed(() => {
   const blocks = page.value?.blocks || []
 
-  return blocks.map(block => {
+  return blocks.map((block) => {
     const b = { ...block }
 
     let infoBlock = b.infoBlock
@@ -100,7 +98,7 @@ const cleanedBlocks = computed(() => {
     }
 
     // Create a new array by mapping over infoBlock
-    b.infoBlock = infoBlock.map(item => {
+    b.infoBlock = infoBlock.map((item) => {
       if (item && item.address) {
         return { ...item, address: stripCountry(item.address) }
       }
@@ -110,7 +108,6 @@ const cleanedBlocks = computed(() => {
     return b
   })
 })
-
 
 /** 7) Make a safe, CSS-friendly class from the path */
 const pageClass = computed(() => {
