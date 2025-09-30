@@ -66,7 +66,7 @@ const additionalResources = ref(page.value.ftvaAdditionalResources)
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
   additionalResources.value = page.value.ftvaAdditionalResources
-})
+}, { deep: true })
 
 // IMAGE
 const parsedImage = computed(() => {
@@ -198,7 +198,8 @@ const pageClasses = computed(() => {
             data-test="flexible-blocks-content"
           />
           <SectionWrapper
-            section-title="Additional Materials"
+            v-if="parsedAdditionalResources"
+            section-title="Related Resources"
             class="section-wrapper-post-small"
           >
             <SectionPostSmall
