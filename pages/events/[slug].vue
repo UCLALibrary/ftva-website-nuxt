@@ -119,6 +119,10 @@ const parsedFtvaEventSeries = computed(() => {
 })
 
 const parsedFTVAEventScreeningDetails = computed(() => {
+  if (page?.value.ftvaEventScreeningDetails.length === 0) {
+    return null
+  }
+
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
       ...obj,
@@ -250,7 +254,7 @@ const pageClasses = computed(() => {
         <RichText
           v-if="page?.eventDescription"
           data-test="event-description"
-          class="eventDescription"
+          class="event-description"
           :rich-text-content="page?.eventDescription"
         />
         <RichText
@@ -295,10 +299,12 @@ const pageClasses = computed(() => {
         </BlockInfo>
       </template>
 
-      <template #primaryBottom>
+      <template
+        v-if="parsedFTVAEventScreeningDetails"
+        #primaryBottom
+      >
         <DividerWayFinder />
         <SectionScreeningDetails
-          v-if="parsedFTVAEventScreeningDetails"
           data-test="screening-details"
           :items="parsedFTVAEventScreeningDetails"
         />
@@ -322,6 +328,8 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 .page-event-detail {
   position: relative;
 
@@ -402,6 +410,10 @@ const pageClasses = computed(() => {
 
     :deep(.card-meta .block-tags) {
       margin-bottom: 16px;
+    }
+
+    :deep(.event-description .parsed-content) {
+      margin-bottom: 0;
     }
 
     // SECTION SCREENING DETAILS
@@ -486,7 +498,7 @@ const pageClasses = computed(() => {
         }
       }
 
-      .eventDescription {
+      .event-description {
         order: 4;
       }
 
@@ -526,6 +538,4 @@ const pageClasses = computed(() => {
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>
