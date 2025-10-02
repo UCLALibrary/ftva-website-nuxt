@@ -1,6 +1,8 @@
 fragment BlockInfoFragment on ElementInterface {
   id
   typeHandle
+  sectionTitle: titleGeneral
+  sectionSummary: summary
   infoBlock {
     ... on infoBlock_infoBlock_BlockType {
       typeHandle
