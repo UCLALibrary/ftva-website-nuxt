@@ -61,7 +61,6 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-
 const parsedImage = computed(() => {
   // If there's a carousel, get the first image in the carousel
   if (Array.isArray(page.value?.imageCarousel) && page.value.imageCarousel.length > 0) {
