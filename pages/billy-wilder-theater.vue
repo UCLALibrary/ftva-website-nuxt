@@ -133,6 +133,7 @@ useHead({
         v-show="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
         :media="parsedImage[0]?.image?.[0]"
         :aspect-ratio="43.103"
+        data-test="hero-image"
       >
         <template
           v-if="parsedImage?.[0]?.creditText"
@@ -144,6 +145,7 @@ useHead({
       <div
         v-show="parsedCarouselData && parsedCarouselData.length > 1"
         class="lightbox-container"
+        data-test="hero-image"
       >
         <FlexibleMediaGalleryNewLightbox
           :items="parsedCarouselData"
