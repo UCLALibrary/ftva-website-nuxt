@@ -103,6 +103,7 @@ const parsedNowShowing = computed(() => {
     return {
       ...item,
       to: `/${item.uri}`,
+      title: item.eventTitle || item.title, // prefer eventTitle if it exists
       image: parseImage(item),
       startDate: item.startDateWithTime || item.startDate,
     }
