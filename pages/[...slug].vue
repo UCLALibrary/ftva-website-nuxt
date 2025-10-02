@@ -73,7 +73,7 @@ const parsedCarouselData = computed(() => {
 })
 
 const pageClasses = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', 'page-bottom-spacer']
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path, 'page-bottom-spacer']
 })
 
 useHead({
