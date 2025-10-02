@@ -24,8 +24,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "kern" 1;
-    -webkit-font-kerning: normal;
-            font-kerning: normal;
+    font-kerning: normal;
 }
 
 h1,
@@ -55,18 +54,11 @@ a {
 }
 
 button {
-    -webkit-appearance: none;
-       -moz-appearance: none;
-            appearance: none;
+    appearance: none;
     border: none;
     background-color: transparent;
     cursor: pointer;
     margin: 0;
-}
-
-::-moz-selection {
-    background: var(--color-primary-blue-03);
-    color: var(--color-white);
 }
 
 ::selection {
