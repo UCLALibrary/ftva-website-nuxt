@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
 
@@ -13,7 +13,7 @@ const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData('billy-wilder-theater', async () => {
   const data = await $graphql.default.request(BillyWilderTheater)
   return data
-})
+}) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 
 if (error.value) {
   throw createError({
@@ -61,11 +61,29 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+
 const parsedImage = computed(() => {
-  if (!page.value.image) {
+  // If there's a carousel, get the first image in the carousel
+  if (Array.isArray(page.value?.imageCarousel) && page.value.imageCarousel.length > 0) {
+    return page.value.imageCarousel
+  } else if (Array.isArray(page.value?.image)) {
+    // Else if there's an 'Image on Listing or homepage', return it
+    return [{ image: page.value.image }]
+  } else {
     return []
   }
-  return page.value.image
+})
+
+const parsedCarouselData = computed(() => {
+  if (!Array.isArray(parsedImage.value) || parsedImage.value.length === 0) return []
+
+  return parsedImage.value.map((rawItem) => {
+    const firstImage = rawItem?.image?.[0]
+    return {
+      item: firstImage ? [{ ...firstImage, kind: 'image' }] : [],
+      credit: rawItem?.creditText ?? '', // keep 'credit' as the single source of truth
+    }
+  })
 })
 
 const parsedAdmissions = computed(() => {
@@ -113,11 +131,33 @@ useHead({
   >
     <div class="one-column">
       <ResponsiveImage
-        v-if="parsedImage.length === 1"
-        :media="parsedImage[0]"
+        v-show="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
+        :media="parsedImage[0]?.image?.[0]"
         :aspect-ratio="43.103"
-        data-test="hero-image"
-      />
+      >
+        <template
+          v-if="parsedImage?.[0]?.creditText"
+          #credit
+        >
+          {{ parsedImage?.[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
+      <div
+        v-show="parsedCarouselData && parsedCarouselData.length > 1"
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox
+          :items="parsedCarouselData"
+          :inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag
+              data-test="credit-text"
+              :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
+            />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
     </div>
     <SectionWrapper>
       <SectionHeader
