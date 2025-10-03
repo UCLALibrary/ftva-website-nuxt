@@ -123,12 +123,16 @@ useHead({
     }
   ]
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-explore-collections', 'page-bottom-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-explore-collections"
+    :class="pageClasses"
   >
     <div class="one-column">
       <ResponsiveImage
@@ -342,7 +346,7 @@ useHead({
     }
 
     &:last-of-type {
-      margin-bottom: 60px;
+      padding-bottom: 0;
     }
   }
 

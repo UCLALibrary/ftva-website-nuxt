@@ -473,12 +473,16 @@ const parseFirstEventMonth = computed(() => {
   }
   return null
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-events', 'page-bottom-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-events"
+    :class="pageClasses"
   >
     <div class="full-width">
       <SectionWrapper
@@ -606,6 +610,11 @@ const parseFirstEventMonth = computed(() => {
 
 .page-events {
   position: relative;
+  background-color: var(--pale-blue);
+
+  .section-wrapper:last-of-type {
+    padding-bottom: 0;
+  }
 
   .header {
     display: flex;
@@ -781,7 +790,8 @@ const parseFirstEventMonth = computed(() => {
     /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
     background-color: white;
     max-width: unset;
-    padding: 2.5%;
+    justify-content: center;
+    padding: 15px 2.5% 60px;
   }
 
   @media(min-width: 1025px) {
@@ -867,6 +877,16 @@ const parseFirstEventMonth = computed(() => {
 
     :deep(.block-card-three-column .meta .title) {
       font-size: 26px;
+    }
+
+    :deep(.section-teaser-list .list-item) {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    :deep(.section-pagination) {
+      padding: 2.5%;
     }
   }
 
