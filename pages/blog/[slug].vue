@@ -277,13 +277,13 @@ useHead({
       max-width: none;
       padding-right: 0px;
       h3 {
-        @include ftva-fpb-rich-text-h3
+        @include ftva-fpb-rich-text-h3;
       }
       h4 {
-        @include ftva-fpb-rich-text-h4
+        @include ftva-fpb-rich-text-h4;
       }
       h5 {
-        @include ftva-fpb-rich-text-h5
+        @include ftva-fpb-rich-text-h5;
       }
     }
   }
