@@ -1,4 +1,3 @@
-#import "../gql/fragments/Image.gql"
 
 query FTVAEventSeriesList {
   entry(section: ["ftvaListingEventSeries"]) {
@@ -9,22 +8,5 @@ query FTVAEventSeriesList {
     titleGeneral
     summary
     displaySummary
-  }
-  entries(section: ["ftvaEventSeries"], orderBy: "postDate DESC") {
-    id
-    typeHandle
-    sectionHandle
-    title
-
-    ... on ftvaEventSeries_eventSeries_Entry {
-      to: slug
-      description: eventDescription
-      image: ftvaImage {
-       ...Image
-      }
-      startDate @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
-      endDate @formatDateTime(format: "Y-m-d\\TH:i:s", timezone: "America/Los_Angeles")
-      ongoing
-    }
   }
 }
