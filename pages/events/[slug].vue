@@ -119,6 +119,10 @@ const parsedFtvaEventSeries = computed(() => {
 })
 
 const parsedFTVAEventScreeningDetails = computed(() => {
+  if (page?.value.ftvaEventScreeningDetails.length === 0) {
+    return null
+  }
+
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
       ...obj,
@@ -153,12 +157,16 @@ useHead({
     }
   ]
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-event-detail', 'page-bottom-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-event-detail"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -246,7 +254,7 @@ useHead({
         <RichText
           v-if="page?.eventDescription"
           data-test="event-description"
-          class="eventDescription"
+          class="event-description"
           :rich-text-content="page?.eventDescription"
         />
         <RichText
@@ -291,10 +299,12 @@ useHead({
         </BlockInfo>
       </template>
 
-      <template #primaryBottom>
+      <template
+        v-if="parsedFTVAEventScreeningDetails"
+        #primaryBottom
+      >
         <DividerWayFinder />
         <SectionScreeningDetails
-          v-if="parsedFTVAEventScreeningDetails"
           data-test="screening-details"
           :items="parsedFTVAEventScreeningDetails"
         />
@@ -318,6 +328,8 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 .page-event-detail {
   position: relative;
 
@@ -345,6 +357,13 @@ useHead({
   }
 
   .two-column {
+    :deep(.primary-section-wrapper) {
+      margin-bottom: 0;
+    }
+
+    :deep(.sidebar-column) {
+      padding-bottom: 0;
+    }
 
     .button-dropdown {
       margin-top: 30px;
@@ -393,6 +412,10 @@ useHead({
       margin-bottom: 16px;
     }
 
+    :deep(.event-description .parsed-content) {
+      margin-bottom: 0;
+    }
+
     // SECTION SCREENING DETAILS
     // TODO when component is patched, remove styles?
     :deep(figure.responsive-video:not(:has(.video-embed))) {
@@ -403,7 +426,8 @@ useHead({
       margin-top: 25px;
     }
 
-    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content),
+    :deep(.block-screening-detail:last-of-type dl) {
       margin-bottom: 0;
     }
   }
@@ -474,7 +498,7 @@ useHead({
         }
       }
 
-      .eventDescription {
+      .event-description {
         order: 4;
       }
 
@@ -514,6 +538,4 @@ useHead({
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>

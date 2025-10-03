@@ -191,7 +191,7 @@ function updateSort(newSort) {
 }
 
 const pageClasses = computed(() => {
-  return ['page', 'page-filmmakers']
+  return ['page', 'page-filmmakers', 'page-bottom-spacer']
 })
 
 // BREADCRUMB OVERRIDES
@@ -270,6 +270,7 @@ const breadcrumbOverrides = ref([
 
   .section-wrapper {
     padding-inline: 0;
+    padding-bottom: 0;
 
     :deep(.section-title) {
       @include ftva-h5;
@@ -284,7 +285,7 @@ const breadcrumbOverrides = ref([
 
   :deep(.section-pagination) {
     background-color: white;
-    padding: 2.5%;
+    padding: 15px 2.5% 60px;
     justify-content: center;
   }
 

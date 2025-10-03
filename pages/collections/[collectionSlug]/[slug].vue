@@ -219,12 +219,16 @@ const breadcrumbOverrides = ref([
     updatedTitle: parseFieldForBreadcrumbTitleOverride(collectionSlug) || null
   }
 ])
+
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--white', 'page-collection-item-detail', 'page-bottom-spacer']
+})
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--white page-collection-item-detail"
+    :class="pageClasses"
   >
     <div class="collection-item-header">
       <NavBreadcrumb
@@ -396,6 +400,18 @@ const breadcrumbOverrides = ref([
       padding: 0;
       max-width: var(--ftva-container-max-width)
     }
+  }
+
+  :deep(.primary-column) {
+
+    .section-wrapper,
+    .parsed-content {
+      margin-bottom: 0;
+    }
+  }
+
+  :deep(.sidebar-column) {
+    padding-bottom: 0;
   }
 
   .two-col-layout__title {
