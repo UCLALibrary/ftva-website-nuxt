@@ -71,7 +71,7 @@ if (data.value.entry && import.meta.prerender) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-
+console.log('page: ', page.value)
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
