@@ -20,7 +20,7 @@ if (error.value) {
   })
 }
 
-if (!data.value.entries) {
+if (!data.value.entry) {
   throw createError({
     statusCode: 404,
     statusMessage: 'Page Not Found',
@@ -98,7 +98,7 @@ const seriesFetchFunction = async (page) => {
       currentEventSeriesQueryOngoing(
         currentPage.value,
         documentsPerPage,
-        'startDate',
+        'titleSort',
         'asc',
         ['*']
       )

@@ -9,28 +9,20 @@ import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScro
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
-
+/** 1) Normalize the path once (remove trailing slash), keep '/' for root */
+const normalizedPath = computed(() => {
+  const p = route.path.replace(/\/+$/, '')
+  return p === '' ? '/' : p
+})
 // routes this page template supports:
 const routeNameToSectionMap = {
-  '/collections/motion-picture/': {
-    sectionName: 'ftvaListingMotionPictureCollections',
-    collection: 'motionPicture'
-  },
   '/collections/motion-picture': {
     sectionName: 'ftvaListingMotionPictureCollections',
     collection: 'motionPicture'
   },
-  '/collections/television/': {
-    sectionName: 'ftvaListingTelevisionCollections',
-    collection: 'television'
-  },
   '/collections/television': {
     sectionName: 'ftvaListingTelevisionCollections',
     collection: 'television'
-  },
-  '/collections/watch-listen-online/': {
-    sectionName: 'ftvaListingWatchAndListenOnline',
-    collection: 'watchAndListenOnline'
   },
   '/collections/watch-listen-online': {
     sectionName: 'ftvaListingWatchAndListenOnline',
@@ -40,7 +32,7 @@ const routeNameToSectionMap = {
 
 const { data, error } = await useAsyncData(route.path, async () => {
   // lookup section based on routeNameToSectionMap
-  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[route.path]?.sectionName })
+  const data = await $graphql.default.request(FTVACollectionTypeListing, { section: routeNameToSectionMap[normalizedPath.value]?.sectionName })
   return data
 }) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 
@@ -68,7 +60,7 @@ if (data.value.entry && import.meta.prerender) {
       titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
       text: data.value.entry.summary,
       uri: route.path,
-      sectionHandle: routeNameToSectionMap[route.path]?.sectionName,
+      sectionHandle: routeNameToSectionMap[normalizedPath.value]?.sectionName,
       groupName: 'Collections',
       postDate: data.value.entry.postDate,
     }
@@ -103,7 +95,7 @@ const showPageSummary = computed(() => {
 // ELASTIC SEARCH
 const hits = ref(0)
 const documentsPerPage = 12
-const collectionType = ref(routeNameToSectionMap[route.path].collection)
+const collectionType = ref(routeNameToSectionMap[normalizedPath.value].collection)
 
 const extraSearchFilter: Ref<string> = ref('*')
 const selectedLetterProp: Ref<string> = ref('')
@@ -239,7 +231,7 @@ const pageClasses = computed(() => {
 definePageMeta({
   layout: 'default',
   path: '/collections/motion-picture',
-  alias: ['/collections/television', '/collections/watch-listen-online']
+  alias: ['/collections/motion-picture/', '/collections/television', '/collections/television/', '/collections/watch-listen-online', '/collections/watch-listen-online/']
 })
 
 useHead({
