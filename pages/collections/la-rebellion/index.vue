@@ -122,15 +122,15 @@ onMounted(() => {
   }
 })
 
-const pageClass = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-storytelling', route.path.replace('/collections/', '')]
+const pageClasses = computed(() => {
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-storytelling', route.path.replace('/collections/', ''), 'page-bottom-spacer']
 })
 </script>
 
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -219,7 +219,6 @@ const pageClass = computed(() => {
 @import 'assets/styles/general-pages.scss';
 
 .page-storytelling {
-
   :deep(.card-with-image) {
     .block-highlight {
       max-width: 100%;

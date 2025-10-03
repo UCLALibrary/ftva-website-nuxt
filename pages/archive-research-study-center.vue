@@ -110,9 +110,9 @@ const pageBlocksNoCountry = computed(() => {
 })
 
 /** 7) Make a safe, CSS-friendly class from the path */
-const pageClass = computed(() => {
+const pageClasses = computed(() => {
   const slugClass = normalizedPath.value.slice(1).replaceAll('/', '-')
-  return ['page', 'page-detail', 'page-detail--paleblue', slugClass]
+  return ['page', 'page-detail', 'page-detail--paleblue', slugClass, 'page-bottom-spacer']
 })
 /** 5) Always return an array */
 const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel : [])
@@ -148,10 +148,11 @@ useHead({
   ]
 })
 </script>
+
 <template>
   <main
     id="main"
-    :class="pageClass"
+    :class="pageClasses"
   >
     <div class="one-column">
       <ResponsiveImage
@@ -197,15 +198,24 @@ useHead({
     />
   </main>
 </template>
+
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 
-.one-column {
+.archive-research-study-center {
+  .one-column {
 
-  // if the layout has an image or carousel at the top
-  &:has(> .lightbox-container),
-  &:has(> figure) {
-    padding-top: 80px; // to account for the missing pageanchor on this layout
+    // if the layout has an image or carousel at the top
+    &:has(> .lightbox-container),
+    &:has(> figure) {
+      padding-top: 80px; // to account for the missing pageanchor on this layout
+    }
+  }
+
+  .flexible-content {
+    :deep(div:last-of-type .section-wrapper3) {
+      margin-bottom: 0;
+    }
   }
 }
 </style>

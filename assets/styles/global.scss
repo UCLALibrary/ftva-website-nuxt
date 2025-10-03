@@ -77,55 +77,71 @@ button {
 
 // Page Structure
 .page {
-    >* {
-        margin-left: auto;
-        margin-right: auto;
-    }
+  >* {
+      margin-left: auto;
+      margin-right: auto;
+  }
 
-    .section {
-        margin: var(--space-3xl) auto;
-        padding-left: $whitespace-m-sides + px;
-        padding-right: $whitespace-m-sides + px;
-        max-width: $container-xl-banner + px;
+  // COPIED FROM LIBRARY NUXT -- NOT USED
+  // Confirm with PG, and no regression site-wide, then delete
+  
+  // .section {
+  //     margin: var(--space-3xl) auto;
+  //     padding-left: $whitespace-m-sides + px;
+  //     padding-right: $whitespace-m-sides + px;
+  //     max-width: $container-xl-banner + px;
 
-        @media #{$small} {
-            padding-left: $whitespace-s-sides + px;
-            padding-right: $whitespace-s-sides + px;
-        }
-    }
+  //     @media #{$small} {
+  //         padding-left: $whitespace-s-sides + px;
+  //         padding-right: $whitespace-s-sides + px;
+  //     }
+  // }
 
-    .divider-first+.section {
-        margin-top: 75px;
-    }
+  // .divider-first+.section {
+  //     margin-top: 75px;
+  // }
 
-    .divider {
-        max-width: $container-l-main + px;
-        margin-left: auto;
-        margin-right: auto;
+  // .divider {
+  //     max-width: $container-l-main + px;
+  //     margin-left: auto;
+  //     margin-right: auto;
 
-        @media #{$medium} {
-            max-width: 100%;
-            padding: 0 $whitespace-m-sides + px;
-        }
+  //     @media #{$medium} {
+  //         max-width: 100%;
+  //         padding: 0 $whitespace-m-sides + px;
+  //     }
 
-        @media #{$small} {
-            padding: 0 $whitespace-s-sides + px;
-        }
-    }
+  //     @media #{$small} {
+  //         padding: 0 $whitespace-s-sides + px;
+  //     }
+  // }
 
-    .about-results {
-        margin-bottom: var(--space-l);
-        color: var(--color-primary-blue-05);
-        @include step-0;
-        font-weight: 400;
-    }
+  // .about-results {
+  //     margin-bottom: var(--space-l);
+  //     color: var(--color-primary-blue-05);
+  //     @include step-0;
+  //     font-weight: 400;
+  // }
 
-    .results {
-        color: var(--color-primary-blue-05);
-        @include step-0;
-    }
+  // .results {
+  //     color: var(--color-primary-blue-05);
+  //     @include step-0;
+  // }
 }
 
+// Spacing above footer
+// Not applied to search.vue and ~/la-rebellion/filmmakers/[slug].vue
+.page-bottom-spacer {
+  padding-bottom: 120px;
+
+  &--pale-blue {
+    background-color: var(--pale-blue);;
+  }
+
+  @media #{$small}{
+    padding-bottom: 86px;
+  }
+}
 
 // Animations
 .underline-hover {

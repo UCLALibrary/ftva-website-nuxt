@@ -286,9 +286,17 @@ useHead({
     }
   ]
 })
+
+const pageClasses = computed(() => {
+  return ['page', 'page-collections-list-of-items', 'page-bottom-spacer']
+})
 </script>
+
 <template>
-  <main class="page page-collections-list-of-items">
+  <main
+    id="main"
+    :class="pageClasses"
+  >
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
@@ -374,12 +382,12 @@ useHead({
     </div>
   </main>
 </template>
+
 <style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
 
 .page-collections-list-of-items {
   background-color: var(--pale-blue);
-  padding-bottom: 20px; // add 20px at bottom per UX review
 
   label.select-label,
   label.sort-label {
@@ -394,6 +402,7 @@ useHead({
 
   .section-wrapper {
     padding-inline: 0;
+    padding-bottom: 0;
 
     .section-header {
       text-align: center;
@@ -453,7 +462,7 @@ useHead({
   }
 
   .section-pagination {
-    padding-top: 12px;
+    padding: 45px 2.5% 0;
     justify-content: center;
   }
 }
