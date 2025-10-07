@@ -218,4 +218,21 @@ useHead({
     }
   }
 }
+
+/* remove max-width from rich-text inside flexible-blocks for ftva */
+:deep(.flexible-block) {
+  .rich-text {
+    max-width: none;
+    padding-right: 0px;
+    h3 {
+      @include ftva-fpb-rich-text-h3;
+    }
+    h4 {
+      @include ftva-fpb-rich-text-h4;
+    }
+    h5 {
+      @include ftva-fpb-rich-text-h5;
+    }
+  }
+}
 </style>
