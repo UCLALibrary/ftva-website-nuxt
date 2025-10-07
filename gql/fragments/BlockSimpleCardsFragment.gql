@@ -11,7 +11,8 @@ fragment BlockSimpleCardsFragment on ElementInterface {
                 id
                 uri
                 slug
-                title: titleGeneral
+                title
+                titleGeneral
                 summary
                 externalResourceUrl
             }
@@ -19,7 +20,8 @@ fragment BlockSimpleCardsFragment on ElementInterface {
         ... on simpleCards_externalServiceOrResource_BlockType {
             id
             typeHandle
-            title: titleGeneral
+            title
+            titleGeneral
             summary
             externalLink
         }
