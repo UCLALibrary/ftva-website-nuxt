@@ -16,7 +16,6 @@ const props = defineProps<{
 
 const { $graphql } = useNuxtApp()
 
-
 const { data, error } = await useAsyncData(props.canonicalPath, async () => {
   if (!props.sectionHandle) {
     // No match → 404
@@ -129,7 +128,6 @@ const parsedCarouselData = computed<ParsedCarouselItem[]>(() => {
     }
   })
 })
-
 
 const headTitle = computed(() => page.value?.title || 'Loading ...')
 
