@@ -274,7 +274,8 @@ const parsedEvents = computed(() => {
       ...obj._source,
       tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
-      image: parseImage(obj)
+      image: parseImage(obj),
+      category: obj._source.eventSeries?.[0]?.title ? obj._source.eventSeries?.[0]?.title : null
     }
   })
 })

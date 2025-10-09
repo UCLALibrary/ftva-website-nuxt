@@ -44,6 +44,10 @@ if (data.value.ftvaEvent && import.meta.prerender) {
     // Index the event data using the composable during static build
     data.value.ftvaEvent.sortTitle = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaEvent.title)
     data.value.ftvaEvent.groupName = 'Events'
+    // Add the event series data if available
+    if (data.value.ftvaEventSeries) {
+      data.value.ftvaEvent.eventSeries = data.value.ftvaEventSeries
+    }
     await indexContent(data.value.ftvaEvent, route.params.slug)
     // console.log('Event indexed successfully during static build')
   } catch (error) {
