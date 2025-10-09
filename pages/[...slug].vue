@@ -206,6 +206,18 @@ onMounted(() => {
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
+      ul {
+        padding: 0;
+      }
+      li {
+        position: relative;
+        padding-left: calc(1rem + 22px);
+
+        &::before {
+          position: absolute;
+          margin-left: calc(-1rem - 22px);
+        }
+      }
     }
   }
 
