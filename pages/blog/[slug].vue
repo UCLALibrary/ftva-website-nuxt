@@ -215,8 +215,8 @@ useHead({
       theme="paleblue"
     >
       <template #top-right>
-        <nuxt-link to="/series">
-          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        <nuxt-link to="/blog">
+          View All Blogs <span style="font-size:1.5em;"> &#8250;</span>
         </nuxt-link>
       </template>
       <SectionTeaserCard
