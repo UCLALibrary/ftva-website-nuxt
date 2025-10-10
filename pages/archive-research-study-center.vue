@@ -39,26 +39,11 @@
         @include ftva-fpb-rich-text-h5;
       }
       ul {
-        padding: 0;
-        li {
-          position: relative;
-          padding-left: calc(1rem + 22px);
-
-          &::before {
-            position: absolute;
-            margin-left: calc(-1rem - 22px);
-          }
-        }
+        @include ftva-fpb-rich-text-ul;
       }
       ol {
-        padding: 0;
+        @include ftva-fpb-rich-text-ol;
       }
-      // ul {
-      //   @include ftva-fpb-rich-text-ul;
-      // }
-      // ol {
-      //   @include ftva-fpb-rich-text-ol;
-      // }
     }
   }
 }
