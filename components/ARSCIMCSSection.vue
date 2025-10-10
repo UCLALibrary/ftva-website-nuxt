@@ -249,6 +249,12 @@ useHead({
   }
 }
 
+.instructional-media-collections-services {
+  :deep(.flexible-block-section-wrapper:last-child) {
+    margin-bottom: 0;
+  }
+}
+
 /* remove max-width from rich-text inside flexible-blocks for ftva */
 :deep(.flexible-block) {
   .rich-text {
