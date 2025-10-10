@@ -229,6 +229,16 @@ useHead({
     h5 {
       @include ftva-fpb-rich-text-h5;
     }
+
+    ol, ul {
+      padding: 0;
+    }
+
+    ul {
+      li {
+        @include ftva-fpb-rich-text-li;
+      }
+    }
   }
 }
 </style>
