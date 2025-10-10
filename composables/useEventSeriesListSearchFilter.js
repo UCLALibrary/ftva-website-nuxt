@@ -61,8 +61,8 @@ async function pastEventSeriesQuery(
 async function currentEventSeriesQueryCurrent(
   currentPage = 1,
   documentsPerPage = 10,
-  sort,
-  orderBy,
+  // sort,
+  // orderBy,
   source = ['*'],
 ) {
   const config = useRuntimeConfig()
@@ -95,11 +95,11 @@ async function currentEventSeriesQueryCurrent(
               },
             ],
             should: [
-              {
-                term: {
-                  ongoing: false,
-                },
-              },
+              // {
+              //   term: {
+              //     ongoing: false,
+              //   },
+              // },
               {
                 range: {
                   endDate: {
@@ -108,10 +108,10 @@ async function currentEventSeriesQueryCurrent(
                 },
               },
             ],
-            minimum_should_match: 2,
+            minimum_should_match: 1,
           }
         },
-        ...parseSort(sort, orderBy),
+        sort: [{ ongoing: { order: 'asc' } }, { startDate: { order: 'asc' } }],
       }),
     }
   )

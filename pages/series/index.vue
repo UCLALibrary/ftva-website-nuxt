@@ -87,32 +87,41 @@ const seriesFetchFunction = async (page) => {
   let results
 
   if (currentView.value === 'current') {
-    const [currentSeriesResult, ongoingSeriesResult] = await Promise.all([
-      currentEventSeriesQueryCurrent(
-        currentPage.value,
-        documentsPerPage,
-        'startDate',
-        'asc',
-        ['*']
-      ),
-      currentEventSeriesQueryOngoing(
-        currentPage.value,
-        documentsPerPage,
-        'titleSort',
-        'asc',
-        ['*']
-      )
-    ])
+    console.log('seriesfetch fn currentView.value', currentView.value)
+    // const [currentSeriesResult, ongoingSeriesResult] = await Promise.all([
+    //   currentEventSeriesQueryCurrent(
+    //     currentPage.value,
+    //     documentsPerPage,
+    //     'startDate',
+    //     'asc',
+    //     ['*']
+    //   ),
+    //   currentEventSeriesQueryOngoing(
+    //     currentPage.value,
+    //     documentsPerPage,
+    //     'titleSort',
+    //     'asc',
+    //     ['*']
+    //   )
+    // ])
+    results = await currentEventSeriesQueryCurrent(
+      currentPage.value,
+      documentsPerPage,
+      // 'startDate',
+      // 'asc'
+    )
 
+    console.log('seriesfetch fn currentSeriesResult', currentSeriesResult)
+    // console.log('seriesfetch fn ongoingSeriesResult', ongoingSeriesResult)
     // Combine results with current series first, ongoing series last
-    const currentSeries = currentSeriesResult?.hits?.hits || []
-    const ongoingSeries = ongoingSeriesResult?.hits?.hits || []
-    results = {
-      hits: {
-        hits: [...currentSeries, ...ongoingSeries],
-        total: { value: currentSeries.length + ongoingSeries.length },
-      },
-    }
+    // const currentSeries = currentSeriesResult?.hits?.hits || []
+    // const ongoingSeries = ongoingSeriesResult?.hits?.hits || []
+    // results = {
+    //   hits: {
+    //     hits: [...currentSeries, ...ongoingSeries],
+    //     total: { value: currentSeries.length + ongoingSeries.length },
+    //   },
+    // }
   } else {
     results = await pastEventSeriesQuery(currentPage.value,
       documentsPerPage,
@@ -120,11 +129,12 @@ const seriesFetchFunction = async (page) => {
       'desc',
       ['*'])
   }
-
+  console.log('results', results)
   return results
 }
 
 const onResults = (results) => {
+  console.log('onResults results', results)
   if (results?.hits?.hits?.length > 0) {
     const newSeries = results.hits.hits || []
 
@@ -154,6 +164,7 @@ const resultsSection = ref(null)
 const { scrollTo } = usePaginationScroll()
 
 watch(() => route.query, async (newVal, oldVal) => {
+  console.log('route.query', route.query)
   isLoading.value = false
   currentPage.value = route.query.page ? parseInt(route.query.page) : 1
   isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
@@ -268,6 +279,7 @@ const pageClasses = computed(() => {
         <SectionPagination
           v-if="
             totalPages !== 1 && !isMobile"
+          :key="totalPages"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
