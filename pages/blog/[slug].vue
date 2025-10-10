@@ -287,15 +287,18 @@ useHead({
       }
       ul {
         padding: 0;
-      }
-      li {
-        position: relative;
-        padding-left: calc(1rem + 22px);
+        li {
+          position: relative;
+          padding-left: calc(1rem + 22px);
 
-        &::before {
-          position: absolute;
-          margin-left: calc(-1rem - 22px);
+          &::before {
+            position: absolute;
+            margin-left: calc(-1rem - 22px);
+          }
         }
+      }
+      ol {
+        padding: 0;
       }
     }
   }
