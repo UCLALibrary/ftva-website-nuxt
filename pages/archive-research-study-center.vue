@@ -53,6 +53,12 @@
       ol {
         padding: 0;
       }
+      // ul {
+      //   @include ftva-fpb-rich-text-ul;
+      // }
+      // ol {
+      //   @include ftva-fpb-rich-text-ol;
+      // }
     }
   }
 }
