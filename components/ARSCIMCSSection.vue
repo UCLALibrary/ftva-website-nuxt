@@ -269,11 +269,17 @@ useHead({
 }
 
 .page-heading {
-    @include ftva-h2;
+  @include ftva-h2;
 }
 
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
   @include ftva-h4;
+}
+
+.instructional-media-collections-services {
+  :deep(.flexible-block-section-wrapper:last-child) {
+    margin-bottom: 0;
+  }
 }
 
 /* remove max-width from rich-text inside flexible-blocks for ftva */
@@ -294,7 +300,8 @@ useHead({
       @include ftva-fpb-rich-text-h5;
     }
 
-    ol, ul {
+    ol,
+    ul {
       padding: 0;
     }
 
