@@ -95,11 +95,11 @@ async function currentEventSeriesQueryCurrent(
               },
             ],
             should: [
-              // {
-              //   term: {
-              //     ongoing: false,
-              //   },
-              // },
+              {
+                term: {
+                  ongoing: true,
+                },
+              },
               {
                 range: {
                   endDate: {

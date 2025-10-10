@@ -111,7 +111,6 @@ const seriesFetchFunction = async (page) => {
       // 'asc'
     )
 
-    console.log('seriesfetch fn currentSeriesResult', currentSeriesResult)
     // console.log('seriesfetch fn ongoingSeriesResult', ongoingSeriesResult)
     // Combine results with current series first, ongoing series last
     // const currentSeries = currentSeriesResult?.hits?.hits || []
