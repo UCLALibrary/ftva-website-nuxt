@@ -250,7 +250,6 @@ const pageClasses = computed(() => {
     }
   }
 
-  // TODO UPDATE THESE AT THE COMPONENT LEVEL
   /* remove max-width from rich-text inside flexible-blocks for ftva */
   :deep(.flexible-block) {
     .rich-text {
