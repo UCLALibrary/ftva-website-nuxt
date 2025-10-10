@@ -61,8 +61,6 @@ async function pastEventSeriesQuery(
 async function currentEventSeriesQueryCurrent(
   currentPage = 1,
   documentsPerPage = 10,
-  // sort,
-  // orderBy,
   source = ['*'],
 ) {
   const config = useRuntimeConfig()
