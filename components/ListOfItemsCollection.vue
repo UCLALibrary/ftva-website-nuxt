@@ -130,7 +130,7 @@ const parsedCollectionResults = computed(() => {
   })
 })
 
-// For ftvaItemInCollection, only show ftvaDate, episodeAirDate or releaseDate value
+// For ftvaItemInCollection, only show ftvaDate, episodeAirDate or releaseDate value; otherwise default to postDate
 function parseCardItemDate(item) {
   if (item.sectionHandle === 'ftvaItemInCollection') {
     if (item.ftvaDate)
@@ -139,7 +139,8 @@ function parseCardItemDate(item) {
       return item.episodeAirDate
     else if (item.releaseDate)
       return item.releaseDate
-    else return null
+  } else {
+    return item.postDate
   }
 }
 
