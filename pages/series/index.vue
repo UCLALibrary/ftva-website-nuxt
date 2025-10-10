@@ -82,37 +82,15 @@ const noResultsFound = ref(false)
 const documentsPerPage = 10
 
 const seriesFetchFunction = async (page) => {
-  const { currentEventSeriesQueryCurrent, currentEventSeriesQueryOngoing, pastEventSeriesQuery } = useEventSeriesListSearchFilter() // Composable
+  const { currentEventSeriesQueryCurrent, pastEventSeriesQuery } = useEventSeriesListSearchFilter() // Composable
 
   let results
 
   if (currentView.value === 'current') {
-    const [currentSeriesResult, ongoingSeriesResult] = await Promise.all([
-      currentEventSeriesQueryCurrent(
-        currentPage.value,
-        documentsPerPage,
-        'startDate',
-        'asc',
-        ['*']
-      ),
-      currentEventSeriesQueryOngoing(
-        currentPage.value,
-        documentsPerPage,
-        'titleSort',
-        'asc',
-        ['*']
-      )
-    ])
-
-    // Combine results with current series first, ongoing series last
-    const currentSeries = currentSeriesResult?.hits?.hits || []
-    const ongoingSeries = ongoingSeriesResult?.hits?.hits || []
-    results = {
-      hits: {
-        hits: [...currentSeries, ...ongoingSeries],
-        total: { value: currentSeries.length + ongoingSeries.length },
-      },
-    }
+    results = await currentEventSeriesQueryCurrent(
+      currentPage.value,
+      documentsPerPage,
+    )
   } else {
     results = await pastEventSeriesQuery(currentPage.value,
       documentsPerPage,
@@ -120,7 +98,6 @@ const seriesFetchFunction = async (page) => {
       'desc',
       ['*'])
   }
-
   return results
 }
 
