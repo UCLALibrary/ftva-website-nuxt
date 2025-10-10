@@ -285,11 +285,13 @@ useHead({
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ul {
-        @include ftva-fpb-rich-text-ul;
+      ol, ul {
+        padding: 0;
       }
-      ol {
-        @include ftva-fpb-rich-text-ol;
+      ul {
+        li {
+          @include ftva-fpb-rich-text-li;
+        }
       }
     }
   }
