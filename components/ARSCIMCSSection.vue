@@ -69,38 +69,6 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-// remove country from address
-// function stripCountry(html) {
-//   if (!html) return null
-//   return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '')
-// }
-
-// clean page data of country in address
-// const pageBlocksNoCountry = computed(() => {
-//   const dataBlocks = page.value?.blocks || []
-
-//   return dataBlocks.map((block) => {
-//     const blockCopy = { ...block }
-
-//     let infoBlock = blockCopy.infoBlock
-
-//     // If infoBlock is missing, default to an empty array
-//     if (!infoBlock) {
-//       infoBlock = []
-//     }
-
-//     // Create a new array by mapping over infoBlock
-//     blockCopy.infoBlock = infoBlock.map((item) => {
-//       if (item && item.address) {
-//         return { ...item, address: stripCountry(item.address) }
-//       }
-//       return item
-//     })
-
-//     return blockCopy
-//   })
-// })
-
 // Remove country from address
 function stripCountry(html) {
   if (!html) return null
@@ -172,6 +140,7 @@ const pageClasses = computed(() => {
   const slugClass = props.canonicalPath.slice(1).replaceAll('/', '-')
   return ['page', 'page-detail', 'page-detail--paleblue', slugClass, 'page-bottom-spacer']
 })
+
 /** 5) Always return an array */
 const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel : [])
 
@@ -179,10 +148,12 @@ interface FtvaImage {
   // adapt to your actual image fields as needed
   [k: string]: unknown
 }
+
 type ParsedCarouselItem = {
   item: Array<FtvaImage & { kind: 'image' }>
   creditText: string
 }
+
 /** 5 & 6) Guard and use consistent prop name 'credit' throughout */
 const parsedCarouselData = computed<ParsedCarouselItem[]>(() => {
   if (!Array.isArray(parsedImage.value) || parsedImage.value.length === 0) return []
