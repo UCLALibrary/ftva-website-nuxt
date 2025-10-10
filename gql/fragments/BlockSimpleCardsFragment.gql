@@ -11,7 +11,7 @@ fragment BlockSimpleCardsFragment on ElementInterface {
                 id
                 uri
                 slug
-                title
+                title: titleGeneral
                 summary
                 externalResourceUrl
             }
