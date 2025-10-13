@@ -190,8 +190,6 @@ useHead({
       </SectionHeader>
     </SectionWrapper>
 
-
-
     <FlexibleBlocks
       class="flexible-content"
       :blocks="pageBlocksNoCountry"
