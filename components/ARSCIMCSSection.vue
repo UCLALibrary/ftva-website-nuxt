@@ -179,11 +179,18 @@ useHead({
         </FlexibleMediaGalleryNewLightbox>
       </div>
     </div>
-    <SectionWrapper
-      :section-title="page.title"
-      class="header"
-      data-test=""
-    />
+
+    <SectionWrapper>
+      <SectionHeader
+        :level="1"
+        class="page-heading"
+        data-test="page-heading"
+      >
+        {{ page.title }}
+      </SectionHeader>
+    </SectionWrapper>
+
+
 
     <FlexibleBlocks
       class="flexible-content"
@@ -210,6 +217,27 @@ useHead({
       margin-bottom: 0;
     }
   }
+}
+
+.section-header,
+:deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
+  color: $heading-grey;
+}
+
+:deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header) {
+  margin-bottom: 20px;
+}
+
+:deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header > .section-header) {
+  margin-bottom: 12px;
+}
+
+.page-heading {
+    @include ftva-h2;
+}
+
+:deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
+  @include ftva-h4;
 }
 
 /* remove max-width from rich-text inside flexible-blocks for ftva */
