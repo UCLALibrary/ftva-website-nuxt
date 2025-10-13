@@ -226,6 +226,7 @@ useHead({
   margin-bottom: 20px;
 }
 
+// TODO section-title should not have section-header class in component (it should have the level, section-header3 is okay)
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header > .section-header) {
   margin-bottom: 12px;
 }
