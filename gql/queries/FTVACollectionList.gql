@@ -9,11 +9,16 @@ query FTVACollectionList {
     title: titleGeneral
     summary
     displaySummary
-    heroImage {
-      ... on heroImage_heroImage_BlockType {
-         image {
+    image: ftvaImage {
+      ...Image
+    }
+
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
           ...Image
         }
+        creditText
       }
     }
 
