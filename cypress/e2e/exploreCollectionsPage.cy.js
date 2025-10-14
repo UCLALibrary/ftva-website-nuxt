@@ -4,7 +4,7 @@ describe('Explore Collections page', () => {
   it('Visits the Explore Collections page', () => {
     cy.visit('/collections')
 
-    cy.getByData('data-test="hero-image"').should('be.visible')
+    cy.get('[data-test="single-image"], [data-test="image-carousel"]').should('be.visible')
 
     cy.getByData('page-heading').should('be.visible')
 

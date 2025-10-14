@@ -147,7 +147,7 @@ const pageClasses = computed(() => {
     <div class="one-column">
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
-        data-test="hero-image"
+        data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
       >
@@ -165,7 +165,7 @@ const pageClasses = computed(() => {
       >
         <FlexibleMediaGalleryNewLightbox
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
-          data-test="hero-image"
+          data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
         >
