@@ -57,10 +57,20 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-const parsedHeroImage = computed(() => {
-  if (page.value.heroImage?.length > 0 && page.value.heroImage[0]?.image)
-    return page.value.heroImage[0].image
-  else return []
+// Get data for Image or Carousel at top of page
+const parsedImage = computed(() => {
+  return page.value.imageCarousel
+})
+
+// Transform data for Carousel
+const parsedCarouselData = computed(() => {
+  // map image to item, map creditText to credit
+  return parsedImage.value.map((rawItem, index) => {
+    return {
+      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
+      credit: rawItem?.creditText,
+    }
+  })
 })
 
 const showPageSummary = computed(() => {
@@ -136,11 +146,38 @@ const pageClasses = computed(() => {
   >
     <div class="one-column">
       <ResponsiveImage
-        v-if="parsedHeroImage.length === 1"
-        :media="parsedHeroImage[0]"
+        v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
+        data-test="single-image"
+        :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
-        data-test="hero-image"
-      />
+      >
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
+          {{ parsedImage[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
+
+      <div
+        v-else
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox
+          v-if="parsedCarouselData && parsedCarouselData.length > 0"
+          data-test="image-carousel"
+          :items="parsedCarouselData"
+          :inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag
+              data-test="credit-text"
+              :label="parsedCarouselData[slotProps.selectionIndex]?.creditText"
+            />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
+
       <SectionWrapper
         :section-title="page.title"
         class="header"
