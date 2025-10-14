@@ -95,29 +95,6 @@ const parsedCollections = computed(() => {
   })
 })
 
-
-
-
-const parsedUcSearchData = computed(() => {
-
-  return page.value.ucSearch
-})
-
-const parsedResourcesData = computed(() => {
-  if (page.value.otherResources.length === 0) return null
-
-  return page.value.otherResources[0].featuredResources.map((obj) => {
-    return {
-      title: obj.title,
-      to: obj.uri
-        ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
-        : '/',
-      image: parseImage(obj)
-    }
-  })
-})
-
-
 const parsedResources = computed(() => {
   if (page.value.otherResources.length === 0) return null
 
@@ -138,7 +115,6 @@ const parsedResources = computed(() => {
   })
 
   return parsedResourcesData
-  // return parsedUcSearchData
 })
 
 const parsedAboutCollections = computed(() => {
@@ -270,23 +246,6 @@ const pageClasses = computed(() => {
           <RichText :rich-text-content="page.hearstDescription" />
         </template>
       </BlockCardWithImage>
-      <DividerWayFinder />
-    </SectionWrapper>
-
-
-    <SectionWrapper
-      v-if="parsedResources"
-      :section-title="page.otherResources[0].sectionTitle"
-      :section-summary="page.otherResources[0].sectionDescription"
-      theme="paleblue"
-      class="section-wrapper-post-small"
-    >
-      <DividerWayFinder />
-      <h3>parsedUcSearchData: {{parsedUcSearchData}}</h3>
-      <DividerWayFinder />
-
-      <h3>parsedResourcesData: {{parsedResourcesData}}</h3>
-      <h3>page.value.ucSearch[0].image {{page.ucSearch[0].image}}</h3>
       <DividerWayFinder />
     </SectionWrapper>
 
