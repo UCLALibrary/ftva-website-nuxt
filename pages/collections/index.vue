@@ -99,7 +99,8 @@ const parsedCollections = computed(() => {
 
 
 const parsedUcSearchData = computed(() => {
-  return page.value.ucSearch[0]
+
+  return page.value.ucSearch
 })
 
 const parsedResourcesData = computed(() => {
@@ -116,6 +117,7 @@ const parsedResourcesData = computed(() => {
   })
 })
 
+
 const parsedResources = computed(() => {
   if (page.value.otherResources.length === 0) return null
 
@@ -129,14 +131,14 @@ const parsedResources = computed(() => {
     }
   })
 
-
-  // parsedResourcesData.push({
-  //   title: page.value.ucSearch[0].urlText,
-  //   to: page.value.ucSearch[0].uri,
-  //   image: parseImage(page.value.image)
-  // })
+  parsedResourcesData.push({
+    title: page.value.ucSearch[0].title,
+    to: page.value.ucSearch[0].uri,
+    image: page.value.ucSearch[0].image[0]
+  })
 
   return parsedResourcesData
+  // return parsedUcSearchData
 })
 
 const parsedAboutCollections = computed(() => {
@@ -284,6 +286,7 @@ const pageClasses = computed(() => {
       <DividerWayFinder />
 
       <h3>parsedResourcesData: {{parsedResourcesData}}</h3>
+      <h3>page.value.ucSearch[0].image {{page.ucSearch[0].image}}</h3>
       <DividerWayFinder />
     </SectionWrapper>
 
