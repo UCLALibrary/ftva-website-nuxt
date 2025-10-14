@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
 
@@ -20,7 +20,7 @@ const route = useRoute()
 const { data, error } = await useAsyncData(`blog-${route.params.slug}`, async () => {
   const data = await $graphql.default.request(FTVAArticleDetail, { slug: route.params.slug })
   return data
-})
+}) as { data: Ref<{ ftvaArticle: any } | null>, error: Ref<any> }
 if (error.value) {
   throw createError({
     ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
@@ -87,8 +87,13 @@ const parsedArticleCategories = computed(() => {
 
 // Get the Contributor data if it exists, otherwise return nothing
 const parsedByline = computed(() => {
-  if ((page.value.contributors && page.value.contributors[0]) && page.value.contributors[0].contributor) {
-    return page.value.contributors[0].contributor
+  if (page.value.contributors && page.value.contributors.length > 0) {
+    return page.value.contributors.map((contributor) => {
+      const byline = contributor.byline || ''
+      const contributorName = contributor.contributor || (contributor.staffMember?.[0]?.nameFirst && contributor.staffMember?.[0]?.nameLast ? `${contributor.staffMember[0].nameFirst} ${contributor.staffMember[0].nameLast}` : '') || ''
+      // only return a space before contributor if there is a byline
+      return byline.length > 0 ? `${byline} ${contributorName}` : contributorName
+    }).join(', ')
   }
   return ''
 })
@@ -276,12 +281,15 @@ useHead({
     .rich-text {
       max-width: none;
       padding-right: 0px;
+
       h3 {
         @include ftva-fpb-rich-text-h3;
       }
+
       h4 {
         @include ftva-fpb-rich-text-h4;
       }
+
       h5 {
         @include ftva-fpb-rich-text-h5;
       }

@@ -29,9 +29,15 @@ query FTVAArticleDetail($slug: [String!]) {
       title
     }
     contributors {
-      ... on contributors_externalContributor_BlockType {
         byline
         contributor
+      ... on staffMember_staffMember_Entry {
+        nameLast
+        nameFirst
+      }
+      staffMember {
+        nameFirst
+        nameLast
       }
       externalContributor {
         id
