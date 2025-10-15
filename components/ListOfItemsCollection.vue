@@ -126,9 +126,24 @@ const parsedCollectionResults = computed(() => {
       to: `/${obj._source.uri}`,
       image: objImage,
       videoEmbed: obj._source.videoEmbed,
+      postDate: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
     }
   })
 })
+
+// For ftvaItemInCollection, only show ftvaDate, episodeAirDate or releaseDate value; otherwise default to postDate
+function parseCardItemDate(item) {
+  if (item.sectionHandle === 'ftvaItemInCollection') {
+    if (item.ftvaDate)
+      return item.ftvaDate
+    else if (item.episodeAirDate)
+      return item.episodeAirDate
+    else if (item.releaseDate)
+      return item.releaseDate
+  } else {
+    return item.postDate
+  }
+}
 
 const selectedFilters = ref({}) // initialise with empty filter
 
