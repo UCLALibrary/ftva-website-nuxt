@@ -13,7 +13,8 @@ const attrs = useAttrs() as {
     ftvaHomepageDescription: string,
     titleSort: string,
     titleBrowse: string,
-    groupName: string
+    groupName: string,
+    richText: string
   },
   breadcrumbs?: {
     titleLevel: number,
@@ -125,9 +126,24 @@ const parsedCollectionResults = computed(() => {
       to: `/${obj._source.uri}`,
       image: objImage,
       videoEmbed: obj._source.videoEmbed,
+      postDate: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
     }
   })
 })
+
+// For ftvaItemInCollection, only show ftvaDate, episodeAirDate or releaseDate value; otherwise default to postDate
+function parseCardItemDate(item) {
+  if (item.sectionHandle === 'ftvaItemInCollection') {
+    if (item.ftvaDate)
+      return item.ftvaDate
+    else if (item.episodeAirDate)
+      return item.episodeAirDate
+    else if (item.releaseDate)
+      return item.releaseDate
+  } else {
+    return item.postDate
+  }
+}
 
 const selectedFilters = ref({}) // initialise with empty filter
 
@@ -272,6 +288,11 @@ function updateFilters(newFilter) {
   }
 }
 
+// Use either richText field or ftvaHomepageDescription field for page description
+const parsedPageDescription = computed(() => {
+  return attrs.page.richText ? attrs.page.richText : attrs.page.ftvaHomepageDescription ? attrs.page.ftvaHomepageDescription : ''
+})
+
 onMounted(async () => {
   await setFilters()
 })
@@ -313,9 +334,9 @@ const pageClasses = computed(() => {
         data-test="complex-collections-page-title"
       >
         <RichText
-          v-if="attrs.page?.ftvaHomepageDescription"
+          v-if="parsedPageDescription"
           class="description"
-          :rich-text-content="attrs.page.ftvaHomepageDescription"
+          :rich-text-content="parsedPageDescription"
         />
         <DividerWayFinder />
         <div
