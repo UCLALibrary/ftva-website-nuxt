@@ -8,5 +8,6 @@ query FTVACollectionLayoutType($slug: [String!]) {
     ftvaFilters
     sectionHandle
     ftvaCollectionType
+    richText
   }
 }
