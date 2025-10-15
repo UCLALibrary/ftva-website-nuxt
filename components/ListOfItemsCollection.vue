@@ -13,7 +13,8 @@ const attrs = useAttrs() as {
     ftvaHomepageDescription: string,
     titleSort: string,
     titleBrowse: string,
-    groupName: string
+    groupName: string,
+    richText: string
   },
   breadcrumbs?: {
     titleLevel: number,
@@ -287,6 +288,11 @@ function updateFilters(newFilter) {
   }
 }
 
+// Use either richText field or ftvaHomepageDescription field for page description
+const parsedPageDescription = computed(() => {
+  return attrs.page.richText ? attrs.page.richText : attrs.page.ftvaHomepageDescription ? attrs.page.ftvaHomepageDescription : ''
+})
+
 onMounted(async () => {
   await setFilters()
 })
@@ -328,9 +334,9 @@ const pageClasses = computed(() => {
         data-test="complex-collections-page-title"
       >
         <RichText
-          v-if="attrs.page?.ftvaHomepageDescription"
+          v-if="parsedPageDescription"
           class="description"
-          :rich-text-content="attrs.page.ftvaHomepageDescription"
+          :rich-text-content="parsedPageDescription"
         />
         <DividerWayFinder />
         <div
