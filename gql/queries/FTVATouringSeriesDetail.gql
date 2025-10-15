@@ -1,6 +1,6 @@
 #import "../gql/fragments/Image.gql"
 
-query FTVATouringSeriesDetail ($slug: [String!]) {
+query FTVATouringSeriesDetail($slug: [String!]) {
   ftvaTouringSeries: entry(section: "ftvaTouringSeries", slug: $slug) {
     imageCarousel {
       ... on imageCarousel_imageCarousel_BlockType {
@@ -10,7 +10,6 @@ query FTVATouringSeriesDetail ($slug: [String!]) {
         creditText
       }
     }
-
     id
     typeHandle
     sectionHandle
@@ -18,19 +17,15 @@ query FTVATouringSeriesDetail ($slug: [String!]) {
     uri
     title
     richText
-    startDate
-      @formatDateTime(
-        format: "Y-m-d\\TH:i"
-        timezone: "America/Los_Angeles"
-      )
-    endDate
-      @formatDateTime(
-      format: "Y-m-d\\TH:i"
-      timezone: "America/Los_Angeles"
-    )
+    startDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    endDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
     richTextDefaultWithTable
-
-  otherSeriesUpcoming: entries(section: "ftvaTouringSeries", limit: 3, orderBy: "endDate ASC") {
+  }
+  otherSeriesUpcoming: entries(
+    section: "ftvaTouringSeries"
+    limit: 3
+    orderBy: "endDate ASC"
+  ) {
     uri
     sectionHandle
     title
@@ -40,11 +35,11 @@ query FTVATouringSeriesDetail ($slug: [String!]) {
       ...Image
     }
     imageCarousel {
-        ... on imageCarousel_imageCarousel_BlockType {
-          image {
-            ...Image
-          }
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
         }
+      }
     }
   }
 }
