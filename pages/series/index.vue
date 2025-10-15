@@ -320,13 +320,12 @@ const pageClasses = computed(() => {
     }
   }
 
+  :deep(.ftva.block-staff-article-item .image),
+  :deep(.ftva.block-staff-article-item .molecule-no-image) {
+    --image-min-width: 284px;
+  }
+
   @media screen and (max-width: 834px) {
-
-    :deep(.ftva.block-staff-article-item .image),
-    :deep(.ftva.block-staff-article-item .molecule-no-image) {
-      --image-min-width: 240px;
-    }
-
     :deep(.ftva.block-staff-article-item .title) {
       -webkit-line-clamp: 2;
     }
