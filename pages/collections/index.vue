@@ -59,7 +59,7 @@ watch(data, (newVal, oldVal) => {
 
 // Get data for Image or Carousel at top of page
 const parsedImage = computed(() => {
-  return page.value.imageCarousel
+  return page.value.imageCarousel || []
 })
 
 // Transform data for Carousel
@@ -155,7 +155,7 @@ const pageClasses = computed(() => {
     <div class="one-column">
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
-        data-test="single-image"
+        data-test="page-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
       >
@@ -173,7 +173,7 @@ const pageClasses = computed(() => {
       >
         <FlexibleMediaGalleryNewLightbox
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
-          data-test="image-carousel"
+          data-test="page-image"
           :items="parsedCarouselData"
           :inline="true"
         >
