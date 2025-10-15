@@ -241,6 +241,19 @@ useHead({
 .page-article-detail {
   position: relative;
 
+  // contributor byline styles
+  :deep(.card-meta.ftvaArticle) {
+    .byline-group {
+      display: inline-block; // force byline to wrap
+      margin-top: 0px; //override extra space added to byline group by inline-block
+      margin-bottom: 0px;
+
+      .schedule-item {
+        display: inline-block;
+      }
+    }
+  }
+
   // makes all EventSeries same height
   :deep(.card) {
     min-height: 350px;
