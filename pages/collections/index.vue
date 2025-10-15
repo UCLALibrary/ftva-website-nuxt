@@ -98,7 +98,7 @@ const parsedCollections = computed(() => {
 const parsedResources = computed(() => {
   if (page.value.otherResources.length === 0) return null
 
-  return page.value.otherResources[0].featuredResources.map((obj) => {
+  const parsedResourcesData = page.value.otherResources[0].featuredResources.map((obj) => {
     return {
       title: obj.title,
       to: obj.uri
@@ -107,6 +107,14 @@ const parsedResources = computed(() => {
       image: parseImage(obj)
     }
   })
+
+  parsedResourcesData.push({
+    title: page.value.ucSearch[0].title,
+    to: page.value.ucSearch[0].uri,
+    image: page.value.ucSearch[0].image[0]
+  })
+
+  return parsedResourcesData
 })
 
 const parsedAboutCollections = computed(() => {
