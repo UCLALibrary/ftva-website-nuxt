@@ -69,35 +69,69 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-// remove country from address
+// Remove country from address
 function stripCountry(html) {
   if (!html) return null
   return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '')
 }
 
-// clean page data of country in address
-const pageBlocksNoCountry = computed(() => {
+// Remove country data in InfoBlock address
+function parseInfoBlockAddress(block) {
+  if (!block.infoBlock || block.infoBlock.length === 0)
+    return null
+
+  block.infoBlock = block.infoBlock.map((item) => {
+    if (item && item.address) {
+      return { ...item, address: stripCountry(item.address) }
+    }
+    return item
+  })
+
+  return block
+}
+
+// Use titleGeneral as SimpleCard title; otherwise, keep default title
+function parseSimpleCardTitle(block) {
+  if (!block.cards || block.cards.length === 0)
+    return null
+
+  let simpleCards = block.cards
+
+  simpleCards = simpleCards.map((card) => {
+    if (card.typeHandle === 'externalServiceOrResource') {
+      if (card.titleGeneral) {
+        card = { ...card, title: card.titleGeneral }
+      }
+    }
+
+    if (card.typeHandle === 'internalServiceOrResource') {
+      let content = card.contentLink[0]
+      if (content.titleGeneral) {
+        content = { ...content, title: content.titleGeneral }
+        card = { ...card, contentLink: [content] }
+      }
+    }
+
+    return card
+  })
+
+  return { ...block, cards: simpleCards }
+}
+
+// Parse FlexibleBlock with helper functions
+const parsedFlexibleBlocks = computed(() => {
   const dataBlocks = page.value?.blocks || []
 
   return dataBlocks.map((block) => {
-    const blockCopy = { ...block }
-
-    let infoBlock = blockCopy.infoBlock
-
-    // If infoBlock is missing, default to an empty array
-    if (!infoBlock) {
-      infoBlock = []
+    if (block.typeHandle === 'infoBlock') {
+      block = parseInfoBlockAddress(block)
     }
 
-    // Create a new array by mapping over infoBlock
-    blockCopy.infoBlock = infoBlock.map((item) => {
-      if (item && item.address) {
-        return { ...item, address: stripCountry(item.address) }
-      }
-      return item
-    })
+    if (block.typeHandle === 'simpleCards') {
+      block = parseSimpleCardTitle(block)
+    }
 
-    return blockCopy
+    return block
   })
 })
 
@@ -106,6 +140,7 @@ const pageClasses = computed(() => {
   const slugClass = props.canonicalPath.slice(1).replaceAll('/', '-')
   return ['page', 'page-detail', 'page-detail--paleblue', slugClass, 'page-bottom-spacer']
 })
+
 /** 5) Always return an array */
 const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel : [])
 
@@ -113,10 +148,12 @@ interface FtvaImage {
   // adapt to your actual image fields as needed
   [k: string]: unknown
 }
+
 type ParsedCarouselItem = {
   item: Array<FtvaImage & { kind: 'image' }>
   creditText: string
 }
+
 /** 5 & 6) Guard and use consistent prop name 'credit' throughout */
 const parsedCarouselData = computed<ParsedCarouselItem[]>(() => {
   if (!Array.isArray(parsedImage.value) || parsedImage.value.length === 0) return []
@@ -192,7 +229,7 @@ useHead({
 
     <FlexibleBlocks
       class="flexible-content"
-      :blocks="pageBlocksNoCountry"
+      :blocks="parsedFlexibleBlocks"
     />
   </main>
 </template>
@@ -232,11 +269,17 @@ useHead({
 }
 
 .page-heading {
-    @include ftva-h2;
+  @include ftva-h2;
 }
 
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
   @include ftva-h4;
+}
+
+.instructional-media-collections-services {
+  :deep(.flexible-block-section-wrapper:last-child) {
+    margin-bottom: 0;
+  }
 }
 
 /* remove max-width from rich-text inside flexible-blocks for ftva */
@@ -257,7 +300,8 @@ useHead({
       @include ftva-fpb-rich-text-h5;
     }
 
-    ol, ul {
+    ol,
+    ul {
       padding: 0;
     }
 
