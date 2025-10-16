@@ -1,0 +1,45 @@
+#import "../gql/fragments/Image.gql"
+
+query FTVATouringSeriesDetail($slug: [String!]) {
+  ftvaTouringSeries: entry(section: "ftvaTouringSeries", slug: $slug) {
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+        creditText
+      }
+    }
+    id
+    typeHandle
+    sectionHandle
+    postDate
+    uri
+    title
+    richText
+    startDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    endDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    richTextDefaultWithTable
+  }
+  otherSeriesUpcoming: entries(
+    section: "ftvaTouringSeries"
+    limit: 3
+    orderBy: "endDate ASC"
+  ) {
+    uri
+    sectionHandle
+    title
+    startDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    endDate @formatDateTime(format: "Y-m-d\\TH:i", timezone: "America/Los_Angeles")
+    ftvaImage {
+      ...Image
+    }
+    imageCarousel {
+      ... on imageCarousel_imageCarousel_BlockType {
+        image {
+          ...Image
+        }
+      }
+    }
+  }
+}
