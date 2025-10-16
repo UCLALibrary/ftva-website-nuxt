@@ -58,6 +58,10 @@ async function pastEventSeriesQuery(
   return data
 }
 
+// NOTE: This query uses a custom sort to accomplish several requirements:
+// 1. Sort non-ongoing series by start date
+// 2. Sort ongoing series by title
+// 3. Then sort all ongoing series to the end of the list
 async function currentEventSeriesQueryCurrent(
   currentPage = 1,
   documentsPerPage = 10,
@@ -109,7 +113,38 @@ async function currentEventSeriesQueryCurrent(
             minimum_should_match: 1,
           }
         },
-        sort: [{ ongoing: { order: 'asc' } }, { startDate: { order: 'asc' } }],
+        sort: [
+          {
+            _script: {
+              type: 'number',
+              script: {
+                source: `
+                  if (doc['ongoing'].value == false) {
+                    return doc['startDate'].value.toEpochMilli();
+                  } else {
+                    return Long.MAX_VALUE;
+                  }
+                `
+              },
+              order: 'asc'
+            }
+          },
+          {
+            _script: {
+              type: 'string',
+              script: {
+                source: `
+                  if (doc['ongoing'].value == true) {
+                    return doc['titleSort'].value;
+                  } else {
+                    return '';
+                  }
+                `
+              },
+              order: 'asc'
+            }
+          }
+        ],
       }),
     }
   )
