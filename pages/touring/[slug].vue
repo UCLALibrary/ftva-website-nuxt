@@ -66,6 +66,58 @@ watch(data, (newVal, oldVal) => {
   series.value = _get(newVal, 'otherSeriesUpcoming', {})
 })
 
+// Get data for Image or Carousel at top of page
+const parsedImage = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.imageCarousel) {
+    return []
+  }
+  return page.value.imageCarousel
+})
+
+// Transform data for Carousel
+const parsedCarouselData = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!parsedImage.value) {
+    return []
+  }
+  // map image to item, map creditText to credit
+  return parsedImage.value.map((rawItem, index) => {
+    return {
+      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
+      credit: rawItem?.creditText,
+    }
+  })
+})
+
+// Transform data for Other Series Section
+// This section only shows 3 items max, and prioritizes upcoming events over ongoing
+const parsedOtherSeries = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!series.value)
+    return []
+
+  let otherSeries = series.value
+  // Remove current series from list
+  otherSeries = otherSeries.filter(item => !item.uri.includes(route.params.slug))
+  // Get first 3 events
+  otherSeries = otherSeries.slice(0, 3)
+
+  // Transform data
+  otherSeries = otherSeries.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.uri}`, // remove 'series/' from uri
+      startDate: item.startDate ? item.startDate : null,
+      endDate: item.endDate ? item.endDate : null,
+      ongoing: item.ongoing,
+      sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
+      image: parseImage(item)
+    }
+  })
+  return otherSeries
+})
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -85,15 +137,135 @@ useHead({
 <template>
   <main
     id="main"
-    :class="pageClasses"
+    class="page page-detail page-detail--paleblue page-event-series-detail"
   >
-  <SectionWrapper>
     <div class="one-column">
-        <h3><pre>PAGE:<br/> {{page}}</pre></h3>
-        <hr/><hr/>
-        <h3><pre>SERIES:<br/> {{series}}</pre></h3>
+      <NavBreadcrumb
+        class="breadcrumb"
+        :title="page?.title"
+      />
+
+      <ResponsiveImage
+        v-if="parsedImage.length === 1"
+        :media="parsedImage[0].image[0]"
+        :aspect-ratio="43.103"
+      >
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
+        >
+          {{ parsedImage[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
+      <div
+        v-else
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox
+          v-if="parsedCarouselData && parsedCarouselData.length > 0"
+          :items="parsedCarouselData"
+          :inline="true"
+        >
+          <template #default="slotProps">
+            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
+      </div>
     </div>
-  </SectionWrapper>
+
+    <TwoColLayoutWStickySideBar>
+      <template #primaryTop>
+        <CardMeta
+          category="Series"
+          :title="page?.title"
+          :introduction="page?.ftvaEventIntroduction"
+        />
+      </template>
+
+      <template #primaryMid>
+        <RichText
+          v-if="page?.richText"
+          :rich-text-content="page?.richText"
+        />
+
+        <SectionHeader
+        :level="2"
+        class="section-header"
+        data-test="section-header"
+        >
+          Tour Dates
+        </SectionHeader>
+        <RichText
+          v-if="page?.richText"
+          :rich-text-content="page?.richTextDefaultWithTable"
+        />
+      </template>
+
+      <!-- Sidebar -->
+      <template #sidebarTop>
+        <BlockEventDetail
+          data-test="event-details"
+          :start-date="page?.startDate"
+          :end-date="page?.endDate"
+          :ongoing="page?.ongoing"
+          :locations="page?.location"
+        />
+      </template>
+
+      <template #sidebarBottom>
+        <BlockInfo
+          v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
+          color-scheme="paleblue"
+          data-test="ticket-info"
+          class="ticket-info"
+        >
+          <template #block-info-top>
+            <h3 class="block-info-header">
+              Ticket Info
+            </h3>
+          </template>
+          <template #block-info-mid>
+            <ul class="block-info-list">
+              <li
+                v-for="(item, index) in page?.ftvaTicketInformation"
+                :key="`${item}-${index}`"
+              >
+                {{ item.title }}
+              </li>
+            </ul>
+          </template>
+          <template #block-info-end>
+            <ButtonLink
+              label="Plan Your Visit"
+              to="/plan-your-visit"
+              class="button"
+              :is-secondary="true"
+              icon-name="none"
+            />
+          </template>
+        </BlockInfo>
+      </template>
+    </TwoColLayoutWStickySideBar>
+
+
+
+    <SectionWrapper
+      v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
+      :items="parsedOtherSeries"
+      section-title="Explore our other series"
+      class="series-section-wrapper"
+    >
+      <template #top-right>
+        <nuxt-link to="/series">
+          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
+      <SectionTeaserCard
+        class="other-series-section"
+        :items="parsedOtherSeries"
+        :grid-layout="false"
+      />
+    </SectionWrapper>
   </main>
 </template>
 
