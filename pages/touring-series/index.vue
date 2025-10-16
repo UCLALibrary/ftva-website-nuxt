@@ -38,7 +38,7 @@ if (data.value.entry && import.meta.prerender) {
       text: data.value.entry.summary,
       uri: '/touring-series',
       sectionHandle: data.value.entry.sectionHandle,
-      groupName: 'Touring Series',
+      groupName: 'Series',
       postDate: data.value.entry.postDate,
     }
     // Index the Touring Series data using the composable during static build
