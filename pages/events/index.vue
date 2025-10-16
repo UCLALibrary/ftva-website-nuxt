@@ -501,6 +501,7 @@ const pageClasses = computed(() => {
         theme="paleblue"
       >
         <TabList
+          :key="parseViewSelection"
           :class="stickyClass"
           alignment="right"
           :initial-tab="parseViewSelection"
