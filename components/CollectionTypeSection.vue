@@ -106,6 +106,8 @@ const collectionFetchFunction = async (page) => {
     documentsPerPage,
     extraSearchFilter.value
   )
+
+  console.log('Results: ', results)
   return results
 }
 
