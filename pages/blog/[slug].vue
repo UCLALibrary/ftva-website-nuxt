@@ -249,7 +249,7 @@ useHead({
       margin-bottom: 0px;
 
       .schedule-item {
-        display: inline-block;
+        display: inline;
       }
     }
   }
@@ -306,9 +306,12 @@ useHead({
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ol, ul {
+
+      ol,
+      ul {
         padding: 0;
       }
+
       ul {
         li {
           @include ftva-fpb-rich-text-li;
