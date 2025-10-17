@@ -1,0 +1,12 @@
+
+query FTVATouringSeriesList {
+  entry(section: ["ftvaListingTouringSeries"]) {
+    id
+    typeHandle
+    sectionHandle
+    postDate
+    titleGeneral
+    summary
+    displaySummary
+  }
+}

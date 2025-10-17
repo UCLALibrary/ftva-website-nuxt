@@ -40,14 +40,14 @@ if (data.value.ftvaTouringSeries && import.meta.prerender) {
     const { indexContent } = useContentIndexer()
     // Index the event data using the composable during static build
     data.value.ftvaTouringSeries.sortTitle = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaTouringSeries.title)
-    data.value.ftvaTouringSeries.groupName = 'Events'
+    data.value.ftvaTouringSeries.groupName = 'Series'
     // Add the event series title and link data if available
     if (data.value.ftvaTouringSeries) {
       data.value.ftvaTouringSeries.eventSeriesTitle = data.value.ftvaTouringSeries[0]?.title || null
       data.value.ftvaTouringSeries.eventSeriesLink = data.value.ftvaTouringSeries[0]?.to || null
     }
     await indexContent(data.value.ftvaTouringSeries, route.params.slug)
-    // console.log('Event indexed successfully during static build')
+    console.log('Touring Series indexed successfully during static build', data.value.ftvaTouringSeries)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX EVENT during static build:', error)
@@ -87,19 +87,23 @@ useHead({
     id="main"
     :class="pageClasses"
   >
-  <SectionWrapper>
-    <div class="one-column">
-        <h3><pre>PAGE:<br/> {{page}}</pre></h3>
-        <hr/><hr/>
-        <h3><pre>SERIES:<br/> {{series}}</pre></h3>
-    </div>
-  </SectionWrapper>
+    <SectionWrapper>
+      <div class="one-column">
+        <h3>
+          <pre>PAGE:<br/> {{ page }}</pre>
+        </h3>
+        <hr />
+        <hr />
+        <h3>
+          <pre>SERIES:<br/> {{ series }}</pre>
+        </h3>
+      </div>
+    </SectionWrapper>
   </main>
 </template>
 
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 
-.page-touring-series-detail {
-}
+.page-touring-series-detail {}
 </style>
