@@ -258,6 +258,7 @@ const pageClasses = computed(() => {
 
       <!-- Now Showing -->
       <SectionWrapper
+        :level="1"
         v-if="parsedNowShowing"
         :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
         class="now-showing-section no-padding"
@@ -426,8 +427,8 @@ const pageClasses = computed(() => {
     position: relative;
   }
 
-  :deep(.section-wrapper h2.section-header.section-title) {
-    color: $heading-grey;
+  :deep(.section-wrapper h1.section-header.section-title) {
+    @include ftva-wrapper-title;
   }
 
   .now-showing-section {
