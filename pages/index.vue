@@ -238,6 +238,7 @@ const pageClasses = computed(() => {
     id="main"
     :class="pageClasses"
   >
+    <h1 class="screen-reader-text">UCLA Film & Television Archive"</h1>
     <div class="one-column">
       <div
         v-if="parsedCarouselData"
@@ -258,7 +259,6 @@ const pageClasses = computed(() => {
 
       <!-- Now Showing -->
       <SectionWrapper
-        :level="1"
         v-if="parsedNowShowing"
         :section-title="page.ftvaFeaturedEventsSection[0].sectionTitle"
         class="now-showing-section no-padding"
@@ -404,6 +404,10 @@ const pageClasses = computed(() => {
 
 <style lang="scss" scoped>
 .page-home {
+  .screen-reader-text {
+    @include visually-hidden;
+  }
+
   background-color: var(--pale-blue);
 
   .one-column {
@@ -427,8 +431,8 @@ const pageClasses = computed(() => {
     position: relative;
   }
 
-  :deep(.section-wrapper h1.section-header.section-title) {
-    @include ftva-wrapper-title;
+  :deep(.section-wrapper h2.section-header.section-title) {
+    color: $heading-grey;
   }
 
   .now-showing-section {

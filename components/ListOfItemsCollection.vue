@@ -435,6 +435,11 @@ const pageClasses = computed(() => {
       text-align: center;
     }
 
+    :deep(h2.section-header.section-header2.section-title) {
+      color: $heading-grey;
+      text-align: center;
+    }
+
     div.description {
       max-width: 964px;
     }
