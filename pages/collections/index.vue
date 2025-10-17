@@ -179,6 +179,7 @@ const pageClasses = computed(() => {
       </div>
 
       <SectionWrapper
+        :level="1"
         :section-title="page.title"
         class="header"
         theme="paleblue"
@@ -290,8 +291,8 @@ const pageClasses = computed(() => {
   }
 
   .header :deep(.section-title) {
-    color: $heading-grey;
     margin-bottom: 0;
+    @include ftva-wrapper-title;
   }
 
   .header :deep(p) {

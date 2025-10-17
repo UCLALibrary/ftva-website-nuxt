@@ -176,6 +176,7 @@ const pageClasses = computed(() => {
   <main :class="pageClasses">
     <div class="full-width">
       <SectionWrapper
+        :level="1"
         id="series-section-title"
         ref="scrollElem"
         class="header"
@@ -279,9 +280,9 @@ const pageClasses = computed(() => {
   }
 
   .header :deep(.section-title) {
-    color: $heading-grey;
     line-height: 1;
     margin-bottom: var(--space-l);
+    @include ftva-wrapper-title;
   }
 
   :deep(.section-wrapper:has(.tab-list)) {

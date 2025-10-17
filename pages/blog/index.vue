@@ -195,6 +195,7 @@ const pageClasses = computed(() => {
 <template>
   <main :class="pageClasses">
     <SectionWrapper
+      :level="1"
       ref="scrollElem"
       :section-title="pageTitle"
       class="header"
@@ -311,8 +312,8 @@ const pageClasses = computed(() => {
   .header>:deep(.section-header) {
     margin-block: 0;
 
-    h2.section-title {
-      color: $heading-grey;
+    h1.section-title {
+      @include ftva-wrapper-title;
     }
   }
 

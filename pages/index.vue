@@ -238,6 +238,7 @@ const pageClasses = computed(() => {
     id="main"
     :class="pageClasses"
   >
+    <h1 class="screen-reader-text">UCLA Film & Television Archive"</h1>
     <div class="one-column">
       <div
         v-if="parsedCarouselData"
@@ -403,6 +404,10 @@ const pageClasses = computed(() => {
 
 <style lang="scss" scoped>
 .page-home {
+  .screen-reader-text {
+    @include visually-hidden;
+  }
+
   background-color: var(--pale-blue);
 
   .one-column {
