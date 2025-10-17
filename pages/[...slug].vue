@@ -134,11 +134,6 @@ onMounted(() => {
         </FlexibleMediaGalleryNewLightbox>
       </div>
 
-      <PageAnchor
-        v-if="h2Array.length >= 3"
-        :section-titles="h2Array"
-      />
-
       <TwoColLayoutWStickySideBar
         data-test="second-column"
         class="two-column"
@@ -154,6 +149,15 @@ onMounted(() => {
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
           </SectionWrapper>
+        </template>
+
+
+        <!-- Sidebar -->
+        <template #sidebarPageAnchor>
+          <PageAnchor
+            v-if="h2Array.length >= 3"
+            :section-titles="h2Array"
+          />
         </template>
 
         <template #primaryMid>
