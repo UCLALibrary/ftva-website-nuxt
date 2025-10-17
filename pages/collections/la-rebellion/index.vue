@@ -170,16 +170,7 @@ const pageClasses = computed(() => {
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
-
-      <PageAnchor
-        v-if="h2Array.length >= 3"
-        :section-titles="h2Array"
-      />
-
-      <TwoColLayoutWStickySideBar
-        data-test="second-column"
-        class="two-column"
-      >
+      <TwoColLayoutWStickySideBar>
         <template #primaryTop>
           <CardMeta
             category="Collection"
@@ -191,6 +182,15 @@ const pageClasses = computed(() => {
           </SectionWrapper>
         </template>
 
+        <!-- Sidebar -->
+        <template #sidebarPageAnchor>
+          <PageAnchor
+            v-if="h2Array.length >= 3"
+            :section-titles="h2Array"
+          />
+        </template>
+
+        <!-- Primary Mid -->
         <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
