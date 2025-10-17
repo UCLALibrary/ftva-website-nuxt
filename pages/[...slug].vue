@@ -151,7 +151,6 @@ onMounted(() => {
           </SectionWrapper>
         </template>
 
-
         <!-- Sidebar -->
         <template #sidebarPageAnchor>
           <PageAnchor
