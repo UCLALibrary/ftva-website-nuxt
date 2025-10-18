@@ -75,6 +75,24 @@ useHead({
 const pageClasses = computed(() => {
   return ['page', 'page-touring-series', 'page-bottom-spacer']
 })
+
+// TESTING COMPOSABLE
+const currentPage = ref(1)
+const documentsPerPage = 12
+const totalDocuments = ref()
+const filmmakers = ref([])
+const { pastTouringSeriesQuery } = useTouringSeriesListSearchFilter()
+
+onMounted(async () => {
+  const esOutput = await pastTouringSeriesQuery(
+    currentPage.value,
+    documentsPerPage,
+    'title.keyword',
+    'asc'
+  )
+  console.log('ES current page hits: ', esOutput.hits.hits) //
+  console.log('ES total hits: ', esOutput.hits.total.value) //
+})
 </script>
 
 <template>
