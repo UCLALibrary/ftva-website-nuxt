@@ -107,7 +107,6 @@ const collectionFetchFunction = async (page) => {
     extraSearchFilter.value
   )
 
-  console.log('Results: ', results)
   return results
 }
 
@@ -210,7 +209,7 @@ const parsedCollectionList = computed(() => {
 
   return currentList.value.map((obj) => {
     // TODO
-    const uri = obj._source?.to ? obj._source.to : null
+    const uri = obj._source?.to ? obj._source.to : obj._source?.uri ? obj._source.uri : null
 
     return {
       to: uri?.startsWith('/') ? uri : `/${uri}`,
