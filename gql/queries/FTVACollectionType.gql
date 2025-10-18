@@ -9,5 +9,6 @@ query FTVACollectionLayoutType($slug: [String!]) {
     sectionHandle
     ftvaCollectionType
     richText
+    uri
   }
 }
