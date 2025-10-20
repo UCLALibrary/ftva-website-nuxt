@@ -257,6 +257,7 @@ watch(data, (newVal, oldVal) => {
       />
 
       <SectionWrapper
+        :level="1"
         id="collection-section-title"
         ref="scrollElem"
         :section-title="pageTitle"
