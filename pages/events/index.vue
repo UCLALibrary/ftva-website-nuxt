@@ -487,6 +487,7 @@ const pageClasses = computed(() => {
   >
     <div class="full-width">
       <SectionWrapper
+        :level="1"
         class="header"
         theme="paleblue"
         :section-title="heading.titleGeneral"
@@ -631,9 +632,9 @@ const pageClasses = computed(() => {
   }
 
   .header :deep(.section-title) {
-    color: $heading-grey;
     line-height: 1;
     margin-bottom: var(--space-l);
+    @include ftva-wrapper-title;
   }
 
   .main {
