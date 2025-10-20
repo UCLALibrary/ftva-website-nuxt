@@ -170,7 +170,11 @@ const pageClasses = computed(() => {
           </template>
         </FlexibleMediaGalleryNewLightbox>
       </div>
-      <TwoColLayoutWStickySideBar>
+
+      <TwoColLayoutWStickySideBar
+        data-test="second-column"
+        class="two-column"
+      >
         <template #primaryTop>
           <CardMeta
             category="Collection"
@@ -255,18 +259,24 @@ const pageClasses = computed(() => {
     .rich-text {
       max-width: none;
       padding-right: 0px;
+
       h3 {
         @include ftva-fpb-rich-text-h3;
       }
+
       h4 {
         @include ftva-fpb-rich-text-h4;
       }
+
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ol, ul {
+
+      ol,
+      ul {
         padding: 0;
       }
+
       ul {
         li {
           @include ftva-fpb-rich-text-li;
