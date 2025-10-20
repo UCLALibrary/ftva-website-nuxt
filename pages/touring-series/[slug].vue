@@ -84,6 +84,7 @@ const parsedCarouselData = computed(() => {
   // map image to item, map creditText to credit
   return parsedImage.value.map((rawItem, index) => {
     return {
+      // touring-series-ftva/
       item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
       credit: rawItem?.creditText,
     }
@@ -128,16 +129,12 @@ useHead({
     }
   ]
 })
-
-// const pageClasses = computed(() => {
-//   return ['page', 'page-detail', 'page-detail--paleblue', 'page-touring-series-detail', 'page-bottom-spacer']
-// })
 </script>
 
 <template>
   <main
     id="main"
-    class="page page-detail page-detail--paleblue page-event-series-detail"
+    class="page page-detail page-detail--paleblue page-touring-series-detail"
   >
     <div class="one-column">
       <NavBreadcrumb
@@ -247,21 +244,21 @@ useHead({
       </template>
     </TwoColLayoutWStickySideBar>
 
-
-
     <SectionWrapper
       v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
-      :items="parsedOtherSeries"
       section-title="Explore our other series"
+      :items="parsedOtherSeries"
+      theme="paleblue"
       class="series-section-wrapper"
     >
       <template #top-right>
-        <nuxt-link to="/series">
-          View All Series <span style="font-size:1.5em;"> &#8250;</span>
+        <nuxt-link to="/touring-series">
+          View All Touring Series <span style="font-size:1.5em;"> &#8250;</span>
         </nuxt-link>
       </template>
       <SectionTeaserCard
-        class="other-series-section"
+        v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
+        data-test="event-series"
         :items="parsedOtherSeries"
         :grid-layout="false"
       />
