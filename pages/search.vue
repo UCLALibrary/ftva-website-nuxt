@@ -446,12 +446,12 @@ const pageClasses = computed(() => {
         to="/"
       />
       <ClientOnly>
-        <h3
+        <h1
           v-if="route.query.q"
           class="search-title"
         >
           Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
-        </h3>
+        </h1>
       </ClientOnly>
       <NavSearch />
     </SectionWrapper>
@@ -519,7 +519,7 @@ const pageClasses = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >

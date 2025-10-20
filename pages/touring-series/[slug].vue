@@ -47,7 +47,7 @@ if (data.value.ftvaTouringSeries && import.meta.prerender) {
       data.value.ftvaTouringSeries.eventSeriesLink = data.value.ftvaTouringSeries[0]?.to || null
     }
     await indexContent(data.value.ftvaTouringSeries, route.params.slug)
-    // console.log('Event indexed successfully during static build')
+    console.log('Touring Series indexed successfully during static build', data.value.ftvaTouringSeries)
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX EVENT during static build:', error)
@@ -268,7 +268,5 @@ useHead({
 
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
-
-.page-touring-series-detail {
-}
+.page-touring-series-detail {}
 </style>
