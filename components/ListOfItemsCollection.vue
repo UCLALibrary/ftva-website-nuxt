@@ -327,6 +327,7 @@ const pageClasses = computed(() => {
         to="/collections"
       />
       <SectionWrapper
+        :level="1"
         id="collection-items-section-title"
         ref="scrollElem"
         :section-title="attrs.page.title"
@@ -426,6 +427,11 @@ const pageClasses = computed(() => {
     padding-bottom: 0;
 
     .section-header {
+      text-align: center;
+    }
+
+    :deep(h1.section-header.section-header1.section-title) {
+      @include ftva-wrapper-title;
       text-align: center;
     }
 
