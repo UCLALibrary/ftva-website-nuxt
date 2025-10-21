@@ -172,11 +172,13 @@ useHead({
         <CardMeta
           data-test="text-block"
           :category="parsedArticleCategories"
-          :title="page?.title"
           :byline-one="parsedByline"
           :date-created="page?.postDate"
           section-handle="ftvaArticle"
         >
+          <template #anyTitle>
+            <h1>{{ page?.title }}</h1>
+          </template>
           <template #sharebutton>
             <ButtonDropdown
               button-title="Share"
@@ -276,18 +278,24 @@ useHead({
     .rich-text {
       max-width: none;
       padding-right: 0px;
+
       h3 {
         @include ftva-fpb-rich-text-h3;
       }
+
       h4 {
         @include ftva-fpb-rich-text-h4;
       }
+
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ol, ul {
+
+      ol,
+      ul {
         padding: 0;
       }
+
       ul {
         li {
           @include ftva-fpb-rich-text-li;
