@@ -108,11 +108,11 @@ const parsedOtherSeries = computed(() => {
   otherSeries = otherSeries.map((item, index) => {
     return {
       ...item,
-      to: `/${item.uri}`, // remove 'series/' from uri
+      to: `/${item.uri}`,
       startDate: item.startDate ? item.startDate : null,
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
-      sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
+      sectionHandle: item.sectionHandle, // 'ftvaTouringSeries'
       image: parseImage(item)
     }
   })
