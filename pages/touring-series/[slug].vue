@@ -276,4 +276,3 @@ useHead({
   }
 }
 </style>
-
