@@ -194,6 +194,7 @@ useHead({
         </SectionHeader>
         <RichText
           v-if="page?.richText"
+          class="tour-dates"
           :rich-text-content="page?.richTextDefaultWithTable"
         />
       </template>
@@ -267,6 +268,12 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
+// TODO Make the table in FPB RichText component responsive
 @import 'assets/styles/slug-pages.scss';
-.page-touring-series-detail {}
+.page-touring-series-detail {
+  .tour-dates :deep(td:first-child) {
+    min-width: 100px;
+  }
+}
 </style>
+
