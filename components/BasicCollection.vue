@@ -206,10 +206,10 @@ const pageClasses = computed(() => {
     </div>
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
-        <CardMeta
-          category="Collection"
-          :title="page?.title"
-        >
+        <CardMeta category="Collection">
+          <template #anyTitle>
+            <h1>{{ page?.title }}</h1>
+          </template>
           <template #sharebutton>
             <ButtonDropdown
               data-test="share-button"

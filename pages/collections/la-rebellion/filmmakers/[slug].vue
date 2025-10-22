@@ -178,8 +178,10 @@ const pageClasses = computed(() => {
         <CardMeta
           data-test="text-block"
           category="L.A. Rebellion"
-          :title="page?.title"
         >
+          <template #anyTitle>
+            <h1>{{ page?.title }}</h1>
+          </template>
           <template #sharebutton>
             <ButtonDropdown
               data-test="share-button"

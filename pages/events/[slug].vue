@@ -221,8 +221,10 @@ const pageClasses = computed(() => {
         <CardMeta
           class="title"
           data-test="text-block"
-          :title="page?.title"
         >
+          <template #anyTitle>
+            <h1>{{ page?.title }}</h1>
+          </template>
           <template #linkedcategoryslot>
             <NuxtLink :to="`/${series[0]?.to}`">
               {{ series[0]?.title }}

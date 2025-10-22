@@ -144,12 +144,12 @@ onMounted(() => {
         class="two-column"
       >
         <template #primaryTop>
-          <div v-if="page.formattedTitle">
-            <CardMeta :title="page?.formattedTitle" />
-          </div>
-
-          <div v-else>
-            <CardMeta :title="page?.title" />
+          <div>
+            <CardMeta>
+              <template #anyTitle>
+                <h1>{{ page.formattedTitle ? page.formattedTitle : page?.title }}</h1>
+              </template>
+            </CardMeta>
           </div>
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
@@ -197,18 +197,24 @@ onMounted(() => {
     .rich-text {
       max-width: none;
       padding-right: 0px;
+
       h3 {
         @include ftva-fpb-rich-text-h3;
       }
+
       h4 {
         @include ftva-fpb-rich-text-h4;
       }
+
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ol, ul {
+
+      ol,
+      ul {
         padding: 0;
       }
+
       ul {
         li {
           @include ftva-fpb-rich-text-li;

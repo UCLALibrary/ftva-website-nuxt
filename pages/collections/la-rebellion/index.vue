@@ -183,9 +183,12 @@ const pageClasses = computed(() => {
         <template #primaryTop>
           <CardMeta
             category="Collection"
-            :title="page?.title"
             data-test="page-heading"
-          />
+          >
+            <template #anyTitle>
+              <h1>{{ page?.title }}</h1>
+            </template>
+          </CardMeta>
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
           </SectionWrapper>
@@ -255,18 +258,24 @@ const pageClasses = computed(() => {
     .rich-text {
       max-width: none;
       padding-right: 0px;
+
       h3 {
         @include ftva-fpb-rich-text-h3;
       }
+
       h4 {
         @include ftva-fpb-rich-text-h4;
       }
+
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ol, ul {
+
+      ol,
+      ul {
         padding: 0;
       }
+
       ul {
         li {
           @include ftva-fpb-rich-text-li;
