@@ -174,9 +174,12 @@ useHead({
       <template #primaryTop>
         <CardMeta
           category="Series"
-          :title="page?.title"
           :introduction="page?.ftvaEventIntroduction"
-        />
+        >
+          <template #anyTitle>
+            <h1 class="title-no-link">{{page.title}}</h1>
+          </template>
+        </CardMeta>
       </template>
 
       <template #primaryMid>
@@ -237,6 +240,10 @@ useHead({
 .page-touring-series-detail {
   .tour-dates :deep(td:first-child) {
     min-width: 100px;
+  }
+  :deep(.title-no-link) {
+    @include ftva-h2;
+    color: var(--heading-grey);
   }
 }
 </style>
