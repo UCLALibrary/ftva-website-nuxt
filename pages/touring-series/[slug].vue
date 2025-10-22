@@ -40,7 +40,7 @@ if (data.value.ftvaTouringSeries && import.meta.prerender) {
     const { indexContent } = useContentIndexer()
     // Index the event data using the composable during static build
     data.value.ftvaTouringSeries.sortTitle = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaTouringSeries.title)
-    data.value.ftvaTouringSeries.groupName = 'Touring Events'
+    data.value.ftvaTouringSeries.groupName = 'Series'
     // Add the event series title and link data if available
     if (data.value.ftvaTouringSeries) {
       data.value.ftvaTouringSeries.eventSeriesTitle = data.value.ftvaTouringSeries[0]?.title || null
@@ -174,7 +174,6 @@ useHead({
       <template #primaryTop>
         <CardMeta
           category="Series"
-          :introduction="page?.ftvaEventIntroduction"
         >
           <template #anyTitle>
             <h1 class="title-no-link">{{page.title}}</h1>
