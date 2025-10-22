@@ -145,9 +145,13 @@ onMounted(() => {
                 <!-- eslint-disable vue/no-v-html -->
                 <h1
                   v-if="page.formattedTitle"
+                  class="title-no-link"
                   v-html="page.formattedTitle"
                 />
-                <h1 v-else>
+                <h1
+                  v-else
+                  class="title-no-link"
+                >
                   {{ page?.title }}
                 </h1>
               </template>

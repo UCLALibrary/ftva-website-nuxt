@@ -182,7 +182,9 @@ useHead({
           section-handle="ftvaArticle"
         >
           <template #anyTitle>
-            <h1>{{ page?.title }}</h1>
+            <h1 class="title-no-link">
+              {{ page?.title }}
+            </h1>
           </template>
           <template #sharebutton>
             <ButtonDropdown
