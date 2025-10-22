@@ -90,8 +90,8 @@ function parseInfoBlockAddress(block) {
   return block
 }
 
-// Use internal and external resources, use titleGeneral as SimpleCard title; otherwise, keep default title
-// For internal resources, check for leading `ftva/` string in uri and remove
+// For internal and external resources, use titleGeneral as SimpleCard title; otherwise, keep default title
+// For internal resource, check for leading `ftva/` string in uri and remove if it exists
 function parseSimpleCard(block) {
   if (!block.cards || block.cards.length === 0)
     return null
