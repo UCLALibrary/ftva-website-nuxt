@@ -221,6 +221,7 @@ const pageClasses = computed(() => {
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 @import 'assets/styles/general-pages.scss';
+@import 'assets/styles/page-anchor.scss';
 
 .page-storytelling {
   :deep(.card-with-image) {
