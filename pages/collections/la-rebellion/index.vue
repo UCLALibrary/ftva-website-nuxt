@@ -171,11 +171,6 @@ const pageClasses = computed(() => {
         </FlexibleMediaGalleryNewLightbox>
       </div>
 
-      <PageAnchor
-        v-if="h2Array.length >= 3"
-        :section-titles="h2Array"
-      />
-
       <TwoColLayoutWStickySideBar
         data-test="second-column"
         class="two-column"
@@ -191,6 +186,15 @@ const pageClasses = computed(() => {
           </SectionWrapper>
         </template>
 
+        <!-- Sidebar -->
+        <template #sidebarPageAnchor>
+          <PageAnchor
+            v-if="h2Array.length >= 3"
+            :section-titles="h2Array"
+          />
+        </template>
+
+        <!-- Primary Mid -->
         <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
@@ -217,6 +221,7 @@ const pageClasses = computed(() => {
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 @import 'assets/styles/general-pages.scss';
+@import 'assets/styles/page-anchor.scss';
 
 .page-storytelling {
   :deep(.card-with-image) {
@@ -255,18 +260,24 @@ const pageClasses = computed(() => {
     .rich-text {
       max-width: none;
       padding-right: 0px;
+
       h3 {
         @include ftva-fpb-rich-text-h3;
       }
+
       h4 {
         @include ftva-fpb-rich-text-h4;
       }
+
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ol, ul {
+
+      ol,
+      ul {
         padding: 0;
       }
+
       ul {
         li {
           @include ftva-fpb-rich-text-li;
