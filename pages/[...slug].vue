@@ -147,7 +147,14 @@ onMounted(() => {
           <div>
             <CardMeta>
               <template #anyTitle>
-                <h1>{{ page.formattedTitle ? page.formattedTitle : page?.title }}</h1>
+                <!-- eslint-disable vue/no-v-html -->
+                <h1
+                  v-if="page.formattedTitle"
+                  v-html="page.formattedTitle"
+                />
+                <h1 v-else>
+                  {{ page?.title }}
+                </h1>
               </template>
             </CardMeta>
           </div>
