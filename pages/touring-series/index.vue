@@ -52,31 +52,16 @@ if (data.value.entry && import.meta.prerender) {
 
 // DATA
 const page = ref(_get(data.value, 'entry', {}))
-console.log('page data: ', page.value)
 
 // PREVIEW WATCHER FOR CRAFT CONTENT
 watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-const { pastTouringSeriesQuery } = useTouringSeriesListSearchFilter()
-
-onMounted(async () => {
-  const esOutput = await pastTouringSeriesQuery(
-    currentPage.value,
-    documentsPerPage,
-    'title.keyword',
-    'asc'
-  )
-  console.log('ES current page hits: ', esOutput.hits.hits) //
-  console.log('ES total hits: ', esOutput.hits.total.value) //
-})
-
 // PAGE SUMMARY
 const showPageSummary = computed(() => {
   return page.value?.summary && page.value?.displaySummary === 'yes'
 })
-console.log('page summary: ', showPageSummary.value)
 
 // "STATE"
 const route = useRoute()
@@ -156,7 +141,6 @@ const parseViewSelection = computed(() => {
 const parsedTouringSeries = computed(() => {
   if (currentList.value.length === 0) return []
 
-  console.log('inside parser: ', currentList.value)
   return currentList.value.map((obj) => {
     return {
       ...obj._source,
@@ -164,13 +148,12 @@ const parsedTouringSeries = computed(() => {
       description: obj._source.richText,
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
+      ongoing: obj._source.ongoing,
       image: parseImage(obj),
       sectionHandle: obj._source.sectionHandle,
     }
   })
 })
-
-console.log('parsed events: ', parsedTouringSeries.value)
 
 useHead({
   title: page.value ? page.value.titleGeneral : '... Loading',
@@ -213,9 +196,13 @@ const pageClasses = computed(() => {
           <TabItem
             title="Past Series"
             class="tab-content"
+            data-test="past-series-view"
           >
             <template v-if="parsedTouringSeries && parsedTouringSeries.length > 0">
-              <SectionStaffArticleList :items="parsedTouringSeries" />
+              <SectionStaffArticleList
+                :items="parsedTouringSeries"
+                data-test="tabbed-past-content"
+              />
             </template>
 
             <template v-else>
@@ -237,6 +224,7 @@ const pageClasses = computed(() => {
           <TabItem
             title="Current and Upcoming Series"
             class="tab-content"
+            data-test="current-series-view"
           >
             <template v-if="parsedTouringSeries && parsedTouringSeries.length > 0">
               <SectionStaffArticleList :items="parsedTouringSeries" />
@@ -274,7 +262,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-// @import 'assets/styles/listing-pages.scss';
+@import 'assets/styles/listing-pages.scss';
 
 .page-touring-series {
   position: relative;
