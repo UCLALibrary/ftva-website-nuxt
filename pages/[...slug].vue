@@ -134,11 +134,6 @@ onMounted(() => {
         </FlexibleMediaGalleryNewLightbox>
       </div>
 
-      <PageAnchor
-        v-if="h2Array.length >= 3"
-        :section-titles="h2Array"
-      />
-
       <TwoColLayoutWStickySideBar
         data-test="second-column"
         class="two-column"
@@ -163,6 +158,14 @@ onMounted(() => {
           </SectionWrapper>
         </template>
 
+        <!-- Sidebar -->
+        <template #sidebarPageAnchor>
+          <PageAnchor
+            v-if="h2Array.length >= 3"
+            :section-titles="h2Array"
+          />
+        </template>
+
         <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
@@ -177,6 +180,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 @import 'assets/styles/general-pages.scss';
+@import 'assets/styles/page-anchor.scss';
 
 .page-general-content {
 
