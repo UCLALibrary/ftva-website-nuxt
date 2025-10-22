@@ -502,6 +502,7 @@ const pageClasses = computed(() => {
         theme="paleblue"
       >
         <TabList
+          :key="parseViewSelection"
           :class="stickyClass"
           alignment="right"
           :initial-tab="parseViewSelection"
@@ -556,7 +557,7 @@ const pageClasses = computed(() => {
                 v-if="noResultsFound"
                 class="empty-tab"
               >
-                There are no upcoming events WITH THE FILTERS YOU SELECTED
+                There are no events matching the selected filters
               </p>
               <p
                 v-else
