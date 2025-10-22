@@ -167,7 +167,7 @@ useHead({
 })
 
 const pageClasses = computed(() => {
-  return ['page', 'page-touring-series', 'page-bottom-spacer']
+  return ['page', 'page-touring-series', 'page-bottom-spacer', 'series-listing-pages']
 })
 </script>
 
@@ -263,126 +263,5 @@ const pageClasses = computed(() => {
 
 <style lang="scss" scoped>
 @import 'assets/styles/listing-pages.scss';
-
-.page-touring-series {
-  position: relative;
-  background-color: var(--pale-blue);
-
-  .section-wrapper:last-of-type {
-    padding-bottom: 0;
-  }
-
-  .header {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-content: center;
-    align-items: center;
-    text-align: center;
-    max-width: 787px;
-    padding-bottom: var(--space-xl);
-  }
-
-  .header :deep(.section-title) {
-    line-height: 1;
-    margin-bottom: var(--space-l);
-    @include ftva-wrapper-title;
-  }
-
-  :deep(.section-wrapper:has(.tab-list)) {
-    padding-top: 0;
-  }
-
-  :deep(.tab-list .tab-list-header) {
-    margin-bottom: var(--space-s);
-  }
-
-  .empty-tab {
-    background-color: var(--pale-blue);
-    @include ftva-subtitle-1;
-    color: var(--subtitle-grey);
-    padding: 100px 0;
-    text-align: center;
-  }
-
-  :deep(.section-pagination) {
-    /* TODO Move this to ftva sectionwrapper.theme.paleblue scss file */
-    background-color: white;
-    max-width: unset;
-    padding: 15px 2.5% 60px;
-    justify-content: center;
-  }
-
-  :deep(.ftva.block-staff-article-item) {
-    .meta {
-      margin: 0;
-    }
-  }
-
-  :deep(.ftva.section-staff-article-list) {
-    .sizer {
-      padding-bottom: 0 !important;
-    }
-  }
-
-  :deep(.ftva.block-staff-article-item .image),
-  :deep(.ftva.block-staff-article-item .molecule-no-image) {
-    --image-min-width: 284px;
-  }
-
-  @media screen and (max-width: 834px) {
-    :deep(.ftva.block-staff-article-item .title) {
-      -webkit-line-clamp: 2;
-    }
-  }
-
-  @media #{$medium} {
-    :deep(.section-pagination) {
-      padding: 2.5%;
-    }
-  }
-
-  @media #{$small} {
-    :deep(.ftva.section-staff-article-list) {
-      background-color: #e7edf2;
-      padding: 0 16px;
-
-      .ftva.block-staff-article-item {
-        margin-bottom: 16px;
-      }
-
-      .ftva.block-staff-article-item .image {
-        --image-aspect-ratio: 16/9;
-        aspect-ratio: 16/9;
-        height: auto;
-        margin-bottom: 0;
-
-        .sizer {
-          padding-bottom: 0 !important;
-        }
-      }
-
-      .meta {
-        margin: 0;
-        padding: 20px;
-
-        .title {
-          font-size: 21px;
-        }
-
-        .ftva-description {
-          display: none;
-        }
-
-        .ftva-date {
-          font-size: 20px;
-        }
-      }
-    }
-
-    .pagination {
-      display: none;
-    }
-  }
-}
+@import 'assets/styles/series-listing-pages.scss';
 </style>
