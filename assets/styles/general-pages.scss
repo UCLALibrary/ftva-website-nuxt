@@ -1,10 +1,11 @@
   /* Shared styles for GeneralContent and StoryTelling templates */
 
   .two-column {
+    display: block;
     margin-top: 32px;
 
     :deep(.primary-column) {
-      width: 70%;
+      width: 75%;
 
       .primary-section-wrapper {
         margin-block: 0;

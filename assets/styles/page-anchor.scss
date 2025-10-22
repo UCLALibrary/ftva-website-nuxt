@@ -1,0 +1,15 @@
+/* styles for pages which use the page anchor component slot with TwoColLayoutWStickySideBar */
+
+:deep(.sidebar-column.sidebar-page-anchor) {
+  padding-top: 0; // remove top-padding that isn't needed for page anchor
+  padding-bottom: 0; // remove bottom-padding that isn't needed for page anchor
+
+  .page-anchor.ftva {
+    margin-bottom: 0; // remove extra space at bottom of sidebar for page anchor
+
+    .page-anchor-content {
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+  }
+}
