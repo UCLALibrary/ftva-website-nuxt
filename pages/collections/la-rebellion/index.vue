@@ -181,7 +181,9 @@ const pageClasses = computed(() => {
             data-test="page-heading"
           >
             <template #anyTitle>
-              <h1>{{ page?.title }}</h1>
+              <h1 class="title-no-link">
+                {{ page?.title }}
+              </h1>
             </template>
           </CardMeta>
           <SectionWrapper theme="paleblue">
