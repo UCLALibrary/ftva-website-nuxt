@@ -91,8 +91,9 @@ const parsedCarouselData = computed(() => {
   })
 })
 
-// Transform data for Other Series Section
-// This section only shows 3 items max, and prioritizes upcoming events over ongoing
+// Transform data for Other Touring Series Section
+// This section only shows 3 items max
+// It displays a randomized touring series past or present excluding the touring series on the current page
 const parsedOtherSeries = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!series.value)
@@ -111,7 +112,6 @@ const parsedOtherSeries = computed(() => {
       to: `/${item.uri}`,
       startDate: item.startDate ? item.startDate : null,
       endDate: item.endDate ? item.endDate : null,
-      ongoing: item.ongoing,
       sectionHandle: item.sectionHandle, // 'ftvaTouringSeries'
       image: parseImage(item)
     }
@@ -202,46 +202,10 @@ useHead({
       <!-- Sidebar -->
       <template #sidebarTop>
         <BlockEventDetail
-          data-test="event-details"
+          data-test="touring-series-date-range"
           :start-date="page?.startDate"
           :end-date="page?.endDate"
-          :ongoing="page?.ongoing"
-          :locations="page?.location"
         />
-      </template>
-
-      <template #sidebarBottom>
-        <BlockInfo
-          v-if="page?.ftvaTicketInformation && page?.ftvaTicketInformation.length > 0"
-          color-scheme="paleblue"
-          data-test="ticket-info"
-          class="ticket-info"
-        >
-          <template #block-info-top>
-            <h3 class="block-info-header">
-              Ticket Info
-            </h3>
-          </template>
-          <template #block-info-mid>
-            <ul class="block-info-list">
-              <li
-                v-for="(item, index) in page?.ftvaTicketInformation"
-                :key="`${item}-${index}`"
-              >
-                {{ item.title }}
-              </li>
-            </ul>
-          </template>
-          <template #block-info-end>
-            <ButtonLink
-              label="Plan Your Visit"
-              to="/plan-your-visit"
-              class="button"
-              :is-secondary="true"
-              icon-name="none"
-            />
-          </template>
-        </BlockInfo>
       </template>
     </TwoColLayoutWStickySideBar>
 
@@ -259,7 +223,7 @@ useHead({
       </template>
       <SectionTeaserCard
         v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
-        data-test="event-series"
+        data-test="other-touring-series"
         :items="parsedOtherSeries"
         :grid-layout="false"
       />
