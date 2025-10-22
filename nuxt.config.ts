@@ -81,16 +81,8 @@ export default defineNuxtConfig({
         }
 
         if (allRoutes.length) {
-          // const route
-          for (let route of allRoutes) {
-            // TEST
-            if (route.includes('/touring-series-ftva/')) {
-              route = route.replace('/touring-series-ftva/', '/touring-series/')
-              routes.add(route)
-            } else {
-              routes.add(route)
-            }
-            // routes.add(route)
+          for (const route of allRoutes) {
+            routes.add(route)
           }
         }
         // eslint-disable-next-line no-console
