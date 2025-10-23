@@ -56,8 +56,6 @@ if (data.value.ftvaTouringSeries && import.meta.prerender) {
 
 const page = ref(_get(data.value, 'ftvaTouringSeries', {}))
 const series = ref(_get(data.value, 'otherSeriesUpcoming', {}))
-console.log(page.value)
-console.log(series.value)
 
 // PREVIEW LOGIC
 watch(data, (newVal, oldVal) => {
@@ -94,7 +92,7 @@ const parsedCarouselData = computed(() => {
 // Transform data for Other Touring Series Section
 // This section only shows 3 items max
 // It displays a randomized touring series past or present excluding the touring series on the current page
-const parsedOtherSeries = computed(() => {
+const parsedOtherTouringSeries = computed(() => {
   // fail gracefully if data does not exist (server-side)
   if (!series.value)
     return []
@@ -117,6 +115,23 @@ const parsedOtherSeries = computed(() => {
     }
   })
   return otherSeries
+})
+
+// Check to see if the tour series has ended
+const today = new Date()
+today.setHours(0, 0, 0, 0)
+
+const tourHasCompleted = computed(() => {
+  if (!page.value?.endDate) return false
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0) // normalize to midnight
+
+  const endDate = new Date(page.value.endDate)
+  endDate.setHours(0, 0, 0, 0)
+
+  // true if today is *after* the end date
+  return today > endDate
 })
 
 useHead({
@@ -205,16 +220,17 @@ useHead({
       <template #sidebarTop>
         <BlockEventDetail
           data-test="touring-series-date-range"
+          class="block-event-detail"
           :start-date="page?.startDate"
           :end-date="page?.endDate"
         />
+        <p v-if="tourHasCompleted" class="completed-tour"><em>This series has completed its tour.</em></p>
       </template>
     </TwoColLayoutWStickySideBar>
 
     <SectionWrapper
-      v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
+      v-if="parsedOtherTouringSeries && parsedOtherTouringSeries.length > 0"
       section-title="Explore our other series"
-      :items="parsedOtherSeries"
       theme="paleblue"
       class="series-section-wrapper"
     >
@@ -224,9 +240,8 @@ useHead({
         </nuxt-link>
       </template>
       <SectionTeaserCard
-        v-if="parsedOtherSeries && parsedOtherSeries.length > 0"
         data-test="other-touring-series"
-        :items="parsedOtherSeries"
+        :items="parsedOtherTouringSeries"
         :grid-layout="false"
       />
     </SectionWrapper>
@@ -237,9 +252,26 @@ useHead({
 // TODO Make the table in FPB RichText component responsive
 @import 'assets/styles/slug-pages.scss';
 .page-touring-series-detail {
-  .tour-dates :deep(td:first-child) {
-    min-width: 100px;
+  .tour-dates {
+    :deep(table) {
+      border: 0;
+      padding: 0;
+    }
+    :deep(td:first-child) {
+      min-width: 100px;
+    }
   }
+
+  .block-event-detail {
+    .event-list{
+    margin-bottom: 6px;}
+  }
+
+  .completed-tour {
+    @include ftva-body;
+    color: medium-grey;
+  }
+
   :deep(.title-no-link) {
     @include ftva-h2;
     color: var(--heading-grey);
