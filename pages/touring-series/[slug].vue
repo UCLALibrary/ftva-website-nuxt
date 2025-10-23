@@ -274,7 +274,7 @@ useHead({
 
   .completed-tour {
     @include ftva-body;
-    color: medium-grey;
+    color: $medium-grey;
     margin-bottom: 24px;
   }
 
