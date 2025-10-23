@@ -31,7 +31,7 @@
     "@percy/cli": "^1.31.1",
     "@percy/cypress": "^3.1.2",
     "@types/node": "^18.17.3",
-    "@ucla-library/component-library-nuxt-module": "1.2.86",
+    "@ucla-library/component-library-nuxt-module": "1.2.88",
     "@zadigetvoltaire/nuxt-gtm": "^0.0.13",
     "cypress": "^15.0.0",
     "date-fns": "^3.6.0",
@@ -40,7 +40,7 @@
     "lodash": "^4.17.21",
     "nuxt-graphql-request": "^7.0.5",
     "sass": "^1.66.1",
-    "ucla-library-design-tokens": "^5.50.0",
+    "ucla-library-design-tokens": "^5.51.0",
     "vite-svg-loader": "^5.1.0"
   },
   "engines": {

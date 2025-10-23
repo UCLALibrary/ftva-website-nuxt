@@ -46,8 +46,8 @@ importers:
         specifier: ^18.17.3
         version: 18.19.59
       '@ucla-library/component-library-nuxt-module':
-        specifier: 1.2.86
-        version: 1.2.86(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+        specifier: 1.2.88
+        version: 1.2.88(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
       '@zadigetvoltaire/nuxt-gtm':
         specifier: ^0.0.13
         version: 0.0.13(magicast@0.3.5)(nuxt@3.13.2(@parcel/watcher@2.4.1)(@types/node@18.19.59)(eslint@8.57.1)(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.24.0)(sass@1.80.3)(terser@5.36.0)(typescript@5.6.3)(vite@5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0))(webpack-sources@3.2.3))(rollup@4.24.0)(vue@3.5.12(typescript@5.6.3))(webpack-sources@3.2.3)
@@ -73,8 +73,8 @@ importers:
         specifier: ^1.66.1
         version: 1.80.3
       ucla-library-design-tokens:
-        specifier: ^5.50.0
-        version: 5.50.0
+        specifier: ^5.51.0
+        version: 5.51.0
       vite-svg-loader:
         specifier: ^5.1.0
         version: 5.1.0(vue@3.5.12(typescript@5.6.3))
@@ -1305,15 +1305,15 @@ packages:
     resolution: {integrity: sha512-JJtkDduxLi9bivAB+cYOVMtbkqdPOhZ+ZI5LC47MIRrDV4Yn2o+ZnW10Nkmr28xRpSpdJ6Sm42Hjf2+REYXm0A==}
     engines: {node: ^16.0.0 || >=18.0.0}
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.39.0':
-    resolution: {integrity: sha512-Fa04lLoHrQGzeUZVZOhzt1Ge+MVQPm1wFjI989dfzYjvngtYA+15kvLWHQWo3IsPn0DR8q0y/HvLdPVa3dXM9A==}
+  '@ucla-library-monorepo/ucla-library-website-components@1.40.1':
+    resolution: {integrity: sha512-L/egYYXh/lSTPpYxFB/17oge+hJKn0lcDfJKwLUHn2vf4wjP9XWIjmOHk7tk5GpoOdf99gz7I/88dlVrn+8yvw==}
     engines: {pnpm: ^9.12.1}
     peerDependencies:
       vue: ^3.5.12
       vuetify: ^3.7.4
 
-  '@ucla-library/component-library-nuxt-module@1.2.86':
-    resolution: {integrity: sha512-PadSbbp3Ecg5ueG47Qck3ZBZvASXqN9qKIHZfxglbn8y35lolMvOE8JIYFuyu7lXY1D+KKMRyNi5XcCXZKZ/6g==}
+  '@ucla-library/component-library-nuxt-module@1.2.88':
+    resolution: {integrity: sha512-1LoQNR5YT4Bpj+Ms9Dje2ewxjpiv0J8e26S8citUvcIQLnuYnml6d9AMDoxbP1VrZow8N9iwmTo+tzP/ZfdVyg==}
     engines: {pnpm: ^9.12.1}
 
   '@ungap/structured-clone@1.2.0':
@@ -4734,8 +4734,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  ucla-library-design-tokens@5.50.0:
-    resolution: {integrity: sha512-hZdlbZP3CiErhBZBkVDlKV8gfM46fB/5JR/FV4Wfhe8J/cwlyEGeVjOSa02z+AmzIwukw0dwKn6I5kTupSPO3Q==}
+  ucla-library-design-tokens@5.51.0:
+    resolution: {integrity: sha512-qOQmluuwfioD1HUQMEtKK724XtGcmPFsYmzMHDLc4BnW843tM++cluD8doBjylK9U3dIisU6ar5RoqMTy9DU6g==}
 
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
@@ -6627,7 +6627,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       eslint-visitor-keys: 3.4.3
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.39.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library-monorepo/ucla-library-website-components@1.40.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@vuepic/vue-datepicker': 8.8.1(vue@3.5.12(typescript@5.6.3))
       '@vueuse/components': 11.3.0(vue@3.5.12(typescript@5.6.3))
@@ -6643,10 +6643,10 @@ snapshots:
       - '@vue/composition-api'
       - typescript
 
-  '@ucla-library/component-library-nuxt-module@1.2.86(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library/component-library-nuxt-module@1.2.88(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@nuxt/kit': 3.16.0(magicast@0.3.5)
-      '@ucla-library-monorepo/ucla-library-website-components': 1.39.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+      '@ucla-library-monorepo/ucla-library-website-components': 1.40.1(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
     transitivePeerDependencies:
       - '@vue/composition-api'
       - magicast
@@ -10657,7 +10657,7 @@ snapshots:
 
   typescript@5.6.3: {}
 
-  ucla-library-design-tokens@5.50.0: {}
+  ucla-library-design-tokens@5.51.0: {}
 
   ufo@1.5.4: {}
 
