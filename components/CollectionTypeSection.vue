@@ -106,6 +106,7 @@ const collectionFetchFunction = async (page) => {
     documentsPerPage,
     extraSearchFilter.value
   )
+
   return results
 }
 
@@ -208,7 +209,7 @@ const parsedCollectionList = computed(() => {
 
   return currentList.value.map((obj) => {
     // TODO
-    const uri = obj._source?.to ? obj._source.to : null
+    const uri = obj._source?.to ? obj._source.to : obj._source?.uri ? obj._source.uri : null
 
     return {
       to: uri?.startsWith('/') ? uri : `/${uri}`,
@@ -256,6 +257,7 @@ watch(data, (newVal, oldVal) => {
       />
 
       <SectionWrapper
+        :level="1"
         id="collection-section-title"
         ref="scrollElem"
         :section-title="pageTitle"

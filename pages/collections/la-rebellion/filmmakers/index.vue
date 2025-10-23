@@ -216,6 +216,7 @@ const breadcrumbOverrides = ref([
       />
 
       <SectionWrapper
+        :level="1"
         ref="scrollElem"
         class="header"
         :section-title="page.title"

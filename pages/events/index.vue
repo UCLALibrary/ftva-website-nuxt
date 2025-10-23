@@ -487,6 +487,7 @@ const pageClasses = computed(() => {
   >
     <div class="full-width">
       <SectionWrapper
+        :level="1"
         class="header"
         theme="paleblue"
         :section-title="heading.titleGeneral"
@@ -501,6 +502,7 @@ const pageClasses = computed(() => {
         theme="paleblue"
       >
         <TabList
+          :key="parseViewSelection"
           :class="stickyClass"
           alignment="right"
           :initial-tab="parseViewSelection"
@@ -555,7 +557,7 @@ const pageClasses = computed(() => {
                 v-if="noResultsFound"
                 class="empty-tab"
               >
-                There are no upcoming events WITH THE FILTERS YOU SELECTED
+                There are no events matching the selected filters
               </p>
               <p
                 v-else
@@ -630,9 +632,9 @@ const pageClasses = computed(() => {
   }
 
   .header :deep(.section-title) {
-    color: $heading-grey;
     line-height: 1;
     margin-bottom: var(--space-l);
+    @include ftva-wrapper-title;
   }
 
   .main {
