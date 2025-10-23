@@ -224,7 +224,7 @@ useHead({
           :start-date="page?.startDate"
           :end-date="page?.endDate"
         />
-        <p v-if="tourHasCompleted" class="completed-tour"><em>This series has completed its tour.</em></p>
+        <em v-if="tourHasCompleted" class="completed-tour">This series has completed its tour.</em>
       </template>
     </TwoColLayoutWStickySideBar>
 
@@ -241,6 +241,7 @@ useHead({
       </template>
       <SectionTeaserCard
         data-test="other-touring-series"
+        class="ftva-other-touring-series"
         :items="parsedOtherTouringSeries"
         :grid-layout="false"
       />
@@ -262,19 +263,34 @@ useHead({
     }
   }
 
-  .block-event-detail {
-    .event-list{
-    margin-bottom: 6px;}
+  :deep(.title-no-link) {
+    @include ftva-h2;
+    color: var(--heading-grey);
+  }
+
+  :deep(.two-column .sidebar-column .sidebar-content-wrapper > .block-event-detail) {
+    margin-bottom: 0;
   }
 
   .completed-tour {
     @include ftva-body;
     color: medium-grey;
+    margin-bottom: 24px;
   }
 
-  :deep(.title-no-link) {
-    @include ftva-h2;
-    color: var(--heading-grey);
+  // TODO CardMeta SectionHandle hide time & diamond without changing component
+  :deep(.ftva-other-touring-series .start-date::after),
+  :deep(.ftva-other-touring-series .parsed-time){
+    display: none;
+  }
+
+  @media (max-width: 899px) {
+    :deep(.two-column .primary-column .sidebar-mobile-top > .block-event-detail) {
+      margin-bottom: 0;
+    }
+    :deep(.two-column .primary-column .sidebar-mobile-top) {
+      margin-bottom: 24px;
+    }
   }
 }
 </style>
