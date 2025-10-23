@@ -72,86 +72,11 @@ const parsedCarouselData = computed(() => {
   })
 })
 
-// WIP
-
-// Remove country from address
-function stripCountry(html) {
-  if (!html) return null
-  return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '')
-}
-
-// Remove country data in InfoBlock address
-function parseInfoBlockAddress(block) {
-  if (!block.infoBlock || block.infoBlock.length === 0)
-    return null
-
-  block.infoBlock = block.infoBlock.map((item) => {
-    if (item && item.address) {
-      return { ...item, address: stripCountry(item.address) }
-    }
-    return item
-  })
-
-  return block
-}
-
-// For internal and external resources, use titleGeneral as SimpleCard title; otherwise, keep default title
-// For internal resource, check for leading `ftva/` string in uri and remove if it exists
-function parseSimpleCard(block) {
-  if (!block.cards || block.cards.length === 0)
-    return null
-
-  let simpleCards = block.cards
-
-  simpleCards = simpleCards.map((card) => {
-    // External Resource
-    if (card.typeHandle === 'externalServiceOrResource') {
-      if (card.titleGeneral) {
-        card = { ...card, title: card.titleGeneral }
-      }
-    }
-
-    // Internal Resource
-    if (card.typeHandle === 'internalServiceOrResource') {
-      let content = card.contentLink[0]
-
-      // Check for titleGeneral
-      if (content.titleGeneral) {
-        content = { ...content, title: content.titleGeneral }
-        card = { ...card, contentLink: [content] }
-      }
-
-      // Check uri for 'ftva/'
-      if (content.uri) {
-        const uriWithoutLeadingFtvaString = content.uri ? `/${content.uri.replace(/^\/?ftva\//i, '')}` : '/'
-        card = { ...card, uri: uriWithoutLeadingFtvaString }
-      }
-    }
-
-    return card
-  })
-
-  return { ...block, cards: simpleCards }
-}
-
-// Parse FlexibleBlock with helper functions
+// Parse FlexibleBlock with helper
 const parsedFlexibleBlocks = computed(() => {
   const dataBlocks = page.value?.blocks || []
-
-  return dataBlocks.map((block) => {
-    if (block.typeHandle === 'infoBlock') {
-      block = parseInfoBlockAddress(block)
-    }
-
-    if (block.typeHandle === 'simpleCards') {
-      block = parseSimpleCard(block)
-    }
-
-    return block
-  })
+  return parseFlexibleBlocks(dataBlocks)
 })
-
-// WIP
 
 const pageClasses = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path, 'page-bottom-spacer']
@@ -245,7 +170,6 @@ onMounted(() => {
             class="flexible-content"
             :blocks="parsedFlexibleBlocks"
           />
-          <!-- page.blocks -->
         </template>
       </TwoColLayoutWStickySideBar>
     </div>
