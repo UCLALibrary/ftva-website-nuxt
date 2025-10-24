@@ -177,11 +177,15 @@ useHead({
         <CardMeta
           data-test="text-block"
           :category="parsedArticleCategories"
-          :title="page?.title"
           :byline-one="parsedByline"
           :date-created="page?.postDate"
           section-handle="ftvaArticle"
         >
+          <template #anyTitle>
+            <h1 class="title-no-link">
+              {{ page?.title }}
+            </h1>
+          </template>
           <template #sharebutton>
             <ButtonDropdown
               button-title="Share"
