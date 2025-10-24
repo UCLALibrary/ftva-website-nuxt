@@ -164,7 +164,7 @@ useHead({
 })
 
 const pageClasses = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-event-detail', 'page-bottom-spacer']
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-event-detail']
 })
 </script>
 
@@ -362,6 +362,8 @@ const pageClasses = computed(() => {
   }
 
   .two-column {
+    margin-bottom: 120px; // Page bottom spacing
+
     :deep(.primary-section-wrapper) {
       margin-bottom: 0;
     }
@@ -540,6 +542,12 @@ const pageClasses = computed(() => {
         font-size: 28px;
         line-height: 110%;
       }
+    }
+  }
+
+  @media #{$small} {
+    .two-column {
+      margin-bottom: 120px; // Page bottom spacing
     }
   }
 }

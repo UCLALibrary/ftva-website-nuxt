@@ -221,7 +221,7 @@ const breadcrumbOverrides = ref([
 ])
 
 const pageClasses = computed(() => {
-  return ['page', 'page-detail', 'page-detail--white', 'page-collection-item-detail', 'page-bottom-spacer']
+  return ['page', 'page-detail', 'page-detail--white', 'page-collection-item-detail']
 })
 </script>
 
@@ -389,6 +389,8 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 .page-collection-item-detail {
   position: relative;
 
@@ -452,6 +454,10 @@ const pageClasses = computed(() => {
       position: static;
       will-change: unset;
     }
+  }
+
+  .two-col-layout__body~ :not(.collection-item-section-wrapper) {
+    padding-bottom: 120px; // Page bottom spacing if no "More from this collection" section
   }
 
   .collection-item-section-wrapper {
@@ -523,7 +529,11 @@ const pageClasses = computed(() => {
       }
     }
   }
-}
 
-@import 'assets/styles/slug-pages.scss';
+  @media #{$small} {
+    .two-col-layout__body~ :not(.collection-item-section-wrapper) {
+      padding-bottom: 86px; // Page bottom spacing if no "More from this collection" section
+    }
+  }
+}
 </style>
