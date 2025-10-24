@@ -257,9 +257,9 @@ watch(data, (newVal, oldVal) => {
       />
 
       <SectionWrapper
-        :level="1"
         id="collection-section-title"
         ref="scrollElem"
+        :level="1"
         :section-title="pageTitle"
         class="section-wrapper__page-header"
         theme="paleblue"
@@ -298,7 +298,7 @@ watch(data, (newVal, oldVal) => {
           ref="resultsSection"
           class="browse-results"
         >
-          <h2>{{ hits }} {{ hits > 1 ? `results` : `result` }} shown</h2>
+          <h2>{{ parsedCollectionList.length }} {{ parsedCollectionList.length > 1 ? `results` : `result` }} shown</h2>
         </div>
 
         <SectionTeaserCard
