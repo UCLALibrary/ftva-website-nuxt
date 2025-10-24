@@ -298,7 +298,10 @@ watch(data, (newVal, oldVal) => {
           ref="resultsSection"
           class="browse-results"
         >
-          <h2>{{ parsedCollectionList.length }} {{ parsedCollectionList.length > 1 ? `results` : `result` }} shown</h2>
+          <!-- 0 results, 1 result, 2 results, etc. -->
+          <h2>
+            {{ parsedCollectionList.length }} {{ parsedCollectionList.length === 1 ? `result` : `results` }} shown
+          </h2>
         </div>
 
         <SectionTeaserCard
