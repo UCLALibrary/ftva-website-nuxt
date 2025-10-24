@@ -241,6 +241,10 @@ useHead({
     min-height: 350px;
   }
 
+  :deep(.lightbox) {
+    --media-height: 500px;
+  }
+
   :deep(.two-column) {
 
     // specs say 832px for column @ 1440px screen
