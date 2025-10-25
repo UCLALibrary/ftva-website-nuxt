@@ -24,7 +24,7 @@ query FTVATouringSeriesDetail($slug: [String!]) {
   otherSeriesUpcoming: entries(
     section: "ftvaTouringSeries"
     limit: 3
-    orderBy: "endDate ASC"
+    orderBy: "random()"
   ) {
     uri
     sectionHandle
