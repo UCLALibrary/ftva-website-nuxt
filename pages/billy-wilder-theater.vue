@@ -311,6 +311,10 @@ const pageClasses = computed(() => {
     padding-top: 80px;
   }
 
+  :deep(.lightbox) {
+    --media-height: 500px;
+  }
+
   .section-wrapper.section-wrapper2 {
     margin-bottom: 0;
   }

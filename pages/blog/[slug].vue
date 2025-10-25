@@ -241,6 +241,10 @@ useHead({
 .page-article-detail {
   position: relative;
 
+  :deep(.lightbox) {
+    --media-height: 500px;
+  }
+
   // contributor byline styles
   :deep(.card-meta.ftvaArticle) {
     .byline-group {

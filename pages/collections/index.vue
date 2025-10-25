@@ -278,6 +278,10 @@ const pageClasses = computed(() => {
   position: relative;
   background-color: var(--pale-blue);
 
+  :deep(.lightbox) {
+    --media-height: 500px;
+  }
+
   .one-column {
     padding-top: 80px;
   }

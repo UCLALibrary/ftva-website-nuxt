@@ -340,6 +340,7 @@ const pageClasses = computed(() => {
 
   :deep(.lightbox) {
     overflow: hidden;
+    --media-height: 500px;
   }
 
   :deep(.carousel),
