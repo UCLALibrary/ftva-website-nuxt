@@ -235,6 +235,10 @@ const pageClasses = computed(() => {
     }
   }
 
+  :deep(.lightbox) {
+    --media-height: 500px;
+  }
+
   :deep(.section-wrapper-post-small) {
     #additional-materials {
       scroll-margin-top: 70px;

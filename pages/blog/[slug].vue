@@ -236,13 +236,13 @@ useHead({
 .page-article-detail {
   position: relative;
 
+  :deep(.lightbox) {
+    --media-height: 500px;
+  }
+
   // makes all EventSeries same height
   :deep(.card) {
     min-height: 350px;
-  }
-
-  :deep(.lightbox) {
-    --media-height: 500px;
   }
 
   :deep(.two-column) {

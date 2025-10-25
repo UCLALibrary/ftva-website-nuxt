@@ -178,6 +178,10 @@ onMounted(() => {
     padding: 10px 0;
   }
 
+  :deep(.lightbox) {
+    --media-height: 500px;
+  }
+
   // Rich Text Image
   :deep(figure.image--full) {
     a:after {
