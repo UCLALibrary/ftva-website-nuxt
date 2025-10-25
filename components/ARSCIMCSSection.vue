@@ -322,11 +322,10 @@ useHead({
       }
     }
   }
-    // TODO Move to component
-    // Make all images the same in FPB Media With Text
-    .media-with-text .media-item {
-      aspect-ratio: 4/3;
-    }
-
+  // TODO Move to component
+  // Make all images the same in FPB Media With Text
+  .media-with-text .media-item {
+    aspect-ratio: 4/3;
+  }
 }
 </style>
