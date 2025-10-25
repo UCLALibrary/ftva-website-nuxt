@@ -65,7 +65,11 @@ const showPageSummary = computed(() => {
 
 // "STATE"
 const route = useRoute()
-const currentView = computed(() => route.query.view || 'past') // Tracks 'current' or 'past'
+const testView = ref('')
+const currentView = computed(() => route.query.view || testView.value) // Tracks 'current' or 'past'
+// console.log('view: ', currentView.value)
+// console.log('route: ', route.query)
+
 const noResultsFound = ref(false)
 const documentsPerPage = 10
 
@@ -73,21 +77,59 @@ const seriesFetchFunction = async (page) => {
   const { pastTouringSeriesQuery, currentTouringSeriesQuery } = useTouringSeriesListSearchFilter() // Composable
 
   let results
+  let boolCheck
 
-  if (currentView.value === 'current') {
-    results = await currentTouringSeriesQuery(
-      currentPage.value,
-      documentsPerPage,
-    )
-  } else {
-    results = await pastTouringSeriesQuery(currentPage.value,
-      documentsPerPage,
-      'startDate',
-      'desc',
-      ['*'])
+  const currentSeries = await currentTouringSeriesQuery(
+    currentPage.value,
+    documentsPerPage,
+  )
+
+  const pastSeries = await pastTouringSeriesQuery(currentPage.value,
+    documentsPerPage,
+    'startDate',
+    'desc')
+
+  if (!route.query.view && currentSeries.hits.hits.length > 0) {
+    results = currentSeries
+    boolCheck = true
+    results.hits.boolCheck = boolCheck
+    // console.log('test me: ', results)
+    // results = { ...results, ...results.hits.boolCheck }
+    // testView.value = 'current'
   }
+
+  if (route.query.view === 'current') {
+    results = currentSeries
+    testView.value = 'current'
+  }
+  // else {
+  if (route.query.view === 'past') {
+    results = pastSeries
+    testView.value = 'past'
+  }
+
+  // if (currentView.value === 'current') {
+  //   results = await currentTouringSeriesQuery(
+  //     currentPage.value,
+  //     documentsPerPage,
+  //   )
+  // } else {
+  //   results = await pastTouringSeriesQuery(
+  //     currentPage.value,
+  //     documentsPerPage,
+  //     'startDate',
+  //     'desc')
+  // }
   return results
 }
+
+// console.log(results?.hits?.hits?.length)
+// results?.hits?.boolCheck
+// onBeforeMount(() => {
+//   const test = seriesFetchFunction()
+//   console.log('test: ', test)
+//   testView.value = 'current'
+// })
 
 const onResults = (results) => {
   if (results?.hits?.hits?.length > 0) {
