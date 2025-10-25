@@ -65,7 +65,8 @@ const showPageSummary = computed(() => {
 
 // "STATE"
 const route = useRoute()
-const currentView = computed(() => route.query.view || 'past') // Tracks 'current' or 'past'
+const currentView = ref(null)
+const computedCurrentView = computed(() => route.query.view || currentView.value) // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
 const documentsPerPage = 10
 
@@ -74,17 +75,30 @@ const seriesFetchFunction = async (page) => {
 
   let results
 
-  if (currentView.value === 'current') {
-    results = await currentTouringSeriesQuery(
-      currentPage.value,
-      documentsPerPage,
-    )
-  } else {
-    results = await pastTouringSeriesQuery(currentPage.value,
-      documentsPerPage,
-      'startDate',
-      'desc',
-      ['*'])
+  const currentSeries = await currentTouringSeriesQuery(
+    currentPage.value,
+    documentsPerPage,
+  )
+
+  const pastSeries = await pastTouringSeriesQuery(currentPage.value,
+    documentsPerPage,
+    'startDate',
+    'desc')
+
+  // On initial page load/mount, check if there are current events
+  if (!route.query.view && currentSeries.hits.hits.length > 0) {
+    results = currentSeries
+    currentView.value = 'current'
+  }
+
+  if (route.query.view === 'current') {
+    results = currentSeries
+    currentView.value = 'current'
+  }
+
+  if (route.query.view === 'past') {
+    results = pastSeries
+    currentView.value = 'past'
   }
   return results
 }
@@ -134,7 +148,7 @@ watch(() => route.query, async (newVal, oldVal) => {
 }, { deep: true, immediate: true })
 
 const parseViewSelection = computed(() => {
-  return currentView.value === 'current' ? 1 : 0
+  return computedCurrentView.value === 'current' ? 1 : 0
 })
 
 // FORMATTED COMPUTED EVENTS
@@ -187,9 +201,9 @@ const pageClasses = computed(() => {
         ref="resultsSection"
         class="for-pagination-scroll"
       />
-
       <SectionWrapper theme="paleblue">
         <TabList
+          :key="parseViewSelection"
           alignment="center"
           :initial-tab="parseViewSelection"
         >
