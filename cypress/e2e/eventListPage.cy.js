@@ -62,4 +62,21 @@ describe('Events Listing page', () => {
       cy.get('.list').find('li').should('have.length.below', 8)
     })
   })
+
+  it('has no accessibility violations', () => {
+    cy.injectAxe()
+    cy.checkA11y(null, null, (violations) => {
+      violations.forEach((violation) => {
+        cy.log(`Accessibility Violation: ${violation.id}`)
+        cy.log(`  Description: ${violation.description}`)
+        cy.log(`  Impact: ${violation.impact}`)
+        cy.log(`  Help URL: ${violation.helpUrl}`)
+        cy.log('  Nodes:')
+        violation.nodes.forEach((node) => {
+          cy.log(`    - HTML: ${node.html}`)
+          cy.log(`    - Target: ${node.target}`)
+        })
+      })
+    })
+  })
 })
