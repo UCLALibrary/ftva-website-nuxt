@@ -34,6 +34,11 @@ describe('Event Detail page', () => {
   // creditText is visible .contains('Movie Database')
   // click on arrow and it moves to next image
   // cy.getByData("ticket-info").find("a").contains("Plan Your Visit").click()
+  it('has no accessibility violations', () => {
+    cy.visit('/events/la-région-centrale-03-08-24', { failOnStatusCode: false })
+    cy.injectAxe()
+    cy.checkA11y()
+  })
 })
 
 // Potential TODOs and test ideas
