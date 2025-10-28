@@ -1,777 +1,295 @@
-<script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
-import type { PropType } from 'vue'
-import format from 'date-fns/format'
+<script setup>
+// HELPERS
+import _get from 'lodash/get'
 
-// Components
-import SvgMoleculeHalfFaceted from 'ucla-library-design-tokens/assets/svgs/molecule-half-overlay.svg'
-import SvgHatchRight from 'ucla-library-design-tokens/assets/svgs/graphic-hatch-lines.svg'
-import ResponsiveImage from '@/lib-components/ResponsiveImage.vue'
-import ResponsiveVideo from '@/lib-components/ResponsiveVideo.vue'
-import BlockForm from '@/lib-components/BlockForm.vue'
+// GQL
+import FTVATouringSeriesDetail from '../gql/queries/FTVATouringSeriesDetail.gql'
 
-import type { LocationItemType, MediaItemType, SubjectAreaItemType } from '@/types/types'
+// COMPOSABLE
+import removeTags from '~/utils/removeTags'
+import { useContentIndexer } from '~/composables/useContentIndexer'
 
-// Utility functions
-import formatEventTimes from '@/utils/formatEventTimes'
-import formatEventDates from '@/utils/formatEventDates'
-import getSectionName from '@/utils/getSectionName'
-import fixURI from '@/utils/fixURI'
+const { $graphql } = useNuxtApp()
 
-const props = defineProps({
-  media: {
-    type: Object as PropType<MediaItemType>,
-    default: () => { },
-  },
-  title: {
-    type: String,
-    required: true,
-  },
-  text: {
-    type: String,
-    default: '',
-  },
-  byline: {
-    type: Array as PropType<string[]>,
-    default: () => [],
-  },
-  contributors: {
-    type: Array,
-    default: () => [],
-  },
-  subjectAreas: {
-    type: Array as PropType<SubjectAreaItemType[]>,
-    default: () => [],
-  },
-  dateCreated: {
-    type: String,
-    default: '',
-  },
-  startDate: {
-    type: String,
-    default: '',
-  },
-  endDate: {
-    type: String,
-    default: '',
-  },
-  locations: {
-    type: Array as PropType<LocationItemType[]>,
-    default: () => [],
-  },
-  to: {
-    // URL to link to, if blank won't link
-    type: String,
-    default: '',
-  },
-  category: {
-    type: String,
-    default: '',
-  },
-  prompt: {
-    // text that displays on blue button, e.g. "View exhibit". Links to `props.to`
-    type: String,
-    default: '',
-  },
-  alignRight: {
-    type: Boolean,
-    default: true,
-  },
-  ratio: {
-    type: Number,
-    default: 56.25,
-  },
-  // contact info for Location Detail Page
-  email: {
-    type: String,
-    default: '',
-  },
-  phone: {
-    type: String,
-    default: '',
-  },
-  address: {
-    type: String,
-    default: '',
-  },
-  addressLink: {
-    type: String,
-    default: '',
-  },
-  staffDirectoryLink: {
-    type: String,
-    default: '',
-  },
-  isEvent: {
-    type: Boolean,
-    default: false,
-  },
-  registerEvent: {
-    type: Boolean,
-    default: false,
-  },
-  sectionHandle: {
-    type: String,
-    default: '',
+const route = useRoute()
+
+// GQL DATA
+const { data, error } = await useAsyncData(`touring-events-detail-${route.params.slug}`, async () => {
+  const data = await $graphql.default.request(FTVATouringSeriesDetail, { slug: route.params.slug })
+  return data
+})
+
+if (error.value) {
+  throw createError({
+    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+  })
+}
+
+if (!data.value.ftvaTouringSeries) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'Page Not Found',
+    fatal: true
+  })
+}
+
+// METADATA INFO FOR INDEXING
+if (data.value.ftvaTouringSeries && import.meta.prerender) {
+  try {
+    // Call the composable to use the indexing function
+    const { indexContent } = useContentIndexer()
+    // Index the event data using the composable during static build
+    data.value.ftvaTouringSeries.sortTitle = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaTouringSeries.title)
+    data.value.ftvaTouringSeries.groupName = 'Series'
+    // Add the event series title and link data if available
+    if (data.value.ftvaTouringSeries) {
+      data.value.ftvaTouringSeries.eventSeriesTitle = data.value.ftvaTouringSeries[0]?.title || null
+      data.value.ftvaTouringSeries.eventSeriesLink = data.value.ftvaTouringSeries[0]?.to || null
+    }
+    await indexContent(data.value.ftvaTouringSeries, route.params.slug)
+    console.log('Touring Series indexed successfully during static build', data.value.ftvaTouringSeries)
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('FAILED TO INDEX EVENT during static build:', error)
   }
-})
-// Async Components
-const ButtonLink = defineAsyncComponent(() => import('@/lib-components/ButtonLink.vue'))
-const RichText = defineAsyncComponent(() => import('@/lib-components/RichText.vue'))
-const IconWithLink = defineAsyncComponent(() => import('@/lib-components/IconWithLink.vue'))
-const SvgHeadingVector = defineAsyncComponent(() =>
-  import(
-    'ucla-library-design-tokens/assets/svgs/graphic-category-slash.svg'
-  ))
+}
 
-// Computed
-const sectionName = computed(() => {
-  return getSectionName(props.to)
+const page = ref(_get(data.value, 'ftvaTouringSeries', {}))
+const series = ref(_get(data.value, 'otherSeriesUpcoming', {}))
+
+// PREVIEW LOGIC
+watch(data, (newVal, oldVal) => {
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  page.value = _get(newVal, 'ftvaTouringSeries', {})
+  series.value = _get(newVal, 'otherSeriesUpcoming', {})
 })
 
-const classes = computed(() => {
-  return [
-    'banner-header',
-    { 'hatch-left': !props.alignRight },
-    `color-${sectionName.value}`,
-  ]
-})
-
-const isVideo = computed(() => {
-  if (props.media && props.media.src) {
-    const fileName = props.media.src.toLowerCase()
-    const extension = fileName.split('.').pop()
-    if (
-      extension === 'mp4'
-      || extension === 'm4a'
-      || extension === 'f4v'
-      || extension === 'm4b'
-      || extension === 'mov'
-    )
-      return true
-    else
-      return false
+// Get data for Image or Carousel at top of page
+const parsedImage = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!page.value.imageCarousel) {
+    return []
   }
-  else { return false }
+  return page.value.imageCarousel
 })
 
-const parsedMediaComponent = computed(() => {
-  return isVideo.value ? ResponsiveVideo : ResponsiveImage
-})
-
-const parseImage = computed(() => {
-  if (isVideo.value)
-    return null
-  const imageObj = props.media
-  // console.log(`image obj: ${JSON.stringify(imageObj)}`)
-  return imageObj
-})
-
-const parseVideo = computed(() => {
-  if (!isVideo.value)
-    return null
-
-  const mainVideo = props.media
-
-  const videoObj: MediaItemType = {
-    src: mainVideo.src,
-    focalPoint: mainVideo.focalPoint,
-    sizes: mainVideo.sizes,
-    height: mainVideo.height,
-    width: mainVideo.width,
-    alt: mainVideo.alt,
-    caption: mainVideo.caption,
-    poster: mainVideo.poster,
+// Transform data for Carousel
+const parsedCarouselData = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!parsedImage.value) {
+    return []
   }
-
-  return videoObj
-})
-
-const parsedMediaProp = computed(() => {
-  return isVideo.value ? parseVideo.value : parseImage.value
-})
-
-const parsedDateCreated = computed(() => {
-  return format(new Date(props.dateCreated), 'MMMM d, Y')
-})
-
-const parsedDate = computed(() => {
-  return formatEventDates(props.startDate, props.endDate)
-})
-
-const parsedTime = computed(() => {
-  if (props.startDate && props.sectionHandle === 'event')
-    return formatEventTimes(props.startDate, props.endDate)
-
-  return ''
-})
-
-const parsedRatio = computed(() => {
-  // If on mobile, change ratio of image
-  const output = props.ratio
-
-  return output
-})
-
-const gradientClasses = computed(() => {
-  return props.category ? 'gradient' : 'gradient-no-category'
-})
-
-const parsedLocations = computed(() => {
-  return props.locations.map((obj) => {
-    let input = 'svg-icon-location'
-    if (obj.title === 'Online')
-      input = 'svg-icon-virtual'
+  // map image to item, map creditText to credit
+  return parsedImage.value.map((rawItem, index) => {
     return {
-      ...obj,
-      svg: input,
-      to: obj.to != null ? fixURI(obj.to) : '',
+      // touring-series-ftva/
+      item: [{ ...rawItem.image[0], kind: 'image' }], // Carousels on this page are always images, no videos
+      credit: rawItem?.creditText,
     }
   })
+})
+
+// Transform data for Other Touring Series Section
+// This section only shows 3 items max
+// It displays a randomized touring series past or present excluding the touring series on the current page
+const parsedOtherTouringSeries = computed(() => {
+  // fail gracefully if data does not exist (server-side)
+  if (!series.value)
+    return []
+
+  let otherSeries = series.value
+  // Remove current series from list
+  otherSeries = otherSeries.filter(item => !item.uri.includes(route.params.slug))
+  // Get first 3 events
+  otherSeries = otherSeries.slice(0, 3)
+
+  // Transform data
+  otherSeries = otherSeries.map((item, index) => {
+    return {
+      ...item,
+      to: `/${item.uri}`,
+      startDate: item.startDate ? item.startDate : null,
+      endDate: item.endDate ? item.endDate : null,
+      sectionHandle: item.sectionHandle, // 'ftvaTouringSeries'
+      image: parseImage(item)
+    }
+  })
+  return otherSeries
+})
+
+// Check to see if the tour series has ended
+const today = new Date()
+today.setHours(0, 0, 0, 0)
+
+const tourHasCompleted = computed(() => {
+  if (!page.value?.endDate) return false
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0) // normalize to midnight
+
+  const endDate = new Date(page.value.endDate)
+  endDate.setHours(0, 0, 0, 0)
+
+  // true if today is *after* the end date
+  return today > endDate
+})
+
+useHead({
+  title: page.value ? page.value.title : '... loading',
+  meta: [
+    {
+      hid: 'description',
+      name: 'description',
+      content: removeTags(page.value.text)
+    }
+  ]
 })
 </script>
 
 <template>
-  <div :class="classes">
-    <div
-      v-if="category"
-      class="category"
-    >
-      <SvgHeadingVector
-        class="heading-line"
-        aria-hidden="true"
-      />
-      <div
-        class="text"
-        v-html="category"
-      />
-    </div>
-
-    <component
-      :is="parsedMediaComponent"
-      class="media"
-      :media="parsedMediaProp!"
-      :aspect-ratio="parsedRatio"
-    >
-      <div
-        v-if="!isVideo"
-        :class="gradientClasses"
+  <main
+    id="main"
+    class="page page-detail page-detail--paleblue page-touring-series-detail"
+  >
+    <div class="one-column">
+      <NavBreadcrumb
+        class="breadcrumb"
+        :title="page?.title"
       />
 
-      <SvgMoleculeHalfFaceted
-        class="molecule"
-        aria-hidden="true"
-      />
-    </component>
-
-    <div class="hatch-box">
-      <div class="clipped-box" />
-      <div class="hatch">
-        <SvgHatchRight
-          class="svg"
-          aria-hidden="true"
-        />
-      </div>
-    </div>
-
-    <div class="meta">
-      <h1
-        class="title"
-        v-html="title"
-      />
-
-      <RichText
-        v-if="text"
-        class="snippet"
-        :rich-text-content="text"
-      />
-
-      <div
-        v-show="byline.length
-          || subjectAreas.length
-          || dateCreated
-          || startDate
-          || email
-          || phone
-          || staffDirectoryLink
-          || addressLink
-        "
-        class="meta-text"
+      <ResponsiveImage
+        v-if="parsedImage.length === 1"
+        :media="parsedImage[0].image[0]"
+        :aspect-ratio="43.103"
       >
-        <div
-          v-show="byline.length
-            || subjectAreas.length
-            || dateCreated
-            || startDate
-          "
-          class="meta-block"
+        <template
+          v-if="parsedImage[0]?.creditText"
+          #credit
         >
-          <div
-            v-if="byline.length"
-            class="byline-item"
-          >
-            <div
-              v-for="(item, index) in byline"
-              :key="`${item}-${index}`"
-              class="byline-item"
-            >
-              {{ item }}
-            </div>
-          </div>
-
-          <div
-            v-if="subjectAreas.length"
-            class="subject-areas"
-          >
-            <div
-              v-for="(item, index) in subjectAreas"
-              :key="`${item.title}-${index}`"
-            >
-              {{ item.title }}
-            </div>
-          </div>
-
-          <time
-            v-if="dateCreated"
-            class="date-created"
-            v-html="parsedDateCreated"
-          />
-          <time
-            v-if="startDate"
-            class="schedule-item"
-            v-html="parsedDate"
-          />
-          <time
-            v-if="parsedTime"
-            class="schedule-item"
-            v-html="parsedTime"
-          />
-        </div>
-
-        <div
-          v-if="email || phone || staffDirectoryLink || addressLink"
-          class="contact-info-group"
+          {{ parsedImage[0]?.creditText }}
+        </template>
+      </ResponsiveImage>
+      <div
+        v-else
+        class="lightbox-container"
+      >
+        <FlexibleMediaGalleryNewLightbox
+          v-if="parsedCarouselData && parsedCarouselData.length > 0"
+          :items="parsedCarouselData"
+          :inline="true"
         >
-          <IconWithLink
-            v-if="email"
-            :text="email"
-            icon-name="svg-icon-email"
-            :to="`mailto:${email}`"
-          />
-          <IconWithLink
-            v-if="phone"
-            :text="phone"
-            icon-name="svg-icon-phone"
-            :to="`tel:${phone}`"
-          />
-          <IconWithLink
-            v-if="staffDirectoryLink"
-            text="View staff directory"
-            icon-name="svg-icon-person"
-            :to="staffDirectoryLink"
-          />
-          <IconWithLink
-            v-if="addressLink"
-            :text="address"
-            icon-name="svg-icon-location"
-            :to="addressLink"
-          />
-        </div>
-
-        <div
-          v-if="locations.length"
-          class="location-group"
-        >
-          <IconWithLink
-            v-for="location in parsedLocations"
-            :key="`location-${location.id}`"
-            :text="location.title"
-            :icon-name="location.svg"
-            :to="location.to"
-          />
-        </div>
+          <template #default="slotProps">
+            <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
+          </template>
+        </FlexibleMediaGalleryNewLightbox>
       </div>
+    </div>
 
-      <ButtonLink
-        v-if="to"
-        :label="prompt"
-        :is-secondary="true"
-        class="button"
-        :to="to"
-      />
-    </div>
-    <div
-      v-if="!to && registerEvent"
-      class="block-form-container"
+    <TwoColLayoutWStickySideBar>
+      <template #primaryTop>
+        <CardMeta
+          category="Series"
+        >
+          <template #anyTitle>
+            <h1 class="title-no-link">{{page.title}}</h1>
+          </template>
+        </CardMeta>
+      </template>
+
+      <template #primaryMid>
+        <RichText
+          v-if="page?.richText"
+          :rich-text-content="page?.richText"
+        />
+
+        <SectionHeader
+        :level="2"
+        class="section-header"
+        data-test="section-header"
+        >
+          Tour Dates
+        </SectionHeader>
+        <RichText
+          v-if="page?.richText"
+          class="tour-dates"
+          :rich-text-content="page?.richTextDefaultWithTable"
+        />
+      </template>
+
+      <!-- Sidebar -->
+      <template #sidebarTop>
+        <BlockEventDetail
+          data-test="touring-series-date-range"
+          class="block-event-detail"
+          :start-date="page?.startDate"
+          :end-date="page?.endDate"
+        />
+        <em v-if="tourHasCompleted" class="completed-tour">This series has completed its tour.</em>
+      </template>
+    </TwoColLayoutWStickySideBar>
+
+    <SectionWrapper
+      v-if="parsedOtherTouringSeries && parsedOtherTouringSeries.length > 0"
+      section-title="Explore our other series"
+      theme="paleblue"
+      class="series-section-wrapper"
     >
-      <BlockForm />
-    </div>
-  </div>
+      <template #top-right>
+        <nuxt-link to="/touring-series">
+          View All Touring Series <span style="font-size:1.5em;"> &#8250;</span>
+        </nuxt-link>
+      </template>
+      <SectionTeaserCard
+        data-test="other-touring-series"
+        class="ftva-other-touring-series"
+        :items="parsedOtherTouringSeries"
+        :grid-layout="false"
+      />
+    </SectionWrapper>
+  </main>
 </template>
 
 <style lang="scss" scoped>
-.banner-header {
-  z-index: 0;
-  position: relative;
-  overflow: hidden;
-  background-color: var(--color-white);
-  max-width: $container-xl-banner + px;
-
-  // Themes
-  --color-theme: var(--color-default-cyan-03);
-
-  &.color-visit {
-    --color-theme: var(--color-visit-fushia-03);
-  }
-
-  &.color-help {
-    --color-theme: var(--color-help-green-03);
-  }
-
-  &.color-about {
-    --color-theme: var(--color-about-purple-03);
-  }
-
-  .hatch {
-    :deep(.svg__stroke--wayfinder) {
-      stroke: var(--color-theme);
+// TODO Make the table in FPB RichText component responsive
+@import 'assets/styles/slug-pages.scss';
+.page-touring-series-detail {
+  .tour-dates {
+    :deep(table) {
+      border: 0;
+      padding: 0;
+    }
+    :deep(td:first-child) {
+      min-width: 100px;
     }
   }
 
-  .category {
-    color: var(--color-white);
-    font-size: 26px;
-    text-transform: capitalize;
-
-    position: absolute;
-    z-index: 20;
-    padding-left: 64px;
-    margin-top: 64px;
-
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-
-    .heading-line {
-      flex-shrink: 0;
-      padding-right: 0;
-      height: 96px;
-    }
-
-    .text {
-      border: 1px solid var(--color-white);
-      padding: 14px 24px;
-      margin-left: -10px;
-      clip-path: polygon(17px 0, 100% 0, 100% 100%, 1px 100%);
-      line-height: 1;
-      font-weight: #{$font-weight-regular};
-      font-size: 26px;
-    }
+  :deep(.title-no-link) {
+    @include ftva-h2;
+    color: var(--heading-grey);
   }
 
-  :deep(.responsive-image),
-  .responsive-video {
-    max-height: 576px;
-
-    .media {
-      object-fit: cover;
-    }
+  :deep(.two-column .sidebar-column .sidebar-content-wrapper > .block-event-detail) {
+    margin-bottom: 0;
   }
 
-  .gradient {
-    background: $overlays-overlay-01;
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  .completed-tour {
+    @include ftva-body;
+    color: $medium-grey;
+    margin-bottom: 24px;
   }
 
-  .gradient-no-category {
-    background: linear-gradient(120deg,
-        rgba(15, 15, 15, 0) 0,
-        rgba(15, 15, 15, 0.2509803922) 67.57%,
-        #0f0f0f 120%);
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  // TODO CardMeta SectionHandle hide time & diamond without changing component
+  :deep(.ftva-other-touring-series .start-date::after),
+  :deep(.ftva-other-touring-series .parsed-time){
+    display: none;
   }
 
-  .molecule {
-    right: 0;
-    top: 0;
-    bottom: 96px;
-    margin: auto;
-    position: absolute;
-    z-index: 20;
-    opacity: 0.3;
-    mix-blend-mode: screen;
-
-    height: 70%;
-    width: auto;
-  }
-
-  --hatch-height: 96px;
-  --hatch-width: 28%;
-  --hatch-density: 818px;
-
-  .hatch-box {
-    width: 100%;
-    position: relative;
-    z-index: 30;
-    overflow: hidden;
-
-    margin-top: calc(-1 * var(--hatch-height));
-  }
-
-  .clipped-box {
-    max-width: calc(100% - var(--hatch-width));
-    background-color: var(--color-white);
-    position: relative;
-    z-index: 20;
-    height: calc(var(--hatch-height) + 2px);
-
-    clip-path: polygon(0 0,
-        calc(100% - 39px) 0,
-        100% 95px,
-        100% 102%,
-        0 102%);
-  }
-
-  .hatch {
-    height: var(--hatch-height);
-    overflow: hidden;
-    z-index: 10;
-    position: absolute;
-    top: 0;
-    left: calc(72% - 68px);
-
-    .svg {
-      position: relative;
-      bottom: 8px;
-      width: var(--hatch-density);
-      height: auto;
-    }
-  }
-
-  // Variant
-  &.hatch-left {
-    .clipped-box {
-      margin-left: auto;
-      padding-right: 50px;
-      padding-left: 100px;
-      clip-path: polygon(39px 0, 105% 0, 100% 102%, 0 102%, 0% 95px);
-    }
-
-    .hatch {
-      right: calc(72% - 68px);
-      left: auto;
-
-      .svg {
-        transform: scaleX(-1);
-      }
-    }
-
-    .meta {
-      padding-right: 0;
-      padding-left: clamp(184px, 35%, 280px);
-      margin-left: auto;
-
-      align-content: flex-start;
-    }
-  }
-
-  .meta {
-    padding-right: clamp(184px, 35%, 280px);
-    margin-top: -36px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    z-index: 40;
-    max-width: $container-l-main + px;
-
-    flex-direction: column;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-content: flex-end;
-  }
-
-  .title {
-    @include step-4;
-    color: var(--color-primary-blue-03);
-    margin-bottom: var(--space-m);
-  }
-
-  .snippet {
-    @include step-0;
-    color: var(--color-black);
-    margin-bottom: var(--space-m);
-
-    &:last-child,
-    :deep(p) {
+  @media (max-width: 899px) {
+    :deep(.two-column .primary-column .sidebar-mobile-top > .block-event-detail) {
       margin-bottom: 0;
     }
-  }
-
-  .meta-block {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: flex-start;
-    margin-bottom: var(--space-m);
-    justify-content: space-evenly;
-  }
-
-  .schedule-item,
-  .date-created {
-    display: flex;
-    flex-direction: row;
-
-    @include step-0;
-    color: var(--color-secondary-grey-04);
-  }
-
-  .byline-item,
-  .subject-areas {
-    display: flex;
-    flex-direction: column;
-
-    @include step-0;
-    color: var(--color-secondary-grey-04);
-  }
-
-  .schedule {
-    line-height: 24px;
-    text-align: left;
-    color: var(--color-primary-blue-03);
-    margin-top: var(--space-m);
-
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .contact-info-group {
-    color: var(--color-primary-blue-03);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: var(--space-m);
-  }
-
-  .location-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: var(--space-m);
-  }
-
-  .block-form-container {
-    padding: 0;
-    max-width: 928px;
-    margin: auto;
-  }
-
-  @media #{$medium} {
-    --hatch-height: 74px;
-    --hatch-density: 632px;
-
-    .category {
-      padding-left: 32px;
-      margin-top: 32px;
-    }
-
-    .category .text {
-      font-size: 20px;
-    }
-
-    .category .heading-line {
-      height: 80px;
-    }
-
-    .hatch {
-      left: calc(72% - 84px);
-    }
-
-    &.hatch-left .hatch {
-      right: calc(72% - 84px);
-      left: auto;
-    }
-
-    .meta {
-      padding-right: clamp(184px, 35%, 300px);
-      padding-left: var(--unit-gutter);
-      margin-top: -36px;
-    }
-
-    &.hatch-left .meta {
-      padding-right: var(--unit-gutter);
-      margin-top: -36px;
-    }
-
-    .title {
-      margin-top: var(--space-m);
-    }
-  }
-
-  @media #{$medium} and (min-width: 928px) {
-    .meta {
-      max-width: 100%;
-    }
-  }
-
-  @media #{$small} {
-    .media {
-      height: 375px;
-      max-height: 375px;
-    }
-
-    .category {
-      padding-left: 16px;
-      margin-top: 16px;
-
-      .text {
-        padding: 12px 16px;
-      }
-    }
-
-    .molecule {
-      bottom: 10%;
-      height: 215px;
-      width: auto;
-    }
-
-    --hatch-height: 36px;
-    --hatch-density: 338px;
-
-    .hatch {
-      left: calc(72% - 46px);
-    }
-
-    &.hatch-left .hatch {
-      right: calc(72% - 46px);
-      left: auto;
-    }
-
-    .meta {
-      width: 100%;
-      max-width: 100%;
-      margin-top: 0;
-      padding-left: 0;
-      padding-right: 0;
-      position: static;
-    }
-
-    &.hatch-left .meta {
-      padding-right: 0;
-      padding-left: 0;
-      width: 100%;
-      max-width: 100%;
-      margin-top: 0;
+    :deep(.two-column .primary-column .sidebar-mobile-top) {
+      margin-bottom: 24px;
     }
   }
 }
