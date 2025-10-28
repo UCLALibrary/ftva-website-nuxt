@@ -265,6 +265,10 @@ useHead({
   }
 }
 
+:deep(.lightbox) {
+  --media-height: 500px;
+}
+
 .section-header,
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
   color: $heading-grey;
