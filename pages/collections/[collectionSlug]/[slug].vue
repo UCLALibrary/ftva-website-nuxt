@@ -244,7 +244,12 @@ const pageClasses = computed(() => {
       class="two-col-layout__title"
     >
       <template #primaryTop>
-        <CardMeta :title="page?.title">
+        <CardMeta>
+          <template #anyTitle>
+            <h1 class="title-no-link">
+              {{ page?.title }}
+            </h1>
+          </template>
           <template #linkedcategoryslot>
             <NuxtLink :to="`${parsedParentRoute.parentRoute}`">
               {{ parsedParentRoute.parentRouteTitle }}
