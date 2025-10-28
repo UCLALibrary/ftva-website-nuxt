@@ -5,6 +5,6 @@ describe('Collection Filmmakers Listing Page', () => {
     cy.getByData('breadcrumb').should('be.visible')
     cy.getByData('page-heading').should('be.visible')
     cy.getByData('page-listings').should('be.visible')
-    cy.percySnapshot('collectionFilmmakersListPage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('collectionFilmmakersListPage')
   })
 })

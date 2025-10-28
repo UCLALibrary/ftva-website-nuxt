@@ -178,9 +178,14 @@ const pageClasses = computed(() => {
         <template #primaryTop>
           <CardMeta
             category="Collection"
-            :title="page?.title"
             data-test="page-heading"
-          />
+          >
+            <template #anyTitle>
+              <h1 class="title-no-link">
+                {{ page?.title }}
+              </h1>
+            </template>
+          </CardMeta>
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
           </SectionWrapper>
