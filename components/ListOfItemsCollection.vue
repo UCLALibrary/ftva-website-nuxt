@@ -327,9 +327,9 @@ const pageClasses = computed(() => {
         to="/collections"
       />
       <SectionWrapper
-        :level="1"
         id="collection-items-section-title"
         ref="scrollElem"
+        :level="1"
         :section-title="attrs.page.title"
         theme="paleblue"
         data-test="complex-collections-page-title"
