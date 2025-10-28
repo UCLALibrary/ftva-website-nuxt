@@ -110,7 +110,6 @@ const titleForSearch = computed(() => {
 
   return collectionTitle.value
 })
-// console.log('titleForSearch', titleForSearch.value)
 
 // INFINITE SCROLL
 const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(collectionFetchFunction, onResults)
@@ -220,7 +219,6 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 const searchFilters = ref([])
 
 function parseAggRes(response: Aggregations) {
-  // console.log('parseAggRes response', response)
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
@@ -253,6 +251,11 @@ async function setFilters() {
     'ftvaItemInCollection',
     titleForSearch.value // change it what is being used on this page template
   )
+  // if searchAggsResponse is empty, set searchFilters to empty array
+  if (!searchAggsResponse) {
+    searchFilters.value = []
+    return
+  }
   // searchFilters.value is just a place holder which will have all the
   // filter data for single select drop down in [{ label}]
   searchFilters.value = parseAggRes(
@@ -351,6 +354,7 @@ const pageClasses = computed(() => {
         >
           <!-- Filter by -->
           <DropdownSingleSelect
+            v-if="searchFilters.length > 0"
             v-model:selected-filters="selectedFilters"
             :label="searchFilters[0]?.label"
             :options="searchFilters[0]?.options"
