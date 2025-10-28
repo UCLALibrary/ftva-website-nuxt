@@ -201,6 +201,7 @@ const pageClasses = computed(() => {
         :section-title="page.titleGeneral"
         :section-summary="showPageSummary ? page.summary : ''"
         theme="paleblue"
+        data-test="page-heading"
       />
       <div
         ref="resultsSection"
@@ -215,12 +216,12 @@ const pageClasses = computed(() => {
           <TabItem
             title="Past Series"
             class="tab-content"
-            data-test="past-series-view"
+            data-test="tab-toggle"
           >
             <template v-if="parsedTouringSeries && parsedTouringSeries.length > 0">
               <SectionStaffArticleList
                 :items="parsedTouringSeries"
-                data-test="tabbed-past-content"
+                data-test="tabbed-content"
               />
             </template>
 
@@ -243,10 +244,13 @@ const pageClasses = computed(() => {
           <TabItem
             title="Current and Upcoming Series"
             class="tab-content"
-            data-test="current-series-view"
+            data-test="tab-toggle"
           >
             <template v-if="parsedTouringSeries && parsedTouringSeries.length > 0">
-              <SectionStaffArticleList :items="parsedTouringSeries" />
+              <SectionStaffArticleList
+                :items="parsedTouringSeries"
+                data-test="tabbed-content"
+              />
             </template>
 
             <template v-else>
