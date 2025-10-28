@@ -12,7 +12,7 @@ describe('Collection Listing Page', () => {
 
     cy.getByData('collection-browse').should('exist')
 
-    cy.percySnapshot('collectionlistingpage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('collectionlistingpage')
   })
 
   it('Browses by A and shows at least one collection item/card', () => {
