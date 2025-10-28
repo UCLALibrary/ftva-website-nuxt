@@ -318,6 +318,13 @@ useHead({
         }
       }
     }
+
+    .media-with-text .media-item {
+      @media #{$small} {
+        min-width: unset;
+        max-width: 100%;
+      }
+    }
   }
 
   @media (max-width: 1200px) {
