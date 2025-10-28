@@ -322,7 +322,7 @@ useHead({
       }
     }
       figure {
-        margin-left: 0;
+        margin: var(--space-l) 0;
       }
   }
 }
