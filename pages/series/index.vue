@@ -176,9 +176,9 @@ const pageClasses = computed(() => {
   <main :class="pageClasses">
     <div class="full-width">
       <SectionWrapper
-        :level="1"
         id="series-section-title"
         ref="scrollElem"
+        :level="1"
         class="header"
         :section-title="heading.titleGeneral"
         :section-summary="showPageSummary ? heading.summary : ''"
