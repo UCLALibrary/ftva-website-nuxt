@@ -195,8 +195,8 @@ const pageClasses = computed(() => {
 <template>
   <main :class="pageClasses">
     <SectionWrapper
-      :level="1"
       ref="scrollElem"
+      :level="1"
       :section-title="pageTitle"
       class="header"
       theme="paleblue"
