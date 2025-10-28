@@ -4,7 +4,7 @@ describe('Collection Filmography List Page', () => {
     cy.visit('/collections/la-rebellion/filmography')
     cy.getByData('breadcrumb').should('be.visible')
     cy.getByData('complex-collections-page-title').should('be.visible')
-    cy.percySnapshot('collectionFilmographyListPage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('collectionFilmographyListPage')
   })
 
   it('Visits the `In The Life` Filmography', () => {

@@ -16,7 +16,7 @@ describe('Blog Listing page', () => {
 
     cy.getByData('latest-blogs').should('be.visible')
 
-    cy.percySnapshot('bloglistpage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('bloglistpage')
   })
 
   it('Shows only one featured blog in mobile view', () => {

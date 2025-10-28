@@ -238,7 +238,9 @@ const pageClasses = computed(() => {
     id="main"
     :class="pageClasses"
   >
-    <h1 class="screen-reader-text">UCLA Film & Television Archive"</h1>
+    <h1 class="screen-reader-text">
+      UCLA Film & Television Archive"
+    </h1>
     <div class="one-column">
       <div
         v-if="parsedCarouselData"
