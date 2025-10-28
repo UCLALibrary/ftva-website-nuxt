@@ -145,12 +145,23 @@ onMounted(() => {
         class="two-column"
       >
         <template #primaryTop>
-          <div v-if="page.formattedTitle">
-            <CardMeta :title="page?.formattedTitle" />
-          </div>
-
-          <div v-else>
-            <CardMeta :title="page?.title" />
+          <div>
+            <CardMeta>
+              <template #anyTitle>
+                <!-- eslint-disable vue/no-v-html -->
+                <h1
+                  v-if="page.formattedTitle"
+                  class="title-no-link"
+                  v-html="page.formattedTitle"
+                />
+                <h1
+                  v-else
+                  class="title-no-link"
+                >
+                  {{ page?.title }}
+                </h1>
+              </template>
+            </CardMeta>
           </div>
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
