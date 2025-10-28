@@ -7,11 +7,11 @@ query FTVALayout {
           ...MenuItem
       }
   }
-  footerPrimary: nodes(navHandle: "footerPrimary", level: 1) {
+  footerPrimary: nodes(navHandle: "ftvaFooterSocials", level: 1) {
+    ...MenuItem
+    children {
       ...MenuItem
-      children {
-          ...MenuItem
-      }
+    }
   }
   footerLinks: nodes(navHandle: "ftvaFooterNav", level: 1) {
     category: title
