@@ -356,10 +356,6 @@ useHead({
 .page-event-series-detail {
   position: relative;
 
-  :deep(.lightbox) {
-    --media-height: 500px;
-  }
-
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
@@ -388,6 +384,7 @@ useHead({
   }
 
   :deep(.lightbox) {
+    --media-height: 500px;
     overflow: hidden;
   }
 
