@@ -94,6 +94,7 @@ const seriesFetchFunction = async (page) => {
     currentView.value = 'past'
   }
 
+  // Checks for route view change
   if (route.query.view === 'current') {
     results = currentSeries
     currentView.value = 'current'
@@ -103,6 +104,7 @@ const seriesFetchFunction = async (page) => {
     results = pastSeries
     currentView.value = 'past'
   }
+
   return results
 }
 
@@ -266,7 +268,7 @@ const pageClasses = computed(() => {
 
         <SectionPagination
           v-if="
-            totalPages !== 1 && !isMobile"
+            totalPages !== 1 && !isMobile && !noResultsFound"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"

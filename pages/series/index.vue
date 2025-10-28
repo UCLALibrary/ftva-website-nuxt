@@ -245,7 +245,7 @@ const pageClasses = computed(() => {
 
         <SectionPagination
           v-if="
-            totalPages !== 1 && !isMobile"
+            totalPages !== 1 && !isMobile && !noResultsFound"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
