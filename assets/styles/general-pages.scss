@@ -1,4 +1,4 @@
-/* Shared styles for GeneralContent and StoryTelling templates */
+  /* Shared styles for GeneralContent and StoryTelling templates */
 
   .two-column {
     display: block;
@@ -17,15 +17,6 @@
         }
       }
     }
-
-    :deep(.sidebar-column) {
-      display: none;
-    }
-  }
-
-  .ftva.page-anchor {
-    margin-top: 24px;
-    top: 65px; // Sticks anchor after sticky header
   }
 
   // Rich Text Image
@@ -33,10 +24,10 @@
     margin: 0;
   }
 
-    @media (max-width: 1200px) {
+  @media (max-width: 1200px) {
     .two-column {
       padding-right: 0;
-      
+
       :deep(.primary-column) {
         .primary-section-wrapper {
           padding-left: 0;
@@ -45,11 +36,11 @@
     }
   }
 
-    @media (max-width: 1024px) {
+  @media (max-width: 1024px) {
     .two-column {
       :deep(.primary-column) {
         width: 100%;
-        
+
         .primary-section-wrapper {
           padding-right: 0;
         }

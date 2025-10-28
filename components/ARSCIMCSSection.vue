@@ -90,25 +90,36 @@ function parseInfoBlockAddress(block) {
   return block
 }
 
-// Use titleGeneral as SimpleCard title; otherwise, keep default title
-function parseSimpleCardTitle(block) {
+// For internal and external resources, use titleGeneral as SimpleCard title; otherwise, keep default title
+// For internal resource, check for leading `ftva/` string in uri and remove if it exists
+function parseSimpleCard(block) {
   if (!block.cards || block.cards.length === 0)
     return null
 
   let simpleCards = block.cards
 
   simpleCards = simpleCards.map((card) => {
+    // External Resource
     if (card.typeHandle === 'externalServiceOrResource') {
       if (card.titleGeneral) {
         card = { ...card, title: card.titleGeneral }
       }
     }
 
+    // Internal Resource
     if (card.typeHandle === 'internalServiceOrResource') {
       let content = card.contentLink[0]
+
+      // Check for titleGeneral
       if (content.titleGeneral) {
         content = { ...content, title: content.titleGeneral }
         card = { ...card, contentLink: [content] }
+      }
+
+      // Check uri for 'ftva/'
+      if (content.uri) {
+        const uriWithoutLeadingFtvaString = content.uri ? `/${content.uri.replace(/^\/?ftva\//i, '')}` : '/'
+        card = { ...card, uri: uriWithoutLeadingFtvaString }
       }
     }
 
@@ -128,7 +139,7 @@ const parsedFlexibleBlocks = computed(() => {
     }
 
     if (block.typeHandle === 'simpleCards') {
-      block = parseSimpleCardTitle(block)
+      block = parseSimpleCard(block)
     }
 
     return block

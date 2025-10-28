@@ -134,26 +134,40 @@ onMounted(() => {
         </FlexibleMediaGalleryNewLightbox>
       </div>
 
-      <PageAnchor
-        v-if="h2Array.length >= 3"
-        :section-titles="h2Array"
-      />
-
       <TwoColLayoutWStickySideBar
         data-test="second-column"
         class="two-column"
       >
         <template #primaryTop>
-          <div v-if="page.formattedTitle">
-            <CardMeta :title="page?.formattedTitle" />
-          </div>
-
-          <div v-else>
-            <CardMeta :title="page?.title" />
+          <div>
+            <CardMeta>
+              <template #anyTitle>
+                <!-- eslint-disable vue/no-v-html -->
+                <h1
+                  v-if="page.formattedTitle"
+                  class="title-no-link"
+                  v-html="page.formattedTitle"
+                />
+                <h1
+                  v-else
+                  class="title-no-link"
+                >
+                  {{ page?.title }}
+                </h1>
+              </template>
+            </CardMeta>
           </div>
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
           </SectionWrapper>
+        </template>
+
+        <!-- Sidebar -->
+        <template #sidebarPageAnchor>
+          <PageAnchor
+            v-if="h2Array.length >= 3"
+            :section-titles="h2Array"
+          />
         </template>
 
         <template #primaryMid>
@@ -170,6 +184,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 @import 'assets/styles/general-pages.scss';
+@import 'assets/styles/page-anchor.scss';
 
 .page-general-content {
 
@@ -197,18 +212,24 @@ onMounted(() => {
     .rich-text {
       max-width: none;
       padding-right: 0px;
+
       h3 {
         @include ftva-fpb-rich-text-h3;
       }
+
       h4 {
         @include ftva-fpb-rich-text-h4;
       }
+
       h5 {
         @include ftva-fpb-rich-text-h5;
       }
-      ol, ul {
+
+      ol,
+      ul {
         padding: 0;
       }
+
       ul {
         li {
           @include ftva-fpb-rich-text-li;

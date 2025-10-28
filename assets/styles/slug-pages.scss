@@ -28,6 +28,13 @@
     }
   }
 
+  // recreate cardmeta title styles for h1 slots on slugs pages
+  h1.title-no-link {
+    @include ftva-h2;
+    color: $heading-grey;
+    margin: 0 0 24px;
+  }
+
   .one-column {
     width: 100%;
     max-width: var(--max-width);
