@@ -6,6 +6,6 @@ describe('Complex Collection StoryTelling Page', () => {
     cy.getByData('hero-image').should('be.visible')
     cy.getByData('page-heading').should('be.visible')
     cy.getByData('flexible-blocks-content').should('be.visible')
-    cy.percySnapshot('storyTellingPage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('storyTellingPage')
   })
 })
