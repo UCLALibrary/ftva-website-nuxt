@@ -89,6 +89,9 @@ const seriesFetchFunction = async (page) => {
   if (!route.query.view && currentSeries.hits.hits.length > 0) {
     results = currentSeries
     currentView.value = 'current'
+  } else if (!route.query.view && currentSeries.hits.hits.length === 0) {
+    results = pastSeries
+    currentView.value = 'past'
   }
 
   if (route.query.view === 'current') {
