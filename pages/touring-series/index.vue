@@ -65,7 +65,7 @@ const showPageSummary = computed(() => {
 
 // "STATE"
 const route = useRoute()
-const currentView = ref(null)
+const currentView = ref('')
 const computedCurrentView = computed(() => route.query.view || currentView.value) // Tracks 'current' or 'past'
 const noResultsFound = ref(false)
 const documentsPerPage = 10
