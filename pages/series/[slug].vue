@@ -220,10 +220,15 @@ useHead({
       <template #primaryTop>
         <CardMeta
           category="Series"
-          :title="page?.title"
           :guest-speaker="page?.guestSpeaker"
           :introduction="page?.ftvaEventIntroduction"
-        />
+        >
+          <template #anyTitle>
+            <h1 class="title-no-link">
+              {{ page?.title }}
+            </h1>
+          </template>
+        </CardMeta>
       </template>
 
       <template #primaryMid>
