@@ -229,7 +229,7 @@ const pageClasses = computed(() => {
                 v-if="noResultsFound"
                 class="empty-tab"
               >
-                There are no past event series
+                There are no past touring series
               </p>
               <p
                 v-else
@@ -254,7 +254,7 @@ const pageClasses = computed(() => {
                 v-if="noResultsFound"
                 class="empty-tab"
               >
-                There are no current or upcoming event series
+                There are no current or upcoming touring series
               </p>
               <p
                 v-else
