@@ -283,6 +283,9 @@ const pageClasses = computed(() => {
           @include ftva-fpb-rich-text-li;
         }
       }
+      figure {
+        margin-left: 0;
+      }
     }
   }
 }
