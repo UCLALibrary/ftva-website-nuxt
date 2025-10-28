@@ -14,9 +14,10 @@
 // ***********************************************************
 
 import '@percy/cypress'
+import 'cypress-axe'
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands.ts'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
