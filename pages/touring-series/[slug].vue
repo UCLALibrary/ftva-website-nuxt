@@ -90,12 +90,12 @@ useHead({
     <SectionWrapper>
       <div class="one-column">
         <h3>
-          <pre>PAGE:<br/> {{ page }}</pre>
+          <pre>PAGE:<br> {{ page }}</pre>
         </h3>
-        <hr />
-        <hr />
+        <hr>
+        <hr>
         <h3>
-          <pre>SERIES:<br/> {{ series }}</pre>
+          <pre>SERIES:<br> {{ series }}</pre>
         </h3>
       </div>
     </SectionWrapper>

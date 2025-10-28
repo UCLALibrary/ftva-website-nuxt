@@ -23,7 +23,7 @@ describe('Event Detail page', () => {
     cy.getByData('calendar-dropdown').should('exist')
     cy.getByData('ticket-info').should('be.visible')
     cy.getByData('event-series').should('be.visible')
-    cy.percySnapshot('eventdetailpage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('eventdetailpage')
 
     // it('clicks the arrow to see the next image', () => {
     //   cy.getByData('screening-details').contains('Trailer with Cover image')

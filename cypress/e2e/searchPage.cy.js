@@ -5,7 +5,7 @@ describe('Search Page', () => {
     cy.get('.sort-and-results').should('be.visible')
     cy.get('.sidebar').should('be.visible')
     cy.get('.section-pagination').should('be.visible')
-    cy.percySnapshot('searchpage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('searchpage')
   })
   it('Search blank', () => {
     cy.visit('/search')
