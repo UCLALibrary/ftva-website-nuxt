@@ -245,8 +245,11 @@ useHead({
 .page-article-detail {
   position: relative;
 
-  :deep(.lightbox) {
-    --media-height: 500px;
+  :deep(.carousel),
+  :deep(.lightbox .media-item),
+  :deep(.one-column .responsive-image) {
+    height: 100%;
+    aspect-ratio: 16/7;
   }
 
   // contributor byline styles
@@ -346,6 +349,14 @@ useHead({
           padding-right: 0px;
         }
       }
+    }
+  }
+
+  @media #{$medium} {
+    :deep(.carousel),
+    :deep(.lightbox .media-item),
+    :deep(.one-column .responsive-image) {
+      aspect-ratio: 343/204;
     }
   }
 

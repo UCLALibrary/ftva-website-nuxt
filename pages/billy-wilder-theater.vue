@@ -311,8 +311,11 @@ const pageClasses = computed(() => {
     padding-top: 80px;
   }
 
-  :deep(.lightbox) {
-    --media-height: 500px;
+  :deep(.carousel),
+  :deep(.lightbox .media-item),
+  :deep(.one-column .responsive-image) {
+    height: 100%;
+    aspect-ratio: 16/7;
   }
 
   .section-wrapper.section-wrapper2 {
@@ -500,6 +503,14 @@ const pageClasses = computed(() => {
           flex-basis: 100%;
         }
       }
+    }
+  }
+
+  @media #{$medium} {
+    :deep(.carousel),
+    :deep(.lightbox .media-item),
+    :deep(.one-column .responsive-image) {
+      aspect-ratio: 343/204;
     }
   }
 }
