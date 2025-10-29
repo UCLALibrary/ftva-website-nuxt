@@ -10,6 +10,6 @@ describe('Touring Series List page', () => {
 
     cy.get('[data-test="tabbed-content"]').should('be.visible')
 
-    cy.percySnapshot('touringserieslistpage', { widths: [768, 992, 1200] })
+    cy.percySnapshot('touringserieslistpage')
   })
 })
