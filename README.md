@@ -11,6 +11,8 @@ Make sure to install the dependencies:
 pnpm install
 ```
 
+If the data is not appearing on listing pages that use Elastic Search run `pnpm run generate` to load the data.
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`:
