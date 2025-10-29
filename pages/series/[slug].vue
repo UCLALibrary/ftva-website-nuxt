@@ -388,9 +388,11 @@ useHead({
     }
   }
 
-  :deep(.lightbox) {
-    --media-height: 500px;
-    overflow: hidden;
+  :deep(.carousel),
+  :deep(.lightbox .media-item),
+  :deep(.one-column .responsive-image) {
+    height: 100%;
+    aspect-ratio: 16/7;
   }
 
   :deep(.carousel),
@@ -496,15 +498,20 @@ useHead({
   }
 
   @media #{$medium} {
-
     :deep(.carousel),
-    :deep(.lightbox .media-item) {
-      height: calc(var(--media-width) / 1.575);
+    :deep(.lightbox .media-item),
+    :deep(.one-column .responsive-image) {
+      aspect-ratio: 343/204;
     }
 
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 1.69/1;
-    }
+    // :deep(.carousel),
+    // :deep(.lightbox .media-item) {
+    //   height: calc(var(--media-width) / 1.575);
+    // }
+
+    // :deep(.one-column .responsive-image) {
+    //   aspect-ratio: 1.69/1;
+    // }
 
     :deep(.card-meta .title-no-link) {
       font-size: 34px;
