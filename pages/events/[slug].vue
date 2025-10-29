@@ -342,9 +342,11 @@ const pageClasses = computed(() => {
 .page-event-detail {
   position: relative;
 
-  :deep(.lightbox) {
-    overflow: hidden;
-    --media-height: 500px;
+  :deep(.carousel),
+  :deep(.lightbox .media-item),
+  :deep(.one-column .responsive-image) {
+    height: 100%;
+    aspect-ratio: 16/7;
   }
 
   :deep(.carousel),
@@ -475,6 +477,14 @@ const pageClasses = computed(() => {
   @media #{$medium} {
     :deep(.one-column .responsive-image) {
       aspect-ratio: 1.69/1;
+    }
+
+    @media #{$medium} {
+      :deep(.carousel),
+      :deep(.lightbox .media-item),
+      :deep(.one-column .responsive-image) {
+        aspect-ratio: 343/204;
+      }
     }
 
     :deep(.card-meta .title-no-link) {
