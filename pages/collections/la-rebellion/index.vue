@@ -52,6 +52,7 @@ if (data.value.entry && import.meta.prerender) {
     text: data.value.entry.summary,
     uri: route.path,
     sectionHandle: data.value.entry.sectionHandle,
+    ftvaCollectionType: data.value.entry.ftvaCollectionType,
     groupName: 'Collections',
   }
 
