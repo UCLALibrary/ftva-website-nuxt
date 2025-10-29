@@ -11,6 +11,7 @@ query FTVACollectionStory($slug: [String!]){
     postDate
     title
     summary
+    ftvaCollectionType
     ftvaImage {
       ...Image
     }
