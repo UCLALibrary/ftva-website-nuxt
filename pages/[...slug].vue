@@ -72,6 +72,12 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+// Parse FlexibleBlock with helper
+const parsedFlexibleBlocks = computed(() => {
+  const dataBlocks = page.value?.blocks || []
+  return parseFlexibleBlocks(dataBlocks)
+})
+
 const pageClasses = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path, 'page-bottom-spacer']
 })
@@ -173,7 +179,7 @@ onMounted(() => {
         <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
-            :blocks="page.blocks"
+            :blocks="parsedFlexibleBlocks"
           />
         </template>
       </TwoColLayoutWStickySideBar>
