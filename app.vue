@@ -64,6 +64,7 @@ useHead({
         v-if="primaryMenuItems"
         class="primary"
         :primary-items="primaryMenuItems"
+        :key="route.query.q"
       />
       <NuxtPage />
       <footer data-test="footer">
