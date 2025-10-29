@@ -258,6 +258,12 @@ useHead({
     }
   }
 
+  :deep(.rich-text) {
+    figure {
+      margin: var(--space-l) 0;
+    }
+  }
+
   // makes all EventSeries same height
   :deep(.card) {
     min-height: 350px;
