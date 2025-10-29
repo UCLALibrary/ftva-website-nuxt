@@ -296,8 +296,11 @@ const pageClasses = computed(() => {
     }
   }
 
-  :deep(.lightbox) {
-    --media-height: 500px;
+  :deep(.carousel),
+  :deep(.lightbox .media-item),
+  :deep(.one-column .responsive-image) {
+    height: 100%;
+    aspect-ratio: 16/7;
   }
 
   :deep(.sidebar-column) {
@@ -337,6 +340,13 @@ const pageClasses = computed(() => {
       @include truncate(2);
     }
 
+    @media #{$medium} {
+      :deep(.carousel),
+      :deep(.lightbox .media-item),
+      :deep(.one-column .responsive-image) {
+        aspect-ratio: 343/204;
+      }
+    }
   }
 }
 
