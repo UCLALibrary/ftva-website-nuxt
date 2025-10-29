@@ -98,7 +98,14 @@ const parsedCollections = computed(() => {
 const parsedResources = computed(() => {
   if (page.value.otherResources.length === 0) return null
 
-  return page.value.otherResources[0].featuredResources.map((obj) => {
+  const ucSearch = page.value?.ucSearch
+  const ucItem = ucSearch?.[0]
+
+  const ucTitle = ucItem?.title
+  const ucUri = ucItem?.uri
+  const ucImage = ucItem?.image?.[0]
+
+  const parsedResourcesData = page.value.otherResources[0].featuredResources.map((obj) => {
     return {
       title: obj.title,
       to: obj.uri
@@ -107,6 +114,17 @@ const parsedResources = computed(() => {
       image: parseImage(obj)
     }
   })
+
+  // Only push ucSearch if at least one property exists
+  if (ucTitle || ucUri || ucImage) {
+    parsedResourcesData.push({
+      title: ucTitle,
+      to: ucUri,
+      image: ucImage
+    })
+  }
+
+  return parsedResourcesData
 })
 
 const parsedAboutCollections = computed(() => {
