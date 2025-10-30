@@ -116,5 +116,12 @@
 :deep(.rich-text) {
   figure {
     margin: var(--space-l) 0;
+}
+
+// Make all images the same in FPB Media With Text
+:deep(.flexible-block .media-with-text .media-item) {
+  @media #{$small} {
+    min-width: unset;
+    max-width: 100%;
   }
 }
