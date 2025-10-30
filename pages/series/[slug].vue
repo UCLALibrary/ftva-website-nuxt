@@ -390,11 +390,6 @@ useHead({
     }
   }
 
-  // :deep(.carousel),
-  // :deep(.lightbox .media-item) {
-  //   height: calc(var(--media-width) / 1.984);
-  // }
-
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
@@ -492,14 +487,7 @@ useHead({
     }
   }
 
-    // :deep(.carousel),
-    // :deep(.lightbox .media-item) {
-    //   height: calc(var(--media-width) / 1.575);
-    // }
-
-    // :deep(.one-column .responsive-image) {
-    //   aspect-ratio: 1.69/1;
-    // }
+  @media #{$medium} {
 
     :deep(.card-meta .title-no-link) {
       font-size: 34px;
