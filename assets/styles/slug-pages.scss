@@ -6,9 +6,22 @@
   :deep(.one-column .lightbox),
   :deep(.one-column .responsive-image) {
     aspect-ratio: 1160/500;
+    overflow: hidden;
 
     @media #{$medium} {
       aspect-ratio: 343/204;
+    }
+  }
+
+  :deep(.one-column .lightbox .media-item) {
+    height: auto;
+  }
+
+  :deep(.sizer) {
+    padding-bottom: calc(500/1160 * 100%) !important;
+
+    @media #{$medium} {
+      padding-bottom: calc(204/343 * 100%) !important;
     }
   }
 

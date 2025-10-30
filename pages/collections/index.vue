@@ -296,13 +296,6 @@ const pageClasses = computed(() => {
   position: relative;
   background-color: var(--pale-blue);
 
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
-  :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
-  }
-
   .one-column {
     padding-top: 80px;
   }
@@ -414,12 +407,6 @@ const pageClasses = computed(() => {
   }
 
   @media #{$medium} {
-    :deep(.carousel),
-    :deep(.lightbox .media-item),
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 343/204;
-    }
-
     .one-column {
       padding-top: 60px;
     }
