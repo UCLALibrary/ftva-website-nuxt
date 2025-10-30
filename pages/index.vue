@@ -615,6 +615,11 @@ const pageClasses = computed(() => {
     }
   }
 
+  // Make all images the same in FPB Media With Text
+  :deep(.media-with-text .media-item) {
+    aspect-ratio: 4/3;
+  }
+
   @media #{$medium} {
     :deep(.ftva.section-wrapper div.section-header) {
       margin-bottom: 40px;

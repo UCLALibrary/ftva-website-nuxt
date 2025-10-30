@@ -242,11 +242,6 @@ onMounted(() => {
         }
       }
     }
-    // TODO Move to component
-    // Make all images the same in FPB Media With Text
-    .media-with-text .media-item {
-      aspect-ratio: 4/3;
-    }
   }
 
   @media (max-width: 1200px) {
