@@ -20,7 +20,7 @@
   }
 
   // check for a one-column layout with a lightbox or figure before rendering blue background
-  &:has(> .one-column > .lightbox-container),
+  &:has(> .one-column > .lightbox-container .lightbox),
   &:has(> .one-column > figure) {
     &:before {
       content: '';
