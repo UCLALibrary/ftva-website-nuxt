@@ -289,6 +289,15 @@ const pageClasses = computed(() => {
   .filmography-section-wrapper {
     margin-top: 64px;
     padding-bottom: 80px; // Page bottom spacing: 120px (80px + table's padding)
+
+    .ftva.table-wrapper {
+      background: white;
+      padding: 36px 40px 52px;
+
+      :deep(.ftva.table-component) {
+        max-width: 100%;
+      }
+    }
   }
 
   // change filmography section title color

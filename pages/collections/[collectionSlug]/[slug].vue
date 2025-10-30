@@ -510,6 +510,10 @@ const pageClasses = computed(() => {
     gap: 0;
   }
 
+  .ftva.table-wrapper {
+    padding: 40px;
+  }
+
   .credit-table__name {
     font-size: 30px;
     color: $accent-blue;
