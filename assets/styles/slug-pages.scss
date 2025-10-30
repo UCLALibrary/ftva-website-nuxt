@@ -108,3 +108,11 @@
     }
   }
 }
+
+// Make all images the same in FPB Media With Text
+:deep(.flexible-block .media-with-text .media-item) {
+  @media #{$small} {
+    min-width: unset;
+    max-width: 100%;
+  }
+}
