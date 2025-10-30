@@ -241,9 +241,6 @@ onMounted(() => {
           @include ftva-fpb-rich-text-li;
         }
       }
-      figure {
-        margin: var(--space-l) 0;
-      }
     }
   }
 

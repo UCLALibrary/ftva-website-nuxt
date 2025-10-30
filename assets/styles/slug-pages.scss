@@ -107,4 +107,14 @@
       top: -70px; //offset links in the document by the height of the sticky header
     }
   }
+
+  :deep(figure) {
+    margin: var(--space-l) 0;
+  }
+}
+
+:deep(.rich-text) {
+  figure {
+    margin: var(--space-l) 0;
+  }
 }
