@@ -297,6 +297,10 @@ const pageClasses = computed(() => {
       :deep(.ftva.table-component) {
         max-width: 100%;
       }
+
+      @media (max-width: 899px) {
+        padding: 12px;
+      }
     }
   }
 

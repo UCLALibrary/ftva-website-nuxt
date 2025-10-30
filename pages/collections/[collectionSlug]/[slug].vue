@@ -512,6 +512,10 @@ const pageClasses = computed(() => {
 
   .ftva.table-wrapper {
     padding: 40px;
+
+    @media (max-width: 899px) {
+      padding: 12px;
+    }
   }
 
   .credit-table__name {
