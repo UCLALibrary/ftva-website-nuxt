@@ -622,11 +622,9 @@ const pageClasses = computed(() => {
   }
 
   @media #{$small} {
-    .archive-blog-section {
-      :deep(.media-with-text) {
-        margin-top: 16px;
-        max-height: unset;
-      }
+    :deep(.media-with-text .media-item) {
+        min-width: unset;
+        max-width: 100%;
     }
 
     .preservation-section {
