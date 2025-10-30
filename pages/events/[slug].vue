@@ -366,7 +366,7 @@ const pageClasses = computed(() => {
   }
 
   .two-column {
-    margin-bottom: 120px; // Spacing between main content and footer; without a "More" section
+    margin-bottom: 120px; // Spacing between main content and footer; without a "More Series" section
 
     :deep(.primary-section-wrapper) {
       margin-bottom: 0;
@@ -444,7 +444,7 @@ const pageClasses = computed(() => {
   }
 
   .two-column:has(+ .series-section-wrapper) {
-    margin-bottom: 60px; // Spacing between main content and "Related / More" section
+    margin-bottom: 60px; // Spacing between main content and "More Series" section
   }
 
   :deep(.series-section-wrapper .section-title) {

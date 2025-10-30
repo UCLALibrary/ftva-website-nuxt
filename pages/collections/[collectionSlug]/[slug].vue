@@ -447,6 +447,8 @@ const pageClasses = computed(() => {
   }
 
   .two-col-layout__body {
+    padding-bottom: 120px; // Spacing between main content and footer; without a "More" section
+
     :deep(.primary-section-wrapper) {
       margin-top: 0;
     }
@@ -461,8 +463,12 @@ const pageClasses = computed(() => {
     }
   }
 
-  .two-col-layout__body~ :not(.collection-item-section-wrapper) {
-    padding-bottom: 120px; // Page bottom spacing if no "More from this collection" section
+  .two-col-layout__body:has(+ .collection-item-section-wrapper) {
+    padding-bottom: 60px; // Spacing between main content (with table) and "Related / More" section
+  }
+
+  .two-col-layout__body:not(:has(.table-component)):has(+ .collection-item-section-wrapper) {
+    padding-bottom: 30px; // Spacing between main content (without table) and "Related / More" section
   }
 
   .collection-item-section-wrapper {
@@ -536,8 +542,8 @@ const pageClasses = computed(() => {
   }
 
   @media #{$small} {
-    .two-col-layout__body~ :not(.collection-item-section-wrapper) {
-      padding-bottom: 86px; // Page bottom spacing if no "More from this collection" section
+    .two-col-layout__body {
+      padding-bottom: 86px;
     }
   }
 }
