@@ -3,18 +3,11 @@
 .page-detail {
 
   // Sets an aspect ration for both the banner image and the image carousel
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
+  :deep(.one-column .lightbox),
   :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
-  }
+    aspect-ratio: 1160/500;
 
-  @media #{$medium} {
-
-    :deep(.carousel),
-    :deep(.lightbox .media-item),
-    :deep(.one-column .responsive-image) {
+    @media #{$medium} {
       aspect-ratio: 343/204;
     }
   }
