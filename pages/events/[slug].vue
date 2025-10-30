@@ -366,7 +366,7 @@ const pageClasses = computed(() => {
   }
 
   .two-column {
-    margin-bottom: 120px; // Page bottom spacing
+    margin-bottom: 120px; // Spacing between main content and footer; without a "More" section
 
     :deep(.primary-section-wrapper) {
       margin-bottom: 0;
@@ -441,6 +441,10 @@ const pageClasses = computed(() => {
     :deep(.block-screening-detail:last-of-type dl) {
       margin-bottom: 0;
     }
+  }
+
+  .two-column:has(+ .series-section-wrapper) {
+    margin-bottom: 60px; // Spacing between main content and "Related / More" section
   }
 
   :deep(.series-section-wrapper .section-title) {
@@ -551,7 +555,11 @@ const pageClasses = computed(() => {
 
   @media #{$small} {
     .two-column {
-      margin-bottom: 120px; // Page bottom spacing
+      margin-bottom: 86px;
+    }
+
+    .two-column:has(+ .series-section-wrapper) {
+      margin-bottom: 30px;
     }
   }
 }

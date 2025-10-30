@@ -159,7 +159,7 @@ useHead({
 })
 
 const pageClasses = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-collection-detail', 'page-bottom-spacer']
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-collection-detail']
 })
 </script>
 
@@ -285,6 +285,14 @@ const pageClasses = computed(() => {
 .page-collection-detail {
   position: relative;
 
+  .two-column {
+    margin-bottom: 120px; // Spacing between main content and footer; without a "Related / More" section
+  }
+
+  .two-column:has(+ .series-section-wrapper) {
+    margin-bottom: 60px; // Spacing between main content and "Related / More" section
+  }
+
   :deep(.primary-column) {
     .svg__icon-ftva-external-link-dark {
       top: 5px;
@@ -333,6 +341,16 @@ const pageClasses = computed(() => {
       @include truncate(2);
     }
 
+  }
+
+  @media #{$small} {
+    .two-column {
+      margin-bottom: 86px;
+    }
+
+    .two-column:has(+ .series-section-wrapper) {
+      margin-bottom: 30px;
+    }
   }
 }
 
