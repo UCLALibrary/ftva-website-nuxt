@@ -246,13 +246,6 @@ const pageClasses = computed(() => {
     }
   }
 
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
-  :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
-  }
-
   :deep(.section-wrapper-post-small) {
     #additional-materials {
       scroll-margin-top: 70px;
@@ -296,14 +289,6 @@ const pageClasses = computed(() => {
           @include ftva-fpb-rich-text-li;
         }
       }
-    }
-  }
-
-  @media #{$medium} {
-    :deep(.carousel),
-    :deep(.lightbox .media-item),
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 343/204;
     }
   }
 }

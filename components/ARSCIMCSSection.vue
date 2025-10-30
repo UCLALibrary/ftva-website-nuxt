@@ -194,13 +194,6 @@ useHead({
   }
 }
 
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
-  :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
-  }
-
 .section-header,
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
   color: $heading-grey;
@@ -256,14 +249,6 @@ useHead({
       li {
         @include ftva-fpb-rich-text-li;
       }
-    }
-  }
-
-  @media #{$medium} {
-    :deep(.carousel),
-    :deep(.lightbox .media-item),
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 343/204;
     }
   }
 }

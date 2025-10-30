@@ -253,14 +253,6 @@ useHead({
 // TODO Make the table in FPB RichText component responsive
 @import 'assets/styles/slug-pages.scss';
 .page-touring-series-detail {
-
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
-  :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
-  }
-
   .tour-dates {
     :deep(table) {
       border: 0;
@@ -298,14 +290,6 @@ useHead({
     }
     :deep(.two-column .primary-column .sidebar-mobile-top) {
       margin-bottom: 24px;
-    }
-  }
-
-  @media #{$medium} {
-    :deep(.carousel),
-    :deep(.lightbox .media-item),
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 343/204;
     }
   }
 }

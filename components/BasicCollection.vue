@@ -282,6 +282,8 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 .page-collection-detail {
   position: relative;
 
@@ -294,13 +296,6 @@ const pageClasses = computed(() => {
     .parsed-content {
       margin-bottom: 0;
     }
-  }
-
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
-  :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
   }
 
   :deep(.sidebar-column) {
@@ -339,16 +334,6 @@ const pageClasses = computed(() => {
     :deep(.byline-group) {
       @include truncate(2);
     }
-
-    @media #{$medium} {
-      :deep(.carousel),
-      :deep(.lightbox .media-item),
-      :deep(.one-column .responsive-image) {
-        aspect-ratio: 343/204;
-      }
-    }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>

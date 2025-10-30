@@ -357,6 +357,8 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
@@ -388,17 +390,10 @@ useHead({
     }
   }
 
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
-  :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
-  }
-
-  :deep(.carousel),
-  :deep(.lightbox .media-item) {
-    height: calc(var(--media-width) / 1.984);
-  }
+  // :deep(.carousel),
+  // :deep(.lightbox .media-item) {
+  //   height: calc(var(--media-width) / 1.984);
+  // }
 
   :deep(.inline.lightbox .button-prev) {
     left: 0;
@@ -497,13 +492,6 @@ useHead({
     }
   }
 
-  @media #{$medium} {
-    :deep(.carousel),
-    :deep(.lightbox .media-item),
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 343/204;
-    }
-
     // :deep(.carousel),
     // :deep(.lightbox .media-item) {
     //   height: calc(var(--media-width) / 1.575);
@@ -518,6 +506,4 @@ useHead({
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>

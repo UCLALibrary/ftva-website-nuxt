@@ -199,13 +199,6 @@ onMounted(() => {
     padding: 10px 0;
   }
 
-  :deep(.carousel),
-  :deep(.lightbox .media-item),
-  :deep(.one-column .responsive-image) {
-    height: 100%;
-    aspect-ratio: 16/7;
-  }
-
   // Rich Text Image
   :deep(figure.image--full) {
     a:after {
@@ -260,14 +253,6 @@ onMounted(() => {
       a:after {
         right: 0;
       }
-    }
-  }
-
-  @media #{$medium} {
-    :deep(.carousel),
-    :deep(.lightbox .media-item),
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 343/204;
     }
   }
 }
