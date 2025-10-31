@@ -108,7 +108,7 @@
     }
   }
 
-  :deep(figure) {
+  :deep(.rich-text figure) {
     margin: var(--space-l) 0;
   }
 }
