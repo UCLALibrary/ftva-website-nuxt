@@ -357,6 +357,8 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
@@ -510,6 +512,4 @@ useHead({
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>
