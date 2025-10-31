@@ -39,3 +39,9 @@
     padding-right: var(--unit-gutter);
   }
 }
+
+:deep(.rich-text) {
+  figure {
+    margin: var(--space-l) 0;
+  }
+}
