@@ -110,6 +110,10 @@
 }
 
 // Make all images the same in FPB Media With Text
+:deep(.media-with-text .media-item) {
+  aspect-ratio: 4/3;
+}
+
 :deep(.flexible-block .media-with-text .media-item) {
   @media #{$small} {
     min-width: unset;
