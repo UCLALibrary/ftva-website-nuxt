@@ -390,15 +390,8 @@ useHead({
     }
   }
 
-  :deep(.lightbox) {
-    overflow: hidden;
-  }
-
-  :deep(.carousel),
-  :deep(.lightbox .media-item) {
-    height: calc(var(--media-width) / 1.984);
-  }
-
+// TODO New styles for the carousel lightbox
+// positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
@@ -497,15 +490,6 @@ useHead({
   }
 
   @media #{$medium} {
-
-    :deep(.carousel),
-    :deep(.lightbox .media-item) {
-      height: calc(var(--media-width) / 1.575);
-    }
-
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 1.69/1;
-    }
 
     :deep(.card-meta .title-no-link) {
       font-size: 34px;

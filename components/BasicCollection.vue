@@ -342,7 +342,6 @@ const pageClasses = computed(() => {
     :deep(.byline-group) {
       @include truncate(2);
     }
-
   }
 
   @media #{$small} {
