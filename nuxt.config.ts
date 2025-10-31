@@ -153,7 +153,7 @@ export default defineNuxtConfig({
   },
 
   site: {
-    url: import.meta.env.SITEMAP_HOST || 'https://www.library.ucla.edu',
+    url: import.meta.env.SITEMAP_HOST || 'https://cinema.ucla.edu',
   },
 
   imports: {

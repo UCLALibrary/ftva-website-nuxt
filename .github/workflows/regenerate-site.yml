@@ -34,7 +34,7 @@ jobs:
         env:
           CRAFT_ENDPOINT: "${{ github.event.inputs.environment == 'test' && secrets.CRAFT_ENDPOINT_TEST || secrets.CRAFT_PROD_ENDPOINT }}"
           S3_BUCKET: "https://static.library.ucla.edu/"
-          SITEMAP_HOST: "${{ github.event.inputs.environment == 'test' && 'https://test-ftva.library.ucla.edu' || 'https://ftva.library.ucla.edu' }}"
+          SITEMAP_HOST: "${{ github.event.inputs.environment == 'test' && 'https://test-ftva.library.ucla.edu' || 'https://cinema.ucla.edu' }}"
           ES_URL: ${{ secrets.ES_URL }}
           ES_READ_KEY: "${{ github.event.inputs.environment == 'test' && secrets.ES_READ_KEY_TEST || secrets.ES_READ_KEY_PROD }}"
           ES_WRITE_KEY: "${{ github.event.inputs.environment == 'test' && secrets.ES_WRITE_KEY_TEST || secrets.ES_WRITE_KEY_PROD }}"
