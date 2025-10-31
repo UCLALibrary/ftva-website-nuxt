@@ -11,9 +11,25 @@
   }
 }
 
-  @media (max-width: 1200px) {
-    .one-column {
-      padding-left: var(--unit-gutter);
-      padding-right: var(--unit-gutter);
-    }
+@media (max-width: 1200px) {
+  .one-column {
+    padding-left: var(--unit-gutter);
+    padding-right: var(--unit-gutter);
   }
+}
+
+// TODO New styles for the carousel lightbox
+// positions the previous next arrows
+:deep(.inline.lightbox .button-prev) {
+  left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  opacity: 0.7;
+}
+
+:deep(.inline.lightbox .button-next) {
+  right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  opacity: 0.7;
+}
