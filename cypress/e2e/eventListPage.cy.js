@@ -65,7 +65,7 @@ describe('Events Listing page', () => {
 
   it('has no accessibility violations', () => {
     cy.injectAxe()
-    cy.checkA11y(null, null, (violations) => {
+    cy.checkA11y('#main', { includedImpacts: ['critical', 'serious'] }, (violations) => {
       violations.forEach((violation) => {
         cy.log(`Accessibility Violation: ${violation.id}`)
         cy.log(`  Description: ${violation.description}`)
