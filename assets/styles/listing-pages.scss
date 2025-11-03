@@ -1,25 +1,28 @@
 /* These styles appear on all listing pages so far */
 
 // Sets an aspect ration for both the banner image and the image carousel
-:deep(.one-column .lightbox),
-:deep(.one-column .responsive-image) {
-  aspect-ratio: 1160/500;
-  overflow: hidden;
+.resized-aspect-ratio {
 
-  @media #{$medium} {
-    aspect-ratio: 343/204;
+  :deep(.one-column .lightbox),
+  :deep(.one-column .responsive-image) {
+    aspect-ratio: 1160/500;
+    overflow: hidden;
+
+    @media #{$medium} {
+      aspect-ratio: 343/204;
+    }
   }
-}
 
-:deep(.one-column .lightbox .media-item) {
-  height: auto;
-}
+  :deep(.one-column .lightbox .media-item) {
+    height: auto;
+  }
 
-:deep(.sizer) {
-  padding-bottom: calc(500/1160 * 100%) !important;
+  :deep(.sizer) {
+    padding-bottom: calc(500/1160 * 100%) !important;
 
-  @media #{$medium} {
-    padding-bottom: calc(204/343 * 100%) !important;
+    @media #{$medium} {
+      padding-bottom: calc(204/343 * 100%) !important;
+    }
   }
 }
 
