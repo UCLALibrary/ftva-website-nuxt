@@ -11,6 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => { //
     const data = await $graphql.default.request(FTVALayout)
 
     // console.log('Pinia store Global Data object:' + JSON.stringify(data))
+    // the data from footerPrimary[1] is not used on the FTVA site but it is populated by necessity because of the way FooterPrimary component is written
     if (data) {
       globalStore.header.primary = data?.primary
       globalStore.footerLinks.nodes = data?.footerLinks

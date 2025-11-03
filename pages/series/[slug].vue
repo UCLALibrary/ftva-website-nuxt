@@ -220,10 +220,15 @@ useHead({
       <template #primaryTop>
         <CardMeta
           category="Series"
-          :title="page?.title"
           :guest-speaker="page?.guestSpeaker"
           :introduction="page?.ftvaEventIntroduction"
-        />
+        >
+          <template #anyTitle>
+            <h1 class="title-no-link">
+              {{ page?.title }}
+            </h1>
+          </template>
+        </CardMeta>
       </template>
 
       <template #primaryMid>
@@ -352,6 +357,8 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
@@ -505,6 +512,4 @@ useHead({
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>

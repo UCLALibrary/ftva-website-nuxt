@@ -3,7 +3,7 @@
 .page-detail {
 
   // check for a one-column layout with a lightbox or figure before rendering blue background
-  &:has(> .one-column > .lightbox-container),
+  &:has(> .one-column > .lightbox-container .lightbox),
   &:has(> .one-column > figure) {
     &:before {
       content: '';
@@ -26,6 +26,13 @@
     &:before {
       background-color: var(--color-white);
     }
+  }
+
+  // recreate cardmeta title styles for h1 slots on slugs pages
+  h1.title-no-link {
+    @include ftva-h2;
+    color: $heading-grey;
+    margin: 0 0 24px;
   }
 
   .one-column {
@@ -99,5 +106,27 @@
       position: relative;
       top: -70px; //offset links in the document by the height of the sticky header
     }
+  }
+
+  :deep(.rich-text figure) {
+    margin: var(--space-l) 0;
+  }
+}
+
+:deep(.rich-text) {
+  figure {
+    margin: var(--space-l) 0;
+  }
+}
+
+// Make all images the same in FPB Media With Text
+:deep(.media-with-text .media-item) {
+  aspect-ratio: 4/3;
+}
+
+:deep(.flexible-block .media-with-text .media-item) {
+  @media #{$small} {
+    min-width: unset;
+    max-width: 100%;
   }
 }
