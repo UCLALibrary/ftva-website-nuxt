@@ -164,7 +164,7 @@ useHead({
 })
 
 const pageClasses = computed(() => {
-  return ['page', 'page-detail', 'page-detail--paleblue', 'page-event-detail', 'page-bottom-spacer']
+  return ['page', 'page-detail', 'page-detail--paleblue', 'page-event-detail']
 })
 </script>
 
@@ -221,8 +221,12 @@ const pageClasses = computed(() => {
         <CardMeta
           class="title"
           data-test="text-block"
-          :title="page?.title"
         >
+          <template #anyTitle>
+            <h1 class="title-no-link">
+              {{ page?.title }}
+            </h1>
+          </template>
           <template #linkedcategoryslot>
             <NuxtLink :to="`/${series[0]?.to}`">
               {{ series[0]?.title }}
@@ -362,6 +366,8 @@ const pageClasses = computed(() => {
   }
 
   .two-column {
+    margin-bottom: 120px; // Spacing between main content and footer; without a "More Series" section
+
     :deep(.primary-section-wrapper) {
       margin-bottom: 0;
     }
@@ -435,6 +441,10 @@ const pageClasses = computed(() => {
     :deep(.block-screening-detail:last-of-type dl) {
       margin-bottom: 0;
     }
+  }
+
+  .two-column:has(+ .series-section-wrapper) {
+    margin-bottom: 60px; // Spacing between main content and "More Series" section
   }
 
   :deep(.series-section-wrapper .section-title) {
@@ -540,6 +550,16 @@ const pageClasses = computed(() => {
         font-size: 28px;
         line-height: 110%;
       }
+    }
+  }
+
+  @media #{$small} {
+    .two-column {
+      margin-bottom: 86px;
+    }
+
+    .two-column:has(+ .series-section-wrapper) {
+      margin-bottom: 30px;
     }
   }
 }

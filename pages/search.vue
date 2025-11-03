@@ -453,7 +453,7 @@ const pageClasses = computed(() => {
           Search Results for <span class="search-keywords">"{{ route.query.q }}"</span>
         </h1>
       </ClientOnly>
-      <NavSearch />
+      <NavSearch :key="route.query.q" />
     </SectionWrapper>
     <div class="two-column">
       <div
@@ -519,7 +519,7 @@ const pageClasses = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-            "
+          "
           ref="el"
           class="results"
         >

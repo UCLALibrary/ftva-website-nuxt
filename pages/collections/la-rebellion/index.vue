@@ -52,6 +52,7 @@ if (data.value.entry && import.meta.prerender) {
     text: data.value.entry.summary,
     uri: route.path,
     sectionHandle: data.value.entry.sectionHandle,
+    ftvaCollectionType: data.value.entry.ftvaCollectionType,
     groupName: 'Collections',
   }
 
@@ -178,9 +179,14 @@ const pageClasses = computed(() => {
         <template #primaryTop>
           <CardMeta
             category="Collection"
-            :title="page?.title"
             data-test="page-heading"
-          />
+          >
+            <template #anyTitle>
+              <h1 class="title-no-link">
+                {{ page?.title }}
+              </h1>
+            </template>
+          </CardMeta>
           <SectionWrapper theme="paleblue">
             <DividerWayFinder />
           </SectionWrapper>

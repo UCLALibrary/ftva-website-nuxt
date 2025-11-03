@@ -27,11 +27,11 @@
   "devDependencies": {
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
-    "@nuxtjs/sitemap": "^5.1.1",
+    "@nuxtjs/sitemap": "^5.3.5",
     "@percy/cli": "^1.31.1",
     "@percy/cypress": "^3.1.2",
     "@types/node": "^18.17.3",
-    "@ucla-library/component-library-nuxt-module": "1.2.84",
+    "@ucla-library/component-library-nuxt-module": "1.2.92",
     "@zadigetvoltaire/nuxt-gtm": "^0.0.13",
     "axe-core": "^4.11.0",
     "cypress": "^15.0.0",
@@ -42,7 +42,7 @@
     "lodash": "^4.17.21",
     "nuxt-graphql-request": "^7.0.5",
     "sass": "^1.66.1",
-    "ucla-library-design-tokens": "^5.50.0",
+    "ucla-library-design-tokens": "^5.51.0",
     "vite-svg-loader": "^5.1.0"
   },
   "engines": {

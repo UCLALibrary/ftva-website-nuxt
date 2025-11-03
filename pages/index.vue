@@ -238,7 +238,9 @@ const pageClasses = computed(() => {
     id="main"
     :class="pageClasses"
   >
-    <h1 class="screen-reader-text">UCLA Film & Television Archive"</h1>
+    <h1 class="screen-reader-text">
+      UCLA Film & Television Archive"
+    </h1>
     <div class="one-column">
       <div
         v-if="parsedCarouselData"
@@ -613,6 +615,11 @@ const pageClasses = computed(() => {
     }
   }
 
+  // Make all images the same in FPB Media With Text
+  :deep(.media-with-text .media-item) {
+    aspect-ratio: 4/3;
+  }
+
   @media #{$medium} {
     :deep(.ftva.section-wrapper div.section-header) {
       margin-bottom: 40px;
@@ -620,11 +627,9 @@ const pageClasses = computed(() => {
   }
 
   @media #{$small} {
-    .archive-blog-section {
-      :deep(.media-with-text) {
-        margin-top: 16px;
-        max-height: unset;
-      }
+    :deep(.media-with-text .media-item) {
+        min-width: unset;
+        max-width: 100%;
     }
 
     .preservation-section {
