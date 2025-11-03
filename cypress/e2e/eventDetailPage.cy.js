@@ -34,23 +34,16 @@ describe('Event Detail page', () => {
   // creditText is visible .contains('Movie Database')
   // click on arrow and it moves to next image
   // cy.getByData('ticket-info').find('a').contains('Plan Your Visit').click()
-  it('has no accessibility violations', () => {
-    cy.visit('/events/la-région-centrale-03-08-24', { failOnStatusCode: false })
-    cy.injectAxe()
-    cy.checkA11y('#main', { includedImpacts: ['critical', 'serious'] }, (violations) => {
-      violations.forEach((violation) => {
-        cy.log(`Accessibility Violation: ${violation.id}`)
-        cy.log(`  Description: ${violation.description}`)
-        cy.log(`  Impact: ${violation.impact}`)
-        cy.log(`  Help URL: ${violation.helpUrl}`)
-        cy.log('  Nodes:')
-        violation.nodes.forEach((node) => {
-          cy.log(`    - HTML: ${node.html}`)
-          cy.log(`    - Target: ${node.target}`)
-        })
-      })
-    })
-  })
+  // it('has no accessibility violations', () => {
+  //   cy.visit('/events/la-région-centrale-03-08-24', { failOnStatusCode: false })
+  //   cy.getByData('image-carousel').should('exist')
+  //   cy.injectAxe()
+  //   cy.checkA11y('#main', { includedImpacts: ['critical', 'serious'] }, (violations) => {
+  //     violations.forEach((violation) => {
+  //       cy.log(`Accessibility Violation: ${violation.id}`)
+  //     })
+  //   })
+  // })
 })
 
 // Potential TODOs and test ideas

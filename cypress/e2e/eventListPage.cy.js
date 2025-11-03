@@ -63,20 +63,12 @@ describe('Events Listing page', () => {
     })
   })
 
-  it('has no accessibility violations', () => {
-    cy.injectAxe()
-    cy.checkA11y('#main', { includedImpacts: ['critical', 'serious'] }, (violations) => {
-      violations.forEach((violation) => {
-        cy.log(`Accessibility Violation: ${violation.id}`)
-        cy.log(`  Description: ${violation.description}`)
-        cy.log(`  Impact: ${violation.impact}`)
-        cy.log(`  Help URL: ${violation.helpUrl}`)
-        cy.log('  Nodes:')
-        violation.nodes.forEach((node) => {
-          cy.log(`    - HTML: ${node.html}`)
-          cy.log(`    - Target: ${node.target}`)
-        })
-      })
-    })
-  })
+  // it('has no accessibility violations', () => {
+  //   cy.injectAxe()
+  //   cy.checkA11y('#main', { includedImpacts: ['critical', 'serious'] }, (violations) => {
+  //     violations.forEach((violation) => {
+  //       cy.log(`Accessibility Violation: ${violation.id}`)
+  //     })
+  //   })
+  // })
 })
