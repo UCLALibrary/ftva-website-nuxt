@@ -1,6 +1,5 @@
 /* These styles appear on all listing pages so far */
 
-
 .one-column {
   width: 100%;
   max-width: var(--max-width);
@@ -32,4 +31,10 @@
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   opacity: 0.7;
+}
+
+:deep(.rich-text) {
+  figure {
+    margin: var(--space-l) 0;
+  }
 }
