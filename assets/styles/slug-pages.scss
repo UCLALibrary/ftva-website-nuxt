@@ -39,16 +39,6 @@
     height: auto;
   }
 
-  :deep(.sizer) {
-    padding-bottom: calc(500/1160 * 100%) !important;
-
-    @media #{$medium} {
-      padding-bottom: calc(204/343 * 100%) !important;
-    }
-  }
-
-
-
   // check for a one-column layout with a lightbox or figure before rendering blue background
   &:has(> .one-column > .lightbox-container .lightbox),
   &:has(> .one-column > figure) {
