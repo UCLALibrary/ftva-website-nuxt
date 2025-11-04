@@ -178,20 +178,18 @@ useHead({
 <style lang="scss" scoped>
 @import 'assets/styles/slug-pages.scss';
 
-.archive-research-study-center {
-  .one-column {
+.one-column {
 
-    // if the layout has an image or carousel at the top
-    &:has(> .lightbox-container),
-    &:has(> figure) {
-      padding-top: 80px; // to account for the missing pageanchor on this layout
-    }
+  // if the layout has an image or carousel at the top
+  &:has(> .lightbox-container),
+  &:has(> figure) {
+    padding-top: 80px; // to account for the missing pageanchor on this layout
   }
+}
 
-  .flexible-content {
-    :deep(div:last-of-type .section-wrapper3) {
-      margin-bottom: 0;
-    }
+.flexible-content {
+  :deep(div:last-of-type .section-wrapper3) {
+    margin-bottom: 0;
   }
 }
 
@@ -215,12 +213,6 @@ useHead({
 
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
   @include ftva-h4;
-}
-
-.instructional-media-collections-services {
-  :deep(.flexible-block-section-wrapper:last-child) {
-    margin-bottom: 0;
-  }
 }
 
 /* remove max-width from rich-text inside flexible-blocks for ftva */
