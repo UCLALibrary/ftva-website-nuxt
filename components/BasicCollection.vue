@@ -177,7 +177,7 @@ const pageClasses = computed(() => {
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
-        class="responsive-image-banner"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -195,6 +195,7 @@ const pageClasses = computed(() => {
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag

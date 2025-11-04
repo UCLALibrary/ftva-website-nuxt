@@ -192,7 +192,7 @@ useHead({
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
-        class="responsive-image-banner"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -209,6 +209,7 @@ useHead({
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
