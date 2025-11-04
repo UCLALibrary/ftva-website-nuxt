@@ -124,7 +124,7 @@ useHead({
     id="main"
     :class="pageClasses"
   >
-    <div class="one-column resized-aspect-ratio">
+    <div class="one-column">
       <ResponsiveImage
         v-show="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
         data-test="single-image"
