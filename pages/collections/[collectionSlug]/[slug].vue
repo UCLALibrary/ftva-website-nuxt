@@ -279,6 +279,7 @@ const pageClasses = computed(() => {
         <ResponsiveImage
           v-else
           :media="page.ftvaImage[0]"
+          class="responsive-image-banner"
         />
       </template>
 

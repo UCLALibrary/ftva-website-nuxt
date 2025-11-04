@@ -17,7 +17,7 @@
     height: auto;
   }
 
-  :deep(.one-column .sizer) {
+  :deep(.responsive-image-banner .sizer) {
     padding-bottom: calc(500/1160 * 100%) !important;
 
     @media #{$medium} {

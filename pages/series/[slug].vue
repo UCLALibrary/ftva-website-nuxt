@@ -192,6 +192,7 @@ useHead({
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
+        class="responsive-image-banner"
       >
         <template
           v-if="parsedImage[0]?.creditText"
