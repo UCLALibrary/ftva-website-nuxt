@@ -282,6 +282,8 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
+@import 'assets/styles/slug-pages.scss';
+
 .page-collection-detail {
   position: relative;
 
@@ -353,6 +355,4 @@ const pageClasses = computed(() => {
     }
   }
 }
-
-@import 'assets/styles/slug-pages.scss';
 </style>
