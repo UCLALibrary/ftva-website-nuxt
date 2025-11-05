@@ -279,6 +279,7 @@ const pageClasses = computed(() => {
         <ResponsiveImage
           v-else
           :media="page.ftvaImage[0]"
+          class="resized-aspect-ratio"
         />
       </template>
 
@@ -520,6 +521,14 @@ const pageClasses = computed(() => {
   .table-component :deep(thead) tr,
   .table-component .table-row {
     gap: 0;
+  }
+
+  .ftva.table-wrapper {
+    padding: 40px;
+
+    @media (max-width: 899px) {
+      padding: 12px;
+    }
   }
 
   .credit-table__name {

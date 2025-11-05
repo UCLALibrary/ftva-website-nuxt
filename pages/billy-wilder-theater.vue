@@ -138,6 +138,7 @@ const pageClasses = computed(() => {
         :media="parsedImage[0]?.image?.[0]"
         :aspect-ratio="43.103"
         data-test="hero-image"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage?.[0]?.creditText"
@@ -154,6 +155,7 @@ const pageClasses = computed(() => {
         <FlexibleMediaGalleryNewLightbox
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag

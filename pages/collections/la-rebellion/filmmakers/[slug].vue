@@ -142,6 +142,7 @@ const pageClasses = computed(() => {
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -159,6 +160,7 @@ const pageClasses = computed(() => {
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -289,6 +291,19 @@ const pageClasses = computed(() => {
   .filmography-section-wrapper {
     margin-top: 64px;
     padding-bottom: 80px; // Page bottom spacing: 120px (80px + table's padding)
+
+    .ftva.table-wrapper {
+      background: white;
+      padding: 36px 40px 52px;
+
+      :deep(.ftva.table-component) {
+        max-width: 100%;
+      }
+
+      @media (max-width: 899px) {
+        padding: 12px;
+      }
+    }
   }
 
   // change filmography section title color

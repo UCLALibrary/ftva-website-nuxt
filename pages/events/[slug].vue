@@ -185,6 +185,7 @@ const pageClasses = computed(() => {
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -202,6 +203,7 @@ const pageClasses = computed(() => {
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -342,15 +344,8 @@ const pageClasses = computed(() => {
 .page-event-detail {
   position: relative;
 
-  :deep(.lightbox) {
-    overflow: hidden;
-  }
-
-  :deep(.carousel),
-  :deep(.lightbox .media-item) {
-    height: calc(var(--media-width) / 1.984);
-  }
-
+  // TODO New styles for the carousel lightbox
+  // positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
