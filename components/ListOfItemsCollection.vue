@@ -125,7 +125,7 @@ const parsedCollectionResults = computed(() => {
       to: `/${obj._source.uri}`,
       image: objImage,
       videoEmbed: obj._source.videoEmbed,
-      postDate: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
+      customDateTime: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
     }
   })
 })
