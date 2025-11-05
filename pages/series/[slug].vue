@@ -192,6 +192,7 @@ useHead({
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -208,6 +209,7 @@ useHead({
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
@@ -390,15 +392,8 @@ useHead({
     }
   }
 
-  :deep(.lightbox) {
-    overflow: hidden;
-  }
-
-  :deep(.carousel),
-  :deep(.lightbox .media-item) {
-    height: calc(var(--media-width) / 1.984);
-  }
-
+// TODO New styles for the carousel lightbox
+// positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
@@ -497,15 +492,6 @@ useHead({
   }
 
   @media #{$medium} {
-
-    :deep(.carousel),
-    :deep(.lightbox .media-item) {
-      height: calc(var(--media-width) / 1.575);
-    }
-
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 1.69/1;
-    }
 
     :deep(.card-meta .title-no-link) {
       font-size: 34px;
