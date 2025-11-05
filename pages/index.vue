@@ -175,7 +175,7 @@ const parsedPreservationData = computed(() => {
 })
 
 useHead({
-  title: 'UCLA Film & Television Archive', // APPS-3581 hardcode homepage title
+  title: 'Homepage', // APPS-3581 hardcode homepage title
   meta: [
     {
       hid: 'description',
