@@ -435,6 +435,7 @@ const pageClasses = computed(() => {
 
   :deep(.section-wrapper h2.section-header.section-title) {
     color: $heading-grey;
+    font-size: 38px;
   }
 
   .now-showing-section {
