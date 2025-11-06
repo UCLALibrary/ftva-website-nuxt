@@ -120,7 +120,8 @@ const parsedCollectionResults = computed(() => {
   return currentList.value.map((obj) => {
     const objImage = parseImage(obj)
     return {
-      ...obj._source,
+      // TODO strategically re-add this and null out other date fields?
+      // ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
       image: objImage,
