@@ -20,10 +20,10 @@
       aspect-ratio: 343/204;
     }
   }
-}
 
-:deep(.one-column .lightbox .media-item) {
-  height: auto;
+  :deep(.one-column .lightbox .media-item) {
+    height: auto;
+  }
 }
 
 .one-column {
