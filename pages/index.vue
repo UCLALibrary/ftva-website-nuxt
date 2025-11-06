@@ -628,6 +628,10 @@ const pageClasses = computed(() => {
   }
 
   @media #{$small} {
+    :deep(.section-wrapper h2.section-header.section-title) {
+      font-size: 24px;
+    }
+
     :deep(.media-with-text .media-item) {
       min-width: unset;
       max-width: 100%;
