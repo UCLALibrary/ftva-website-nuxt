@@ -175,7 +175,7 @@ const parsedPreservationData = computed(() => {
 })
 
 useHead({
-  title: page.value ? page.value.title : '... loading',
+  title: 'Homepage', // APPS-3581 hardcode homepage title
   meta: [
     {
       hid: 'description',
@@ -629,8 +629,8 @@ const pageClasses = computed(() => {
 
   @media #{$small} {
     :deep(.media-with-text .media-item) {
-        min-width: unset;
-        max-width: 100%;
+      min-width: unset;
+      max-width: 100%;
     }
 
     .preservation-section {
