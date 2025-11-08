@@ -8,13 +8,22 @@
 
 function parseFieldForBreadcrumbTitleOverride(str) {
   switch (str) {
-    case 'ktla-newsfilm-collection': // Collection Item template
+    case 'ktla-newsfilm-collection': // Collection Item Detail
       return 'KTLA Newsfilm Collection'
 
-    case 'la-rebellion': // Collection Item template
-    case 'ftvaCollectionListingLARebellion': // Filmography Listing template
-    case 'ftvaListingLaRebellionFilmmakers': // Filmmaker Listing template
-    case 'ftvaLARebellionIndividual': // Filmmaker Detail template
+    case 'ktla-news-project-tom-bradley-mayor-of-los-angeles': // Collection Item Detail
+      return 'KTLA News Project: Tom Bradley, Mayor of Los Angeles'
+
+    case 'ucla-ktla-news-project': // Collection Item Detail
+      return 'UCLA KTLA News Project'
+
+    case 'u-s-steel-hour': // Collection Item Detail
+      return 'U.S. Steel Hour'
+
+    case 'la-rebellion': // Collection Item Detail
+    case 'ftvaListingLaRebellionFilmmakers': // Filmmaker Listing
+    case 'ftvaCollectionListingLARebellion': // Filmography Listing
+    case 'ftvaLARebellionIndividual': // Filmmaker Detail
       return 'L.A. Rebellion'
 
     default:

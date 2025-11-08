@@ -5,6 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVA_GENERAL_CONTENT_DETAIL from '../gql/queries/FTVAGeneralContentDetail.gql'
 
+// UTILS
+import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -47,7 +50,9 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-
+console.log(page.value)
+console.log(page.value.slug)
+console.log('path: ', path)
 watch(data, (newVal, oldVal) => {
   // eslint-disable-next-line no-console
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -78,6 +83,26 @@ const parsedFlexibleBlocks = computed(() => {
   return parseFlexibleBlocks(dataBlocks)
 })
 
+// const regex = /^[^\/]+(?:\/[^\/]+){2,}$/;
+
+const checkIfChild = computed(() => {
+  const uri = page.value.uri
+
+  // eslint-disable-next-line no-useless-escape
+  const regex = /^ftva(?:\/[^\/]+){2,}$/
+  return regex.test(uri)
+})
+console.log('regex test: ', checkIfChild.value)
+
+// BREADCRUMB OVERRIDES
+// Add value of new breadcrumb title to switch statement in the utility file
+const breadcrumbOverrides = ref([
+  {
+    titleLevel: 1,
+    updatedTitle: parseFieldForBreadcrumbTitleOverride(page.value.slug) || null
+  }
+])
+
 const pageClasses = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path, 'page-bottom-spacer']
 })
@@ -104,6 +129,7 @@ onMounted(() => {
         :title="page?.title"
         data-test="breadcrumb"
       />
+      <!-- :override-title-group="breadcrumbOverrides" -->
 
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
