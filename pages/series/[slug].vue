@@ -365,6 +365,9 @@ useHead({
 .page-event-series-detail {
   position: relative;
 
+  .one-column .resized-aspect-ratio {
+    position: relative;  }
+
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
