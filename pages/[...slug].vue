@@ -5,9 +5,6 @@ import _get from 'lodash/get'
 // GQL
 import FTVA_GENERAL_CONTENT_DETAIL from '../gql/queries/FTVAGeneralContentDetail.gql'
 
-// UTILS
-import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
-
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
