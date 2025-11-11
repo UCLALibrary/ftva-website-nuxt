@@ -641,6 +641,32 @@ const pageClasses = computed(() => {
         margin-bottom: 36px;
       }
     }
+
+    .visit-learn-section {
+      :deep(div.section-header:first-of-type) {
+        margin-bottom: var(--space-l);
+      }
+
+      :deep(.quicklink-item-mobile) {
+        height: unset;
+
+        &:not(:last-child) {
+          margin-bottom: 16px;
+        }
+
+        a.block-post-small .title {
+          font-size: 21px;
+        }
+
+        a.block-post-small .author {
+          font-size: 14px;
+        }
+
+        a.block-post-small:after {
+          display: none;
+        }
+      }
+    }
   }
 }
 </style>
