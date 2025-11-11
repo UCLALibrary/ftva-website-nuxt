@@ -50,9 +50,7 @@ if (data.value.entry && import.meta.prerender) {
 }
 
 const page = ref(_get(data.value, 'entry', {}))
-console.log(page.value)
-console.log(page.value.slug)
-console.log('path: ', path)
+
 watch(data, (newVal, oldVal) => {
   // eslint-disable-next-line no-console
   console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
@@ -83,25 +81,19 @@ const parsedFlexibleBlocks = computed(() => {
   return parseFlexibleBlocks(dataBlocks)
 })
 
-// const regex = /^[^\/]+(?:\/[^\/]+){2,}$/;
+// BREADCRUMB OVERRIDES FOR NESTED GCP PAGES
+// Nested GCP pages are created in Craft and not in Nuxt's directory/folder structure; therefore we have to use the `ancestor` field to create updated titles for the breadcrumb levels
+const gcpBreadcrumbOverrides = computed(() => {
+  if (page?.value.ancestors.length === 0)
+    return null
 
-const checkIfChild = computed(() => {
-  const uri = page.value.uri
-
-  // eslint-disable-next-line no-useless-escape
-  const regex = /^ftva(?:\/[^\/]+){2,}$/
-  return regex.test(uri)
+  return page.value.ancestors.map((obj, index) => {
+    return {
+      titleLevel: index + 1,
+      updatedTitle: obj.title
+    }
+  })
 })
-console.log('regex test: ', checkIfChild.value)
-
-// BREADCRUMB OVERRIDES
-// Add value of new breadcrumb title to switch statement in the utility file
-const breadcrumbOverrides = ref([
-  {
-    titleLevel: 1,
-    updatedTitle: parseFieldForBreadcrumbTitleOverride(page.value.slug) || null
-  }
-])
 
 const pageClasses = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', 'page-general-content', path, 'page-bottom-spacer']
@@ -126,10 +118,16 @@ onMounted(() => {
   >
     <div class="one-column">
       <NavBreadcrumb
+        v-if="gcpBreadcrumbOverrides"
+        :title="page?.title"
+        :override-title-group="gcpBreadcrumbOverrides"
+        data-test="breadcrumb"
+      />
+      <NavBreadcrumb
+        v-else
         :title="page?.title"
         data-test="breadcrumb"
       />
-      <!-- :override-title-group="breadcrumbOverrides" -->
 
       <ResponsiveImage
         v-if="parsedImage && parsedImage.length === 1 && parsedImage[0]?.image && parsedImage[0]?.image?.length === 1"
