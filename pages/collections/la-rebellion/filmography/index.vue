@@ -77,11 +77,18 @@ useHead({
 })
 
 // BREADCRUMB OVERRIDES
-// Add value of new breadcrumb title to switch statement in the utility file
+const parseBreadcrumbTitle = computed(() => {
+  if (page.value.sectionHandle === 'ftvaCollectionListingLARebellion') {
+    return 'L.A. Rebellion'
+  }
+
+  return null
+})
+
 const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
+    updatedTitle: parseBreadcrumbTitle
   }
 ])
 </script>
