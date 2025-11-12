@@ -35,11 +35,15 @@
     &:before {
       content: '';
       position: absolute;
-      // aspect-ratio: 1440 / 520;
+      aspect-ratio: 1440 / 520;
       max-height: 518px; //prevent overflow on large screens
       min-height: 225px; //prevent too much shrinking on small screens
       width: 100%;
       z-index: -1;
+
+      @media #{$small} {
+        aspect-ratio: unset;
+      }
     }
   }
 
