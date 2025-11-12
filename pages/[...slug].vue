@@ -78,10 +78,10 @@ const parsedFlexibleBlocks = computed(() => {
   return parseFlexibleBlocks(dataBlocks)
 })
 
-// BREADCRUMB OVERRIDES FOR NESTED GCP PAGES
-// Nested GCP pages are nested in Craft and not in Nuxt's folder structure, therefore the breadcrumb parsing utility will not work for updating or overriding titles that have special characters
-// The current breadcrumb utility is applied at the folder level; nested GCP pages are files, not folders
-// The workaround is to use the `ancestor` field in Craft (added to the template's gql query), to determine if a page is nested; if so, parse the ancestors locally to create the override-group object for the NavBreadcrumb component
+// BREADCRUMB OVERRIDES FOR NESTED GC PAGES
+// Nested GC pages are nested in Craft and not in Nuxt's folder structure; the pages are files, not folders
+// The current way we override breadcrumbs with special characters is at the folder level or is dependent on referencing folder levels
+// The workaround: Use the `ancestor` field in Craft (added to the template's gql query) to determine if a page is nested; if so, parse the ancestors, give them 'folder/path levels'; use the levels and the ancestors' titles to create the override-group object for the NavBreadcrumb component
 const gcpBreadcrumbOverrides = computed(() => {
   if (page?.value.ancestors.length === 0)
     return null
