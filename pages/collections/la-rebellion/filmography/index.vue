@@ -7,9 +7,6 @@ import _get from 'lodash/get'
 import FTVACollectionFilmography from '../gql/queries/FTVACollectionFilmography.gql'
 import ListOfItemsCollection from '~/components/ListOfItemsCollection.vue'
 
-// UTILS
-import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
-
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()

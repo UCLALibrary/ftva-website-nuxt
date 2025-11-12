@@ -2,7 +2,6 @@
 // HELPERS
 import _get from 'lodash/get'
 import removeTags from '~/utils/removeTags'
-import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
 
 // GQL
 import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmmakersDetail.gql'

@@ -4,7 +4,6 @@ import { computed } from 'vue'
 // HELPERS & UTILS
 import _get from 'lodash/get'
 import removeTags from '~/utils/removeTags'
-import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
 
 // GQL
 import FTVALARebellionFilmmakersList from '~/gql/queries/FTVALARebellionFilmmakersList.gql'
