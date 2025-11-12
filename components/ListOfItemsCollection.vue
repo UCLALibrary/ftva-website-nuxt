@@ -120,12 +120,13 @@ const parsedCollectionResults = computed(() => {
   return currentList.value.map((obj) => {
     const objImage = parseImage(obj)
     return {
-      ...obj._source,
+      // TODO strategically re-add this and null out other date fields?
+      // ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
       image: objImage,
       videoEmbed: obj._source.videoEmbed,
-      postDate: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
+      customDateTime: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
     }
   })
 })
