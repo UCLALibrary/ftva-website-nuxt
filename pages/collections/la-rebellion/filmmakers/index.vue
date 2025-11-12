@@ -195,7 +195,7 @@ const pageClasses = computed(() => {
 
 // BREADCRUMB OVERRIDES
 const parseBreadcrumbTitle = computed(() => {
-  if (page.value.sectionHandle === 'ftvaListingLaRebellionFilmmakers') {
+  if (page?.value.sectionHandle === 'ftvaListingLaRebellionFilmmakers') {
     return 'L.A. Rebellion'
   }
 

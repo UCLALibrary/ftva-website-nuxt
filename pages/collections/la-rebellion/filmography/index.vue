@@ -75,7 +75,7 @@ useHead({
 
 // BREADCRUMB OVERRIDES
 const parseBreadcrumbTitle = computed(() => {
-  if (page.value.sectionHandle === 'ftvaCollectionListingLARebellion') {
+  if (page?.value.sectionHandle === 'ftvaCollectionListingLARebellion') {
     return 'L.A. Rebellion'
   }
 

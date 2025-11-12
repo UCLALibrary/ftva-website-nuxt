@@ -214,7 +214,7 @@ useHead({
 const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: page.value.ftvaAssociatedCollections[0]?.title || null
+    updatedTitle: page?.value.ftvaAssociatedCollections[0]?.title || null
   }
 ])
 

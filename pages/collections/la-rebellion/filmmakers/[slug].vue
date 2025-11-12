@@ -111,7 +111,7 @@ useHead({
 
 // BREADCRUMB OVERRIDES
 const parseBreadcrumbTitle = computed(() => {
-  if (page.value.sectionHandle === 'ftvaLARebellionIndividual') {
+  if (page?.value.sectionHandle === 'ftvaLARebellionIndividual') {
     return 'L.A. Rebellion'
   }
 
