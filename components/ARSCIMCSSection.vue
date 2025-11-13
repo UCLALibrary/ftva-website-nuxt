@@ -101,7 +101,7 @@ const parsedCarouselData = computed<ParsedCarouselItem[]>(() => {
     const firstImage = rawItem?.image?.[0]
     return {
       item: firstImage ? [{ ...firstImage, kind: 'image' }] : [],
-      creditText: rawItem?.creditText ?? '',
+      credit: rawItem?.creditText ?? '',
     }
   })
 })
