@@ -24,11 +24,13 @@
       }
     }
 
-    :deep(.one-column .lightbox .media-item) {
-      height: auto;
+    &.lightbox {
+      :deep(.media-item) {
+        height: auto;
+      }
     }
-  }
 
+  }
 
   // check for a one-column layout with a lightbox or figure before rendering blue background
   &:has(> .one-column > .lightbox-container .lightbox),

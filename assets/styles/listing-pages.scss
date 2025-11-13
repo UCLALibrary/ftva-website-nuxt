@@ -21,8 +21,10 @@
     }
   }
 
-  :deep(.one-column .lightbox .media-item) {
-    height: auto;
+  &.lightbox {
+    :deep(.media-item) {
+      height: auto;
+    }
   }
 }
 
