@@ -51,4 +51,4 @@ jobs:
           github-deployment-environment: production
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: "${{ github.event.inputs.environment == 'test' && secrets.NETLIFY_TEST_FTVA_SITE_ID || secrets.NETLIFY_PROD_FTVA_SITE_ID }}"
+          NETLIFY_SITE_ID: "${{ github.event.inputs.environment == 'test' && secrets.NETLIFY_TEST_FTVA_SITE_ID_POSTLAUNCH || secrets.NETLIFY_PROD_FTVA_SITE_ID }}"

@@ -2,11 +2,11 @@ name: Run CI Suite
 
 on:
     push:
-        branches: [main]
+        branches: [post-launch]
     pull_request:
-        branches: [main]
+        branches: [post-launch]
 concurrency:
-    group: ci-${{ github.ref_name=='main' && github.sha || github.ref_name }} # Cancel runs for previous version of PR, but not main (after merge). For hacked ternary, see https://github.com/actions/runner/issues/409#issuecomment-727565588
+    group: ci-${{ github.ref_name=='post-launch' && github.sha || github.ref_name }} # Cancel runs for previous version of PR, but not main (after merge). For hacked ternary, see https://github.com/actions/runner/issues/409#issuecomment-727565588
     cancel-in-progress: true
 jobs:
     eslint:
@@ -56,11 +56,11 @@ jobs:
             - name: Sets env vars for PR preview
               run: |
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}-deploy-preview-${{github.event.pull_request.number}}" >> $GITHUB_ENV
-              if: github.ref_name!='main'
+              if: github.ref_name!='post-launch'
             - name: Sets env vars for main merge
               run: |
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}" >> $GITHUB_ENV
-              if: github.ref_name=='main'
+              if: github.ref_name=='post-launch'
 
             - name: Cache Nuxt build cache
               uses: actions/cache@v3
@@ -85,7 +85,7 @@ jobs:
                   ES_ALIAS: ${{ env.ES_ALIAS }}
                   ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
             - name: Deploy to Netlify (preview)
-              if: github.ref_name!='main'
+              if: github.ref_name!='post-launch'
               uses: nwtgck/actions-netlify@v3.0 #
               with:
                   production-deploy: false
@@ -101,7 +101,7 @@ jobs:
                   github-deployment-environment: ${{ github.event_name }}-${{ github.event.number }}
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
+                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID_POSTLAUNCH }}
 
             - name: Cache Cypress
               uses: actions/cache@v3
@@ -142,4 +142,4 @@ jobs:
                   github-deployment-environment: testing
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
+                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID_POSTLAUNCH }}
