@@ -205,6 +205,24 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 const route = useRoute()
+const router = useRouter()
+
+const isMobileCalendarView = () =>
+  typeof window !== 'undefined' && window.innerWidth < 768
+
+onMounted(() => {
+  const currentView = route.query.view
+
+  if (isMobileCalendarView() && currentView === 'calendar') {
+    router.replace({
+      query: {
+        ...route.query,
+        view: 'list'
+      }
+    })
+  }
+})
+
 // PAGINATION SCROLL HANDLING
 // Element reference for the scroll target
 const resultsSection = ref<HTMLElement>(null)
