@@ -63,8 +63,8 @@ useHead({
       <header-sticky
         v-if="primaryMenuItems"
         class="primary"
-        :primary-items="primaryMenuItems"
         :key="route.query.q"
+        :primary-items="primaryMenuItems"
       />
       <NuxtPage />
       <footer data-test="footer">
