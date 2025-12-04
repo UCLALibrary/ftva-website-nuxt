@@ -62,8 +62,8 @@ useHead({
       <site-brand-bar class="brand-bar" />
       <header-sticky
         v-if="primaryMenuItems"
-        class="primary"
         :key="route.query.q"
+        class="primary"
         :primary-items="primaryMenuItems"
       />
       <NuxtPage />
