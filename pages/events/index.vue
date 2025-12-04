@@ -208,7 +208,7 @@ const route = useRoute()
 const router = useRouter()
 
 const isMobileCalendarView = () =>
-  typeof window !== 'undefined' && window.innerWidth < 750
+  typeof window !== 'undefined' && window.innerWidth < 751
 
 onMounted(() => {
   const currentView = route.query.view
