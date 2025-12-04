@@ -15,6 +15,21 @@ describe('Events Listing page', () => {
     cy.percySnapshot('eventslistpage')
   })
 
+  it('Toggles tab to calendar view', () => {
+    // Calendar is visible at 1025px and above
+    cy.viewport(1280, 720)
+
+    cy.get('.tab-list-header').should('be.visible')
+
+    cy.get('[data-test="list-view"]').should('be.visible')
+
+    cy.get('[data-test="tabbed-content"]').should('be.visible')
+
+    cy.get('#tab-calendar-view').click()
+
+    cy.get('[data-test="calendar-view"]').should('be.visible')
+  })
+
   it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
@@ -36,17 +51,32 @@ describe('Events Listing page', () => {
     })
   })
 
+  // it('Shows events with selected labels and clears label filters', () => {
+  //   // wait for 2 fetch calls until list is visible to ensure initial render has finished
+  //   cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
+  //   cy.wait('@eventData').wait('@eventData').then(() => {
+  //     cy.getByData('filters-dropdown').click()
+  //     cy.get('.pill-label').contains('35mm').first().click()
+  //     cy.get('.select-button').click()
+  //     // expect fewer than 8 items than match both
+  //     cy.get('.list').find('li').should('have.length.below', 8)
+  //   })
+  // })
+
   it('Shows events with selected labels and clears label filters', () => {
-    // wait for 2 fetch calls until list is visible to ensure initial render has finished
-    cy.viewport(375, 812)
-    cy.visit('/events?view=list')
-    cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
-    cy.wait('@eventData').wait('@eventData').then(() => {
-      cy.getByData('filters-dropdown').click()
-      cy.get('.pill-label').contains('35mm').first().click()
-      cy.get('.select-button').click()
-      // expect fewer than 8 items than match both
-      cy.get('.list').find('li').should('have.length.below', 8)
-    })
+    cy.viewport(375, 812) // ensure list view
+
+    cy.intercept('POST', '**/_search*').as('eventData')
+
+    cy.wait('@eventData')
+    cy.wait('@eventData')
+
+    cy.getByData('filters-dropdown').click()
+    cy.get('.pill-label').contains('35mm').first().click()
+    cy.get('.select-button').click()
+
+    cy.wait('@eventData') // wait for filtered results
+
+    cy.get('.list li').should('have.length.below', 8)
   })
 })
