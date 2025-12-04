@@ -52,6 +52,7 @@ describe('Events Listing page', () => {
   })
 
   it('Shows events with selected labels and clears label filters', () => {
+    // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.viewport(375, 812) // ensure list view
 
     cy.intercept('POST', '**/_search*').as('eventData')
