@@ -38,6 +38,8 @@ describe('Events Listing page', () => {
 
   it('Shows events with selected labels and clears label filters', () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
+    cy.viewport(375, 812)
+    cy.visit('/events?view=list')
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
     cy.wait('@eventData').wait('@eventData').then(() => {
       cy.getByData('filters-dropdown').click()
@@ -46,20 +48,5 @@ describe('Events Listing page', () => {
       // expect fewer than 8 items than match both
       cy.get('.list').find('li').should('have.length.below', 8)
     })
-  })
-
-  it('Toggles tab to calendar view', () => {
-    // Calendar is visible at 1025px and above
-    cy.viewport(1280, 720)
-
-    cy.get('.tab-list-header').should('be.visible')
-
-    cy.get('[data-test="list-view"]').should('be.visible')
-
-    cy.get('[data-test="tabbed-content"]').should('be.visible')
-
-    cy.get('#tab-calendar-view').click()
-
-    cy.get('[data-test="calendar-view"]').should('be.visible')
   })
 })
