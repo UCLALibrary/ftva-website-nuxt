@@ -205,23 +205,34 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 const route = useRoute()
-const router = useRouter()
 
-const isMobileCalendarView = () =>
-  typeof window !== 'undefined' && window.innerWidth < 751
 
-onMounted(() => {
-  const currentView = route.query.view
 
-  if (isMobileCalendarView() && currentView === 'calendar') {
-    router.replace({
-      query: {
-        ...route.query,
-        view: 'list'
-      }
-    })
-  }
-})
+import { useWindowSize } from '@vueuse/core'
+
+const { width } = useWindowSize()
+
+const isMobileCalendarView = computed(() => width.value < 751)
+
+
+
+// const router = useRouter()
+
+// const isMobileCalendarView = () =>
+//   typeof window !== 'undefined' && window.innerWidth < 751
+
+// onMounted(() => {
+//   const currentView = route.query.view
+
+//   if (isMobileCalendarView() && currentView === 'calendar') {
+//     router.replace({
+//       query: {
+//         ...route.query,
+//         view: 'list'
+//       }
+//     })
+//   }
+// })
 
 // PAGINATION SCROLL HANDLING
 // Element reference for the scroll target
