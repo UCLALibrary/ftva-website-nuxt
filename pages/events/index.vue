@@ -206,15 +206,11 @@ const parsedRemoveSearchFilters = computed(() => {
 })
 const route = useRoute()
 
-
-
 import { useWindowSize } from '@vueuse/core'
 
 const { width } = useWindowSize()
 
 const isMobileCalendarView = computed(() => width.value < 751)
-
-
 
 // const router = useRouter()
 
