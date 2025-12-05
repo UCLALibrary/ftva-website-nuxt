@@ -207,6 +207,7 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 const route = useRoute()
+const router = useRouter()
 
 const { width } = useWindowSize()
 
@@ -219,7 +220,9 @@ watch(
     const currentView = route.query.view
 
     if (isMobile && currentView === 'calendar') {
-      // Force to list view
+      // sync internal state BEFORE redirect
+      userViewSelection.value = 'list'
+
       router.replace({
         query: {
           ...route.query,
@@ -228,10 +231,8 @@ watch(
       })
     }
   },
-  { immediate: true } // runs on page load
+  { immediate: true }
 )
-
-// const router = useRouter()
 
 // const isMobileCalendarView = () =>
 //   typeof window !== 'undefined' && window.innerWidth < 751
