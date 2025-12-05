@@ -233,22 +233,6 @@ watch(
   { immediate: true }
 )
 
-// const isMobileCalendarView = () =>
-//   typeof window !== 'undefined' && window.innerWidth < 751
-
-// onMounted(() => {
-//   const currentView = route.query.view
-
-//   if (isMobileCalendarView() && currentView === 'calendar') {
-//     router.replace({
-//       query: {
-//         ...route.query,
-//         view: 'list'
-//       }
-//     })
-//   }
-// })
-
 // PAGINATION SCROLL HANDLING
 // Element reference for the scroll target
 const resultsSection = ref<HTMLElement>(null)
