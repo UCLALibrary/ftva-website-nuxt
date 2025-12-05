@@ -3,12 +3,11 @@
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
 import { useElementBounding } from '@vueuse/core'
+import { useWindowSize } from '@vueuse/core'
 
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
-
-import { useWindowSize } from '@vueuse/core'
 
 // UTILS
 import getEventFilterLabels from '@/utils/getEventFilterLabels'
