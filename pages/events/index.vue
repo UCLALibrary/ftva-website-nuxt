@@ -3,6 +3,7 @@
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
 import { useElementBounding } from '@vueuse/core'
+import { useWindowSize } from '@vueuse/core'
 
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
@@ -205,6 +206,33 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 const route = useRoute()
+const router = useRouter()
+
+const { width } = useWindowSize()
+
+const isMobileCalendarView = computed(() => width.value < 751)
+
+watch(
+  () => width.value,
+  (newWidth) => {
+    const isMobile = newWidth < 751
+    const currentView = route.query.view
+
+    if (isMobile && currentView === 'calendar') {
+      // sync internal state BEFORE redirect
+      userViewSelection.value = 'list'
+
+      router.replace({
+        query: {
+          ...route.query,
+          view: 'list'
+        }
+      })
+    }
+  },
+  { immediate: true }
+)
+
 // PAGINATION SCROLL HANDLING
 // Element reference for the scroll target
 const resultsSection = ref<HTMLElement>(null)
