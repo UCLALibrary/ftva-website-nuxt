@@ -8,6 +8,8 @@ import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
+import { useWindowSize } from '@vueuse/core'
+
 // UTILS
 import getEventFilterLabels from '@/utils/getEventFilterLabels'
 import parseFilters from '@/utils/parseFilters'
@@ -206,11 +208,28 @@ const parsedRemoveSearchFilters = computed(() => {
 })
 const route = useRoute()
 
-import { useWindowSize } from '@vueuse/core'
-
 const { width } = useWindowSize()
 
 const isMobileCalendarView = computed(() => width.value < 751)
+
+watch(
+  () => width.value,
+  (newWidth) => {
+    const isMobile = newWidth < 751
+    const currentView = route.query.view
+
+    if (isMobile && currentView === 'calendar') {
+      // Force to list view
+      router.replace({
+        query: {
+          ...route.query,
+          view: 'list'
+        }
+      })
+    }
+  },
+  { immediate: true } // runs on page load
+)
 
 // const router = useRouter()
 
