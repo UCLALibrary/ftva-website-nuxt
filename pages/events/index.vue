@@ -3,6 +3,7 @@
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
 import { useElementBounding } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 import { useWindowSize } from '@vueuse/core'
 
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
@@ -207,6 +208,7 @@ const parsedRemoveSearchFilters = computed(() => {
 })
 
 const route = useRoute()
+const router = useRouter()
 const { width } = useWindowSize()
 
 watch(
