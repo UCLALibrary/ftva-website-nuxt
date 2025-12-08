@@ -205,12 +205,9 @@ const parsedRemoveSearchFilters = computed(() => {
   // console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
   return removefilters
 })
+
 const route = useRoute()
-const router = useRouter()
-
 const { width } = useWindowSize()
-
-const isMobileCalendarView = computed(() => width.value < 751)
 
 watch(
   () => width.value,

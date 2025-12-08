@@ -94,6 +94,10 @@ onMounted(async () => {
     .brand-bar {
       display: none;
     }
+
+    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
+      display: none;
+    }
   }
 }
 </style>
