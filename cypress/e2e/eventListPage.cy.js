@@ -30,42 +30,42 @@ describe('Events Listing page', () => {
     cy.get('[data-test="calendar-view"]').should('be.visible')
   })
 
-it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
-  // Intercept all Elasticsearch search calls
-  cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
+  it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
+    // Intercept all Elasticsearch search calls
+    cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
 
-  // Visit the page
-  cy.visit('/events')
+    // Visit the page
+    cy.visit('/events')
 
-  // Wait for initial data to load (2 calls expected)
-  cy.wait('@eventData')
-  cy.wait('@eventData')
+    // Wait for initial data to load (2 calls expected)
+    cy.wait('@eventData')
+    cy.wait('@eventData')
 
-  // Scroll to date filter and ensure it's ready for input
-  cy.getByData('date-filter')
-    .scrollIntoView({ offset: { top: -150, left: 0 } })
-    .should('not.be.disabled') // wait for Vue reactive updates
-    .type('12/01/2024', { waitforAnimations: true })
+    // Scroll to date filter and ensure it's ready for input
+    cy.getByData('date-filter')
+      .scrollIntoView({ offset: { top: -150, left: 0 } })
+      .should('not.be.disabled') // wait for Vue reactive updates
+      .type('12/01/2024', { waitforAnimations: true })
 
-  // Click "Apply" (select-button)
-  cy.get('.select-button').click()
+    // Click "Apply" (select-button)
+    cy.get('.select-button').click()
 
-  // Wait for filtered data to load
-  cy.wait('@eventData') // wait for filtered results
+    // Wait for filtered data to load
+    cy.wait('@eventData') // wait for filtered results
 
-  // Assert that exactly 1 event shows up
-  cy.get('.list li', { timeout: 10000 }).should('have.length', 1)
-  cy.get('.block-card-three-column').contains('Mother India')
+    // Assert that exactly 1 event shows up
+    cy.get('.list li', { timeout: 10000 }).should('have.length', 1)
+    cy.get('.block-card-three-column').contains('Mother India')
 
-  // Click "remove filter" button
-  cy.get('.block-remove-search-filter').click()
+    // Click "remove filter" button
+    cy.get('.block-remove-search-filter').click()
 
-  // Wait for unfiltered data to reload
-  cy.wait('@eventData').wait('@eventData')
+    // Wait for unfiltered data to reload
+    cy.wait('@eventData').wait('@eventData')
 
-  // Assert that multiple events are displayed
-  cy.get('.list li', { timeout: 10000 }).should('have.length.above', 5)
-})
+    // Assert that multiple events are displayed
+    cy.get('.list li', { timeout: 10000 }).should('have.length.above', 5)
+  })
 
   it('Shows events with selected labels and clears label filters', () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
