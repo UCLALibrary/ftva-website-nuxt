@@ -72,20 +72,36 @@ describe('Events Listing page', () => {
   })
 
   it('Shows events with selected labels and clears label filters', () => {
-    // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.viewport(375, 750) // ensure list view
 
+    // Intercept all search calls
     cy.intercept('POST', '**/_search*').as('eventData')
 
+    // Visit the events page
+    cy.visit('/events')
+
+    // Wait for initial data to load
     cy.wait('@eventData')
     cy.wait('@eventData')
 
+    // Open the filters dropdown
     cy.getByData('filters-dropdown').click()
-    cy.get('.pill-label').contains('35mm').first().click()
+
+    // Click the "35mm" pill
+    cy.get('.pill-label')
+      .contains('35mm')
+      .first()
+      .then(($pill) => {
+        cy.wrap($pill).click()
+      })
+
+    // Click "Apply" button
     cy.get('.select-button').click()
 
-    cy.wait('@eventData') // wait for filtered results
+    // Wait for filtered data to finish loading
+    cy.wait('@eventData')
 
-    cy.get('.list li').should('have.length.below', 8)
+    // Assert filtered results are below 8 items
+    cy.get('.list li', { timeout: 10000 }).should('have.length.below', 8)
   })
 })
