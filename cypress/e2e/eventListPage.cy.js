@@ -56,7 +56,7 @@ describe('Events Listing page', () => {
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
     cy.wait('@eventData').wait('@eventData').then(() => {
       cy.getByData('filters-dropdown').click()
-      cy.get('.pill-label').contains('35mm').first().click()
+      cy.get('.pill-label').contains('Guest speaker').first().click()
       cy.get('.select-button').click()
       // expect fewer than 8 items than match both
       cy.get('.list').find('li').should('have.length.below', 8)

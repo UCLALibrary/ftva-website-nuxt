@@ -2,7 +2,8 @@
 // HELPERS
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
-import { useElementBounding } from '@vueuse/core'
+
+import { useElementBounding, useWindowSize } from '@vueuse/core'
 
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
@@ -204,7 +205,33 @@ const parsedRemoveSearchFilters = computed(() => {
   // console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
   return removefilters
 })
+
 const route = useRoute()
+const router = useRouter()
+const { width } = useWindowSize()
+
+watch(
+  () => width.value,
+  (newWidth) => {
+    const isMobile = newWidth < 751
+    const currentView = route.query.view
+
+    if (isMobile && currentView === 'calendar') {
+      // sync internal state BEFORE redirect
+      userViewSelection.value = 'list'
+
+      router.push({
+        path: route.path,
+        query: {
+          ...route.query,
+          view: 'list'
+        }
+      })
+    }
+  },
+  { immediate: true }
+)
+
 // PAGINATION SCROLL HANDLING
 // Element reference for the scroll target
 const resultsSection = ref<HTMLElement>(null)
@@ -400,7 +427,7 @@ function applyDateFilterSelectionToRouteURL(data) {
   }
 
   // Use router.push to navigate with query params
-  useRouter().push({
+  router.push({
     path: '/events',
     query: {
       dates: datesParam,
