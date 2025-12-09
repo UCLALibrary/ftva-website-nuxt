@@ -30,11 +30,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ---------------------------------------------------------
-      # Step 1: Discover latest tag for schedule/manual builds
-      # ---------------------------------------------------------
-      - uses: actions/checkout@v4
-        if: ${{ github.event_name != 'release' }}
+      # Step 1: Always checkout repo
+      - name: Checkout repo (for local actions and tags)
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
