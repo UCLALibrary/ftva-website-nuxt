@@ -67,7 +67,7 @@ export default function useMobileInfiniteScroll<T = any>(
         if (mobileItemList.value.length === 0) {
           currentPage.value = 1
           // Initial load
-          // eslint-disable-next-line no-console
+
           // console.log('Initial load for mobile infinite scroll...')
         } else {
           currentPage.value++

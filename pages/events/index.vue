@@ -3,8 +3,7 @@
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
 import { useRouter } from 'vue-router'
-import { useElementBounding } from '@vueuse/core'
-import { useWindowSize } from '@vueuse/core'
+import { useElementBounding, useWindowSize } from '@vueuse/core'
 
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
@@ -121,13 +120,11 @@ const documentsPerPage = 10
 const noResultsFound = ref<boolean>(false)
 
 const eventFetchFunction = async () => {
-
   const page = currentPage.value
   const size = 10
   let results: any = {}
 
   if (userViewSelection.value === 'list') {
-
     const { paginatedSearchFilters } = useListSearchFilter()
     results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
   } else {
@@ -216,7 +213,6 @@ const { width } = useWindowSize()
 watch(
   () => width.value,
   (newWidth) => {
-    console.log('Window width changed:', newWidth)
     const isMobile = newWidth < 751
     const currentView = route.query.view
 
