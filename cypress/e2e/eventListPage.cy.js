@@ -41,17 +41,20 @@ describe('Events Listing page', () => {
     cy.wait('@eventData')
     cy.wait('@eventData')
 
-    // Scroll to date filter and ensure it's ready for input
-    cy.getByData('date-filter')
-      .scrollIntoView({ offset: { top: -150, left: 0 } })
-      .should('not.be.disabled') // wait for Vue reactive updates
-      .type('12/01/2024', { waitforAnimations: true })
+    // Scroll to date filter
+    cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
+
+    // Ensure date filter is ready for input
+    cy.getByData('date-filter').should('not.be.disabled')
+
+    // Type the date
+    cy.getByData('date-filter').type('12/01/2024', { waitforAnimations: true })
 
     // Click "Apply" (select-button)
     cy.get('.select-button').click()
 
     // Wait for filtered data to load
-    cy.wait('@eventData') // wait for filtered results
+    cy.wait('@eventData')
 
     // Assert that exactly 1 event shows up
     cy.get('.list li', { timeout: 10000 }).should('have.length', 1)
@@ -61,7 +64,8 @@ describe('Events Listing page', () => {
     cy.get('.block-remove-search-filter').click()
 
     // Wait for unfiltered data to reload
-    cy.wait('@eventData').wait('@eventData')
+    cy.wait('@eventData')
+    cy.wait('@eventData')
 
     // Assert that multiple events are displayed
     cy.get('.list li', { timeout: 10000 }).should('have.length.above', 5)
