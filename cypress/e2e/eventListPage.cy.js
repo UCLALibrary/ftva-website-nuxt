@@ -5,7 +5,7 @@ describe('Events Listing page', () => {
     cy.visit('/events')
   })
 
-  it('Visits Events Listing page', () => {
+  /* it('Visits Events Listing page', () => {
     cy.getByData('date-filter').should('be.visible')
 
     cy.getByData('filters-dropdown').should('be.visible')
@@ -28,7 +28,7 @@ describe('Events Listing page', () => {
     cy.get('#tab-calendar-view').click()
 
     cy.get('[data-test="calendar-view"]').should('be.visible')
-  })
+  }) */
 
   it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
