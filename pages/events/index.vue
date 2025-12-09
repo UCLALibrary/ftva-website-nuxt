@@ -2,9 +2,9 @@
 // HELPERS
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
-import { useElementBounding } from '@vueuse/core'
 import { useRouter } from 'vue-router'
-import { useWindowSize } from '@vueuse/core'
+// import { useElementBounding } from '@vueuse/core'
+// import { useWindowSize } from '@vueuse/core'
 
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
