@@ -9,6 +9,15 @@ run-name: >
       && 'latest tag (scheduled)'
       || 'latest tag (manual)' }}
 
+# This controls how the run is labeled in the GitHub UI
+run-name: >
+  Production Build -
+  ${{ github.event_name == 'release'
+      && format('release {0}', github.ref_name)
+      || github.event_name == 'schedule'
+      && 'latest tag (scheduled)'
+      || 'latest tag (manual)' }}
+
 on:
   release:
     types: [published]
@@ -23,23 +32,40 @@ on:
 
     # NEW: 12:30 PM PT
     - cron: '30 20 * * *'
+    # 9:00 AM PT
+    - cron: '0 17 * * *'
+
+    # 4:00 PM PT (5:00 PM during PDT)
+    - cron: '0 0 * * *'
+
+    # NEW: 12:30 PM PT
+    - cron: '30 20 * * *'
 
 jobs:
   nuxt-prod:
     name: Netlify deploy
     runs-on: ubuntu-latest
 
+
     steps:
-      # ---------------------------------------------------------
-      # Step 1: Discover latest tag for schedule/manual builds
-      # ---------------------------------------------------------
-      - uses: actions/checkout@v4
-        if: ${{ github.event_name != 'release' }}
+      # Step 1: Always checkout repo
+      - name: Checkout repo (for local actions and tags)
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Get Latest Tag (schedule/manual)
         if: ${{ github.event_name != 'release' }}
+        run: |
+          LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "CURRENT_REF=$LATEST_TAG" >> $GITHUB_ENV
+          echo "Latest tag is: $LATEST_TAG"
+
+      # ---------------------------------------------------------
+      # Step 2: For release builds, CURRENT_REF = release tag
+      # ---------------------------------------------------------
+      - name: Set CURRENT_REF for release
         run: |
           LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
@@ -78,13 +104,46 @@ jobs:
       # ---------------------------------------------------------
       # Step 5: Cache build
       # ---------------------------------------------------------
+        run: |
+          echo "CURRENT_REF=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          echo "Release tag ref: ${GITHUB_REF_NAME}"
+
+      # ---------------------------------------------------------
+      # Step 3: Checkout the ref we want and install deps
+      # ---------------------------------------------------------
+      - name: Set up workspace (checkout ref + install deps)
+        uses: ./.github/workflows/setup-workspace
+        with:
+          ref: ${{ env.CURRENT_REF }}
+
+      # ---------------------------------------------------------
+      # Step 4: Capture real ref for labeling + caching
+      # ---------------------------------------------------------
+      - name: Capture current ref info
+        run: |
+          echo "CURRENT_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
+          echo "CURRENT_SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "CURRENT_REF=$(git describe --tags --always)" >> $GITHUB_ENV
+
+          echo "Building ref: $(git describe --tags --always)"
+          echo "Commit: $(git rev-parse HEAD)"
+
+      # ---------------------------------------------------------
+      # Step 5: Cache build
+      # ---------------------------------------------------------
       - name: Cache built static site
         id: cache-nuxt3
         uses: actions/cache@v3
         with:
           path: .output/public
           key: nuxt3-site-${{ env.CURRENT_SHORT_SHA || github.sha }}
+          key: nuxt3-site-${{ env.CURRENT_SHORT_SHA || github.sha }}
 
+      # ---------------------------------------------------------
+      # Step 6: Build Nuxt site
+      # ---------------------------------------------------------
+      - name: Generate Nuxt static site
+        run: pnpm run generate
       # ---------------------------------------------------------
       # Step 6: Build Nuxt site
       # ---------------------------------------------------------
@@ -104,9 +163,14 @@ jobs:
       # Step 7: Deploy
       # ---------------------------------------------------------
       - name: Deploy to Netlify
+      # ---------------------------------------------------------
+      # Step 7: Deploy
+      # ---------------------------------------------------------
+      - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v2
         with:
           production-deploy: true
+          deploy-message: "Build from ${{ env.CURRENT_REF }} (commit ${{ env.CURRENT_SHORT_SHA }})"
           deploy-message: "Build from ${{ env.CURRENT_REF }} (commit ${{ env.CURRENT_SHORT_SHA }})"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           publish-dir: .output/public
