@@ -435,6 +435,7 @@ const pageClasses = computed(() => {
 
   :deep(.section-wrapper h2.section-header.section-title) {
     color: $heading-grey;
+    font-size: 38px;
   }
 
   .now-showing-section {
@@ -627,6 +628,13 @@ const pageClasses = computed(() => {
   }
 
   @media #{$small} {
+    :deep(.section-wrapper h2.section-header.section-title) {
+      font-size: 24px;
+    }
+
+    :deep(.media-with-text .media-item) {
+      min-width: unset;
+      max-width: 100%;
     .archive-blog-section {
       :deep(.media-with-text) {
         margin-top: 16px;
