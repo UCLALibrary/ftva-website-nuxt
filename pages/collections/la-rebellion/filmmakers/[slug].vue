@@ -2,7 +2,6 @@
 // HELPERS
 import _get from 'lodash/get'
 import removeTags from '~/utils/removeTags'
-import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
 
 // GQL
 import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmmakersDetail.gql'
@@ -111,11 +110,18 @@ useHead({
 })
 
 // BREADCRUMB OVERRIDES
-// Add value of new breadcrumb title to switch statement in the utility file
+const parseBreadcrumbTitle = computed(() => {
+  if (page?.value.sectionHandle === 'ftvaLARebellionIndividual') {
+    return 'L.A. Rebellion'
+  }
+
+  return null
+})
+
 const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
+    updatedTitle: parseBreadcrumbTitle
   }
 ])
 
