@@ -31,77 +31,35 @@ describe('Events Listing page', () => {
   })
 
   it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
-    // Intercept all Elasticsearch search calls
+    // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
+    cy.wait('@eventData').wait('@eventData').then(() => {
+      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } }) // scroll to date filter before typing to prevent errors with sticky header
+      /* eslint-disable cypress/no-unnecessary-waiting */
+      cy.wait(1000) // wait for scroll to finish, field is briefly disabled
+      cy.getByData('date-filter').type('12/01/2024', { waitforAnimations: true })
+      cy.get('.select-button').click()
+      // expect 1 item rendered with title Mother India
+      cy.get('.list').find('li').should('have.length', 1)
+      cy.get('.block-card-three-column').contains('Mother India')
+    })
 
-    // Visit the page
-    cy.visit('/events')
-
-    // Wait for initial data to load (2 calls expected)
-    cy.wait('@eventData')
-    cy.wait('@eventData')
-
-    // Scroll to date filter
-    cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
-
-    // Ensure date filter is ready for input
-    cy.getByData('date-filter').should('not.be.disabled')
-
-    // Type the date
-    cy.getByData('date-filter').type('12/01/2024', { waitforAnimations: true })
-
-    // Click "Apply" (select-button)
-    cy.get('.select-button').click()
-
-    // Wait for filtered data to load
-    cy.wait('@eventData')
-
-    // Assert that exactly 1 event shows up
-    cy.get('.list li', { timeout: 10000 }).should('have.length', 1)
-    cy.get('.block-card-three-column').contains('Mother India')
-
-    // Click "remove filter" button
+    // click filter to remove and check list is unfiltered
     cy.get('.block-remove-search-filter').click()
-
-    // Wait for unfiltered data to reload
-    cy.wait('@eventData')
-    cy.wait('@eventData')
-
-    // Assert that multiple events are displayed
-    cy.get('.list li', { timeout: 10000 }).should('have.length.above', 5)
+    cy.then(() => {
+      cy.get('.list').find('li').should('have.length.above', 5)
+    })
   })
 
   it('Shows events with selected labels and clears label filters', () => {
-    cy.viewport(375, 750) // ensure list view
-
-    // Intercept all search calls
-    cy.intercept('POST', '**/_search*').as('eventData')
-
-    // Visit the events page
-    cy.visit('/events')
-
-    // Wait for initial data to load
-    cy.wait('@eventData')
-    cy.wait('@eventData')
-
-    // Open the filters dropdown
-    cy.getByData('filters-dropdown').click()
-
-    // Click the "35mm" pill
-    cy.get('.pill-label')
-      .contains('35mm')
-      .first()
-      .then(($pill) => {
-        cy.wrap($pill).click()
-      })
-
-    // Click "Apply" button
-    cy.get('.select-button').click()
-
-    // Wait for filtered data to finish loading
-    cy.wait('@eventData')
-
-    // Assert filtered results are below 8 items
-    cy.get('.list li', { timeout: 10000 }).should('have.length.below', 8)
+    // wait for 2 fetch calls until list is visible to ensure initial render has finished
+    cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
+    cy.wait('@eventData').wait('@eventData').then(() => {
+      cy.getByData('filters-dropdown').click()
+      cy.get('.pill-label').contains('35mm').first().click()
+      cy.get('.select-button').click()
+      // expect fewer than 8 items than match both
+      cy.get('.list').find('li').should('have.length.below', 8)
+    })
   })
 })
