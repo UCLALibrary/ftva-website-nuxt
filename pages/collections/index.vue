@@ -252,13 +252,16 @@ const pageClasses = computed(() => {
       data-test="hearst-collection"
     >
       <BlockCardWithImage
+        class="block-highlight"
         :image="page.hearstImage[0]"
-        :to="page.hearstUri"
-      >
-        <template #customDescription>
-          <RichText :rich-text-content="page.hearstDescription" />
+        >
+        <template #customTitle>
+          <SmartLink :to="page.hearstUri">
+            <RichText :rich-text-content="page.hearstDescription" />
+          </SmartLink>
         </template>
       </BlockCardWithImage>
+
       <DividerWayFinder />
     </SectionWrapper>
 
@@ -319,11 +322,38 @@ const pageClasses = computed(() => {
     @include ftva-body-2;
   }
 
+  :deep(.block-highlight.is-vertical .image) {
+    border: 2px solid aqua;
+    //aspect-ratio: unset;
+    width:328;
+  }
+
   .section-wrapper-header-divider,
   .section-wrapper-featured-collections,
   .section-wrapper-hearst,
   :deep(.section-wrapper-post-small) {
     padding-top: 0;
+  }
+
+  .section-wrapper-hearst  {
+    .hearst-uri {
+      display: block;
+    }
+    :deep(.block-highlight.is-vertical .image-container) {
+      aspect-ratio: 1160/400;
+    }
+    :deep(.sizer) {
+      padding-bottom: calc(400/1160 * 100%) !important;
+    }
+
+    @media #{$small}{
+      :deep(.block-highlight.is-vertical .image-container) {
+        aspect-ratio: 275/184;
+      }
+      :deep(.sizer) {
+        padding-bottom: calc(184/275 * 100%) !important;
+      }
+    }
   }
 
   .section-wrapper-header-divider .divider-way-finder {
