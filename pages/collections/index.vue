@@ -360,6 +360,20 @@ const pageClasses = computed(() => {
     }
   }
 
+  /* this sets the image to fit the motion-picture, watch listen and telivision cards in safari too, this will be component change */
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+
+    .image {
+      aspect-ratio: 340/224;
+
+      .sizer {
+        padding-bottom: calc(224/340 * 100%) !important;
+      }
+    }
+  }
+
   .section-wrapper-hearst {
     :deep(.section-title) {
       color: $heading-grey;

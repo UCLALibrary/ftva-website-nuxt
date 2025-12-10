@@ -325,6 +325,8 @@ const pageClasses = computed(() => {
     }
   }
 
+
+
   .featured-articles-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -365,6 +367,27 @@ const pageClasses = computed(() => {
     position: absolute;
     right: 0;
     top: 0;
+  }
+
+  /* this sets the image to fit the featured cards in safari too, this will be component change */
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+
+    &:nth-of-type(1) .image {
+      aspect-ratio: 1160/403;
+
+      .sizer {
+        padding-bottom: calc(403/1160 * 100%) !important;
+      }
+    }
+
+    .image {
+      aspect-ratio: 566/330;
+
+      .sizer {
+        padding-bottom: calc(330/566 * 100%) !important;
+      }
+    }
   }
 
   :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container),
@@ -483,6 +506,11 @@ const pageClasses = computed(() => {
       font-weight: 400;
       text-transform: unset;
     }
+  }
+
+  :deep(.ftva.block-staff-article-item .image) {
+    height: 272px;
+    /* TODO move to component library later and why ? */
   }
 
   @media screen and (max-width: 450px) {

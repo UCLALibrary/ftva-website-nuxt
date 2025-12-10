@@ -447,6 +447,20 @@ const pageClasses = computed(() => {
     color: $heading-grey;
   }
 
+  /* this sets the image to fit the Now showing cards in safari too, this will be component change */
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+
+    .image {
+      aspect-ratio: 340/224;
+
+      .sizer {
+        padding-bottom: calc(224/340 * 100%) !important;
+      }
+    }
+  }
+
   .now-showing-section {
     .now-showing-items {
       background-color: var(--pale-blue);
