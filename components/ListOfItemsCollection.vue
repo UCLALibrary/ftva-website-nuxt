@@ -497,5 +497,9 @@ const pageClasses = computed(() => {
     padding: 45px 2.5% 0;
     justify-content: center;
   }
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+  }
 }
 </style>
