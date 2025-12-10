@@ -433,6 +433,16 @@ const pageClasses = computed(() => {
     position: relative;
   }
 
+  :deep(.ftva.inline.lightbox.homepage .button-prev) {
+    height: max-content;
+    top: unset;
+  }
+
+  :deep(.ftva.inline.lightbox.homepage .button-next) {
+    height: max-content;
+    top: unset;
+  }
+
   :deep(.section-wrapper h2.section-header.section-title) {
     color: $heading-grey;
   }
