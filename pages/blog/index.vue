@@ -94,7 +94,7 @@ const onResults = (results) => {
       totalPages.value = calculatedTotalPages
     }
   } else {
-    console.log('No results found, setting totalPages to 0 and hasMore to false')
+    // console.log('No results found, setting totalPages to 0 and hasMore to false')
     totalPages.value = 0
     hasMore.value = false
   }
@@ -324,8 +324,6 @@ const pageClasses = computed(() => {
       margin-block: 0;
     }
   }
-
-
 
   .featured-articles-wrapper {
     display: grid;
