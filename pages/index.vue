@@ -627,18 +627,18 @@ const pageClasses = computed(() => {
   }
 
   @media #{$medium} {
-    :deep(.ftva.section-wrapper div.section-header) {
-      margin-bottom: 40px;
-    }
-  }
-
-  @media #{$small} {
 
     :deep(.ftva.inline.lightbox.homepage .button-prev),
     :deep(.ftva.inline.lightbox.homepage .button-next) {
       top: calc(var(--media-height)/1.5);
     }
 
+    :deep(.ftva.section-wrapper div.section-header) {
+      margin-bottom: 40px;
+    }
+  }
+
+  @media #{$small} {
     .archive-blog-section {
       :deep(.media-with-text) {
         margin-top: 16px;
