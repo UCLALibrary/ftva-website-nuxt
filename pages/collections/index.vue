@@ -322,12 +322,6 @@ const pageClasses = computed(() => {
     @include ftva-body-2;
   }
 
-  :deep(.block-highlight.is-vertical .image) {
-    border: 2px solid aqua;
-    //aspect-ratio: unset;
-    width:328;
-  }
-
   .section-wrapper-header-divider,
   .section-wrapper-featured-collections,
   .section-wrapper-hearst,
