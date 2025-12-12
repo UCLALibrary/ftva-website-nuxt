@@ -433,11 +433,7 @@ const pageClasses = computed(() => {
     position: relative;
   }
 
-  :deep(.ftva.inline.lightbox.homepage .button-prev) {
-    height: max-content;
-    top: unset;
-  }
-
+  :deep(.ftva.inline.lightbox.homepage .button-prev),
   :deep(.ftva.inline.lightbox.homepage .button-next) {
     height: max-content;
     top: unset;
@@ -631,6 +627,12 @@ const pageClasses = computed(() => {
   }
 
   @media #{$medium} {
+
+    :deep(.ftva.inline.lightbox.homepage .button-prev),
+    :deep(.ftva.inline.lightbox.homepage .button-next) {
+      top: calc(var(--media-height)/1.5);
+    }
+
     :deep(.ftva.section-wrapper div.section-header) {
       margin-bottom: 40px;
     }
