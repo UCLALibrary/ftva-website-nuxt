@@ -69,6 +69,7 @@ const collectionFetchFunction = async () => {
 
   results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
 
+  console.log('Results: ', results)
   return results
 }
 
@@ -246,6 +247,9 @@ function parseAggRes(response: Aggregations) {
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
+
+  console.log('parsedESConfigFiltersRes: ', parsedESConfigFiltersRes)
+
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
     'ftvaItemInCollection',
