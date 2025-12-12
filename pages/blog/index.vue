@@ -368,16 +368,20 @@ const pageClasses = computed(() => {
   }
 
   /* this sets the image to fit the featured cards in safari too, this will be component change */
-  :deep(.ftva.block-highlight.is-vertical .image-container) {
-    aspect-ratio: unset;
+  :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container) {
 
-    &:nth-of-type(1) .image {
+    .image {
       aspect-ratio: 1160/403;
 
       .sizer {
         padding-bottom: calc(403/1160 * 100%) !important;
       }
     }
+  }
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+
+    aspect-ratio: unset;
 
     .image {
       aspect-ratio: 566/330;
