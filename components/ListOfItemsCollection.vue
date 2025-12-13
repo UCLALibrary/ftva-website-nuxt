@@ -219,12 +219,16 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 
 const searchFilters = ref([])
 
+function commaEncoder(str) {
+  return str.replaceAll(',', '/%2c/')
+}
+
 function parseAggRes(response: Aggregations) {
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
       label: bucket.key,
-      value: bucket.key
+      value: commaEncoder(bucket.key)
     }))
   }))
   console.log('parseAggRes filters: ', filters)
