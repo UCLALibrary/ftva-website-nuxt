@@ -69,7 +69,6 @@ const collectionFetchFunction = async () => {
 
   results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
 
-  console.log('Results: ', results)
   return results
 }
 
