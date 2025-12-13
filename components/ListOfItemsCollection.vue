@@ -69,6 +69,7 @@ const collectionFetchFunction = async () => {
 
   results = await paginatedCollectionSearchFilters(currpage, size, 'ftvaItemInCollection', titleForSearch.value, selectedFilters.value, selectedSortFilters.value.sortField)
 
+  console.log('Fetch Results: ', results)
   return results
 }
 
@@ -159,7 +160,11 @@ watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
   // console.log('Route query params changed:', newVal, oldVal)
   // set filters from query params
+
   const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+
+  console.log('Watched selected filters from route query: ', selectedFiltersFromRoute)
+
   if (Object.keys(selectedFiltersFromRoute).length === 0) {
     // if object is empty, set selectedFilters to empty object
     selectedFilters.value = {}
@@ -206,6 +211,9 @@ function updateSort(newSort) {
 // FILTERS SETUP - uses dynamic data
 const ftvaFilters = ref(attrs.page.ftvaFilters || [])
 function parseESConfigFilters(configFilters, ftvaFiltersArg) {
+  console.log('parseESConfigFilters configFilters: ', configFilters)
+  console.log('parseESConfigFilters ftvaFiltersArg: ', ftvaFiltersArg)
+
   const parsedfilters = []
   for (const ftvaFilter of ftvaFiltersArg) {
     const filter = configFilters.find(filter => filter.craftFieldValue === ftvaFilter)
@@ -218,14 +226,20 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 
 const searchFilters = ref([])
 
+function commaEncoder(str) {
+  return str.replaceAll(',', '')
+}
+
 function parseAggRes(response: Aggregations) {
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
     options: value.buckets.map(bucket => ({
       label: bucket.key,
-      value: bucket.key
+      // value: bucket.key
+      value: (bucket.key).replaceAll(',', '')
     }))
   }))
+  console.log('parseAggRes filters: ', filters)
 
   filters.forEach((filter) => {
     if (filter?.label !== 'Filter by Season') return
@@ -246,6 +260,7 @@ function parseAggRes(response: Aggregations) {
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
+
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
     'ftvaItemInCollection',
@@ -261,6 +276,7 @@ async function setFilters() {
   searchFilters.value = parseAggRes(
     searchAggsResponse
   )
+  console.log('setFilters SearchFilters: ', searchFilters.value)
 }
 
 // Object w key filter label and value ESFieldName for selected filter lookup
@@ -270,6 +286,7 @@ const fieldNamefromLabel = {
 }
 
 function updateFilters(newFilter) {
+  console.log('updateFilters newFilter: ', newFilter)
   const newFilterValue = Object.values(newFilter)[0]
   if (newFilterValue === '(none selected)') {
     router.push({
@@ -288,6 +305,7 @@ function updateFilters(newFilter) {
         // ignore page, we want to clear page # when filter is cleared
       }
     })
+    console.log('updateFilters filters: ', [fieldNamefromLabel[searchFilters.value[0]?.label]] + ':(' + newFilterValue + ')')
   }
 }
 
