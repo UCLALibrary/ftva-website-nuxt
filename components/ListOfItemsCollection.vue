@@ -227,6 +227,7 @@ function parseAggRes(response: Aggregations) {
       value: bucket.key
     }))
   }))
+  console.log('parseAggRes filters: ', filters)
 
   filters.forEach((filter) => {
     if (filter?.label !== 'Filter by Season') return
@@ -247,8 +248,6 @@ function parseAggRes(response: Aggregations) {
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
-
-  console.log('parsedESConfigFiltersRes: ', parsedESConfigFiltersRes)
 
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
@@ -292,6 +291,7 @@ function updateFilters(newFilter) {
         // ignore page, we want to clear page # when filter is cleared
       }
     })
+    console.log('update filters: ', [fieldNamefromLabel[searchFilters.value[0]?.label]] + ':(' + newFilterValue + ')')
   }
 }
 
