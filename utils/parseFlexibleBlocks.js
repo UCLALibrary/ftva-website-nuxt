@@ -51,10 +51,8 @@ function parseSimpleCard(block) {
         card = { ...card, contentLink: [content] }
       }
 
-      // TODO fix this in the SimpleCard component
-      // https://github.com/UCLALibrary/ftva-website-nuxt/wiki/Fix:-SimpleCardComponent-&-Update-parseFlexibleBlocks.js
-
-      // Check uri for 'ftva/' string and remove
+      // TODO Fix in component
+      // Prefer uri, fallback to slug
       if (content?.uri) {
         const cleanUri = content.uri.replace(/^\/?ftva\//i, '')
 
@@ -65,6 +63,20 @@ function parseSimpleCard(block) {
             {
               ...content,
               uri: cleanUri
+            }
+          ]
+        }
+      }
+      else if (content?.slug) {
+        const cleanSlug = content.slug.replace(/^\/?ftva\//i, '')
+
+        card = {
+          ...card,
+          uri: `/${cleanSlug}`,
+          contentLink: [
+            {
+              ...content,
+              uri: cleanSlug
             }
           ]
         }
