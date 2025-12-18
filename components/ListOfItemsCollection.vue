@@ -169,8 +169,8 @@ watch(() => route.query, async (newVal, oldVal) => {
     // if object is empty, set selectedFilters to empty object
     selectedFilters.value = {}
   } else {
-    // else destructure the selectedFiltersFromRoute object and convert first value from array to string
-    selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
+    // else destructure the selectedFiltersFromRoute object and convert first value from array to string and then replace any or all --- with ,
+    selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0].replace(/---/g, ',') }
   }
   // set sort & page # from query params
   selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
@@ -227,7 +227,7 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 const searchFilters = ref([])
 
 function commaEncoder(str) {
-  return str.replaceAll(',', '')
+  return str.replaceAll(',', '---')
 }
 
 function parseAggRes(response: Aggregations) {
@@ -235,8 +235,7 @@ function parseAggRes(response: Aggregations) {
     label: key,
     options: value.buckets.map(bucket => ({
       label: bucket.key,
-      // value: bucket.key
-      value: (bucket.key).replaceAll(',', '')
+      value: bucket.key
     }))
   }))
   console.log('parseAggRes filters: ', filters)
@@ -300,7 +299,7 @@ function updateFilters(newFilter) {
     router.push({
       path: route.path,
       query: {
-        filters: [fieldNamefromLabel[searchFilters.value[0]?.label]] + ':(' + newFilterValue + ')',
+        filters: [fieldNamefromLabel[searchFilters.value[0]?.label]] + ':(' + commaEncoder(newFilterValue) + ')',
         sort: selectedSortFilters.value.sortField,
         // ignore page, we want to clear page # when filter is cleared
       }
