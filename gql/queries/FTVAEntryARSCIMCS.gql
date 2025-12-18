@@ -9,7 +9,6 @@ query FTVAARSCIMCS($section: [String!]) {
     postDate
     title: titleGeneral
     summary
-    text
     displaySummary
     ftvaAlternativeTitle
     ftvaHomepageDescription
