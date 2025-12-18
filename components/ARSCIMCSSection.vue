@@ -158,7 +158,7 @@ useHead({
         </FlexibleMediaGalleryNewLightbox>
       </div>
     </div>
-<h3><pre>{{parsedFlexibleBlocks}}</pre></h3>
+
     <SectionWrapper>
       <SectionHeader
         :level="1"
