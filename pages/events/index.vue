@@ -635,7 +635,7 @@ const pageClasses = computed(() => {
 @import 'assets/styles/listing-pages.scss';
 
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
-  z-index: 250;
+  z-index: 99;
 }
 
 .page-events {
@@ -874,7 +874,7 @@ const pageClasses = computed(() => {
         /* For Safari */
         position: sticky;
         top: 65px;
-        z-index: 250;
+        z-index: 99;
         background-color: var(--pale-blue);
         padding: 20px;
       }
