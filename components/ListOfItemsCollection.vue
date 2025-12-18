@@ -117,15 +117,16 @@ const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPage
 // Format search results for SectionTeaserCard
 const parsedCollectionResults = computed(() => {
   if (currentList.value.length === 0) return []
+
   return currentList.value.map((obj) => {
     const objImage = parseImage(obj)
     return {
-      ...obj._source,
+      // ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
       image: objImage,
       videoEmbed: obj._source.videoEmbed,
-      postDate: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
+      customDateTime: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
     }
   })
 })
@@ -495,6 +496,10 @@ const pageClasses = computed(() => {
   .section-pagination {
     padding: 45px 2.5% 0;
     justify-content: center;
+  }
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
   }
 }
 </style>

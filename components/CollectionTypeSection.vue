@@ -300,7 +300,9 @@ watch(data, (newVal, oldVal) => {
         >
           <!-- 0 results, 1 result, 2 results, etc. -->
           <h2>
-            {{ parsedCollectionList.length }} {{ parsedCollectionList.length === 1 ? `result` : `results` }} shown
+            {{ parsedCollectionList.length }} {{ parsedCollectionList.length === 1 ? `result` :
+              `results`
+            }} shown
           </h2>
         </div>
 
@@ -416,8 +418,20 @@ watch(data, (newVal, oldVal) => {
     }
   }
 
+  :deep(.ftva.section-wrapper.top-level.theme-paleblue * .block-highlight.card) {
+    background: var(--pale-blue);
+  }
+
   :deep(.block-highlight) {
     border-radius: 0;
+
+    &.is-vertical .image-container {
+      overflow: hidden;
+    }
+
+    &.is-vertical.ftva.card {
+      min-height: unset;
+    }
 
     .media,
     &.is-vertical .image-container .molecule-no-image {
@@ -430,6 +444,7 @@ watch(data, (newVal, oldVal) => {
 
     .card-meta {
       padding-left: 0;
+      min-height: unset;
     }
 
     .card-meta.card-meta-items:hover>a.title {
