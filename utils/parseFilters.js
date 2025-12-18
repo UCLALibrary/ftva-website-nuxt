@@ -3,7 +3,6 @@ function parseFilters(filtersString) {
 
   const filters = {}
   const conditions = filtersString.split(' AND ')
-  console.log('conditions: ', conditions)
 
   conditions.forEach((condition) => {
     const [key, value] = condition.split(':(')
