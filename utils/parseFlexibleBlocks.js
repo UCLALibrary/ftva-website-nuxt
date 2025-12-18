@@ -27,59 +27,37 @@ function stripCountry(html) {
 
 // For internal and external resources, use titleGeneral as SimpleCard title; otherwise, keep default title
 // For internal resource, check for leading `ftva/` string in uri and remove if it exists
+
 function parseSimpleCard(block) {
   if (!block.cards || block.cards.length === 0)
     return null
 
-  let simpleCards = block.cards
-
-  simpleCards = simpleCards.map((card) => {
+  const simpleCards = block.cards.map((card) => {
     // External Resource
     if (card.typeHandle === 'externalServiceOrResource') {
       if (card.titleGeneral) {
-        card = { ...card, title: card.titleGeneral }
+        return { ...card, title: card.titleGeneral }
       }
+      return card
     }
 
     // Internal Resource
     if (card.typeHandle === 'internalServiceOrResource') {
-      let content = card.contentLink[0]
+      const content = card.contentLink?.[0]
 
-      // Check for titleGeneral
-      if (content.titleGeneral) {
-        content = { ...content, title: content.titleGeneral }
-        card = { ...card, contentLink: [content] }
-      }
+      if (!content || !content.uri)
+        return card
 
-      // TODO Fix in component
-      // Prefer uri, fallback to slug
-      if (content?.uri) {
-        const cleanUri = content.uri.replace(/^\/?ftva\//i, '')
+      const cleanedUri = content.uri.replace(/^\/?ftva\//i, '')
 
-        card = {
-          ...card,
-          uri: `/${cleanUri}`,
-          contentLink: [
-            {
-              ...content,
-              uri: cleanUri
-            }
-          ]
-        }
-      }
-      else if (content?.slug) {
-        const cleanSlug = content.slug.replace(/^\/?ftva\//i, '')
-
-        card = {
-          ...card,
-          uri: `/${cleanSlug}`,
-          contentLink: [
-            {
-              ...content,
-              uri: cleanSlug
-            }
-          ]
-        }
+      return {
+        ...card,
+        contentLink: [
+          {
+            ...content,
+            uri: cleanedUri
+          }
+        ]
       }
     }
 
