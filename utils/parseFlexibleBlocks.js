@@ -18,43 +18,9 @@ function parseInfoBlockAddress(block) {
 }
 
 // Helper for parseInfoBlockAddress: Remove country from address
-function parseSimpleCard(block) {
-  if (!block.cards || block.cards.length === 0)
-    return block
-
-  const simpleCards = block.cards.map((card) => {
-    // External Resource
-    if (card.typeHandle === 'externalServiceOrResource') {
-      if (card.titleGeneral) {
-        return { ...card, title: card.titleGeneral }
-      }
-      return card
-    }
-
-    // Internal Resource
-    if (card.typeHandle === 'internalServiceOrResource') {
-      const content = card.contentLink?.[0]
-
-      if (!content || !content.uri)
-        return card
-
-      const cleanedUri = content.uri.replace(/^\/?ftva\//i, '')
-
-      return {
-        ...card,
-        contentLink: [
-          {
-            ...content,
-            uri: cleanedUri
-          }
-        ]
-      }
-    }
-
-    return card
-  })
-
-  return { ...block, cards: simpleCards }
+function stripCountry(html) {
+  if (!html) return null
+  return html.replace(/<span\s+class=["']country["'][^>]*>.*?<\/span>/gs, '')
 }
 
 // ***** SIMPLE CARDS ***** //
@@ -64,7 +30,7 @@ function parseSimpleCard(block) {
 
 function parseSimpleCard(block) {
   if (!block.cards || block.cards.length === 0)
-    return null
+    return block
 
   const simpleCards = block.cards.map((card) => {
     // External Resource
