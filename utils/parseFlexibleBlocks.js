@@ -30,35 +30,50 @@ function stripCountry(html) {
 
 function parseSimpleCard(block) {
   if (!block.cards || block.cards.length === 0)
-    return block
+    return null
 
-  const simpleCards = block.cards.map((card) => {
+  let simpleCards = block.cards
+
+  simpleCards = simpleCards.map((card) => {
     // External Resource
     if (card.typeHandle === 'externalServiceOrResource') {
       if (card.titleGeneral) {
-        return { ...card, title: card.titleGeneral }
+        card = { ...card, title: card.titleGeneral }
       }
-      return card
     }
 
     // Internal Resource
     if (card.typeHandle === 'internalServiceOrResource') {
-      const content = card.contentLink?.[0]
+      let content = card.contentLink[0]
 
-      if (!content || !content.uri)
-        return card
-
-      const cleanedUri = content.uri.replace(/^\/?ftva\//i, '')
-
-      return {
-        ...card,
-        contentLink: [
-          {
-            ...content,
-            uri: cleanedUri
-          }
-        ]
+      // Check for titleGeneral
+      if (content.titleGeneral) {
+        content = { ...content, title: content.titleGeneral }
+        card = { ...card, contentLink: [content] }
       }
+
+      // Check uri for 'ftva/' string and remove
+      if (content.uri) {
+        const uriWithoutLeadingFtvaString = `/${content.uri.replace(/^\/?ftva\//i, '')}`
+        card = { ...card, uri: uriWithoutLeadingFtvaString }
+      }
+
+      // Remove ftva from General Content
+      const safeContent = card.contentLink?.[0]
+
+      if (safeContent?.uri) {
+        const cleanedUri = safeContent.uri.replace(/^\/?ftva\//i, '')
+        card = {
+          ...card,
+          contentLink: [
+            {
+              ...safeContent,
+              uri: cleanedUri
+            }
+          ]
+        }
+      }
+      /* ===== END ADDED BLOCK ===== */
     }
 
     return card
