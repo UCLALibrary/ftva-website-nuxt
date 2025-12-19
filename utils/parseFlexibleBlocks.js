@@ -52,13 +52,13 @@ function parseSimpleCard(block) {
         card = { ...card, contentLink: [content] }
       }
 
-      // Create card.uri from contentLink URI (remove leading ftva/)
+      // Check card.uri for leading 'ftva/' and remove it
       if (content.uri) {
-        const uriWithoutLeadingFtvaString = `/${content.uri.replace(/^\/?ftva\//i, '')}`
+        const uriWithoutLeadingFtvaString = content.uri ? `/${content.uri.replace(/^\/?ftva\//i, '')}` : '/'
         card = { ...card, uri: uriWithoutLeadingFtvaString }
       }
 
-      // Remove "ftva/" from the URI stored in contentLink for GeneralContent
+      // Check card.contentLink for leading 'ftva/' remove it from the URI stored in contentLink for GeneralContent
       const safeContent = card.contentLink?.[0]
 
       if (safeContent?.uri) {
