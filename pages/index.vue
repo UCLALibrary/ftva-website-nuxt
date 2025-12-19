@@ -443,6 +443,11 @@ const pageClasses = computed(() => {
     color: $heading-grey;
   }
 
+  // Make all images the same in FPB Media With Text
+  :deep(.media-with-text .media-item) {
+    aspect-ratio: 4/3;
+  }
+
   /* this sets the image to fit the Now showing cards in safari too, this will be component change */
 
   :deep(.ftva.block-highlight.is-vertical .image-container) {
@@ -618,6 +623,22 @@ const pageClasses = computed(() => {
     }
   }
 
+  .archive-blog-section {
+    .media-with-text {
+      max-height: unset;
+
+      :deep(.media-item) {
+        max-width: 100%;
+        flex-basis: 50%;
+        aspect-ratio: 570/375;
+
+        img.media {
+          aspect-ratio: 570/375;
+        }
+      }
+    }
+  }
+
   .preservation-section {
     :deep(.section-header.section-title) {
       margin-bottom: 40px;
@@ -633,11 +654,6 @@ const pageClasses = computed(() => {
     :deep(.rich-text.section-summary) {
       max-width: 100%;
     }
-  }
-
-  // Make all images the same in FPB Media With Text
-  :deep(.media-with-text .media-item) {
-    aspect-ratio: 4/3;
   }
 
   @media #{$medium} {
