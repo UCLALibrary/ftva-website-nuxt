@@ -160,13 +160,15 @@ watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
   // console.log('Route query params changed:', newVal, oldVal)
   // set filters from query params
+
   const selectedFiltersFromRoute = parseFilters(route.query.filters || '')
+
   if (Object.keys(selectedFiltersFromRoute).length === 0) {
     // if object is empty, set selectedFilters to empty object
     selectedFilters.value = {}
   } else {
-    // else destructure the selectedFiltersFromRoute object and convert first value from array to string
-    selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0] }
+    // else destructure the selectedFiltersFromRoute object and convert first value from array to string and then replace any or all --- with ,
+    selectedFilters.value = { [Object.keys(selectedFiltersFromRoute)[0]]: Object.values(selectedFiltersFromRoute)[0][0].replace(/---/g, ',') }
   }
   // set sort & page # from query params
   selectedSortFilters.value = { sortField: Array.isArray(route.query.sort) ? route.query.sort[0] : (route.query.sort || 'asc') }
@@ -219,6 +221,10 @@ function parseESConfigFilters(configFilters, ftvaFiltersArg) {
 
 const searchFilters = ref([])
 
+function commaEncoder(str) {
+  return str.replaceAll(',', '---')
+}
+
 function parseAggRes(response: Aggregations) {
   const filters = (Object.entries(response) || []).map(([key, value]) => ({
     label: key,
@@ -247,6 +253,7 @@ function parseAggRes(response: Aggregations) {
 // fetch filters for the page from ES after page loads in Onmounted hook on the client side
 async function setFilters() {
   const parsedESConfigFiltersRes = parseESConfigFilters(config.collection.filters, ftvaFilters.value)
+
   const searchAggsResponse: Aggregations = await useCollectionAggregator(
     parsedESConfigFiltersRes,
     'ftvaItemInCollection',
@@ -284,7 +291,7 @@ function updateFilters(newFilter) {
     router.push({
       path: route.path,
       query: {
-        filters: [fieldNamefromLabel[searchFilters.value[0]?.label]] + ':(' + newFilterValue + ')',
+        filters: [fieldNamefromLabel[searchFilters.value[0]?.label]] + ':(' + commaEncoder(newFilterValue) + ')',
         sort: selectedSortFilters.value.sortField,
         // ignore page, we want to clear page # when filter is cleared
       }
