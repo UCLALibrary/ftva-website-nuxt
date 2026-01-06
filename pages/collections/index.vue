@@ -254,7 +254,7 @@ const pageClasses = computed(() => {
       <BlockCardWithImage
         class="block-highlight"
         :image="page.hearstImage[0]"
-        >
+      >
         <template #customTitle>
           <SmartLink :to="page.hearstUri">
             <RichText :rich-text-content="page.hearstDescription" />
