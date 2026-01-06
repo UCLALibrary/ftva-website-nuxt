@@ -432,8 +432,7 @@ const pageClasses = computed(() => {
       margin-top: 25px;
     }
 
-    :deep(.block-screening-detail .rich-text:last-child .parsed-content),
-    :deep(.block-screening-detail:last-of-type dl) {
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
       margin-bottom: 0;
     }
   }

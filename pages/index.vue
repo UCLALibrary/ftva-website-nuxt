@@ -433,11 +433,7 @@ const pageClasses = computed(() => {
     position: relative;
   }
 
-  :deep(.ftva.inline.lightbox.homepage .button-prev) {
-    height: max-content;
-    top: unset;
-  }
-
+  :deep(.ftva.inline.lightbox.homepage .button-prev),
   :deep(.ftva.inline.lightbox.homepage .button-next) {
     height: max-content;
     top: unset;
@@ -445,6 +441,20 @@ const pageClasses = computed(() => {
 
   :deep(.section-wrapper h2.section-header.section-title) {
     color: $heading-grey;
+  }
+
+  /* this sets the image to fit the Now showing cards in safari too, this will be component change */
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+
+    .image {
+      aspect-ratio: 340/224;
+
+      .sizer {
+        padding-bottom: calc(224/340 * 100%) !important;
+      }
+    }
   }
 
   .now-showing-section {
@@ -631,6 +641,12 @@ const pageClasses = computed(() => {
   }
 
   @media #{$medium} {
+
+    :deep(.ftva.inline.lightbox.homepage .button-prev),
+    :deep(.ftva.inline.lightbox.homepage .button-next) {
+      top: calc(var(--media-height)/1.5);
+    }
+
     :deep(.ftva.section-wrapper div.section-header) {
       margin-bottom: 40px;
     }
