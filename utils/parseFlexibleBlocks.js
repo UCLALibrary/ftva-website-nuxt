@@ -59,7 +59,8 @@ function parseSimpleCard(block) {
         card = {
           ...card,
           contentLink: [
-            { ...content,
+            {
+              ...content,
               uri: uriWithoutLeadingFtvaString
             }
           ]
