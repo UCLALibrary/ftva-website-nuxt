@@ -466,10 +466,20 @@ const pageClasses = computed(() => {
       :deep(li.block-highlight) {
         max-width: 340px;
         flex-direction: column-reverse;
+        background-color: green;
 
         .smart-link.title {
           @include ftva-card-title-1;
           color: $heading-grey;
+          color: aqua;
+
+          &:hover {
+            text-decoration: underline;
+            text-decoration-color: #2c91ff;
+            text-decoration-thickness: 3px;
+            text-underline-offset: 4px;
+            color: coral;
+          }
         }
 
         .date-time {
