@@ -628,12 +628,16 @@ const pageClasses = computed(() => {
       max-height: unset;
 
       :deep(.media-item) {
+        min-width: unset;
         max-width: 100%;
         flex-basis: 50%;
         aspect-ratio: 570/375;
 
         img.media {
           aspect-ratio: 570/375;
+        }
+        .sizer {
+          padding-bottom: calc(375/570 * 100%) !important;
         }
       }
     }
