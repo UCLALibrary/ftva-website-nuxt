@@ -505,7 +505,6 @@ const pageClasses = computed(() => {
 
         figure.responsive-image > .sizer {
           padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
-
         }
       }
     }
