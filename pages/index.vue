@@ -470,15 +470,6 @@ const pageClasses = computed(() => {
         .smart-link.title {
           @include ftva-card-title-1;
           color: $heading-grey;
-
-          &:hover {
-            @include link-hover;
-            color: coral;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-decoration-color: green;
-  text-underline-offset: 1px;
-          }
         }
 
         .date-time {
@@ -547,16 +538,11 @@ const pageClasses = computed(() => {
       color: $heading-grey;
 
       &:hover {
-        // text-decoration: underline;
-        // text-decoration-color: #2c91ff;
-        // text-decoration-thickness: 3px;
-        // text-underline-offset: 4px;
-  color: var(--color-black);
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-decoration-color: var(--color-default-cyan-03);
-  text-underline-offset: 1px;
-        //@include link-hover;
+        text-decoration: underline;
+        text-decoration-color: #2c91ff;
+        text-decoration-thickness: 3px;
+        text-underline-offset: 4px;
+        // @include link-hover
       }
     }
 
