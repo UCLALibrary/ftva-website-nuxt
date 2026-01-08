@@ -46,7 +46,7 @@ importers:
         specifier: ^18.17.3
         version: 18.19.59
       '@ucla-library/component-library-nuxt-module':
-        specifier: v1.2.116
+        specifier: 1.2.116
         version: 1.2.116(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
       '@zadigetvoltaire/nuxt-gtm':
         specifier: ^0.0.13
