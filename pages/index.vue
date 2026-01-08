@@ -457,64 +457,65 @@ const pageClasses = computed(() => {
     }
   }
 
-.now-showing-section {
-  .now-showing-items {
-    background-color: var(--pale-blue);
-    padding-top: 0px;
+  .now-showing-section {
+    .now-showing-items {
+      background-color: var(--pale-blue);
+      padding-top: 0px;
 
-    // START HomePage specific cardmeta styles
-    :deep(li.block-highlight) {
-      max-width: 340px;
-      flex-direction: column-reverse;
+      // START HomePage specific cardmeta styles
+      :deep(li.block-highlight) {
+        max-width: 340px;
+        flex-direction: column-reverse;
 
-      .smart-link.title {
-        @include ftva-card-title-1;
-        color: $heading-grey;
-        display: inline-block; // allows underline rendering
-        text-decoration: none;
-      }
+        .smart-link.title {
+          @include ftva-card-title-1;
+          color: $heading-grey;
+          display: inline-block; // allows underline rendering
+          text-decoration: none;
+        }
 
-      /* Hover the card, underline the title */
-      &:hover .smart-link.title {
-        text-decoration: underline;
-        text-decoration-thickness: 3px;
-        text-decoration-color: $bright-blue;
-        text-underline-offset: 2px;
-      }
+        /* Hover the card, underline the title */
+        &:hover .smart-link.title {
+          text-decoration: underline;
+          text-decoration-thickness: 3px;
+          text-decoration-color: $bright-blue;
+          text-underline-offset: 2px;
+          // @include ftva-text-link-hover
+        }
 
-      .date-time {
-        @include ftva-emphasized-subtitle;
-        color: $accent-blue;
-        margin-bottom: 0px;
+        .date-time {
+          @include ftva-emphasized-subtitle;
+          color: $accent-blue;
+          margin-bottom: 0px;
 
-        .schedule-item.start-date {
-          margin-right: 26px;
+          .schedule-item.start-date {
+            margin-right: 26px;
+          }
+        }
+
+        .card-meta {
+          height: 275px;
+          padding: 40px 30px 25px 30px;
+          position: relative;
+        }
+
+        img.media {
+          border-radius: 0 0 10px 10px;
+        }
+
+        figure.responsive-image > .sizer {
+          padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
+
         }
       }
+    }
 
-      .card-meta {
-        height: 275px;
-        padding: 40px 30px 25px 30px;
-        position: relative;
-      }
-
-      img.media {
-        border-radius: 0 0 10px 10px;
-      }
-
-      figure.responsive-image > .sizer {
-        padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
-
+    .homepage-scroll-wrapper {
+      :deep(.v-sheet) {
+        background-color: transparent;
       }
     }
   }
-
-  .homepage-scroll-wrapper {
-    :deep(.v-sheet) {
-      background-color: transparent;
-    }
-  }
-}
 
   .now-showing-section,
   .featured-collections-section {
