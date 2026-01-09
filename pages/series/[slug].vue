@@ -410,10 +410,11 @@ useHead({
     </TwoColLayoutWStickySideBar>
 
     <div class="full-width">
-      <SectionWrapper
-        ref="resultsSection"
-        theme="paleblue"
-      >
+      <SectionWrapper theme="paleblue">
+        <div
+          ref="resultsSection"
+          class="for-pagination-scroll"
+        />
         <TabList
           alignment="left"
           :initial-tab="parsedInitialTabIndex"
