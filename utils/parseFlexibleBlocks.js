@@ -27,6 +27,7 @@ function stripCountry(html) {
 
 // For internal and external resources, use titleGeneral as SimpleCard title; otherwise, keep default title
 // For internal resource, check for leading `ftva/` string in uri and remove if it exists
+
 function parseSimpleCard(block) {
   if (!block.cards || block.cards.length === 0)
     return null
@@ -51,10 +52,19 @@ function parseSimpleCard(block) {
         card = { ...card, contentLink: [content] }
       }
 
-      // Check uri for 'ftva/' string and remove
+      // Check card.uri for leading 'ftva/' and remove it
+      // And Check card.contentLink for leading 'ftva/' remove it from the URI stored in contentLink for GeneralContent
       if (content.uri) {
         const uriWithoutLeadingFtvaString = content.uri ? `/${content.uri.replace(/^\/?ftva\//i, '')}` : '/'
-        card = { ...card, uri: uriWithoutLeadingFtvaString }
+        card = {
+          ...card,
+          contentLink: [
+            {
+              ...content,
+              uri: uriWithoutLeadingFtvaString
+            }
+          ]
+        }
       }
     }
 
