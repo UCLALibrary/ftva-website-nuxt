@@ -614,6 +614,21 @@ const pageClasses = computed(() => {
     }
   }
 
+  // .featured-collections-section {
+  //   .section-teaser-card {
+  //     background-color: var(--pale-blue);
+  //     padding-top: 0;
+  //   }
+
+  //   :deep(.rich-text.section-summary) {
+  //     @include ftva-body-2;
+  //   }
+
+  //   :deep(.block-highlight .card-meta) {
+  //     min-height: 0;
+  //   }
+  // }
+
   .featured-collections-section {
     .section-teaser-card {
       background-color: var(--pale-blue);
@@ -626,6 +641,43 @@ const pageClasses = computed(() => {
 
     :deep(.block-highlight .card-meta) {
       min-height: 0;
+    }
+
+    // Ensure title can render underline & have the font the right size
+    :deep(.block-highlight .card-meta .title),
+    :deep(.block-highlight .card-meta .smart-link.title) {
+      display: inline-block;
+      @include ftva-card-title-1;
+      min-height: 125px;
+      text-decoration: none;
+    }
+
+    // Hover the card, underline the title
+    :deep(.block-highlight:hover .card-meta .title),
+    :deep(.block-highlight:hover .card-meta .smart-link.title) {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: $bright-blue;
+      text-underline-offset: 2px;
+    }
+
+    // Recommended for keyboard support
+    :deep(.block-highlight:focus-within .card-meta .title),
+    :deep(.block-highlight:focus-within .card-meta .smart-link.title) {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: $bright-blue;
+      text-underline-offset: 2px;
+    }
+  }
+
+  .preservation-section {
+    :deep(.section-header.section-title) {
+      margin-bottom: 40px;
+    }
+
+    :deep(.rich-text p) {
+      @include ftva-body-2;
     }
   }
 
