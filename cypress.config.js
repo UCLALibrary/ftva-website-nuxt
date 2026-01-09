@@ -6,7 +6,7 @@ export default defineConfig({
   video: false,
   e2e: {
     setupNodeEvents(on, config) {
-       // Only enable Chromatic when CHROMATIC_PROJECT_TOKEN is set
+      // Only enable Chromatic when CHROMATIC_PROJECT_TOKEN is set
       // (i.e. in the Chromatic workflow)
       if (process.env.CHROMATIC_PROJECT_TOKEN) {
         installPlugin(on, config)
