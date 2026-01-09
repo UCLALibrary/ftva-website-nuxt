@@ -614,21 +614,6 @@ const pageClasses = computed(() => {
     }
   }
 
-  // .featured-collections-section {
-  //   .section-teaser-card {
-  //     background-color: var(--pale-blue);
-  //     padding-top: 0;
-  //   }
-
-  //   :deep(.rich-text.section-summary) {
-  //     @include ftva-body-2;
-  //   }
-
-  //   :deep(.block-highlight .card-meta) {
-  //     min-height: 0;
-  //   }
-  // }
-
   .featured-collections-section {
     .section-teaser-card {
       background-color: var(--pale-blue);
