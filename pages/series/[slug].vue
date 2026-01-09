@@ -7,6 +7,7 @@ import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 // UTIL
 import getEventFilterLabels from '~/utils/getEventFilterLabels'
+import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
@@ -165,6 +166,124 @@ const parsedOtherSeries = computed(() => {
   return otherSeries
 })
 
+// MOCK FUNCTIONS FOR STATIC DATA PAGINATION
+const documentsPerPage = 10
+// Determine currentView from route, defaulting to 'past' if no upcoming events exist (matching parsedInitialTabIndex logic)
+const currentView = computed(() => {
+  const routeView = route.query.view
+  if (routeView) {
+    return routeView
+  }
+  // Default to 'past' if no upcoming events, otherwise 'current'
+  return parsedUpcomingEvents.value.length === 0 ? 'past' : 'upcoming'
+})
+
+// Determine which static array to use based on currentView ('current' = upcoming, 'past' = past events)
+const activeEventsArray = computed(() => {
+  return currentView.value === 'upcoming' ? parsedUpcomingEvents.value : parsedPastEvents.value
+})
+
+// Process results function - standard pattern for useMobileOnlyInfiniteScroll
+// Note: This will reference variables from useMobileOnlyInfiniteScroll, so it's defined as a function
+function onResults(results) {
+  if (results?.hits?.hits?.length > 0) {
+    const newItems = results.hits.hits || []
+
+    if (isMobile.value) {
+      totalPages.value = 0
+      mobileItemList.value.push(...newItems)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      desktopItemList.value = newItems
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+    }
+    noResultsFound.value = false
+  } else {
+    noResultsFound.value = true
+    totalPages.value = 0
+    hasMore.value = false
+  }
+}
+
+// Mock fetch function that returns static data in Elasticsearch format
+// eslint-disable-next-line require-await
+const seriesFetchFunction = async (page) => {
+  const arrayToUse = activeEventsArray.value
+  const startIndex = (page - 1) * documentsPerPage
+  const endIndex = startIndex + documentsPerPage
+  const slicedItems = arrayToUse.slice(startIndex, endIndex)
+
+  // Return in Elasticsearch format
+  return {
+    hits: {
+      hits: slicedItems,
+      total: {
+        value: arrayToUse.length
+      }
+    }
+  }
+}
+
+// INFINITE SCROLL - Using mock functions for static data
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(seriesFetchFunction, onResults)
+const noResultsFound = ref(false)
+
+// PAGINATION SCROLL HANDLING
+// Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
+
+// Computed properties for paginated events (sliced based on currentPage from composable, or full list on mobile)
+const paginatedUpcomingEvents = computed(() => {
+  if (parsedUpcomingEvents.value.length === 0) return []
+  // On mobile, show full list (infinite scroll handles pagination)
+  if (isMobile.value) {
+    return parsedUpcomingEvents.value
+  }
+  // On desktop, show paginated list
+  const startIndex = (currentPage.value - 1) * documentsPerPage
+  const endIndex = startIndex + documentsPerPage
+  return parsedUpcomingEvents.value.slice(startIndex, endIndex)
+})
+
+const paginatedPastEvents = computed(() => {
+  if (parsedPastEvents.value.length === 0) return []
+  // On mobile, show full list (infinite scroll handles pagination)
+  if (isMobile.value) {
+    return parsedPastEvents.value
+  }
+  // On desktop, show paginated list
+  const startIndex = (currentPage.value - 1) * documentsPerPage
+  const endIndex = startIndex + documentsPerPage
+  return parsedPastEvents.value.slice(startIndex, endIndex)
+})
+
+// Computed to determine which paginated array to use for scroll check
+const activePaginatedEvents = computed(() => {
+  return currentView.value === 'upcoming' ? paginatedUpcomingEvents.value : paginatedPastEvents.value
+})
+
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
+  hasMore.value = true
+
+  await searchES()
+  // Restore scroll position
+  // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && activePaginatedEvents.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
+
+// const parseViewSelection = computed(() => {
+//   return currentView.value === 'current' ? 1 : 0
+// })
+// END INFINITE SCROLL
+
 useHead({
   title: page.value ? page.value.title : '... loading',
   meta: [
@@ -291,21 +410,24 @@ useHead({
     </TwoColLayoutWStickySideBar>
 
     <div class="full-width">
-      <SectionWrapper theme="paleblue">
+      <SectionWrapper
+        ref="resultsSection"
+        theme="paleblue"
+      >
         <TabList
           alignment="left"
           :initial-tab="parsedInitialTabIndex"
+          :sync-with-url="true"
         >
           <TabItem
             title="Upcoming Events"
             class="tab-content"
           >
-            <template v-if="parsedUpcomingEvents && parsedUpcomingEvents.length > 0">
-              <!-- :n-shown="10"  this prop does not do anything if theme is ftva-->
+            <template v-if="paginatedUpcomingEvents && paginatedUpcomingEvents.length > 0">
               <SectionTeaserList
-                :items="parsedUpcomingEvents"
+                :items="paginatedUpcomingEvents"
                 component-name="BlockCardThreeColumn"
-                :n-shown="10"
+                :n-shown="paginatedUpcomingEvents.length"
                 class="tabbed-event-list"
               />
             </template>
@@ -320,11 +442,11 @@ useHead({
             title="Past Events"
             class="tab-content"
           >
-            <template v-if="parsedPastEvents && parsedPastEvents.length > 0">
+            <template v-if="paginatedPastEvents && paginatedPastEvents.length > 0">
               <SectionTeaserList
-                :items="parsedPastEvents"
+                :items="paginatedPastEvents"
                 component-name="BlockCardThreeColumn"
-                n-shown="10"
+                :n-shown="paginatedPastEvents.length"
                 class="tabbed-event-list"
               />
             </template>
@@ -335,6 +457,15 @@ useHead({
             </template>
           </TabItem>
         </TabList>
+        <SectionPagination
+          v-if="
+            totalPages !== 1 && !isMobile && !noResultsFound"
+          class="pagination"
+          :pages="totalPages"
+          :initial-current-page="currentPage"
+          :fixed-page-width-mode="true"
+          :fixed-page-width-num="10"
+        />
       </SectionWrapper>
     </div>
 
@@ -366,7 +497,8 @@ useHead({
   position: relative;
 
   .one-column .resized-aspect-ratio {
-    position: relative;  }
+    position: relative;
+  }
 
   .full-width {
     width: 100%;
@@ -378,13 +510,14 @@ useHead({
     }
   }
 
+  // START TAB SECTION STYLES W PAGINATION
   :deep(.tab-list-body) {
     background: none;
   }
 
   .tab-content {
     min-height: 200px;
-    border-radius: 15px;
+    border-radius: 0px;
     overflow: hidden;
 
     .empty-tab {
@@ -395,8 +528,33 @@ useHead({
     }
   }
 
-// TODO New styles for the carousel lightbox
-// positions the previous next arrows
+  .tabbed-event-list {
+    border-radius: 0px;
+  }
+
+  :deep(.section-pagination) {
+    background-color: white;
+    max-width: unset;
+    padding: 15px 2.5% 60px;
+    justify-content: center;
+  }
+
+  @media #{$medium} {
+    :deep(.section-pagination) {
+      padding: 2.5%;
+    }
+  }
+
+  @media #{$small} {
+    .pagination {
+      display: none;
+    }
+  }
+
+  // END TAB SECTION STYLES W PAGINATION
+
+  // TODO New styles for the carousel lightbox
+  // positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
