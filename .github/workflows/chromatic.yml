@@ -48,16 +48,24 @@ jobs:
           ES_ALIAS: ${{ env.ES_ALIAS }}
           ES_INDEX_PREFIX: ${{ secrets.ES_INDEX_PREFIX_TEST }}
 
-      - name: Serve built site
-        run: pnpm dlx serve .output/public -l 3000 &
-
-      - name: Wait for site
-        run: |
-          for i in {1..60}; do
-            curl -sSf http://localhost:3000 >/dev/null && exit 0
-            sleep 2
-          done
-          echo "Site did not start in time" && exit 1
+      - uses: cypress-io/github-action@v3
+        with:
+          start: pnpm dlx serve .output/public
+          install: false
+          wait-on: http://127.0.0.1:3000
+          wait-on-timeout: 110
+          command: pnpm exec cypress run --browser electron
+        env:
+            CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
+            S3_BUCKET: "https://static.library.ucla.edu/"
+            SITEMAP_HOST: "https://test-ftva.library.ucla.edu"
+            ES_URL: ${{ secrets.ES_URL }}
+            ESApiKey: ${{ secrets.ESApiKey }}
+            ES_READ_KEY: ${{ secrets.ES_READ_KEY_TEST }}
+            ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
+            ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
+            ELECTRON_EXTRA_LAUNCH_ARGS: --remote-debugging-port=9222
+            CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
 
       # Manual runs: fail if there are diffs (forces review in Chromatic UI)
       - name: Run Chromatic (manual / PR-style)
