@@ -34,7 +34,6 @@ Cypress.Commands.add('visualSnapshot', (name) => {
   // else: do nothing locally
 })
 
-
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
