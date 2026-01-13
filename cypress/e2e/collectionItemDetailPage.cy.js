@@ -5,6 +5,6 @@ describe('Collection Item Detail Page', () => {
     cy.getByData('page-title').should('be.visible')
     cy.getByData('metadata').should('be.visible')
     cy.getByData('related-content').should('be.visible')
-    cy.percySnapshot('collectionitemdetailpage')
+    visualSnapshot('collectionitemdetailpage')
   })
 })

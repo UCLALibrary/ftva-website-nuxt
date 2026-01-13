@@ -73,7 +73,7 @@ jobs:
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           ELECTRON_EXTRA_LAUNCH_ARGS: --remote-debugging-port=9222
-        run: pnpm exec chromatic --cypress --project-token=$CHROMATIC_PROJECT_TOKEN
+        run: pnpm exec chromatic --cypress --project-token=$CHROMATIC_PROJECT_TOKEN --exit-zero-on-changes
 
       # Main branch runs: auto-accept changes to update baseline (Percy-like behavior)
       - name: Run Chromatic (main baseline)

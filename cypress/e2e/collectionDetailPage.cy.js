@@ -8,7 +8,7 @@ describe('Collection Detail Page', () => {
     cy.getByData('share-button').should('exist')
     // cta should be in sidebar w specific data
     cy.getByData('sidebar-cta').should('exist')
-    cy.percySnapshot('collectiondetailpage')
+    visualSnapshot('collectiondetailpage')
   })
 
   it('Visits a List of Items Collection Detail Page', () => {
@@ -16,6 +16,6 @@ describe('Collection Detail Page', () => {
     cy.getByData('breadcrumb').should('be.visible')
     // page-collections-list-of-items wrapper should exist on list of items layouts
     cy.get('.page-collections-list-of-items').should('exist')
-    cy.percySnapshot('complexcollectionpage')
+    visualSnapshot('complexcollectionpage')
   })
 })
