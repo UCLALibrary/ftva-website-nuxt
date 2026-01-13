@@ -10,6 +10,31 @@ Cypress.Commands.add('getByData', (selector) => {
   return cy.get(`[data-test=${selector}]`)
 })
 
+const viewports = [
+  { name: 'Mobile', width: 375, height: 667 },
+  { name: 'Tablet', width: 768, height: 1024 },
+  { name: 'Desktop', width: 1280, height: 800 },
+]
+
+Cypress.Commands.add('visualSnapshot', (name) => {
+  const provider = Cypress.env('VISUAL_PROVIDER')
+
+  if (provider === 'chromatic') {
+    viewports.forEach(({ name: vpName, width, height }) => {
+      cy.viewport(width, height)
+      cy.takeSnapshot(`${name} - ${vpName}`)
+    })
+    return
+  }
+
+  if (provider === 'percy') {
+    cy.percySnapshot(name)
+  }
+
+  // else: do nothing locally
+})
+
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite

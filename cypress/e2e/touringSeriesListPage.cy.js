@@ -10,6 +10,6 @@ describe('Touring Series List page', () => {
 
     cy.get('[data-test="tabbed-content"]').should('be.visible')
 
-    visualSnapshot('touringserieslistpage')
+    cy.visualSnapshot('touringserieslistpage')
   })
 })

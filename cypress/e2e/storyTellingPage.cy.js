@@ -10,6 +10,6 @@ describe('Complex Collection StoryTelling Page', () => {
 
     cy.getByData('flexible-blocks-content').should('be.visible')
 
-    visualSnapshot('storyTellingPage')
+    cy.visualSnapshot('storyTellingPage')
   })
 })

@@ -16,7 +16,7 @@ describe('Blog Listing page', () => {
 
     cy.getByData('latest-blogs').should('be.visible')
 
-    visualSnapshot('bloglistpage')
+    cy.visualSnapshot('bloglistpage')
   })
 
   it('Shows only one featured blog in mobile view', () => {
