@@ -415,8 +415,8 @@ useHead({
   /* use .resized-aspect-ratio to only target the hero image and hero carousel */
   .resized-aspect-ratio {
 
-    :deep(&.responsive-image .media),
-    :deep(&.responsive-image) {
+    &:deep(.responsive-image .media),
+    &:deep(.responsive-image) {
       position: initial;
       max-height: 500px;
     }
