@@ -56,7 +56,7 @@ query FTVAArticleDetail($slug: [String!]) {
   }
   # SectionTeaserCard (Recent posts)
   # page only displays 3 but we query 4 in case the list includes the current article
-  ftvaRecentPosts: entries( section: "ftvaArticle", limit: 4, orderBy: "postDate ASC") {
+  ftvaRecentPosts: entries( section: "ftvaArticle", limit: 4, orderBy: "postDate DESC") {
     id
     title
     to: slug
