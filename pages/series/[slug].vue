@@ -278,10 +278,6 @@ watch(() => route.query, async (newVal, oldVal) => {
     await scrollTo(resultsSection)
   }
 }, { deep: true, immediate: true })
-
-// const parseViewSelection = computed(() => {
-//   return currentView.value === 'current' ? 1 : 0
-// })
 // END INFINITE SCROLL
 
 useHead({
