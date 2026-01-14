@@ -83,5 +83,5 @@ jobs:
         env:
           CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           ELECTRON_EXTRA_LAUNCH_ARGS: --remote-debugging-port=9222
-          VISUAL_PROVIDER: chromatic
+          CYPRESS_VISUAL_PROVIDER: chromatic
         run: pnpm exec chromatic --cypress --project-token=$CHROMATIC_PROJECT_TOKEN --auto-accept-changes
