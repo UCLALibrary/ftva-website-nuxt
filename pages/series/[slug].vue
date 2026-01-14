@@ -366,7 +366,8 @@ useHead({
   position: relative;
 
   .one-column .resized-aspect-ratio {
-    position: relative;  }
+    position: relative;
+  }
 
   .full-width {
     width: 100%;
@@ -395,8 +396,8 @@ useHead({
     }
   }
 
-// TODO New styles for the carousel lightbox
-// positions the previous next arrows
+  // TODO New styles for the carousel lightbox
+  // positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
@@ -421,11 +422,14 @@ useHead({
     padding-bottom: 0 !important;
   }
 
+  /* safari browsers will ignore the aspect ratio above because
+  this image has an explicit height, so we need to set the image height to auto */
   :deep(.block-card-three-column .image-block),
   :deep(.block-card-three-column .image-block .image),
   :deep(.block-highlight .image .media),
   :deep(.block-highlight .image) {
     aspect-ratio: 1.69 / 1;
+    height: auto;
   }
 
   :deep(.block-card-three-column .day) {
