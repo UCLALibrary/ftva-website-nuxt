@@ -415,7 +415,6 @@ useHead({
   :deep(.responsive-image .media),
   :deep(.responsive-image) {
     position: initial;
-    max-height: 500px;
   }
 
   :deep(.responsive-image .sizer) {
