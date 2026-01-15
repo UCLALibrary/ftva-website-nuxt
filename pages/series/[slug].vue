@@ -129,15 +129,6 @@ const parsedPastEvents = computed(() => {
   })
 })
 
-// If no Upcoming Events, set starting tab to Past Events
-const parsedInitialTabIndex = computed(() => {
-  if (parsedUpcomingEvents.value.length === 0) {
-    return 1
-  } else {
-    return 0
-  }
-})
-
 // Transform data for Other Series Section
 // This section only shows 3 items max, and prioritizes upcoming events over ongoing
 const parsedOtherSeries = computed(() => {
@@ -176,6 +167,9 @@ const currentView = computed(() => {
   }
   // Default to 'past' if no upcoming events, otherwise 'current'
   return parsedUpcomingEvents.value.length === 0 ? 'past' : 'upcoming'
+})
+const lookupTabIndexfromCurrentView = computed(() => {
+  return currentView.value === 'upcoming' ? 0 : 1
 })
 
 // Determine which static array to use based on currentView ('current' = upcoming, 'past' = past events)
@@ -413,8 +407,7 @@ useHead({
         />
         <TabList
           alignment="left"
-          :initial-tab="parsedInitialTabIndex"
-          :sync-with-url="true"
+          :initial-tab="lookupTabIndexfromCurrentView"
         >
           <TabItem
             title="Upcoming Events"
