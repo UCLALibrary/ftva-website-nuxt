@@ -261,7 +261,6 @@ const activePaginatedEvents = computed(() => {
 watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
   currentPage.value = route.query.page ? parseInt(route.query.page) : 1
-  isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
   hasMore.value = true
 
   await searchES()
