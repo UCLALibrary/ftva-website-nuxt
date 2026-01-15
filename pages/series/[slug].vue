@@ -449,6 +449,7 @@ useHead({
         <SectionPagination
           v-if="
             totalPages !== 1 && !isMobile && !noResultsFound"
+          :key="currentPage"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
