@@ -475,6 +475,17 @@ const pageClasses = computed(() => {
         .smart-link.title {
           @include ftva-card-title-1;
           color: $heading-grey;
+          display: inline-block; // allows underline rendering
+          text-decoration: none;
+        }
+
+        /* Hover the card, underline the title */
+        &:hover .smart-link.title {
+          text-decoration: underline;
+          text-decoration-thickness: 3px;
+          text-decoration-color: $bright-blue;
+          text-underline-offset: 2px;
+          // @include ftva-text-link-hover
         }
 
         .date-time {
@@ -497,7 +508,7 @@ const pageClasses = computed(() => {
           border-radius: 0 0 10px 10px;
         }
 
-        figure.responsive-image>.sizer {
+        figure.responsive-image > .sizer {
           padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
         }
       }
@@ -544,9 +555,9 @@ const pageClasses = computed(() => {
 
       &:hover {
         text-decoration: underline;
-        text-decoration-color: #2c91ff;
         text-decoration-thickness: 3px;
-        text-underline-offset: 4px;
+        text-decoration-color: $bright-blue;
+        text-underline-offset: 2px;
       }
     }
 
@@ -620,6 +631,43 @@ const pageClasses = computed(() => {
 
     :deep(.block-highlight .card-meta) {
       min-height: 0;
+    }
+
+    // Ensure title can render underline & have the font the right size
+    :deep(.block-highlight .card-meta .title),
+    :deep(.block-highlight .card-meta .smart-link.title) {
+      display: inline-block;
+      @include ftva-card-title-1;
+      min-height: 125px;
+      text-decoration: none;
+    }
+
+    // Hover the card, underline the title
+    :deep(.block-highlight:hover .card-meta .title),
+    :deep(.block-highlight:hover .card-meta .smart-link.title) {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: $bright-blue;
+      text-underline-offset: 2px;
+    }
+
+    // Recommended for keyboard support
+    :deep(.block-highlight:focus-within .card-meta .title),
+    :deep(.block-highlight:focus-within .card-meta .smart-link.title) {
+      text-decoration: underline;
+      text-decoration-thickness: 3px;
+      text-decoration-color: $bright-blue;
+      text-underline-offset: 2px;
+    }
+  }
+
+  .preservation-section {
+    :deep(.section-header.section-title) {
+      margin-bottom: 40px;
+    }
+
+    :deep(.rich-text p) {
+      @include ftva-body-2;
     }
   }
 
