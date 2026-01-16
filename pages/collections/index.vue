@@ -255,13 +255,14 @@ const pageClasses = computed(() => {
       <BlockCardWithImage
         :image="page.hearstImage[0]"
         :to="page.hearstUri"
-        :cardIsLink="true"
+        :card-is-link="true"
         class="is-link"
       >
         <template #customDescription>
           <RichText :rich-text-content="page.hearstDescription" />
         </template>
       </BlockCardWithImage>
+
       <DividerWayFinder />
     </SectionWrapper>
 
