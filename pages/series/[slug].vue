@@ -157,8 +157,8 @@ const parsedOtherSeries = computed(() => {
   return otherSeries
 })
 
-// MOCK FUNCTIONS FOR STATIC DATA PAGINATION
 const documentsPerPage = 10
+const sectionPaginationKey = ref(0)
 // Determine currentView from route, defaulting to 'past' if no upcoming events exist (matching parsedInitialTabIndex logic)
 const currentView = computed(() => {
   const routeView = route.query.view
@@ -262,7 +262,7 @@ watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
   currentPage.value = route.query.page ? parseInt(route.query.page) : 1
   hasMore.value = true
-
+  sectionPaginationKey.value++ // force pagination to re-render
   await searchES()
   // Restore scroll position
   // Scroll after DOM updates
@@ -449,7 +449,7 @@ useHead({
         <SectionPagination
           v-if="
             totalPages !== 1 && !isMobile && !noResultsFound"
-          :key="currentPage"
+          :key="sectionPaginationKey"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
