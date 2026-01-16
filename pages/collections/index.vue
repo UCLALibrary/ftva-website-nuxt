@@ -251,7 +251,6 @@ const pageClasses = computed(() => {
       class="section-wrapper-hearst"
       data-test="hearst-collection"
     >
-
       <BlockCardWithImage
         :image="page.hearstImage[0]"
         :to="page.hearstUri"
