@@ -1,3 +1,6 @@
+working!!!
+
+
 <script lang="ts" setup>
 // HELPERS
 import _get from 'lodash/get'
@@ -251,17 +254,17 @@ const pageClasses = computed(() => {
       class="section-wrapper-hearst"
       data-test="hearst-collection"
     >
+
       <BlockCardWithImage
-        class="block-highlight"
         :image="page.hearstImage[0]"
+        :to="page.hearstUri"
+        :cardIsLink="true"
+        class="is-link"
       >
-        <template #customTitle>
-          <SmartLink :to="page.hearstUri">
-            <RichText :rich-text-content="page.hearstDescription" />
-          </SmartLink>
+        <template #customDescription>
+          <RichText :rich-text-content="page.hearstDescription" />
         </template>
       </BlockCardWithImage>
-
       <DividerWayFinder />
     </SectionWrapper>
 
@@ -327,27 +330,6 @@ const pageClasses = computed(() => {
   .section-wrapper-hearst,
   :deep(.section-wrapper-post-small) {
     padding-top: 0;
-  }
-
-  .section-wrapper-hearst  {
-    .hearst-uri {
-      display: block;
-    }
-    :deep(.block-highlight.is-vertical .image-container) {
-      aspect-ratio: 1160/400;
-    }
-    :deep(.sizer) {
-      padding-bottom: calc(400/1160 * 100%) !important;
-    }
-
-    @media #{$small}{
-      :deep(.block-highlight.is-vertical .image-container) {
-        aspect-ratio: 275/184;
-      }
-      :deep(.sizer) {
-        padding-bottom: calc(184/275 * 100%) !important;
-      }
-    }
   }
 
   .section-wrapper-header-divider .divider-way-finder {
@@ -430,6 +412,10 @@ const pageClasses = computed(() => {
         }
       }
     }
+  }
+
+  .block-highlight.is-link {
+    cursor: pointer;
   }
 
   :deep(.section-wrapper-post-small) {
