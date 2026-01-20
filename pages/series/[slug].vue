@@ -278,14 +278,23 @@ const shouldShowPagination = computed(() => {
 
 watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
-  currentPage.value = route.query.page ? parseInt(route.query.page) : 1
+  const newPage = route.query.page ? parseInt(route.query.page) : 1
+  const oldPage = (oldVal && oldVal.page) ? parseInt(oldVal.page) : 1
+
+  currentPage.value = newPage
+  currentPageDisplay.value = newPage
+
+  // Increment key whenever page changes to force SectionPagination to re-render
+  if (newPage !== oldPage || !oldVal) {
+    sectionPaginationKey.value++
+  }
+
   hasMore.value = true
   await searchES()
   // Restore scroll position
   // Scroll after DOM updates
   await nextTick()
   if (!isMobile.value && route.query.page && resultsSection.value && activePaginatedEvents.value.length > 0) {
-    sectionPaginationKey.value++ // force pagination to re-render
     await scrollTo(resultsSection)
   }
 }, { deep: true, immediate: true })
@@ -466,10 +475,10 @@ useHead({
         </TabList>
         <SectionPagination
           v-if="shouldShowPagination"
-          :key="sectionPaginationKey"
+          :key="`pagination-${currentPage}-${sectionPaginationKey}`"
           class="pagination"
           :pages="totalPages"
-          :initial-current-page="currentPage"
+          :initial-current-page="currentPageDisplay"
           :fixed-page-width-mode="true"
           :fixed-page-width-num="10"
         />
