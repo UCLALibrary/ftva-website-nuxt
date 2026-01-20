@@ -228,11 +228,18 @@ const resultsSection = ref(null)
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
 
+// Track if component is mounted to prevent hydration mismatch
+const isMounted = ref(false)
+onMounted(() => {
+  isMounted.value = true
+})
+
 // Computed properties for paginated events (sliced based on currentPage from composable, or full list on mobile)
 const paginatedUpcomingEvents = computed(() => {
   if (parsedUpcomingEvents.value.length === 0) return []
-  // On mobile, show full list (infinite scroll handles pagination)
-  if (isMobile.value) {
+  // During SSR and initial render, always use desktop pagination to prevent hydration mismatch
+  // Only use mobile behavior after component is mounted
+  if (isMounted.value && isMobile.value) {
     return parsedUpcomingEvents.value
   }
   // On desktop, show paginated list
@@ -243,8 +250,9 @@ const paginatedUpcomingEvents = computed(() => {
 
 const paginatedPastEvents = computed(() => {
   if (parsedPastEvents.value.length === 0) return []
-  // On mobile, show full list (infinite scroll handles pagination)
-  if (isMobile.value) {
+  // During SSR and initial render, always use desktop pagination to prevent hydration mismatch
+  // Only use mobile behavior after component is mounted
+  if (isMounted.value && isMobile.value) {
     return parsedPastEvents.value
   }
   // On desktop, show paginated list
@@ -256,6 +264,16 @@ const paginatedPastEvents = computed(() => {
 // Computed to determine which paginated array to use for scroll check
 const activePaginatedEvents = computed(() => {
   return currentView.value === 'upcoming' ? paginatedUpcomingEvents.value : paginatedPastEvents.value
+})
+
+// Computed to determine if pagination should show (prevents hydration mismatch)
+const shouldShowPagination = computed(() => {
+  // During SSR and initial render, always show pagination if conditions are met
+  // Only hide on mobile after component is mounted
+  if (!isMounted.value) {
+    return totalPages.value !== 1 && !noResultsFound.value
+  }
+  return totalPages.value !== 1 && !isMobile.value && !noResultsFound.value
 })
 
 watch(() => route.query, async (newVal, oldVal) => {
@@ -447,9 +465,7 @@ useHead({
           </TabItem>
         </TabList>
         <SectionPagination
-          v-if="
-            totalPages !== 1 && !isMobile && !noResultsFound"
-          :key="sectionPaginationKey"
+          v-if="shouldShowPagination"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="currentPage"
