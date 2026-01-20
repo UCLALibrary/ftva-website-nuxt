@@ -16,6 +16,6 @@ describe('Explore Collections page', () => {
 
     cy.getByData('about-collections').should('be.visible')
 
-    cy.percySnapshot('exploreCollectionsPage')
+    cy.visualSnapshot('exploreCollectionsPage')
   })
 })

@@ -12,7 +12,7 @@ describe('Events Listing page', () => {
 
     cy.getByData('tabbed-content').should('be.visible')
 
-    cy.percySnapshot('eventslistpage')
+    cy.visualSnapshot('eventslistpage')
   })
 
   it('Toggles tab to calendar view', () => {

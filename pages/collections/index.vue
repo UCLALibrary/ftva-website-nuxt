@@ -254,11 +254,14 @@ const pageClasses = computed(() => {
       <BlockCardWithImage
         :image="page.hearstImage[0]"
         :to="page.hearstUri"
+        :card-is-link="true"
+        class="is-link"
       >
         <template #customDescription>
           <RichText :rich-text-content="page.hearstDescription" />
         </template>
       </BlockCardWithImage>
+
       <DividerWayFinder />
     </SectionWrapper>
 
@@ -406,6 +409,10 @@ const pageClasses = computed(() => {
         }
       }
     }
+  }
+
+  .block-highlight.is-link {
+    cursor: pointer;
   }
 
   :deep(.section-wrapper-post-small) {
