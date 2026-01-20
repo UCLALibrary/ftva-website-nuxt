@@ -280,12 +280,12 @@ watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
   currentPage.value = route.query.page ? parseInt(route.query.page) : 1
   hasMore.value = true
-  sectionPaginationKey.value++ // force pagination to re-render
   await searchES()
   // Restore scroll position
   // Scroll after DOM updates
   await nextTick()
   if (!isMobile.value && route.query.page && resultsSection.value && activePaginatedEvents.value.length > 0) {
+    sectionPaginationKey.value++ // force pagination to re-render
     await scrollTo(resultsSection)
   }
 }, { deep: true, immediate: true })
