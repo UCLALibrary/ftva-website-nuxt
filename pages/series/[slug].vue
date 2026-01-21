@@ -159,6 +159,7 @@ const parsedOtherSeries = computed(() => {
 
 const documentsPerPage = 10
 const sectionPaginationKey = ref(0)
+const currentPageDisplay = ref(1)
 // Determine currentView from route, defaulting to 'past' if no upcoming events exist (matching parsedInitialTabIndex logic)
 const currentView = computed(() => {
   const routeView = route.query.view
