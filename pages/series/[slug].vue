@@ -1,6 +1,7 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
+import { useWindowSize } from '@vueuse/core'
 
 // GQL
 import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
@@ -11,6 +12,7 @@ import getEventFilterLabels from '~/utils/getEventFilterLabels'
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
+import usePaginationScroll from '~/composables/usePaginationScroll'
 
 const { $graphql } = useNuxtApp()
 
@@ -134,6 +136,120 @@ const parsedInitialTabIndex = computed(() => {
     return 1
   } else {
     return 0
+  }
+})
+
+// PAGINATION SETUP FOR STATIC DATA
+const router = useRouter()
+const { width } = useWindowSize()
+const isMobile = computed(() => width.value <= 750)
+const itemsPerPage = 10
+
+// Track active tab index (0 = Upcoming, 1 = Past)
+// Use a ref that we'll update when tabs change
+const activeTabIndex = ref(parsedInitialTabIndex.value)
+
+// Watch parsedInitialTabIndex to sync when it changes
+watch(parsedInitialTabIndex, (newIndex) => {
+  activeTabIndex.value = newIndex
+}, { immediate: true })
+
+// Get the current tab's full data array
+const currentTabData = computed(() => {
+  return activeTabIndex.value === 0 ? parsedUpcomingEvents.value : parsedPastEvents.value
+})
+
+// Get current page from route query, default to 1
+const currentPage = computed(() => {
+  const page = route.query.page ? parseInt(String(route.query.page)) : 1
+  return page > 0 ? page : 1
+})
+
+// Calculate total pages
+const totalPages = computed(() => {
+  return Math.ceil(currentTabData.value.length / itemsPerPage)
+})
+
+// Paginated data for desktop (mobile shows all items)
+const paginatedData = computed(() => {
+  if (isMobile.value) {
+    // Mobile: show all items (for potential infinite scroll later)
+    return currentTabData.value
+  } else {
+    // Desktop: paginate
+    const start = (currentPage.value - 1) * itemsPerPage
+    const end = start + itemsPerPage
+    return currentTabData.value.slice(start, end)
+  }
+})
+
+// Pagination scroll handling
+const resultsSection = ref(null)
+const { scrollTo } = usePaginationScroll()
+
+// Watch for route query changes (pagination clicks)
+watch(() => route.query.page, async (newPage, oldPage) => {
+  if (newPage !== oldPage) {
+    await nextTick()
+    if (!isMobile.value && resultsSection.value && paginatedData.value.length > 0) {
+      await scrollTo(resultsSection)
+    }
+  }
+})
+
+// Simple approach: use a ref and update it based on which tab content should be shown
+// We'll use a computed that determines active tab based on data visibility
+// For now, we'll use a simple method: track it manually via a click handler approach
+onMounted(() => {
+  if (import.meta.client) {
+    // Use a simple approach: listen for clicks on tab buttons and update activeTabIndex
+    const updateActiveTab = () => {
+      // Check which tab button has active class or aria-selected
+      const tabButtons = document.querySelectorAll('.tab-list [role="tab"], .tab-list button')
+      tabButtons.forEach((button, index) => {
+        if (button.getAttribute('aria-selected') === 'true' ||
+          button.classList.contains('active') ||
+          button.classList.contains('selected')) {
+          if (activeTabIndex.value !== index) {
+            const wasDifferent = activeTabIndex.value !== index
+            activeTabIndex.value = index
+            // Reset to page 1 when switching tabs
+            if (wasDifferent && route.query.page) {
+              router.push({
+                path: route.path,
+                query: { ...route.query, page: undefined }
+              })
+            }
+          }
+        }
+      })
+    }
+
+    // Check on mount and set up observer for tab changes
+    setTimeout(updateActiveTab, 100)
+
+    const observer = new MutationObserver(() => {
+      updateActiveTab()
+    })
+
+    const tabList = document.querySelector('.tab-list')
+    if (tabList) {
+      observer.observe(tabList, {
+        attributes: true,
+        attributeFilter: ['aria-selected', 'class'],
+        subtree: true
+      })
+    }
+
+    // Also listen for clicks
+    tabList?.addEventListener('click', () => {
+      setTimeout(updateActiveTab, 50)
+    })
+
+    onUnmounted(() => {
+      observer.disconnect()
+      tabList?.removeEventListener('click', updateActiveTab)
+    })
   }
 })
 
@@ -291,6 +407,10 @@ useHead({
     </TwoColLayoutWStickySideBar>
 
     <div class="full-width">
+      <div
+        ref="resultsSection"
+        class="for-pagination-scroll"
+      />
       <SectionWrapper theme="paleblue">
         <TabList
           alignment="left"
@@ -299,42 +419,56 @@ useHead({
           <TabItem
             title="Upcoming Events"
             class="tab-content"
+            data-tab-index="0"
           >
-            <template v-if="parsedUpcomingEvents && parsedUpcomingEvents.length > 0">
-              <!-- :n-shown="10"  this prop does not do anything if theme is ftva-->
-              <SectionTeaserList
-                :items="parsedUpcomingEvents"
-                component-name="BlockCardThreeColumn"
-                :n-shown="10"
-                class="tabbed-event-list"
-              />
-            </template>
-            <template v-else>
-              <p class="empty-tab">
-                There are no upcoming events in this series
-              </p>
+            <template v-if="activeTabIndex === 0">
+              <template v-if="paginatedData && paginatedData.length > 0">
+                <SectionTeaserList
+                  :items="paginatedData"
+                  component-name="BlockCardThreeColumn"
+                  :n-shown="paginatedData.length"
+                  class="tabbed-event-list"
+                />
+              </template>
+              <template v-else>
+                <p class="empty-tab">
+                  There are no upcoming events in this series
+                </p>
+              </template>
             </template>
           </TabItem>
 
           <TabItem
             title="Past Events"
             class="tab-content"
+            data-tab-index="1"
           >
-            <template v-if="parsedPastEvents && parsedPastEvents.length > 0">
-              <SectionTeaserList
-                :items="parsedPastEvents"
-                component-name="BlockCardThreeColumn"
-                n-shown="10"
-                class="tabbed-event-list"
-              />
-            </template>
-            <template v-else>
-              <p class="empty-tab">
-                There are no past events in this series
-              </p>
+            <template v-if="activeTabIndex === 1">
+              <template v-if="paginatedData && paginatedData.length > 0">
+                <SectionTeaserList
+                  :items="paginatedData"
+                  component-name="BlockCardThreeColumn"
+                  :n-shown="paginatedData.length"
+                  class="tabbed-event-list"
+                />
+              </template>
+              <template v-else>
+                <p class="empty-tab">
+                  There are no past events in this series
+                </p>
+              </template>
             </template>
           </TabItem>
         </TabList>
+
+        <SectionPagination
+          v-if="totalPages > 1 && !isMobile && paginatedData.length > 0"
+          class="pagination"
+          :pages="totalPages"
+          :initial-current-page="currentPage"
+          :fixed-page-width-mode="true"
+          :fixed-page-width-num="10"
+        />
       </SectionWrapper>
     </div>
 
@@ -366,7 +500,8 @@ useHead({
   position: relative;
 
   .one-column .resized-aspect-ratio {
-    position: relative;  }
+    position: relative;
+  }
 
   .full-width {
     width: 100%;
@@ -395,8 +530,8 @@ useHead({
     }
   }
 
-// TODO New styles for the carousel lightbox
-// positions the previous next arrows
+  // TODO New styles for the carousel lightbox
+  // positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
