@@ -158,22 +158,19 @@ const parsedOtherSeries = computed(() => {
 })
 
 const documentsPerPage = 10
-// Initialize from route query to handle SSR correctly
-// const currentPageDisplay = ref(route.query.page ? parseInt(route.query.page) : 1)
-// Use computed to ensure reactivity - this will always return the latest page value
-// This ensures SectionPagination always receives the current page, even if it only reads props on mount
+// Initialize from route query if available, otherwise default to 1
 const paginationCurrentPage = computed(() => {
-  return route.query.page ? parseInt(route.query.page) : 1 // was currentPageDisplay.value
+  return route.query.page ? parseInt(route.query.page) : 1
 })
 // Control v-if to force unmount/remount when page changes
 const showPaginationComponent = ref(true)
-// Determine currentView from route, defaulting to 'past' if no upcoming events exist (matching parsedInitialTabIndex logic)
+// Determine currentView from route if available
 const currentView = computed(() => {
   const routeView = route.query.view
   if (routeView) {
     return routeView
   }
-  // Default to 'past' if no upcoming events, otherwise 'current'
+  // otherwise default to 'past' if no upcoming events, otherwise 'current'
   return parsedUpcomingEvents.value.length === 0 ? 'past' : 'upcoming'
 })
 const lookupTabIndexfromCurrentView = computed(() => {
@@ -236,7 +233,7 @@ const resultsSection = ref(null)
 // usePaginationScroll composable
 const { scrollTo } = usePaginationScroll()
 
-// Track if component is mounted to prevent hydration mismatch
+// Track if component is mounted to prevent hydration mismatch later
 const isMounted = ref(false)
 onMounted(() => {
   isMounted.value = true
@@ -288,15 +285,12 @@ watch(() => route.query, async (newVal, oldVal) => {
   isLoading.value = false
   const newPage = route.query.page ? parseInt(route.query.page) : 1
   const oldPage = (oldVal && oldVal.page) ? parseInt(oldVal.page) : 1
-
   currentPage.value = newPage
-  // currentPageDisplay.value = newPage
 
   // Force SectionPagination to remount when page changes using v-if toggle
   // This ensures the component is completely destroyed and recreated,
   // so it will definitely read the new initial-current-page prop value
   if (newPage !== oldPage || !oldVal) {
-    // sectionPaginationKey.value++
     // Temporarily hide component to force unmount
     if (shouldShowPagination.value) {
       showPaginationComponent.value = false
