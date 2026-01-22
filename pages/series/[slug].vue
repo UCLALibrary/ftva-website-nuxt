@@ -159,7 +159,13 @@ const parsedOtherSeries = computed(() => {
 
 const documentsPerPage = 10
 const sectionPaginationKey = ref(0)
-const currentPageDisplay = ref(1)
+// Initialize from route query to handle SSR correctly
+const currentPageDisplay = ref(route.query.page ? parseInt(route.query.page) : 1)
+// Use computed to ensure reactivity - this will always return the latest page value
+// This ensures SectionPagination always receives the current page, even if it only reads props on mount
+const paginationCurrentPage = computed(() => {
+  return route.query.page ? parseInt(route.query.page) : currentPageDisplay.value
+})
 // Determine currentView from route, defaulting to 'past' if no upcoming events exist (matching parsedInitialTabIndex logic)
 const currentView = computed(() => {
   const routeView = route.query.view
@@ -285,7 +291,9 @@ watch(() => route.query, async (newVal, oldVal) => {
   currentPage.value = newPage
   currentPageDisplay.value = newPage
 
-  // Increment key whenever page changes to force SectionPagination to re-render
+  // Force SectionPagination to remount when page changes
+  // Incrementing the key forces Vue to destroy and recreate the component,
+  // ensuring it reads the new initial-current-page prop value
   if (newPage !== oldPage || !oldVal) {
     sectionPaginationKey.value++
   }
@@ -476,10 +484,10 @@ useHead({
         </TabList>
         <SectionPagination
           v-if="shouldShowPagination"
-          :key="`pagination-${currentPage}-${sectionPaginationKey}`"
+          :key="`pagination-${paginationCurrentPage}-${sectionPaginationKey}`"
           class="pagination"
           :pages="totalPages"
-          :initial-current-page="currentPageDisplay"
+          :initial-current-page="paginationCurrentPage"
           :fixed-page-width-mode="true"
           :fixed-page-width-num="10"
         />
