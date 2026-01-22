@@ -477,7 +477,7 @@ const pageClasses = computed(() => {
           color: $heading-grey;
           display: inline-block; // allows underline rendering
         }
-        // Hover on the card, underline the title
+        // Hover on the Now Showing card, underline the title
         &:hover .smart-link.title {
           @include ftva-text-link-hover;
         }
@@ -546,7 +546,7 @@ const pageClasses = computed(() => {
       overflow: initial;
       @include ftva-h5;
       color: $heading-grey;
-
+      // Hover on the Visit and learn card, underline the title
       &:hover {
         @include ftva-text-link-hover;
       }
@@ -624,9 +624,8 @@ const pageClasses = computed(() => {
       min-height: 0;
 
       .smart-link.title {
-        display: inline-block;  // allows underline rendering
-        @include ftva-card-title-1;
-        // Hover on the card, underline the title
+        display: inline-block; // allows underline rendering
+        // Hover on the Featured Collections card, underline the title
         &:hover {
           @include ftva-text-link-hover;
         }
