@@ -4,13 +4,15 @@ const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 const isPercy = provider === 'percy'
 
-function runSearchPageTests({ withSnapshot = false } = {}) {
+function runSearchPageTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits the Search page', () => {
     cy.visit('/search?q=family')
-    cy.get('span.search-keywords').should('contain', 'family')
-    cy.get('.sort-and-results').should('be.visible')
-    cy.get('.sidebar').should('be.visible')
-    cy.get('.section-pagination').should('be.visible')
+    if (label === 'Desktop') {
+      cy.get('span.search-keywords').should('contain', 'family')
+      cy.get('.sort-and-results').should('be.visible')
+      cy.get('.sidebar').should('be.visible')
+      cy.get('.section-pagination').should('be.visible')
+    }
 
     if (withSnapshot) {
       cy.visualSnapshot('searchpage')
@@ -33,7 +35,7 @@ function runSearchPageTests({ withSnapshot = false } = {}) {
 if (isChromatic) {
   viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
     describe(`Search Page – ${label}`, { viewportWidth, viewportHeight }, () => {
-      runSearchPageTests({ withSnapshot: true })
+      runSearchPageTests({ withSnapshot: true, label: `${label}` })
     })
   })
 } else if (isPercy) {

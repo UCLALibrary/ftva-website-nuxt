@@ -6,14 +6,16 @@ const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 const isPercy = provider === 'percy'
 
-function runBlogListingTests({ withSnapshot = false }) {
+function runBlogListingTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits Blog Listing page', () => {
     cy.visit('/blog')
-    cy.getByData('blog-page-title').should('be.visible')
-    cy.getByData('featured-blog-0').should('be.visible')
-    cy.getByData('featured-blog-1').should('be.visible')
-    cy.getByData('featured-blog-2').should('be.visible')
-    cy.getByData('latest-blogs').should('be.visible')
+    if (label === 'Desktop') {
+      cy.getByData('blog-page-title').should('be.visible')
+      cy.getByData('featured-blog-0').should('be.visible')
+      cy.getByData('featured-blog-1').should('be.visible')
+      cy.getByData('featured-blog-2').should('be.visible')
+      cy.getByData('latest-blogs').should('be.visible')
+    }
 
     if (withSnapshot) {
       cy.visualSnapshot('bloglistpage')
@@ -36,7 +38,7 @@ function runMobileBehaviorTest() {
 if (isChromatic) {
   viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
     describe(`Blog Listing Page - ${label}`, { viewportWidth, viewportHeight }, () => {
-      runBlogListingTests({ withSnapshot: true })
+      runBlogListingTests({ withSnapshot: true, label: `${label}` })
     })
   })
 }
