@@ -24,7 +24,7 @@ function runBasicCollectionDetailTest({ withSnapshot = false } = {}) {
   })
 }
 
-function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Desktop'  } = {}) {
+function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits a List of Items Collection Detail Page', () => {
     cy.visit('/collections/ktla-newsfilm-collection')
     cy.getByData('breadcrumb').should('be.visible')
