@@ -94,7 +94,7 @@ const parsedCarouselData = computed(() => {
 
 // Transform Data for Tabbed Section
 const parsedUpcomingEvents = computed(() => {
-  // fail gracefully if data does not exist (server-side)
+  // fail gracefully if data does not exist
   if (!upcomingEvents.value)
     return []
 
@@ -112,7 +112,7 @@ const parsedUpcomingEvents = computed(() => {
 })
 
 const parsedPastEvents = computed(() => {
-  // fail gracefully if data does not exist (server-side)
+  // fail gracefully if data does not exist
   if (!pastEvents.value)
     return []
 
@@ -158,13 +158,12 @@ const parsedOtherSeries = computed(() => {
 })
 
 const documentsPerPage = 10
-// const sectionPaginationKey = ref(0)
 // Initialize from route query to handle SSR correctly
-const currentPageDisplay = ref(route.query.page ? parseInt(route.query.page) : 1)
+// const currentPageDisplay = ref(route.query.page ? parseInt(route.query.page) : 1)
 // Use computed to ensure reactivity - this will always return the latest page value
 // This ensures SectionPagination always receives the current page, even if it only reads props on mount
 const paginationCurrentPage = computed(() => {
-  return route.query.page ? parseInt(route.query.page) : currentPageDisplay.value
+  return route.query.page ? parseInt(route.query.page) : 1 // was currentPageDisplay.value
 })
 // Control v-if to force unmount/remount when page changes
 const showPaginationComponent = ref(true)
@@ -291,7 +290,7 @@ watch(() => route.query, async (newVal, oldVal) => {
   const oldPage = (oldVal && oldVal.page) ? parseInt(oldVal.page) : 1
 
   currentPage.value = newPage
-  currentPageDisplay.value = newPage
+  // currentPageDisplay.value = newPage
 
   // Force SectionPagination to remount when page changes using v-if toggle
   // This ensures the component is completely destroyed and recreated,
