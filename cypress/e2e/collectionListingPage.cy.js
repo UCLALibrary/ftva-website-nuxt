@@ -1,6 +1,6 @@
-Cypress.on('uncaught:exception', () => false)
-
 import { viewports } from '../support/viewports'
+
+Cypress.on('uncaught:exception', () => false)
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'

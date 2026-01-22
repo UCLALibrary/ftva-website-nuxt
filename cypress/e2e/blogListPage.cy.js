@@ -1,6 +1,6 @@
-Cypress.on('uncaught:exception', () => false)
-
 import { viewports } from '../support/viewports'
+
+Cypress.on('uncaught:exception', () => false)
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
@@ -23,6 +23,7 @@ function runBlogListingTests({ withSnapshot = false }) {
 
 function runMobileBehaviorTest() {
   it('Shows only one featured blog in mobile view', () => {
+    cy.visit('/blog')
     cy.viewport(750, 720)
 
     cy.getByData('featured-blog-0').should('be.visible')

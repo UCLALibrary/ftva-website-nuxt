@@ -1,6 +1,6 @@
-Cypress.on('uncaught:exception', () => { return false })
-
 import { viewports } from '../support/viewports'
+
+Cypress.on('uncaught:exception', () => { return false })
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
@@ -35,4 +35,3 @@ if (isChromatic) {
     runTouringSeriesListTests({ withSnapshot: false })
   })
 }
-

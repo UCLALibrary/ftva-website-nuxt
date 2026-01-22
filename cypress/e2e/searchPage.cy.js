@@ -16,7 +16,7 @@ function runSearchPageTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('searchpage')
     }
   })
-// ✅ Only run this locally (not Percy/Chromatic)
+  // ✅ Only run this locally (not Percy/Chromatic)
   if (!isChromatic && !isPercy) {
     it('Search blank', () => {
       cy.visit('/search')
