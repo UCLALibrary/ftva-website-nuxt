@@ -158,7 +158,7 @@ const parsedOtherSeries = computed(() => {
 })
 
 const documentsPerPage = 10
-const sectionPaginationKey = ref(0)
+// const sectionPaginationKey = ref(0)
 // Initialize from route query to handle SSR correctly
 const currentPageDisplay = ref(route.query.page ? parseInt(route.query.page) : 1)
 // Use computed to ensure reactivity - this will always return the latest page value
@@ -297,7 +297,7 @@ watch(() => route.query, async (newVal, oldVal) => {
   // This ensures the component is completely destroyed and recreated,
   // so it will definitely read the new initial-current-page prop value
   if (newPage !== oldPage || !oldVal) {
-    sectionPaginationKey.value++
+    // sectionPaginationKey.value++
     // Temporarily hide component to force unmount
     if (shouldShowPagination.value) {
       showPaginationComponent.value = false
@@ -494,9 +494,9 @@ useHead({
             </template>
           </TabItem>
         </TabList>
+        <!-- :key="`pagination-${paginationCurrentPage}-${sectionPaginationKey}`" -->
         <SectionPagination
           v-if="shouldShowPagination && showPaginationComponent"
-          :key="`pagination-${paginationCurrentPage}-${sectionPaginationKey}`"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="paginationCurrentPage"
