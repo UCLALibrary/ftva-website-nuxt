@@ -24,7 +24,7 @@ function runBasicCollectionDetailTest({ withSnapshot = false } = {}) {
   })
 }
 
-function runListOfItemsCollectionDetailTest({ withSnapshot = false } = {}) {
+function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Desktop'  } = {}) {
   it('Visits a List of Items Collection Detail Page', () => {
     cy.visit('/collections/ktla-newsfilm-collection')
     cy.getByData('breadcrumb').should('be.visible')
@@ -54,7 +54,7 @@ function runAllCollectionDetailTests({ withSnapshot = false } = {}) {
 if (isChromatic) {
   viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
     describe(`Collection Detail Page - ${label}`, { viewportWidth, viewportHeight }, () => {
-      runAllCollectionDetailTests({ withSnapshot: true })
+      runAllCollectionDetailTests({ withSnapshot: true, label: `${label}` })
     })
   })
 }
