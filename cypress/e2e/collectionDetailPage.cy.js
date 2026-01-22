@@ -32,7 +32,14 @@ function runListOfItemsCollectionDetailTest({ withSnapshot = false } = {}) {
     // page-collections-list-of-items wrapper should exist on list of items layouts
     cy.get('.page-collections-list-of-items').should('exist')
 
-    if (withSnapshot) {
+    if (withSnapshot && label !== 'Mobile') { // skip snapshot for mobile due to dynamic content loading
+      /* Chromatic error
+      Your story couldn’t be captured because it exceeds our
+      25,000,000px limit. Its dimensions are 448x100,349px.
+      Possible ways to resolve:
+      Separate pages into components
+      Minimize the number of very large elements in a story
+      */
       cy.visualSnapshot('complexcollectionpage')
     }
   })
