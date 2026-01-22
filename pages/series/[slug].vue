@@ -166,6 +166,8 @@ const currentPageDisplay = ref(route.query.page ? parseInt(route.query.page) : 1
 const paginationCurrentPage = computed(() => {
   return route.query.page ? parseInt(route.query.page) : currentPageDisplay.value
 })
+// Control v-if to force unmount/remount when page changes
+const showPaginationComponent = ref(true)
 // Determine currentView from route, defaulting to 'past' if no upcoming events exist (matching parsedInitialTabIndex logic)
 const currentView = computed(() => {
   const routeView = route.query.view
@@ -291,11 +293,21 @@ watch(() => route.query, async (newVal, oldVal) => {
   currentPage.value = newPage
   currentPageDisplay.value = newPage
 
-  // Force SectionPagination to remount when page changes
-  // Incrementing the key forces Vue to destroy and recreate the component,
-  // ensuring it reads the new initial-current-page prop value
+  // Force SectionPagination to remount when page changes using v-if toggle
+  // This ensures the component is completely destroyed and recreated,
+  // so it will definitely read the new initial-current-page prop value
   if (newPage !== oldPage || !oldVal) {
     sectionPaginationKey.value++
+    // Temporarily hide component to force unmount
+    if (shouldShowPagination.value) {
+      showPaginationComponent.value = false
+      // Wait for component to unmount
+      await nextTick()
+      // Show component again to force remount with new props
+      showPaginationComponent.value = true
+      // Wait for component to mount
+      await nextTick()
+    }
   }
 
   hasMore.value = true
@@ -483,7 +495,7 @@ useHead({
           </TabItem>
         </TabList>
         <SectionPagination
-          v-if="shouldShowPagination"
+          v-if="shouldShowPagination && showPaginationComponent"
           :key="`pagination-${paginationCurrentPage}-${sectionPaginationKey}`"
           class="pagination"
           :pages="totalPages"
