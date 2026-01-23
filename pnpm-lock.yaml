@@ -49,8 +49,8 @@ importers:
         specifier: ^18.17.3
         version: 18.19.59
       '@ucla-library/component-library-nuxt-module':
-        specifier: 1.2.116
-        version: 1.2.116(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+        specifier: 1.3.0
+        version: 1.3.0(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
       '@zadigetvoltaire/nuxt-gtm':
         specifier: ^0.0.13
         version: 0.0.13(magicast@0.3.5)(nuxt@3.13.2(@parcel/watcher@2.4.1)(@types/node@18.19.59)(eslint@8.57.1)(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.24.0)(sass@1.80.3)(terser@5.36.0)(typescript@5.6.3)(vite@5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0))(webpack-sources@3.3.3))(rollup@4.24.0)(vue@3.5.12(typescript@5.6.3))(webpack-sources@3.3.3)
@@ -1519,15 +1519,15 @@ packages:
     resolution: {integrity: sha512-JJtkDduxLi9bivAB+cYOVMtbkqdPOhZ+ZI5LC47MIRrDV4Yn2o+ZnW10Nkmr28xRpSpdJ6Sm42Hjf2+REYXm0A==}
     engines: {node: ^16.0.0 || >=18.0.0}
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.59.0':
-    resolution: {integrity: sha512-aC/4yABY/U++8IxRs0KdY/jPxJrfViWIDgl1xP8WaC1VluH3Dhsd/8bK8lV90hAytYMrAYGrVafpeGBSAt8X9A==}
+  '@ucla-library-monorepo/ucla-library-website-components@1.61.0':
+    resolution: {integrity: sha512-RoJYcsYH74mhrRbrDhRLHj/JZMJlqW05CtZbrsDhSOLFoxDuKyurtlgB3HuQlL/u+SFgAbqkeiEgDLwxtSx79w==}
     engines: {pnpm: ^9.12.1}
     peerDependencies:
       vue: ^3.5.12
       vuetify: ^3.7.4
 
-  '@ucla-library/component-library-nuxt-module@1.2.116':
-    resolution: {integrity: sha512-PY8RG4zSzxGY06ZpMw+71kLpUm/iCP+eJoeuuKjAhvSejZ2RfDmUmGgtRxrEGf65pqP47IJ+7J/b8LeeB9cfBg==}
+  '@ucla-library/component-library-nuxt-module@1.3.0':
+    resolution: {integrity: sha512-SW3+q6lCpL9Rh/+vByQMykg6vk1HBiKb+dzPJ6Wkq2u85AkKBzRMiYeXqxwpbzl/G8SL2hM5Ku4Fezl6iTbasA==}
     engines: {pnpm: ^9.12.1}
 
   '@ungap/structured-clone@1.2.0':
@@ -7715,7 +7715,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       eslint-visitor-keys: 3.4.3
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.59.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library-monorepo/ucla-library-website-components@1.61.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@vuepic/vue-datepicker': 8.8.1(vue@3.5.12(typescript@5.6.3))
       '@vueuse/components': 11.3.0(vue@3.5.12(typescript@5.6.3))
@@ -7731,10 +7731,10 @@ snapshots:
       - '@vue/composition-api'
       - typescript
 
-  '@ucla-library/component-library-nuxt-module@1.2.116(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
+  '@ucla-library/component-library-nuxt-module@1.3.0(magicast@0.3.5)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))':
     dependencies:
       '@nuxt/kit': 3.16.0(magicast@0.3.5)
-      '@ucla-library-monorepo/ucla-library-website-components': 1.59.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
+      '@ucla-library-monorepo/ucla-library-website-components': 1.61.0(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(vuetify@3.7.4(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3)))
     transitivePeerDependencies:
       - '@vue/composition-api'
       - magicast
@@ -12290,7 +12290,7 @@ snapshots:
 
   unctx@2.4.1:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       estree-walker: 3.0.3
       magic-string: 0.30.17
       unplugin: 2.2.0
@@ -12341,7 +12341,7 @@ snapshots:
 
   unimport@4.1.2:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
       local-pkg: 1.1.1
@@ -12402,7 +12402,7 @@ snapshots:
 
   unplugin@2.2.0:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       webpack-virtual-modules: 0.6.2
 
   unstorage@1.12.0(ioredis@5.4.1):
