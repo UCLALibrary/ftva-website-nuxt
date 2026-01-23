@@ -1,10 +1,12 @@
+import { viewports } from '../support/viewports'
+
 Cypress.on('uncaught:exception', () => { return false })
 
-describe('Events Listing page', () => {
-  beforeEach(() => {
-    cy.visit('/events')
-  })
+const provider = Cypress.env('VISUAL_PROVIDER')
+const isChromatic = provider === 'chromatic'
+const isPercy = provider === 'percy'
 
+function runEventListingTests({ withSnapshot = false } = {}) {
   it('Visits Events Listing page', () => {
     cy.getByData('date-filter').should('be.visible')
 
@@ -12,9 +14,38 @@ describe('Events Listing page', () => {
 
     cy.getByData('tabbed-content').should('be.visible')
 
-    cy.visualSnapshot('eventslistpage')
+    if (withSnapshot) {
+      cy.visualSnapshot('eventslistpage')
+    }
   })
+}
+if (isChromatic) {
+  viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
+    describe(`Events Listing Page - ${label}`, { viewportWidth, viewportHeight }, () => {
+      beforeEach(() => {
+        cy.visit('/events')
+      })
+      runEventListingTests({ withSnapshot: true })
+    })
+  })
+} else if (isPercy) {
+  describe('Events Listing page', () => {
+    beforeEach(() => {
+      cy.visit('/events')
+    })
+    runEventListingTests({ withSnapshot: true })
+  })
+} else {
+  describe('Events Listing page', () => {
+    beforeEach(() => {
+      cy.visit('/events')
+    })
+    runEventListingTests({ withSnapshot: false })
+    runNoSnapshotEventListingTests()
+  })
+}
 
+function runNoSnapshotEventListingTests() {
   it('Toggles tab to calendar view', () => {
     // Calendar is visible at 1025px and above
     cy.viewport(1280, 720)
@@ -45,10 +76,12 @@ describe('Events Listing page', () => {
     })
 
     // click filter to remove and check list is unfiltered
+    cy.intercept('POST', '**/_search', { fixture: 'es/upcoming-events.json' }).as('eventSearchUnfiltered')
+
     cy.get('.block-remove-search-filter').click()
-    cy.then(() => {
-      cy.get('.list').find('li').should('have.length.above', 5)
-    })
+    cy.wait('@eventSearchUnfiltered')
+
+    cy.get('.list').find('li').should('have.length', 5)
   })
 
   it('Shows events with selected labels and clears label filters', () => {
@@ -62,4 +95,4 @@ describe('Events Listing page', () => {
       cy.get('.list').find('li').should('have.length.below', 8)
     })
   })
-})
+}
