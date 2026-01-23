@@ -47,7 +47,7 @@ describe('Events Listing page', () => {
     // click filter to remove and check list is unfiltered
     cy.get('.block-remove-search-filter').click()
     cy.then(() => {
-      cy.get('.list').find('li').should('have.length.above', 5)
+      cy.get('.list').find('li').should('have.length', 5)
     })
   })
 
