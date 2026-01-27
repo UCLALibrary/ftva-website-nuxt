@@ -300,7 +300,7 @@ watch(data, (newVal, oldVal) => {
         >
           <!-- 0 results, 1 result, 2 results, etc. -->
           <h2>
-            {{ parsedCollectionList.length }} {{ parsedCollectionList.length === 1 ? `result` :
+            {{ hits }} {{ hits === 1 ? `result` :
               `results`
             }} shown
           </h2>
