@@ -159,9 +159,6 @@ watch(() => route.query, async (newVal, oldVal) => {
 
   await searchES()
 
-  // hits.value = results.hits.total.value || 0
-  console.log('hits.value', hits.value)
-
   await nextTick()
   if (!isMobile.value && route.query.page && resultsSection.value && parsedCollectionList.value.length > 0) {
     await scrollTo(resultsSection)
