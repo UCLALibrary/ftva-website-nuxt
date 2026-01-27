@@ -113,7 +113,7 @@ const collectionFetchFunction = async (page) => {
 const onResults = (results) => {
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newCollectionList = results.hits.hits || []
-    hits.value = results.hits.total?.value
+    hits.value = results.hits.total?.value || 0
 
     if (isMobile.value) {
       totalPages.value = 0
