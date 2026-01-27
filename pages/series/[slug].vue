@@ -434,7 +434,12 @@ useHead({
   :deep(.block-highlight .image) {
     aspect-ratio: 1.69 / 1;
     height: auto;
-    min-height: 213px; // now that we are using auto, we need to set a minimum height that matches the component default height
+  }
+
+  @media(min-width: 1025px) {
+    :deep(.block-card-three-column .image-block) {
+      min-height: 213px; // now that we are using auto above, we need to set a minimum height that matches the component default height to prevent aspect-ratio change on large screens
+    }
   }
 
   :deep(.block-card-three-column .day) {
