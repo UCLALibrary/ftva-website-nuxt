@@ -113,7 +113,6 @@ const collectionFetchFunction = async (page) => {
 const onResults = (results) => {
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newCollectionList = results.hits.hits || []
-    hits.value = results.hits.total?.value
 
     if (isMobile.value) {
       totalPages.value = 0
@@ -127,6 +126,9 @@ const onResults = (results) => {
     totalPages.value = 0
     hasMore.value = false
   }
+
+  // update # of hits displayed in the UI even if no results are found
+  hits.value = results.hits.total?.value || 0
 }
 
 // INFINITE SCROLL
@@ -300,7 +302,7 @@ watch(data, (newVal, oldVal) => {
         >
           <!-- 0 results, 1 result, 2 results, etc. -->
           <h2>
-            {{ parsedCollectionList.length }} {{ parsedCollectionList.length === 1 ? `result` :
+            {{ hits }} {{ hits === 1 ? `result` :
               `results`
             }} shown
           </h2>
