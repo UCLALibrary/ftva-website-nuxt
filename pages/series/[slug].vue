@@ -489,7 +489,7 @@ useHead({
         </TabList>
         <!-- :key="`pagination-${paginationCurrentPage}-${sectionPaginationKey}`" -->
         <SectionPagination
-          v-if="shouldShowPagination && showPaginationComponent"
+          v-if="isMounted && (shouldShowPagination && showPaginationComponent)"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="paginationCurrentPage"
