@@ -43,6 +43,7 @@ if (data.value.entry && import.meta.prerender) {
   const { indexContent } = useContentIndexer()
   data.value.entry.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title)
   data.value.entry.groupName = 'General Content'
+  data.value.entry.flexibleBlocksRichText = parseFlexibleBlocksRichText(data.value.entry.blocks)
   await indexContent(data.value.entry, path.replaceAll('/', '--'))
 }
 
