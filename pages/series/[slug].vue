@@ -487,7 +487,6 @@ useHead({
             </template>
           </TabItem>
         </TabList>
-        <!-- :key="`pagination-${paginationCurrentPage}-${sectionPaginationKey}`" -->
         <SectionPagination
           v-if="isMounted && (shouldShowPagination && showPaginationComponent)"
           class="pagination"
@@ -607,10 +606,6 @@ useHead({
       position: initial;
       max-height: 500px;
     }
-  }
-
-  :deep(.responsive-image .sizer) {
-    padding-bottom: 0 !important;
   }
 
   /* safari browsers will ignore the aspect ratio above because
