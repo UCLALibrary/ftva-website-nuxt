@@ -626,6 +626,12 @@ useHead({
     }
   }
 
+  @media(max-width: 1024px) {
+    :deep(.block-card-three-column .image-block .responsive-image .sizer) {
+      padding-bottom: 0 !important; // remove padding-bottom to prevent default responsive image padding-bottom on small screens
+    }
+  }
+
   :deep(.block-card-three-column .day) {
     color: black;
     font-family: var(--font-primary);
