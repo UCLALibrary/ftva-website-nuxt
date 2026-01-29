@@ -487,9 +487,8 @@ useHead({
             </template>
           </TabItem>
         </TabList>
-        <!-- :key="`pagination-${paginationCurrentPage}-${sectionPaginationKey}`" -->
         <SectionPagination
-          v-if="shouldShowPagination && showPaginationComponent"
+          v-if="isMounted && (shouldShowPagination && showPaginationComponent)"
           class="pagination"
           :pages="totalPages"
           :initial-current-page="paginationCurrentPage"
@@ -599,21 +598,38 @@ useHead({
     opacity: 0.7;
   }
 
-  :deep(.responsive-image .media),
-  :deep(.responsive-image) {
-    position: initial;
-    max-height: 500px;
+  /* use .resized-aspect-ratio to only target the hero image and hero carousel */
+  .resized-aspect-ratio {
+
+    &:deep(.responsive-image .media),
+    &:deep(.responsive-image) {
+      position: initial;
+      max-height: 500px;
+    }
   }
 
-  :deep(.responsive-image .sizer) {
-    padding-bottom: 0 !important;
-  }
-
+  /* safari browsers will ignore the aspect ratio above because
+  this image has an explicit height, so we need to set the image height to auto */
   :deep(.block-card-three-column .image-block),
   :deep(.block-card-three-column .image-block .image),
   :deep(.block-highlight .image .media),
   :deep(.block-highlight .image) {
     aspect-ratio: 1.69 / 1;
+    height: auto;
+  }
+
+  @media(min-width: 1025px) {
+
+    :deep(.block-card-three-column .image-block),
+    :deep(.block-card-three-column .image-block .image) {
+      min-height: 213px; // now that we are using auto above, we need to set a minimum height that matches the component default height to prevent aspect-ratio change on large screens
+    }
+  }
+
+  @media(max-width: 1024px) {
+    :deep(.block-card-three-column .image-block .responsive-image .sizer) {
+      padding-bottom: 0 !important; // remove padding-bottom to prevent default responsive image padding-bottom on small screens
+    }
   }
 
   :deep(.block-card-three-column .day) {
