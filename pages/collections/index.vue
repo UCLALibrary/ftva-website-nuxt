@@ -356,9 +356,16 @@ const pageClasses = computed(() => {
 
     .section-teaser-card {
       background-color: var(--pale-blue);
-
       :deep(.card) {
         width: 320px;
+
+        .title {
+          display: inline-block; // allows underline rendering
+          // Hover on the card, underline the title
+          &:hover{
+            @include ftva-text-link-hover;
+          }
+        }
       }
     }
   }
