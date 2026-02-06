@@ -475,6 +475,11 @@ const pageClasses = computed(() => {
         .smart-link.title {
           @include ftva-card-title-1;
           color: $heading-grey;
+          display: inline-block; // allows underline rendering
+        }
+        // Hover on the Now Showing card, underline the title
+        &:hover .smart-link.title {
+          @include ftva-text-link-hover;
         }
 
         .date-time {
@@ -541,12 +546,9 @@ const pageClasses = computed(() => {
       overflow: initial;
       @include ftva-h5;
       color: $heading-grey;
-
+      // Hover on the Visit and learn card, underline the title
       &:hover {
-        text-decoration: underline;
-        text-decoration-color: #2c91ff;
-        text-decoration-thickness: 3px;
-        text-underline-offset: 4px;
+        @include ftva-text-link-hover;
       }
     }
 
@@ -620,6 +622,14 @@ const pageClasses = computed(() => {
 
     :deep(.block-highlight .card-meta) {
       min-height: 0;
+
+      .smart-link.title {
+        display: inline-block; // allows underline rendering
+        // Hover on the Featured Collections card, underline the title
+        &:hover {
+          @include ftva-text-link-hover;
+        }
+      }
     }
   }
 
