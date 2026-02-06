@@ -322,27 +322,15 @@ const pageClasses = computed(() => {
 
   .related-collections-card {
     :deep(.card-meta) {
-      display: grid;
-      grid-template-rows: auto 1fr 1fr;
-      row-gap: 8px;
 
-      .category,
       .title,
       .byline-group {
-        margin: 0;
-      }
-
-      .title {
         @include truncate(2);
       }
 
       .byline-group {
-        position: static;
+        padding-right: 20px;
       }
-    }
-
-    :deep(.byline-group) {
-      @include truncate(2);
     }
   }
 

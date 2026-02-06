@@ -62,9 +62,9 @@ useHead({
       <site-brand-bar class="brand-bar" />
       <header-sticky
         v-if="primaryMenuItems"
+        :key="route.query.q"
         class="primary"
         :primary-items="primaryMenuItems"
-        :key="route.query.q"
       />
       <NuxtPage />
       <footer data-test="footer">
@@ -102,6 +102,10 @@ useHead({
 
   @media #{$small} {
     .brand-bar {
+      display: none;
+    }
+
+    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
       display: none;
     }
   }

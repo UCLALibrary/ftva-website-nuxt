@@ -193,7 +193,9 @@ useHead({
           category="Series"
         >
           <template #anyTitle>
-            <h1 class="title-no-link">{{page.title}}</h1>
+            <h1 class="title-no-link">
+              {{ page.title }}
+            </h1>
           </template>
         </CardMeta>
       </template>
@@ -205,9 +207,9 @@ useHead({
         />
 
         <SectionHeader
-        :level="2"
-        class="section-header"
-        data-test="section-header"
+          :level="2"
+          class="section-header"
+          data-test="section-header"
         >
           Tour Dates
         </SectionHeader>

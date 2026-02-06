@@ -1,14 +1,12 @@
+import { viewports } from '../support/viewports'
+
 Cypress.on('uncaught:exception', () => { return false })
 
-describe('Event Detail page', () => {
-  // context('breadcrumb', () => {
-  //   // NavBreadcrumb
-  //   it('has a breadcrumb nav with the correct title', () => {
-  //     cy.wait(1000)
-  //     cy.getByData('breadcrumb').contains('TEST - La Région Centrale')
-  //   })
-  // })
+const provider = Cypress.env('VISUAL_PROVIDER')
+const isChromatic = provider === 'chromatic'
+const isPercy = provider === 'percy'
 
+function runEventDetailTests({ withSnapshot = false } = {}) {
   it('Visit the Event Detail Page', () => {
     // CarouselImages
     cy.visit('/events/la-région-centrale-03-08-24', { failOnStatusCode: false })
@@ -23,18 +21,25 @@ describe('Event Detail page', () => {
     cy.getByData('calendar-dropdown').should('exist')
     cy.getByData('ticket-info').should('be.visible')
     cy.getByData('event-series').should('be.visible')
-    cy.percySnapshot('eventdetailpage')
-
-    // it('clicks the arrow to see the next image', () => {
-    //   cy.getByData('screening-details').contains('Trailer with Cover image')
-    // })
+    cy.visualSnapshot('eventdetailpage')
   })
-  // modal exists
-  // two images
-  // creditText is visible .contains('Movie Database')
-  // click on arrow and it moves to next image
-  // cy.getByData("ticket-info").find("a").contains("Plan Your Visit").click()
-})
+}
+
+if (isChromatic) {
+  viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
+    describe(`Event Detail page - ${label}`, { viewportWidth, viewportHeight }, () => {
+      runEventDetailTests({ withSnapshot: true })
+    })
+  })
+} else if (isPercy) {
+  describe('Event Detail page', () => {
+    runEventDetailTests({ withSnapshot: true })
+  })
+} else {
+  describe('Event Detail page', () => {
+    runEventDetailTests({ withSnapshot: false })
+  })
+}
 
 // Potential TODOs and test ideas
 // https://docs.cypress.io/guides/end-to-end-testing/writing-your-first-end-to-end-test
