@@ -529,6 +529,10 @@ useHead({
     position: relative;
   }
 
+  .resized-aspect-ratio {
+    overflow-x: hidden;
+  }
+
   .full-width {
     width: 100%;
     background-color: var(--pale-blue);
