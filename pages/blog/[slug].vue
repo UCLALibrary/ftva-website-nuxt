@@ -43,6 +43,7 @@ if (data.value.ftvaArticle && import.meta.prerender) {
     // Index the article data using the composable during static build
     data.value.ftvaArticle.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaArticle.title)
     data.value.ftvaArticle.groupName = 'Articles'
+    data.value.ftvaArticle.flexibleBlocksRichText = parseFlexibleBlocksRichText(data.value.ftvaArticle.blocks)
     await indexContent(data.value.ftvaArticle, route.params.slug)
     // console.log('Article indexed successfully during static build')
   } catch (error) {
@@ -124,6 +125,18 @@ useHead({
     }
   ]
 })
+const parseBlocks = computed(() => {
+  const blocks = page.value?.blocks || []
+
+  return blocks.filter((block) => {
+    // remove the whole block if infoBlock exists AND is an empty array
+    if (Array.isArray(block.infoBlock) && block.infoBlock.length === 0) {
+      return false
+    }
+    return true
+  })
+})
+
 </script>
 
 <template>
@@ -173,7 +186,6 @@ useHead({
         </FlexibleMediaGalleryNewLightbox>
       </div>
     </div>
-
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
         <CardMeta
@@ -214,7 +226,7 @@ useHead({
 
         <FlexibleBlocks
           class="flexible-content"
-          :blocks="page.blocks"
+          :blocks="parseBlocks"
         />
       </template>
       <template #sidebarTop />

@@ -15,11 +15,31 @@ on:
   workflow_dispatch:
     inputs: {}
   schedule:
-    # 9:00 AM PT
+    # GitHub Actions schedules run in UTC and do NOT support time zones or DST.
+    #
+    # Goal:
+    # - Run at 9:00 AM Los Angeles time
+    # - Run at 4:00 PM Los Angeles time
+    #
+    # Los Angeles time rules:
+    # - PDT (UTC-7)
+    # - PST (UTC-8)
+    #
+    # ============================
+    # 9:00 AM Los Angeles time
+    # ============================
+    # 9:00 AM PDT (UTC-7) → 16:00 UTC
+    - cron: '0 16 * * *'
+    # 9:00 AM PST (UTC-8) → 17:00 UTC
     - cron: '0 17 * * *'
 
-    # 4:00 PM PT (midnight UTC; ~4 or 5 PM depending on DST)
-    - cron: '0 0 * * *'
+    # ============================
+    # 3:00 PM Los Angeles time
+    # ============================
+    # 3:00 PM PDT (UTC-7) → 22:00 UTC
+    - cron: '0 22 * * *'
+    # 3:00 PM PST (UTC-8) → 23:00 UTC
+    - cron: '0 23 * * *'
 
 jobs:
   nuxt-prod:
