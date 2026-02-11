@@ -126,26 +126,6 @@ onMounted(() => {
 const pageClasses = computed(() => {
   return ['page', 'page-detail', 'page-detail--paleblue', 'page-storytelling', route.path.replace('/collections/', ''), 'page-bottom-spacer']
 })
-
-// TODO move to helper?
-const parsedFlexibleBlocks = computed(() => {
-  let parsedBlocks = page.value.blocks
-  // loop through the blocks
-  for (const block of parsedBlocks) {
-    // look for mediaWithText blocks
-    if (block.typeHandle === 'mediaWithText') {
-      // console.log('mediaWithText block found', block)
-      // loop through them 
-      for (const item of block.mediaWithText) {
-        // item.coverImage[0].aspectRatio = .75
-        // console.log('item', item.coverImage[0])
-        item.coverImage[0].aspectRatio = 75
-      }
-    }
-  }
-  console.log('parsedBlocks', parsedBlocks)
-  return parsedBlocks
-})
 </script>
 
 <template>
@@ -226,7 +206,7 @@ const parsedFlexibleBlocks = computed(() => {
         <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
-            :blocks="parsedFlexibleBlocks"
+            :blocks="page.blocks"
             data-test="flexible-blocks-content"
           />
           <SectionWrapper
