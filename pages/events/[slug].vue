@@ -344,6 +344,10 @@ const pageClasses = computed(() => {
 .page-event-detail {
   position: relative;
 
+  .resized-aspect-ratio {
+    overflow-x: hidden;
+  }
+
   // TODO New styles for the carousel lightbox
   // positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
