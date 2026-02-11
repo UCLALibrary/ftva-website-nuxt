@@ -507,7 +507,6 @@ const pageClasses = computed(() => {
       }
     }
 
-
     @media #{$small} {
       .search-filters {
       flex-direction: column;
@@ -532,7 +531,6 @@ const pageClasses = computed(() => {
         gap: 8px;
       }
     }
-
 
     :deep(.dropdown-single-select) {
       width: auto; // allow the dropdown to be as wide as the content
