@@ -15,12 +15,12 @@ type SectionHandle =
 
 type collectionName =
   | 'motionPicture'
-  | 'telivision'
+  | 'television'
   | 'watchAndListenOnline'
 
 const props = defineProps<{
   sectionHandle: SectionHandle
-  canonicalPath: string // e.g. '/motion-picture' or '/television' or '/watch-listen-online'
+  canonicalPath: string // e.g. '/motion-picture' or '/telivision' or '/watch-listen-online'
   collection: collectionName
 }>()
 
