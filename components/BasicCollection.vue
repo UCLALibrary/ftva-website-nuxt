@@ -65,10 +65,15 @@ watch(data, (newVal, oldVal) => {
 // DATA PARSING
 const parsedImage = computed(() => {
   // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel) {
+  if (!page.value.imageCarousel || page.value.imageCarousel.length === 0) {
     return []
   }
-  return page.value.imageCarousel
+  return page.value.imageCarousel.map((item) => {
+    return {
+      ...item,
+      image: [{ ...item.image[0], sizes: '(max-width:1159px) calc(100vw - 48px), 1160px' }]
+    }
+  })
 })
 
 // Transform data for Carousel
@@ -128,7 +133,7 @@ const parsedRelatedCollections = computed(() => {
       category: 'collection',
       // Remove image tags inside byline rich text
       bylineOne: item.richText.replace(/<img.*?>/ig, ''),
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(max-width:840px) 280px, 365px' }
     }
   })
   return relatedCollections
