@@ -71,7 +71,7 @@ const parsedImage = computed(() => {
   return page.value.imageCarousel.map((item) => {
     return {
       ...item,
-      image: [{ ...item.image[0], sizes: '(max-width:1159px) calc(100vw - 48px), 1160px' }]
+      image: [{ ...item.image[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }]
     }
   })
 })
@@ -133,7 +133,7 @@ const parsedRelatedCollections = computed(() => {
       category: 'collection',
       // Remove image tags inside byline rich text
       bylineOne: item.richText.replace(/<img.*?>/ig, ''),
-      image: { ...parseImage(item), sizes: '(max-width:840px) 280px, 365px' }
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return relatedCollections
