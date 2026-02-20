@@ -47,6 +47,7 @@ if (data.value.entry && import.meta.prerender) {
   // Call the composable to use the indexing function
   const { indexContent } = useContentIndexer()
   const doc = {
+    ...data.value.entry,
     title: data.value.entry.title,
     titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
     text: data.value.entry.summary,
