@@ -38,9 +38,6 @@ query FTVACollectionDetail($slug: [String!]) {
     heroimage: ftvaHeroImage {
      ...Image
     }
-    ftvaImage {
-      ...Image
-    }
     ftvaRelatedCollections {
       ftvaImage {
         ...Image
