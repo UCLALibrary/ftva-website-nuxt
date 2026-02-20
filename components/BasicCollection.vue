@@ -65,10 +65,15 @@ watch(data, (newVal, oldVal) => {
 // DATA PARSING
 const parsedImage = computed(() => {
   // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel) {
+  if (!page.value.imageCarousel || page.value.imageCarousel.length === 0) {
     return []
   }
-  return page.value.imageCarousel
+  return page.value.imageCarousel.map((item) => {
+    return {
+      ...item,
+      image: [{ ...item.image[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }]
+    }
+  })
 })
 
 // Transform data for Carousel
@@ -128,7 +133,7 @@ const parsedRelatedCollections = computed(() => {
       category: 'collection',
       // Remove image tags inside byline rich text
       bylineOne: item.richText.replace(/<img.*?>/ig, ''),
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return relatedCollections
