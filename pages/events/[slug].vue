@@ -344,6 +344,26 @@ const pageClasses = computed(() => {
 .page-event-detail {
   position: relative;
 
+  .resized-aspect-ratio {
+    overflow-x: hidden;
+  }
+
+  // TODO New styles for the carousel lightbox
+  // positions the previous next arrows
+  :deep(.inline.lightbox .button-prev) {
+    left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    opacity: 0.7;
+  }
+
+  :deep(.inline.lightbox .button-next) {
+    right: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    opacity: 0.7;
+  }
+
   .two-column {
     margin-bottom: 120px; // Spacing between main content and footer; without a "More Series" section
 
@@ -416,8 +436,7 @@ const pageClasses = computed(() => {
       margin-top: 25px;
     }
 
-    :deep(.block-screening-detail .rich-text:last-child .parsed-content),
-    :deep(.block-screening-detail:last-of-type dl) {
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
       margin-bottom: 0;
     }
   }

@@ -606,7 +606,7 @@ const pageClasses = computed(() => {
 }
 
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
-  z-index: 1000;
+  z-index: 99;
 }
 
 .search-page {

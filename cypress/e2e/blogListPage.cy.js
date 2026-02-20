@@ -1,31 +1,59 @@
-Cypress.on('uncaught:exception', () => { return false })
+import { viewports } from '../support/viewports'
 
-describe('Blog Listing page', () => {
-  beforeEach(() => {
-    cy.visit('/blog')
-  })
+Cypress.on('uncaught:exception', () => false)
 
+const provider = Cypress.env('VISUAL_PROVIDER')
+const isChromatic = provider === 'chromatic'
+const isPercy = provider === 'percy'
+
+function runBlogListingTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits Blog Listing page', () => {
-    cy.getByData('blog-page-title').should('be.visible')
+    cy.visit('/blog')
+    if (label === 'Desktop') {
+      cy.getByData('blog-page-title').should('be.visible')
+      cy.getByData('featured-blog-0').should('be.visible')
+      cy.getByData('featured-blog-1').should('be.visible')
+      cy.getByData('featured-blog-2').should('be.visible')
+      cy.getByData('latest-blogs').should('be.visible')
+    }
 
-    cy.getByData('featured-blog-0').should('be.visible')
-
-    cy.getByData('featured-blog-1').should('be.visible')
-
-    cy.getByData('featured-blog-2').should('be.visible')
-
-    cy.getByData('latest-blogs').should('be.visible')
-
-    cy.percySnapshot('bloglistpage')
+    if (withSnapshot) {
+      cy.visualSnapshot('bloglistpage')
+    }
   })
+}
 
+function runMobileBehaviorTest() {
   it('Shows only one featured blog in mobile view', () => {
+    cy.visit('/blog')
     cy.viewport(750, 720)
 
     cy.getByData('featured-blog-0').should('be.visible')
-
     cy.getByData('featured-blog-1').should('not.be.visible')
-
     cy.getByData('featured-blog-2').should('not.be.visible')
   })
-})
+}
+
+// ---- Chromatic: loop viewports using describe config (NO cy.viewport) ----
+if (isChromatic) {
+  viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
+    describe(`Blog Listing Page - ${label}`, { viewportWidth, viewportHeight }, () => {
+      runBlogListingTests({ withSnapshot: true, label: `${label}` })
+    })
+  })
+}
+
+// ---- Percy: single run + snapshot ----
+else if (isPercy) {
+  describe('Blog Listing Page', () => {
+    runBlogListingTests({ withSnapshot: true })
+  })
+}
+
+// ---- Local or CI: no snapshots, but keep behavior tests ----
+else {
+  describe('Blog Listing Page', () => {
+    runBlogListingTests({ withSnapshot: false })
+    runMobileBehaviorTest()
+  })
+}

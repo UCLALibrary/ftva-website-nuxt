@@ -433,8 +433,33 @@ const pageClasses = computed(() => {
     position: relative;
   }
 
+  :deep(.ftva.inline.lightbox.homepage .button-prev),
+  :deep(.ftva.inline.lightbox.homepage .button-next) {
+    height: max-content;
+    top: unset;
+  }
+
   :deep(.section-wrapper h2.section-header.section-title) {
     color: $heading-grey;
+  }
+
+  // Make all images the same in FPB Media With Text
+  :deep(.media-with-text .media-item) {
+    aspect-ratio: 4/3;
+  }
+
+  /* this sets the image to fit the Now showing cards in safari too, this will be component change */
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+
+    .image {
+      aspect-ratio: 340/224;
+
+      .sizer {
+        padding-bottom: calc(224/340 * 100%) !important;
+      }
+    }
   }
 
   .now-showing-section {
@@ -598,6 +623,26 @@ const pageClasses = computed(() => {
     }
   }
 
+  .archive-blog-section {
+    .media-with-text {
+      max-height: unset;
+
+      :deep(.media-item) {
+        min-width: unset;
+        max-width: 100%;
+        flex-basis: 50%;
+        aspect-ratio: 570/375;
+
+        img.media {
+          aspect-ratio: 570/375;
+        }
+        .sizer {
+          padding-bottom: calc(375/570 * 100%) !important;
+        }
+      }
+    }
+  }
+
   .preservation-section {
     :deep(.section-header.section-title) {
       margin-bottom: 40px;
@@ -615,12 +660,13 @@ const pageClasses = computed(() => {
     }
   }
 
-  // Make all images the same in FPB Media With Text
-  :deep(.media-with-text .media-item) {
-    aspect-ratio: 4/3;
-  }
-
   @media #{$medium} {
+
+    :deep(.ftva.inline.lightbox.homepage .button-prev),
+    :deep(.ftva.inline.lightbox.homepage .button-next) {
+      top: calc(var(--media-height)/1.5);
+    }
+
     :deep(.ftva.section-wrapper div.section-header) {
       margin-bottom: 40px;
     }

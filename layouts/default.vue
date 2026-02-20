@@ -34,7 +34,7 @@ onMounted(async () => {
   if (!import.meta.dev && layoutCustomProps['is-error']) {
     // console.log('In SSG refresh layout data as state is not maintained after an error response')
     if (isApiLocked.value) {
-      console.log('API is locked, not fetching layout data')
+      // console.log('API is locked, not fetching layout data')
     } else {
       // Fetch layout data only if the API is not locked
       await $layoutData()
@@ -92,6 +92,10 @@ onMounted(async () => {
 
   @media #{$small} {
     .brand-bar {
+      display: none;
+    }
+
+    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
       display: none;
     }
   }

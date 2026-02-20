@@ -79,7 +79,7 @@ const parseBreadcrumbTitle = computed(() => {
     return 'L.A. Rebellion'
   }
 
-  return null
+  return '' // In the life or other future collections can go here
 })
 
 const breadcrumbOverrides = ref([
