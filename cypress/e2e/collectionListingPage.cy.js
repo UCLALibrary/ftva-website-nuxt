@@ -4,7 +4,6 @@ Cypress.on('uncaught:exception', () => false)
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
 
 function runCollectionListingTests({ withSnapshot = false } = {}) {
   beforeEach(() => {
@@ -20,7 +19,7 @@ function runCollectionListingTests({ withSnapshot = false } = {}) {
   })
 
   // ✅ Only run this locally (not Percy/Chromatic)
-  if (!isChromatic && !isPercy) {
+  if (!isChromatic) {
     it('Browses by A and shows at least one collection item/card', () => {
       cy.getByData('collection-browse').contains('A').click()
       cy.getByData('collection-list').find('.card').should('have.length.above', 1)
@@ -33,10 +32,6 @@ if (isChromatic) {
     describe(`Collection Listing Page - ${label}`, { viewportWidth, viewportHeight }, () => {
       runCollectionListingTests({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Collection Listing Page', () => {
-    runCollectionListingTests({ withSnapshot: true })
   })
 } else {
   describe('Collection Listing Page', () => {

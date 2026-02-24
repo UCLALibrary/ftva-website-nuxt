@@ -363,9 +363,9 @@ const pageClasses = computed(() => {
           <div class="filter-row">
             <!-- Filter by -->
             <DropdownSingleSelect
-              class="filter-a"
               v-if="searchFilters.length > 0"
               v-model:selected-filters="selectedFilters"
+              class="filter-a"
               :label="searchFilters[0]?.label"
               :options="searchFilters[0]?.options"
               :field-name="fieldNamefromLabel[searchFilters[0]?.label]"
@@ -375,8 +375,8 @@ const pageClasses = computed(() => {
             />
             <!-- Sort by -->
             <DropdownSingleSelect
-              class="filter-b"
               v-model:selected-filters="selectedSortFilters"
+              class="filter-b"
               :label="sortDropdownData?.label"
               :options="sortDropdownData.options"
               :field-name="sortDropdownData.fieldName"
