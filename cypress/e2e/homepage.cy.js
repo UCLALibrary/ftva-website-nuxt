@@ -2,7 +2,7 @@ import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
+
 
 function runHomepageTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visit the Homepage', () => {
@@ -46,10 +46,6 @@ if (isChromatic) {
     describe(`Website Homepage - ${label}`, { viewportWidth, viewportHeight }, () => {
       runHomepageTests({ withSnapshot: true, label: `${label}` })
     })
-  })
-} else if (isPercy) {
-  describe('Website Homepage', () => {
-    runHomepageTests({ withSnapshot: true })
   })
 } else {
   describe('Website Homepage', () => {

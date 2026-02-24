@@ -4,7 +4,7 @@ Cypress.on('uncaught:exception', () => { return false })
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
+
 
 function runEventListingTests({ withSnapshot = false } = {}) {
   it('Visits Events Listing page', () => {
@@ -27,13 +27,6 @@ if (isChromatic) {
       })
       runEventListingTests({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Events Listing page', () => {
-    beforeEach(() => {
-      cy.visit('/events')
-    })
-    runEventListingTests({ withSnapshot: true })
   })
 } else {
   describe('Events Listing page', () => {

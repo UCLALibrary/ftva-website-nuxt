@@ -2,7 +2,7 @@ import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
+
 
 function runSearchPageTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits the Search page', () => {
@@ -19,7 +19,7 @@ function runSearchPageTests({ withSnapshot = false, label = 'Desktop' } = {}) {
     }
   })
   // ✅ Only run this locally (not Percy/Chromatic)
-  if (!isChromatic && !isPercy) {
+  if (!isChromatic) {
     it('Search blank', () => {
       cy.visit('/search')
       cy.get('.no-results .no-results-title').should('contain', 'No results found.')
@@ -37,10 +37,6 @@ if (isChromatic) {
     describe(`Search Page – ${label}`, { viewportWidth, viewportHeight }, () => {
       runSearchPageTests({ withSnapshot: true, label: `${label}` })
     })
-  })
-} else if (isPercy) {
-  describe('Search Page', () => {
-    runSearchPageTests({ withSnapshot: true })
   })
 } else {
   describe('Search Page', () => {

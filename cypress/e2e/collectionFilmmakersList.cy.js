@@ -2,7 +2,7 @@ import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
+
 
 function runCollectionFilmmakersListingTest({ withSnapshot = false } = {}) {
   it('Visits the `L.A. Rebellion` Filmmakers Listing page', () => {
@@ -22,10 +22,6 @@ if (isChromatic) {
     describe(`Collection Filmmakers Listing Page - ${label}`, { viewportWidth, viewportHeight }, () => {
       runCollectionFilmmakersListingTest({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Collection Filmmakers Listing Page', () => {
-    runCollectionFilmmakersListingTest({ withSnapshot: true })
   })
 } else {
   describe('Collection Filmmakers Listing Page', () => {

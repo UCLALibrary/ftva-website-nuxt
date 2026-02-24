@@ -2,7 +2,7 @@ import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
+
 
 function runBasicCollectionDetailTest({ withSnapshot = false } = {}) {
   it('Visits a Basic Collection Detail Page', () => {

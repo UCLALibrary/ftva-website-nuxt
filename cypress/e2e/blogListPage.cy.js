@@ -4,7 +4,7 @@ Cypress.on('uncaught:exception', () => false)
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
+
 
 function runBlogListingTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits Blog Listing page', () => {
@@ -42,14 +42,6 @@ if (isChromatic) {
     })
   })
 }
-
-// ---- Percy: single run + snapshot ----
-else if (isPercy) {
-  describe('Blog Listing Page', () => {
-    runBlogListingTests({ withSnapshot: true })
-  })
-}
-
 // ---- Local or CI: no snapshots, but keep behavior tests ----
 else {
   describe('Blog Listing Page', () => {
