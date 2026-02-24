@@ -3,7 +3,6 @@ import { viewports } from '../support/viewports'
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runBillyWilderTests({ withSnapshot = false } = {}) {
   it('Visits the Billy Wilder Theater Page', () => {
     cy.visit('/billy-wilder-theater')

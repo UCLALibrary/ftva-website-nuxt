@@ -5,7 +5,6 @@ Cypress.on('uncaught:exception', () => { return false })
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runStoryTellingTests({ withSnapshot = false } = {}) {
   it('Visits the L.A. Rebellion StoryTelling Page', () => {
     cy.visit('/collections/la-rebellion')

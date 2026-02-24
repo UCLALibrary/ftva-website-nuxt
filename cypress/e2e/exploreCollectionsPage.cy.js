@@ -3,7 +3,6 @@ import { viewports } from '../support/viewports'
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runExploreCollectionsTests({ withSnapshot = false } = {}) {
   it('Visits the Explore Collections page', () => {
     cy.visit('/collections')

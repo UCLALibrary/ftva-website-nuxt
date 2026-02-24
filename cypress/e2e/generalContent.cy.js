@@ -3,7 +3,6 @@ import { viewports } from '../support/viewports'
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runGeneralContentTests({ withSnapshot = false } = {}) {
   it('Visit a General Content Page', () => {
     cy.visit('/about')

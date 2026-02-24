@@ -3,7 +3,6 @@ import { viewports } from '../support/viewports'
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runCollectionItemDetailTests({ withSnapshot = false } = {}) {
   it('Visits a Collection Item Detail Page', () => {
     cy.visit('/collections/ktla-newsfilm-collection/african-american-william-c-taylor-of-the-communist-party-to-run-for-los-angeles-county-supervisor')

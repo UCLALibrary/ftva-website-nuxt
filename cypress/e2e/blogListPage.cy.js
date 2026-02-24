@@ -5,7 +5,6 @@ Cypress.on('uncaught:exception', () => false)
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runBlogListingTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits Blog Listing page', () => {
     cy.visit('/blog')

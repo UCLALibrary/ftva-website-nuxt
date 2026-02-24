@@ -5,7 +5,6 @@ Cypress.on('uncaught:exception', () => { return false })
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runEventDetailTests({ withSnapshot = false } = {}) {
   it('Visit the Event Detail Page', () => {
     // CarouselImages

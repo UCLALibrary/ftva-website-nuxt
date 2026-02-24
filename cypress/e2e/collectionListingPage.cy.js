@@ -5,7 +5,6 @@ Cypress.on('uncaught:exception', () => false)
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runCollectionListingTests({ withSnapshot = false } = {}) {
   beforeEach(() => {
     cy.visit('/collections/motion-picture', { failOnStatusCode: false })

@@ -3,7 +3,6 @@ import { viewports } from '../support/viewports'
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runEventSeriesListTests({ withSnapshot = false } = {}) {
   it('Visits the Event Series List page', () => {
     cy.visit('/series')

@@ -5,7 +5,6 @@ Cypress.on('uncaught:exception', () => { return false })
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runEventListingTests({ withSnapshot = false } = {}) {
   it('Visits Events Listing page', () => {
     cy.getByData('date-filter').should('be.visible')

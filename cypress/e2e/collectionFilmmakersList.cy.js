@@ -3,7 +3,6 @@ import { viewports } from '../support/viewports'
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runCollectionFilmmakersListingTest({ withSnapshot = false } = {}) {
   it('Visits the `L.A. Rebellion` Filmmakers Listing page', () => {
     cy.visit('/collections/la-rebellion/filmmakers')

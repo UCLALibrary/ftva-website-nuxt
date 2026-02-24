@@ -3,7 +3,6 @@ import { viewports } from '../support/viewports'
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
 
-
 function runSearchPageTests({ withSnapshot = false, label = 'Desktop' } = {}) {
   it('Visits the Search page', () => {
     cy.visit('/search?q=family')
