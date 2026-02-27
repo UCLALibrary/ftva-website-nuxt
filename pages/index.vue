@@ -547,14 +547,12 @@ const pageClasses = computed(() => {
 
   .now-showing-section,
   .featured-collections-section {
-    .hovered-items {
-      :deep(li.block-highlight) {
-        margin-top: 16px;
-        transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    :deep(.block-highlight) {
+      margin-top: 16px;
+      transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-        &:hover {
-          margin-top: 0px;
-        }
+      &:hover {
+        margin-top: 0px;
       }
     }
   }
