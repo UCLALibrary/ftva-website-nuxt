@@ -108,7 +108,7 @@ const parsedArticles = computed(() => {
       to: `/${obj._source.uri}`,
       title: obj._source.title,
       category: parseArticleCategories(obj._source.articleCategories),
-      description: obj._source.aboutTheAuthor,
+      description: obj._source.ftvaHomepageDescription,
       date: obj._source.postDate,
       image: parseImage(obj),
       sectionHandle: obj._source.sectionHandle,
@@ -216,7 +216,7 @@ const pageClasses = computed(() => {
     >
       <DividerWayFinder />
     </SectionWrapper>
-
+<h2>parsedArticles:<pre>{{parsedArticles}}</pre></h2>
     <SectionWrapper
       class="blog-section-title"
       theme="paleblue"
