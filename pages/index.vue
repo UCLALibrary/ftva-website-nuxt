@@ -272,14 +272,32 @@ const pageClasses = computed(() => {
               &#8250;</span>
           </nuxt-link>
         </template>
-        <ScrollWrapper class="homepage-scroll-wrapper">
-          <SectionTeaserCard
-            v-if="parsedNowShowing && parsedNowShowing.length > 0"
-            class="now-showing-items hovered-items"
-            :items="parsedNowShowing"
-            :grid-layout="false"
-            data-test="featured-event-items"
-          />
+        <ScrollWrapper
+          v-if="parsedNowShowing && parsedNowShowing.length > 0"
+          class="homepage-scroll-wrapper now-showing-items"
+        >
+          <template
+            v-for="item in parsedNowShowing"
+            :key="item.id"
+          >
+            <block-card-with-image
+              class="card now-showing-item"
+              data-test="featured-event-items"
+              :byline-one="item.bylineOne"
+              :byline-two="item.bylineTwo"
+              :category="item.category"
+              :date-created="item.postDate"
+              :image="item.image"
+              date-format="short"
+              :start-date="item.startDate"
+              :end-date="item.endDate"
+              :title="item.title"
+              :to="item.to"
+              tag="div"
+              :image-aspect-ratio="60"
+              :is-vertical="true"
+            />
+          </template>
         </ScrollWrapper>
         <DividerWayFinder />
       </SectionWrapper>
@@ -355,14 +373,29 @@ const pageClasses = computed(() => {
               &#8250;</span>
           </nuxt-link>
         </template>
-
-        <ScrollWrapper>
-          <SectionTeaserCard
-            :items="parsedFeaturedCollections.collections"
-            :grid-layout="false"
-            data-test="featured-collection-items"
-            class="hovered-items"
-          />
+        <ScrollWrapper class="homepage-scroll-wrapper">
+          <template
+            v-for="item in parsedFeaturedCollections.collections"
+            :key="item.id"
+          >
+            <block-card-with-image
+              class="card"
+              data-test="featured-collection-items"
+              :byline-one="item.bylineOne"
+              :byline-two="item.bylineTwo"
+              :category="item.category"
+              :date-created="item.postDate"
+              :image="item.image"
+              date-format="short"
+              :start-date="item.startDate"
+              :end-date="item.endDate"
+              :title="item.title"
+              :to="item.to"
+              tag="div"
+              :image-aspect-ratio="60"
+              :is-vertical="true"
+            />
+          </template>
         </ScrollWrapper>
 
         <DividerWayFinder />
@@ -406,11 +439,17 @@ const pageClasses = computed(() => {
 
 <style lang="scss" scoped>
 .page-home {
+  background-color: var(--pale-blue);
+
   .screen-reader-text {
     @include visually-hidden;
   }
 
-  background-color: var(--pale-blue);
+  .homepage-scroll-wrapper {
+    :deep(.v-sheet) {
+      background-color: transparent;
+    }
+  }
 
   .one-column {
     width: 100%;
@@ -463,51 +502,47 @@ const pageClasses = computed(() => {
   }
 
   .now-showing-section {
-    .now-showing-items {
-      background-color: var(--pale-blue);
-      padding-top: 0px;
+    // .now-showing-items {
+    //   background-color: var(--pale-blue);
+    //   padding-top: 0px;
 
-      // START HomePage specific cardmeta styles
-      :deep(li.block-highlight) {
-        max-width: 340px;
-        flex-direction: column-reverse;
+    // START HomePage specific cardmeta styles
+    :deep(.block-highlight) {
+      max-width: 340px;
+      flex-direction: column-reverse;
 
-        .smart-link.title {
-          @include ftva-card-title-1;
-          color: $heading-grey;
-        }
+      .smart-link.title {
+        @include ftva-card-title-1;
+        color: $heading-grey;
+      }
 
-        .date-time {
-          @include ftva-emphasized-subtitle;
-          color: $accent-blue;
-          margin-bottom: 0px;
+      .date-time {
+        @include ftva-emphasized-subtitle;
+        color: $accent-blue;
+        margin-bottom: 0px;
 
-          .schedule-item.start-date {
-            margin-right: 26px;
-          }
-        }
-
-        .card-meta {
-          height: 275px;
-          padding: 40px 30px 25px 30px;
-          position: relative;
-        }
-
-        img.media {
-          border-radius: 0 0 10px 10px;
-        }
-
-        figure.responsive-image>.sizer {
-          padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
+        .schedule-item.start-date {
+          margin-right: 26px;
         }
       }
+
+      .card-meta {
+        height: 275px;
+        padding: 40px 30px 25px 30px;
+        position: relative;
+      }
+
+      img.media {
+        border-radius: 0 0 10px 10px;
+      }
+
+      figure.responsive-image>.sizer {
+        padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
+      }
+
+      // }
     }
 
-    .homepage-scroll-wrapper {
-      :deep(.v-sheet) {
-        background-color: transparent;
-      }
-    }
   }
 
   .now-showing-section,
@@ -609,10 +644,12 @@ const pageClasses = computed(() => {
   }
 
   .featured-collections-section {
-    .section-teaser-card {
-      background-color: var(--pale-blue);
-      padding-top: 0;
-    }
+
+    background-color: var(--pale-blue);
+    // .section-teaser-card {
+    //   background-color: var(--pale-blue);
+    //   padding-top: 0;
+    // }
 
     :deep(.rich-text.section-summary) {
       @include ftva-body-2;
@@ -636,6 +673,7 @@ const pageClasses = computed(() => {
         img.media {
           aspect-ratio: 570/375;
         }
+
         .sizer {
           padding-bottom: calc(375/570 * 100%) !important;
         }
