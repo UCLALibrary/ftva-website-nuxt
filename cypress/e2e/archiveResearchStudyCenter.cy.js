@@ -2,7 +2,6 @@ import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
 
 function runArchiveResearchTests({ withSnapshot = false } = {}) {
   it('Visits the Archive Research Study Center Page', () => {
@@ -29,10 +28,6 @@ if (isChromatic) {
     describe(`Archive Research Study Center - ${label}`, { viewportWidth, viewportHeight }, () => {
       runArchiveResearchTests({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Archive Research Study Center', () => {
-    runArchiveResearchTests({ withSnapshot: true })
   })
 } else {
   describe('Archive Research Study Center', () => {
