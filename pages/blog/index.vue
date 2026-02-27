@@ -216,7 +216,7 @@ const pageClasses = computed(() => {
     >
       <DividerWayFinder />
     </SectionWrapper>
-<h2>parsedArticles:<pre>{{parsedArticles}}</pre></h2>
+
     <SectionWrapper
       class="blog-section-title"
       theme="paleblue"
