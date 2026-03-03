@@ -507,6 +507,8 @@ const pageClasses = computed(() => {
     :deep(.block-highlight) {
       max-width: 340px;
       flex-direction: column-reverse;
+      padding-top: 0px;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       .smart-link.title {
         @include ftva-card-title-1;
@@ -536,12 +538,15 @@ const pageClasses = computed(() => {
       figure.responsive-image>.sizer {
         padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
       }
+
+      &:hover {
+        transform: translateY(-20px);
+      }
     }
 
   }
 
-  .now-showing-section,
-  .featured-collections-section {
+  .now-showing-section {
     :deep(.block-highlight) {
       padding-top: 0px;
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
