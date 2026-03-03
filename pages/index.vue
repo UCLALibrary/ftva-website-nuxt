@@ -502,9 +502,6 @@ const pageClasses = computed(() => {
   }
 
   .now-showing-section {
-    // .now-showing-items {
-    //   background-color: var(--pale-blue);
-    //   padding-top: 0px;
 
     // START HomePage specific cardmeta styles
     :deep(.block-highlight) {
@@ -539,8 +536,6 @@ const pageClasses = computed(() => {
       figure.responsive-image>.sizer {
         padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
       }
-
-      // }
     }
 
   }
@@ -548,7 +543,6 @@ const pageClasses = computed(() => {
   .now-showing-section,
   .featured-collections-section {
     :deep(.block-highlight) {
-      margin-top: 20px;
       padding-top: 0px;
       transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -645,10 +639,6 @@ const pageClasses = computed(() => {
   .featured-collections-section {
 
     background-color: var(--pale-blue);
-    // .section-teaser-card {
-    //   background-color: var(--pale-blue);
-    //   padding-top: 0;
-    // }
 
     :deep(.rich-text.section-summary) {
       @include ftva-body-2;
