@@ -8,6 +8,7 @@ import FTVATouringSeriesDetail from '../gql/queries/FTVATouringSeriesDetail.gql'
 // COMPOSABLE
 import removeTags from '~/utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 const { $graphql } = useNuxtApp()
 
@@ -65,13 +66,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel) {
-    return []
-  }
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -111,7 +106,7 @@ const parsedOtherTouringSeries = computed(() => {
       startDate: item.startDate ? item.startDate : null,
       endDate: item.endDate ? item.endDate : null,
       sectionHandle: item.sectionHandle, // 'ftvaTouringSeries'
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return otherSeries
@@ -189,9 +184,7 @@ useHead({
 
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
-        <CardMeta
-          category="Series"
-        >
+        <CardMeta category="Series">
           <template #anyTitle>
             <h1 class="title-no-link">
               {{ page.title }}
@@ -228,7 +221,10 @@ useHead({
           :start-date="page?.startDate"
           :end-date="page?.endDate"
         />
-        <em v-if="tourHasCompleted" class="completed-tour">This series has completed its tour.</em>
+        <em
+          v-if="tourHasCompleted"
+          class="completed-tour"
+        >This series has completed its tour.</em>
       </template>
     </TwoColLayoutWStickySideBar>
 
@@ -263,6 +259,7 @@ useHead({
       border: 0;
       padding: 0;
     }
+
     :deep(td:first-child) {
       min-width: 100px;
     }
@@ -285,7 +282,7 @@ useHead({
 
   // TODO CardMeta SectionHandle hide time & diamond without changing component
   :deep(.ftva-other-touring-series .start-date::after),
-  :deep(.ftva-other-touring-series .parsed-time){
+  :deep(.ftva-other-touring-series .parsed-time) {
     display: none;
   }
 
@@ -293,6 +290,7 @@ useHead({
     :deep(.two-column .primary-column .sidebar-mobile-top > .block-event-detail) {
       margin-bottom: 0;
     }
+
     :deep(.two-column .primary-column .sidebar-mobile-top) {
       margin-bottom: 24px;
     }

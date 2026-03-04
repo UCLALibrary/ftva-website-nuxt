@@ -5,6 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVA_GENERAL_CONTENT_DETAIL from '../gql/queries/FTVAGeneralContentDetail.gql'
 
+// COMPOSABLES
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -58,9 +61,7 @@ watch(data, (newVal, oldVal) => {
 const h2Array = ref([]) // anchor tags
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
