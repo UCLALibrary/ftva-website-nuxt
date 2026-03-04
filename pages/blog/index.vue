@@ -108,7 +108,7 @@ const parsedArticles = computed(() => {
       to: `/${obj._source.uri}`,
       title: obj._source.title,
       category: parseArticleCategories(obj._source.articleCategories),
-      description: obj._source.aboutTheAuthor,
+      description: obj._source.ftvaHomepageDescription,
       date: obj._source.postDate,
       image: parseImage(obj),
       sectionHandle: obj._source.sectionHandle,
