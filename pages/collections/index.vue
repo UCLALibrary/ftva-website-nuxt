@@ -237,10 +237,27 @@ const pageClasses = computed(() => {
       </template>
 
       <ScrollWrapper>
-        <SectionTeaserCard
-          :items="collection.featuredCollections"
-          :grid-layout="false"
-        />
+        <template
+          v-for="item in collection.featuredCollections"
+          :key="item.id"
+        >
+          <block-card-with-image
+            class="card"
+            :byline-one="item.bylineOne"
+            :byline-two="item.bylineTwo"
+            :category="item.category"
+            :date-created="item.postDate"
+            :image="item.image"
+            date-format="short"
+            :start-date="item.startDate"
+            :end-date="item.endDate"
+            :title="item.title"
+            :to="item.to"
+            tag="div"
+            :image-aspect-ratio="60"
+            :is-vertical="true"
+          />
+        </template>
       </ScrollWrapper>
       <DividerWayFinder />
     </SectionWrapper>
