@@ -359,6 +359,14 @@ const pageClasses = computed(() => {
   }
 
   .section-wrapper-featured-collections {
+    :deep(.v-sheet) {
+      background-color: var(--pale-blue);
+    }
+
+    :deep(.card) {
+      width: 320px;
+    }
+
     :deep(.section-header) {
       margin-bottom: 20px;
     }
@@ -371,13 +379,13 @@ const pageClasses = computed(() => {
       max-width: 100%;
     }
 
-    .section-teaser-card {
-      background-color: var(--pale-blue);
+    // .section-teaser-card {
+    //   background-color: var(--pale-blue);
 
-      :deep(.card) {
-        width: 320px;
-      }
-    }
+    //   :deep(.card) {
+    //     width: 320px;
+    //   }
+    // }
   }
 
   /* this sets the image to fit the motion-picture, watch listen and telivision cards in safari too, this will be component change */

@@ -558,8 +558,8 @@ const pageClasses = computed(() => {
   }
 
   .visit-learn-section {
-    :deep(.section-teaser-card) {
-      padding-top: 0;
+    :deep(.section-header) {
+      margin-bottom: 10px;
     }
 
     :deep(.block-highlight .media) {
