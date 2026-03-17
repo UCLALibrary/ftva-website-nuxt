@@ -239,7 +239,7 @@ const pageClasses = computed(() => {
       <ScrollWrapper>
         <template
           v-for="item in collection.featuredCollections"
-          :key="item.id"
+          :key="`${item.title}-${item.to}`"
         >
           <block-card-with-image
             class="card"
