@@ -373,7 +373,7 @@ const pageClasses = computed(() => {
               &#8250;</span>
           </nuxt-link>
         </template>
-        <ScrollWrapper class="homepage-scroll-wrapper">
+        <ScrollWrapper class="homepage-scroll-wrapper no-min-height-scrollwrapper">
           <template
             v-for="item in parsedFeaturedCollections.collections"
             :key="item.id"
@@ -501,14 +501,14 @@ const pageClasses = computed(() => {
     }
   }
 
+  // START HomePage specific cardmeta styles
   .now-showing-section {
 
-    // START HomePage specific cardmeta styles
     :deep(.block-highlight) {
       max-width: 340px;
       flex-direction: column-reverse;
-      padding-top: 0px;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      // padding-top: 0px;
+      // transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       .smart-link.title {
         @include ftva-card-title-1;
@@ -539,23 +539,37 @@ const pageClasses = computed(() => {
         padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
       }
 
-      &:hover {
-        transform: translateY(-20px);
-      }
+      // &:hover {
+      //   transform: translateY(-20px);
+      // }
     }
 
   }
 
-  .now-showing-section {
-    :deep(.block-highlight) {
-      padding-top: 0px;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  .now-showing-section,
+  .featured-collections-section {
 
-      &:hover {
-        transform: translateY(-20px);
+    // reduce header margin bottom
+    :deep(.section-header) {
+      margin-bottom: 35px;
+    }
+
+    // special hover animation for these 2 sections specifically
+    .homepage-scroll-wrapper {
+      :deep(.block-highlight) {
+        padding-top: 0px;
+        min-width: unset; //350
+        min-height: unset; // 380
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+        &:hover {
+          transform: translateY(-20px);
+        }
       }
     }
   }
+
+  // END HomePage specific cardmeta styles
 
   .visit-learn-section {
     :deep(.section-header) {
@@ -649,8 +663,22 @@ const pageClasses = computed(() => {
       @include ftva-body-2;
     }
 
-    :deep(.block-highlight .card-meta) {
-      min-height: 0;
+    .no-min-height-scrollwrapper {
+      :deep(.v-slide-group__content) {
+        min-height: unset;
+      }
+    }
+
+    .homepage-scroll-wrapper {
+      :deep(.block-highlight) {
+        padding-top: 0px;
+        min-width: 280px;
+        min-height: 350px;
+
+        .card-meta {
+          min-height: 0;
+        }
+      }
     }
   }
 
