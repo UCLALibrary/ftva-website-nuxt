@@ -507,8 +507,6 @@ const pageClasses = computed(() => {
     :deep(.block-highlight) {
       max-width: 340px;
       flex-direction: column-reverse;
-      // padding-top: 0px;
-      // transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
       .smart-link.title {
         @include ftva-card-title-1;
@@ -538,10 +536,6 @@ const pageClasses = computed(() => {
       figure.responsive-image>.sizer {
         padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
       }
-
-      // &:hover {
-      //   transform: translateY(-20px);
-      // }
     }
 
   }
@@ -549,9 +543,11 @@ const pageClasses = computed(() => {
   .now-showing-section,
   .featured-collections-section {
 
-    // reduce header margin bottom
-    :deep(.section-header) {
-      margin-bottom: 35px;
+    // reduce header margin bottom on large screens
+    @media #{$medium} {
+      :deep(.section-header) {
+        margin-bottom: 35px;
+      }
     }
 
     // special hover animation for these 2 sections specifically
@@ -572,6 +568,10 @@ const pageClasses = computed(() => {
   // END HomePage specific cardmeta styles
 
   .visit-learn-section {
+    :deep(.section-teaser-card) {
+      padding-top: 0;
+    }
+
     :deep(.section-header) {
       margin-bottom: 10px;
     }
