@@ -544,9 +544,15 @@ const pageClasses = computed(() => {
   .featured-collections-section {
 
     // reduce header margin bottom on large screens
-    @media #{$medium} {
+    @media #{$large} {
       :deep(.section-header) {
         margin-bottom: 35px;
+      }
+    }
+
+    @media #{$small} {
+      :deep(.section-header) {
+        margin-bottom: 10px;
       }
     }
 
@@ -574,6 +580,12 @@ const pageClasses = computed(() => {
 
     :deep(.section-header) {
       margin-bottom: 10px;
+    }
+
+    @media #{$large} {
+      :deep(.section-header) {
+        margin-bottom: 35px;
+      }
     }
 
     :deep(.block-highlight .media) {
