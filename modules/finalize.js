@@ -5,11 +5,7 @@ export default defineNuxtModule({
   setup(options, nuxt) {
     const logger = useLogger('finalize-module')
 
-    async function indexExists(esUrl, index) {
-      const headers = {
-        Authorization: `ApiKey ${nuxt.options.runtimeConfig.esReadKey}`,
-        'Content-Type': 'application/json',
-      }
+    async function indexExists(esUrl, index, headers) {
       const response = await fetch(`${esUrl}/${encodeURIComponent(index)}`, {
         headers,
         method: 'HEAD',
@@ -84,7 +80,7 @@ export default defineNuxtModule({
       }
 
       try {
-        const tempExists = await indexExists(esUrl, tempIndex)
+        const tempExists = await indexExists(esUrl, tempIndex, headers)
 
         if (!tempExists) {
           logger.warn(
