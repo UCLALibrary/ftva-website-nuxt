@@ -5,7 +5,7 @@ export default defineNuxtModule({
   setup(options, nuxt) {
     const logger = useLogger('finalize-module')
 
-     async function indexExists(esUrl, index) {
+    async function indexExists(esUrl, index) {
       const headers = {
         Authorization: `ApiKey ${nuxt.options.runtimeConfig.esReadKey}`,
         'Content-Type': 'application/json',
@@ -30,7 +30,7 @@ export default defineNuxtModule({
     }
 
     async function deleteIndices(indicesToDelete, esUrl, headers, tempIndex) {
-       // Step 3: Delete the old indices
+      // Step 3: Delete the old indices
       try {
         for (const index of indicesToDelete) {
           // Skip deleting the new temp index
@@ -50,9 +50,7 @@ export default defineNuxtModule({
       } catch (err) {
         logger.error('Error deleting indices:', err)
       }
-
-  }
-
+    }
 
     async function updateAliasesAndCleanup() {
       const esUrl = nuxt.options.runtimeConfig.public.esURL
@@ -75,10 +73,8 @@ export default defineNuxtModule({
 
         if (!aliasData || Object.keys(aliasData).length === 0) {
           logger.warn('No indices found for alias:', alias)
-        } else {
-          if(!Object.keys(aliasData).includes('error') && !Object.keys(aliasData).includes('status')){
-            indicesToDelete = Object.keys(aliasData)
-          }
+        } else if (!Object.keys(aliasData).includes('error') && !Object.keys(aliasData).includes('status')) {
+          indicesToDelete = Object.keys(aliasData)
         }
         logger.warn('Indices associated with alias:', indicesToDelete)
       } catch (err) {
@@ -124,12 +120,12 @@ export default defineNuxtModule({
 
         const updateAliasBody = await updateAliasResponse.json()
 
-        if(updateAliasBody.status && updateAliasBody.status !== 200){
+        if (updateAliasBody.status && updateAliasBody.status !== 200) {
           logger.error('Error updating alias:', updateAliasBody)
           await deleteIndices(indicesToDelete, esUrl, headers, tempIndex)
           return
         }
-         logger.warn('Alias updated:', updateAliasBody)
+        logger.warn('Alias updated:', updateAliasBody)
       } catch (err) {
         logger.error('Error updating alias:', err)
         await deleteIndices(indicesToDelete, esUrl, headers, tempIndex)

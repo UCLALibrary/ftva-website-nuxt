@@ -1,4 +1,3 @@
-
 import { defineNuxtModule, useLogger } from 'nuxt/kit'
 import fetch from 'node-fetch'
 export default defineNuxtModule({
@@ -12,7 +11,7 @@ export default defineNuxtModule({
         // console.log('Ready to create library temp index...')
 
         const esLibraryIndexTemp = nuxt.options.runtimeConfig.public.esTempIndex
-         logger.warn('Index named:' + esLibraryIndexTemp)
+        logger.warn('Index named:' + esLibraryIndexTemp)
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/flattened.html
         try {
           const response = await fetch(`${nuxt.options.runtimeConfig.public.esURL}/${esLibraryIndexTemp}`, {
@@ -82,11 +81,10 @@ export default defineNuxtModule({
           const body = await response.text()
           const testJson = JSON.parse(body)
           logger.warn('Index created:' + JSON.stringify(testJson))
-           logger.warn('Elastic Search index created succesfully!')
+          logger.warn('Elastic Search index created succesfully!')
         } catch (err) {
-          // eslint-disable-next-line no-console
           logger.error('Error:', err)
-          // eslint-disable-next-line no-console
+
           logger.error('Response body:', body)
           throw err
         }
