@@ -1,8 +1,10 @@
-import { defineNuxtModule } from 'nuxt/kit'
+
+import { defineNuxtModule, useLogger } from 'nuxt/kit'
 import fetch from 'node-fetch'
 export default defineNuxtModule({
 
   setup(options, nuxt) {
+    const logger = useLogger('init-module')
     // console.log('Nuxt module start ')
     // console.log('Is the environement local Dev' + import.meta.dev)
     if (!nuxt.options._prepare && !import.meta.dev) {
@@ -10,7 +12,7 @@ export default defineNuxtModule({
         // console.log('Ready to create library temp index...')
 
         const esLibraryIndexTemp = nuxt.options.runtimeConfig.public.esTempIndex
-        // console.log('Index named:' + esLibraryIndexTemp)
+         logger.warn('Index named:' + esLibraryIndexTemp)
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/flattened.html
         try {
           const response = await fetch(`${nuxt.options.runtimeConfig.public.esURL}/${esLibraryIndexTemp}`, {
@@ -79,13 +81,13 @@ export default defineNuxtModule({
           })
           const body = await response.text()
           const testJson = JSON.parse(body)
-          // console.log('Index created:' + JSON.stringify(testJson))
-          // console.log('Elastic Search index created succesfully!')
+          logger.warn('Index created:' + JSON.stringify(testJson))
+           logger.warn('Elastic Search index created succesfully!')
         } catch (err) {
           // eslint-disable-next-line no-console
-          console.error('Error:', err)
+          logger.error('Error:', err)
           // eslint-disable-next-line no-console
-          console.error('Response body:', body)
+          logger.error('Response body:', body)
           throw err
         }
       })
