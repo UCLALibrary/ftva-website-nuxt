@@ -5,8 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 
-// COMPOSABLE
+// COMPOSABLES
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 // UTILS
 import removeTags from '~/utils/removeTags'
@@ -63,18 +64,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // DATA PARSING
-const parsedImage = computed(() => {
-  // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel || page.value.imageCarousel.length === 0) {
-    return []
-  }
-  return page.value.imageCarousel.map((item) => {
-    return {
-      ...item,
-      image: [{ ...item.image[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }]
-    }
-  })
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {

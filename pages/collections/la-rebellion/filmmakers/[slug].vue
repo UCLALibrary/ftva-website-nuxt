@@ -8,6 +8,7 @@ import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmma
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 const { $graphql } = useNuxtApp()
 
@@ -56,9 +57,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -74,18 +73,7 @@ const parsedCarouselData = computed(() => {
 const parsedAssociatedFilms = computed(() => {
   if (page.value.associatedFilms.length === 0) return []
   return page.value.associatedFilms.map((obj) => {
-    // console.log('obj link', obj.filmLink)
     const newFilmLink = ['/', obj.filmLink?.[0]?.uri].join('')
-    // console.log('newFilmLink', newFilmLink)
-    // console.log('new obj', {
-    //   ...obj,
-    //   filmLink: [
-    //     {
-    //       ...obj.filmLink[0],
-    //       uri: newFilmLink
-    //     }
-    //   ]
-    // })
     return {
       ...obj,
       filmLink: [

@@ -237,10 +237,27 @@ const pageClasses = computed(() => {
       </template>
 
       <ScrollWrapper>
-        <SectionTeaserCard
-          :items="collection.featuredCollections"
-          :grid-layout="false"
-        />
+        <template
+          v-for="item in collection.featuredCollections"
+          :key="`${item.title}-${item.to}`"
+        >
+          <block-card-with-image
+            class="card"
+            :byline-one="item.bylineOne"
+            :byline-two="item.bylineTwo"
+            :category="item.category"
+            :date-created="item.postDate"
+            :image="item.image"
+            date-format="short"
+            :start-date="item.startDate"
+            :end-date="item.endDate"
+            :title="item.title"
+            :to="item.to"
+            tag="div"
+            :image-aspect-ratio="60"
+            :is-vertical="true"
+          />
+        </template>
       </ScrollWrapper>
       <DividerWayFinder />
     </SectionWrapper>
@@ -342,6 +359,14 @@ const pageClasses = computed(() => {
   }
 
   .section-wrapper-featured-collections {
+    :deep(.v-sheet) {
+      background-color: var(--pale-blue);
+    }
+
+    :deep(.card) {
+      width: 320px;
+    }
+
     :deep(.section-header) {
       margin-bottom: 20px;
     }
@@ -354,13 +379,13 @@ const pageClasses = computed(() => {
       max-width: 100%;
     }
 
-    .section-teaser-card {
-      background-color: var(--pale-blue);
+    // .section-teaser-card {
+    //   background-color: var(--pale-blue);
 
-      :deep(.card) {
-        width: 320px;
-      }
-    }
+    //   :deep(.card) {
+    //     width: 320px;
+    //   }
+    // }
   }
 
   /* this sets the image to fit the motion-picture, watch listen and telivision cards in safari too, this will be component change */
