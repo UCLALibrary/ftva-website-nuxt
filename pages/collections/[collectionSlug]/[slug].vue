@@ -321,7 +321,7 @@ const pageClasses = computed(() => {
         #primaryMid
       >
         <h3 class="collection-item-subtitle synopsis">
-          Sypnosis
+          Synopsis
         </h3>
         <RichText
           class="eventDescription"
