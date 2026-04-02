@@ -272,14 +272,32 @@ const pageClasses = computed(() => {
               &#8250;</span>
           </nuxt-link>
         </template>
-        <ScrollWrapper class="homepage-scroll-wrapper">
-          <SectionTeaserCard
-            v-if="parsedNowShowing && parsedNowShowing.length > 0"
-            class="now-showing-items hovered-items"
-            :items="parsedNowShowing"
-            :grid-layout="false"
-            data-test="featured-event-items"
-          />
+        <ScrollWrapper
+          v-if="parsedNowShowing && parsedNowShowing.length > 0"
+          class="homepage-scroll-wrapper now-showing-items"
+        >
+          <template
+            v-for="item in parsedNowShowing"
+            :key="item.id"
+          >
+            <block-card-with-image
+              class="card now-showing-item"
+              data-test="featured-event-items"
+              :byline-one="item.bylineOne"
+              :byline-two="item.bylineTwo"
+              :category="item.category"
+              :date-created="item.postDate"
+              :image="item.image"
+              date-format="short"
+              :start-date="item.startDate"
+              :end-date="item.endDate"
+              :title="item.title"
+              :to="item.to"
+              tag="div"
+              :image-aspect-ratio="60"
+              :is-vertical="true"
+            />
+          </template>
         </ScrollWrapper>
         <DividerWayFinder />
       </SectionWrapper>
@@ -355,14 +373,29 @@ const pageClasses = computed(() => {
               &#8250;</span>
           </nuxt-link>
         </template>
-
-        <ScrollWrapper>
-          <SectionTeaserCard
-            :items="parsedFeaturedCollections.collections"
-            :grid-layout="false"
-            data-test="featured-collection-items"
-            class="hovered-items"
-          />
+        <ScrollWrapper class="homepage-scroll-wrapper no-min-height-scrollwrapper">
+          <template
+            v-for="item in parsedFeaturedCollections.collections"
+            :key="item.id"
+          >
+            <block-card-with-image
+              class="card"
+              data-test="featured-collection-items"
+              :byline-one="item.bylineOne"
+              :byline-two="item.bylineTwo"
+              :category="item.category"
+              :date-created="item.postDate"
+              :image="item.image"
+              date-format="short"
+              :start-date="item.startDate"
+              :end-date="item.endDate"
+              :title="item.title"
+              :to="item.to"
+              tag="div"
+              :image-aspect-ratio="60"
+              :is-vertical="true"
+            />
+          </template>
         </ScrollWrapper>
 
         <DividerWayFinder />
@@ -406,11 +439,17 @@ const pageClasses = computed(() => {
 
 <style lang="scss" scoped>
 .page-home {
+  background-color: var(--pale-blue);
+
   .screen-reader-text {
     @include visually-hidden;
   }
 
-  background-color: var(--pale-blue);
+  .homepage-scroll-wrapper {
+    :deep(.v-sheet) {
+      background-color: transparent;
+    }
+  }
 
   .one-column {
     width: 100%;
@@ -462,71 +501,91 @@ const pageClasses = computed(() => {
     }
   }
 
+  // START HomePage specific cardmeta styles
   .now-showing-section {
-    .now-showing-items {
-      background-color: var(--pale-blue);
-      padding-top: 0px;
 
-      // START HomePage specific cardmeta styles
-      :deep(li.block-highlight) {
-        max-width: 340px;
-        flex-direction: column-reverse;
+    :deep(.block-highlight) {
+      max-width: 340px;
+      flex-direction: column-reverse;
 
-        .smart-link.title {
-          @include ftva-card-title-1;
-          color: $heading-grey;
+      .smart-link.title {
+        @include ftva-card-title-1;
+        color: $heading-grey;
+      }
+
+      .date-time {
+        @include ftva-emphasized-subtitle;
+        color: $accent-blue;
+        margin-bottom: 0px;
+
+        .schedule-item.start-date {
+          margin-right: 26px;
         }
+      }
 
-        .date-time {
-          @include ftva-emphasized-subtitle;
-          color: $accent-blue;
-          margin-bottom: 0px;
+      .card-meta {
+        height: 275px;
+        padding: 40px 30px 25px 30px;
+        position: relative;
+      }
 
-          .schedule-item.start-date {
-            margin-right: 26px;
-          }
-        }
+      img.media {
+        border-radius: 0 0 10px 10px;
+      }
 
-        .card-meta {
-          height: 275px;
-          padding: 40px 30px 25px 30px;
-          position: relative;
-        }
-
-        img.media {
-          border-radius: 0 0 10px 10px;
-        }
-
-        figure.responsive-image>.sizer {
-          padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
-        }
+      figure.responsive-image>.sizer {
+        padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
       }
     }
 
-    .homepage-scroll-wrapper {
-      :deep(.v-sheet) {
-        background-color: transparent;
-      }
-    }
   }
 
   .now-showing-section,
   .featured-collections-section {
-    .hovered-items {
-      :deep(li.block-highlight) {
-        margin-top: 16px;
-        transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    // reduce header margin bottom on large screens
+    @media #{$large} {
+      :deep(.section-header) {
+        margin-bottom: 35px;
+      }
+    }
+
+    @media #{$small} {
+      :deep(.section-header) {
+        margin-bottom: 10px;
+      }
+    }
+
+    // special hover animation for these 2 sections specifically
+    .homepage-scroll-wrapper {
+      :deep(.block-highlight) {
+        padding-top: 0px;
+        min-width: unset; //350
+        min-height: unset; // 380
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         &:hover {
-          margin-top: 0px;
+          transform: translateY(-20px);
         }
       }
     }
   }
 
+  // END HomePage specific cardmeta styles
+
   .visit-learn-section {
     :deep(.section-teaser-card) {
       padding-top: 0;
+    }
+
+    :deep(.section-header) {
+      margin-bottom: 10px;
+    }
+
+    @media #{$large} {
+      :deep(.section-header) {
+        margin-bottom: 35px;
+      }
     }
 
     :deep(.block-highlight .media) {
@@ -609,17 +668,29 @@ const pageClasses = computed(() => {
   }
 
   .featured-collections-section {
-    .section-teaser-card {
-      background-color: var(--pale-blue);
-      padding-top: 0;
-    }
+
+    background-color: var(--pale-blue);
 
     :deep(.rich-text.section-summary) {
       @include ftva-body-2;
     }
 
-    :deep(.block-highlight .card-meta) {
-      min-height: 0;
+    .no-min-height-scrollwrapper {
+      :deep(.v-slide-group__content) {
+        min-height: unset;
+      }
+    }
+
+    .homepage-scroll-wrapper {
+      :deep(.block-highlight) {
+        padding-top: 0px;
+        min-width: 280px;
+        min-height: 350px;
+
+        .card-meta {
+          min-height: 0;
+        }
+      }
     }
   }
 
@@ -636,6 +707,7 @@ const pageClasses = computed(() => {
         img.media {
           aspect-ratio: 570/375;
         }
+
         .sizer {
           padding-bottom: calc(375/570 * 100%) !important;
         }
