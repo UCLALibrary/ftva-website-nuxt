@@ -549,11 +549,11 @@ const pageClasses = computed(() => {
       margin: 0;
     }
 
-    :deep(.ftva.block-staff-article-item .molecule-no-image) {
-      min-width: 100%;
-      height: auto;
-      margin: 0;
-    }
+    // :deep(.ftva.block-staff-article-item .molecule-no-image) {
+    //   min-width: 100%;
+    //   height: auto;
+    //   margin: 0;
+    // }
 
     :deep(.ftva.block-staff-article-item .meta) {
       height: auto;
