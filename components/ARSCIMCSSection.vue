@@ -177,7 +177,7 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .one-column {
 
@@ -196,7 +196,7 @@ useHead({
 
 .section-header,
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
-  color: $heading-grey;
+  color: ftvaTokens.$heading-grey;
 }
 
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header) {

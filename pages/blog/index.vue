@@ -293,7 +293,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-article-list {
   position: relative;
@@ -417,7 +417,7 @@ const pageClasses = computed(() => {
     :deep(.section-header) {
       font-size: 38px;
       margin-bottom: 48px;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     &:last-of-type {
@@ -501,7 +501,7 @@ const pageClasses = computed(() => {
 
   :deep(.ftva.block-staff-article-item) {
     .ftva-date {
-      color: $subtitle-grey;
+      color: ftvaTokens.$subtitle-grey;
       font-family: "proxima-nova", Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-style: normal;

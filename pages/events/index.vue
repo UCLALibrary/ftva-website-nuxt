@@ -632,7 +632,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang='scss' scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
   z-index: 99;
@@ -830,7 +830,7 @@ const pageClasses = computed(() => {
     }
 
     :deep(.section-teaser-list .list-item) {
-      border-bottom: 1px solid $page-blue;
+      border-bottom: 1px solid ftvaTokens.$page-blue;
 
       &:last-child {
         border-bottom: 0;
