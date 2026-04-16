@@ -1,4 +1,5 @@
 /* These styles appear on all listing pages so far */
+@use 'ucla-library-design-tokens/scss/abstracts/' as *;
 
 // Sets an aspect ration for both the banner image and the image carousel
 .resized-aspect-ratio {

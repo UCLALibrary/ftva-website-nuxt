@@ -119,7 +119,7 @@ useHead({
       }
 
       .blue-accent {
-        color: $accent-blue;
+        color: ftvaTokens.$accent-blue;
         font-weight: 700
       }
 
@@ -132,7 +132,7 @@ useHead({
 
       .link {
         &:hover {
-          color: $accent-blue;
+          color: ftvaTokens.$accent-blue;
           text-decoration: underline;
         }
       }

@@ -65,7 +65,7 @@
   // recreate cardmeta title styles for h1 slots on slugs pages
   h1.title-no-link {
     @include ftva-h2;
-    color: $heading-grey;
+    color: ftvaTokens.$heading-grey;
     margin: 0 0 24px;
   }
 
@@ -93,8 +93,8 @@
   .block-info-header {
     @include ftva-subtitle-1;
     text-align: center;
-    color: $heading-grey;
-    border-bottom: 1px solid $grey-blue;
+    color: ftvaTokens.$heading-grey;
+    border-bottom: 1px solid ftvaTokens.$grey-blue;
     padding: 8px 0;
   }
 
@@ -103,10 +103,10 @@
 
     li {
       @include ftva-body-2;
-      color: $body-grey;
+      color: ftvaTokens.$body-grey;
 
       &::marker {
-        color: $body-grey;
+        color: ftvaTokens.$body-grey;
       }
     }
   }

@@ -29,11 +29,12 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
+          api: 'modern-compiler',
           additionalData: `
-                        @import "ucla-library-design-tokens/scss/fonts.scss";
-                        @import "ucla-library-design-tokens/scss/_tokens-ftva";
-                        @import "ucla-library-design-tokens/scss/app.scss";
-                    `,
+            @use "ucla-library-design-tokens/scss/fonts.scss" as *;
+            @use "ucla-library-design-tokens/scss/abstracts/_tokens-ftva" as ftvaTokens;
+            @use "ucla-library-design-tokens/scss/app.scss" as *;
+          `
         },
       },
     }
@@ -176,26 +177,26 @@ export default defineNuxtConfig({
          */
         endpoint: import.meta.env.CRAFT_ENDPOINT || '',
         /**
-         * Per-client options overrides
-         * See: https://github.com/prisma-labs/graphql-request#passing-more-options-to-fetch
-         */
+       * Per-client options overrides
+       * See: https://github.com/prisma-labs/graphql-request#passing-more-options-to-fetch
+       */
         options: {},
       },
 
     },
 
     /**
-     * Options
-     * See: https://github.com/prisma-labs/graphql-request#passing-more-options-to-fetch
-     */
+   * Options
+   * See: https://github.com/prisma-labs/graphql-request#passing-more-options-to-fetch
+   */
     options: {
       method: 'get', // Default to `POST`
     },
 
     /**
-     * Optional
-     * default: false (this includes cross-fetch/polyfill before creating the graphql client)
-     */
+   * Optional
+   * default: false (this includes cross-fetch/polyfill before creating the graphql client)
+   */
     // useFetchPolyfill: true,
 
     /**

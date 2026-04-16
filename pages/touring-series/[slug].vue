@@ -251,7 +251,7 @@ useHead({
 
 <style lang="scss" scoped>
 // TODO Make the table in FPB RichText component responsive
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-touring-series-detail {
   .tour-dates {

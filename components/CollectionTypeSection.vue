@@ -340,7 +340,7 @@ watch(data, (newVal, oldVal) => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-collection-type {
   position: relative;
@@ -376,7 +376,7 @@ watch(data, (newVal, oldVal) => {
 
     :deep(.section-title) {
       @include ftva-h4;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
       font-size: 48px;
       margin-bottom: 0;
     }
@@ -386,7 +386,7 @@ watch(data, (newVal, oldVal) => {
 
       p {
         @include ftva-body-2;
-        color: $body-grey;
+        color: ftvaTokens.$body-grey;
         text-align: left;
       }
     }
