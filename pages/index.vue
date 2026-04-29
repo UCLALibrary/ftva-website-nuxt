@@ -3,13 +3,16 @@
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
 import { format } from 'date-fns'
+import IconFtvaDiamond from 'ucla-library-design-tokens/assets/svgs/icon-ftva-diamond.svg'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
 
 // UTILITIES
 import formatEventDates from '@/utils/formatEventDates'
+import formatTimes from '@/utils/formatEventTimes'
 import formatSeriesDates from '@/utils/formatEventSeriesDates'
+import formatHomePageEventDates from '@/utils/formatHomePageEventDates'
 
 const { $graphql } = useNuxtApp()
 
@@ -280,23 +283,45 @@ const pageClasses = computed(() => {
             v-for="item in parsedNowShowing"
             :key="item.id"
           >
-            <block-card-with-image
+            <BlockCardWithImage
               class="card now-showing-item"
               data-test="featured-event-items"
               :byline-one="item.bylineOne"
               :byline-two="item.bylineTwo"
               :category="item.category"
-              :date-created="item.postDate"
               :image="item.image"
-              date-format="short"
-              :start-date="item.startDate"
-              :end-date="item.endDate"
               :title="item.title"
               :to="item.to"
               tag="div"
               :image-aspect-ratio="60"
               :is-vertical="true"
-            />
+            >
+              <template
+                v-if="item.startDate"
+                #customDateTime
+              >
+                <div class="homepage-date-time">
+                  <time
+                    class="start-date"
+                    :datetime="item.startDate"
+                  >
+                    {{ formatHomePageEventDates(item.startDate) }}
+                  </time>
+
+                  <IconFtvaDiamond
+                    class="divider"
+                    aria-hidden="true"
+                  />
+
+                  <time
+                    class="parsed-time"
+                    :datetime="item.startDate"
+                  >
+                    {{ formatTimes(item.startDate, item.endDate) }}
+                  </time>
+                </div>
+              </template>
+            </BlockCardWithImage>
           </template>
         </ScrollWrapper>
         <DividerWayFinder />
@@ -513,20 +538,41 @@ const pageClasses = computed(() => {
         color: $heading-grey;
       }
 
-      .date-time {
+      .card-meta .byline-group {
+        position: relative;
+        bottom: unset;
+      }
+
+      .card-meta .byline-group .schedule-item.date-created {
         @include ftva-emphasized-subtitle;
         color: $accent-blue;
         margin-bottom: 0px;
 
-        .schedule-item.start-date {
+        /*.start-date {
           margin-right: 26px;
-        }
+        }*/
+      }
+
+      .homepage-date-time {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap; //white-space: nowrap; // 🚨 keeps date/time on one line
+        line-height: 110%; // fixes vertical clipping
+
+      }
+
+      .divider {
+        transform: translateY(1px); // 👈 adjust between 0.5px–2px as needed
       }
 
       .card-meta {
-        height: 275px;
+        min-height: 275px;
         padding: 40px 30px 25px 30px;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; // 👈 key
       }
 
       img.media {
