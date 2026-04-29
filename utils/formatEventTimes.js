@@ -10,7 +10,7 @@ import { format, isValid } from 'date-fns'
 
 function formatTimes(startDate = '', endDate = '') {
   console.log('formatTimes', startDate, 'End Date', endDate)
-if (!startDate) return ''
+  if (!startDate) return ''
 
   const startObj = new Date(startDate)
   if (!isValid(startObj)) return ''

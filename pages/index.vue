@@ -320,7 +320,6 @@ const pageClasses = computed(() => {
                     {{ formatTimes(item.startDate, item.endDate) }}
                   </time>
                 </div>
-
               </template>
             </BlockCardWithImage>
           </template>
@@ -563,13 +562,9 @@ const pageClasses = computed(() => {
 
       }
 
-
-
       .divider {
         transform: translateY(1px); // 👈 adjust between 0.5px–2px as needed
       }
-
-
 
       .card-meta {
         min-height: 275px;
