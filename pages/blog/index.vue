@@ -193,7 +193,7 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main :class="pageClasses">
+  <main id="main" :class="pageClasses">
     <SectionWrapper
       ref="scrollElem"
       :level="1"
