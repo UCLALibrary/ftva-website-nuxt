@@ -58,6 +58,12 @@ useHead({
       color="#ffe800"
       :height="3"
     />
+
+    <vue-skip-to
+      to="#main"
+      label="Skip to main content"
+    />
+
     <div :class="classes">
       <site-brand-bar class="brand-bar" />
       <header-sticky
@@ -98,6 +104,27 @@ useHead({
   .primary {
     position: sticky;
     will-change: top;
+  }
+
+  .vue-skip-to {
+    z-index: 300;
+  }
+
+  .skip-link {
+    position: absolute;
+    transform: translateY(-100%);
+    display: inline-block;
+    background: var(--color-primary-yellow-01);
+    color: var(--color-black);
+    @include step-0;
+    padding: 4px 16px;
+    transition: transform 0.3s;
+    width: auto;
+    left: 0;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0%);
   }
 
   @media #{$small} {
