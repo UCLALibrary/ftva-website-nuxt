@@ -72,6 +72,32 @@ watch(data, (newVal, oldVal) => {
 // Parse FlexibleBlock with helper
 const parsedFlexibleBlocks = computed(() => {
   const dataBlocks = page.value?.blocks || []
+
+  // add sizes data to various flexible block types
+  dataBlocks.forEach((block) => {
+    if (block.typeHandle === 'cardWithImage' && block.cardWithImage?.length > 0) {
+      // block.cardWithImage[0].image = [{ ...block.cardWithImage[0].image[0], sizes: '322px' }]
+      block.cardWithImage.forEach((card) => {
+        card.image.forEach((image) => {
+          image.sizes = '322px'
+        })
+      })
+    }
+    if (block.typeHandle === 'mediaWithText' && block.mediaWithText?.length > 0) {
+      block.mediaWithText.forEach((media) => {
+        media.coverImage?.forEach((image) => {
+          image.sizes = '(min-width: 1000px) 400px, (min-width: 760px) calc(112.27vw - 140px), calc(112.95vw - 55px)'
+        })
+      })
+    }
+    if (block.typeHandle === 'mediaGallery' && block.mediaGallery?.length > 0) {
+      block.mediaGallery.forEach((gallery) => {
+        gallery.item?.forEach((image) => {
+          image.sizes = '(min-width: 1360px) 1160px, (min-width: 760px) calc(91.03vw - 60px), calc(100vw - 48px)'
+        })
+      })
+    }
+  })
   return parseFlexibleBlocks(dataBlocks)
 })
 
@@ -82,7 +108,7 @@ const pageClasses = computed(() => {
 
 // START Handle Hero Image or Carousel
 // Hero Image - formats object with 'creditText' and 'image' fields
-const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel.map((imageObj, index) => (index === 0 && imageObj ? { ...imageObj, image: [{ ...imageObj.image[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) 92vw, 100vw' }] } : imageObj)) : [])
+const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel.map((imageObj, index) => (index === 0 && imageObj ? { ...imageObj, image: [{ ...imageObj.image[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }] } : imageObj)) : [])
 // Carousel - formats object with 'credit' and 'item' fields
 // 1 Carousel data types
 interface FtvaImage {
@@ -99,7 +125,7 @@ const parsedCarouselData = computed<ParsedCarouselItem[]>(() => {
   return parsedImage.value.map((rawItem) => {
     const firstImage = rawItem?.image?.[0]
     return {
-      item: firstImage ? [{ ...firstImage, kind: 'image', sizes: '(min-width: 1220px) 1160px, (min-width: 760px) 92vw, 100vw' }] : [],
+      item: firstImage ? [{ ...firstImage, kind: 'image', sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }] : [],
       credit: rawItem?.creditText ?? '',
     }
   })
