@@ -82,7 +82,7 @@ const pageClasses = computed(() => {
 
 // START Handle Hero Image or Carousel
 // Hero Image - formats object with 'creditText' and 'image' fields
-const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel.map((imageObj, index) => (index === 0 && imageObj ? { ...imageObj, image: [{ ...imageObj.image[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }] } : imageObj)) : [])
+const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel.map((imageObj, index) => (index === 0 && imageObj ? { ...imageObj, image: [{ ...imageObj.image[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) 92vw, 100vw' }] } : imageObj)) : [])
 // Carousel - formats object with 'credit' and 'item' fields
 // 1 Carousel data types
 interface FtvaImage {
@@ -99,7 +99,7 @@ const parsedCarouselData = computed<ParsedCarouselItem[]>(() => {
   return parsedImage.value.map((rawItem) => {
     const firstImage = rawItem?.image?.[0]
     return {
-      item: firstImage ? [{ ...firstImage, kind: 'image', sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }] : [],
+      item: firstImage ? [{ ...firstImage, kind: 'image', sizes: '(min-width: 1220px) 1160px, (min-width: 760px) 92vw, 100vw' }] : [],
       credit: rawItem?.creditText ?? '',
     }
   })
