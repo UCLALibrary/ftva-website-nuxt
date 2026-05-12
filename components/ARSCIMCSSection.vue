@@ -69,37 +69,10 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-// Parse FlexibleBlock with helper
-const parsedFlexibleBlocks = computed(() => {
-  const dataBlocks = page.value?.blocks || []
-
-  // add sizes data to various flexible block types
-  dataBlocks.forEach((block) => {
-    if (block.typeHandle === 'cardWithImage' && block.cardWithImage?.length > 0) {
-      // block.cardWithImage[0].image = [{ ...block.cardWithImage[0].image[0], sizes: '322px' }]
-      block.cardWithImage.forEach((card) => {
-        card.image.forEach((image) => {
-          image.sizes = '322px'
-        })
-      })
-    }
-    if (block.typeHandle === 'mediaWithText' && block.mediaWithText?.length > 0) {
-      block.mediaWithText.forEach((media) => {
-        media.coverImage?.forEach((image) => {
-          image.sizes = '(min-width: 1000px) 400px, (min-width: 760px) calc(112.27vw - 140px), calc(112.95vw - 55px)'
-        })
-      })
-    }
-    if (block.typeHandle === 'mediaGallery' && block.mediaGallery?.length > 0) {
-      block.mediaGallery.forEach((gallery) => {
-        gallery.item?.forEach((image) => {
-          image.sizes = '(min-width: 1360px) 1160px, (min-width: 760px) calc(91.03vw - 60px), calc(100vw - 48px)'
-        })
-      })
-    }
-  })
-  return parseFlexibleBlocks(dataBlocks)
-})
+// Parse FlexibleBlock with helper (sizes for image blocks applied in util when flag is set)
+const parsedFlexibleBlocks = computed(() =>
+  parseFlexibleBlocks(page.value?.blocks || [], { withResponsiveImageSizes: true }),
+)
 
 const pageClasses = computed(() => {
   const slugClass = props.canonicalPath.slice(1).replaceAll('/', '-')
