@@ -80,6 +80,7 @@ function parseSimpleCard(block) {
 const SIZES_CARD_WITH_IMAGE = '322px'
 const SIZES_MEDIA_WITH_TEXT =
   '(min-width: 1000px) 400px, (min-width: 760px) calc(112.27vw - 140px), calc(112.95vw - 55px)'
+// media gallery shows images at 2 sizes, so we are including sizes data for the larger size
 const SIZES_MEDIA_GALLERY =
   '(min-width: 1360px) 1160px, (min-width: 760px) calc(91.03vw - 60px), calc(100vw - 48px)'
 
