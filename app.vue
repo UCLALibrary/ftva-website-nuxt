@@ -58,6 +58,14 @@ useHead({
       color="#ffe800"
       :height="3"
     />
+
+    <ClientOnly>
+      <vue-skip-to
+        to="#main"
+        label="Skip to main content"
+      />
+    </ClientOnly>
+
     <div :class="classes">
       <site-brand-bar class="brand-bar" />
       <header-sticky
@@ -67,12 +75,7 @@ useHead({
         :primary-items="primaryMenuItems"
       />
 
-      <ClientOnly>
-        <vue-skip-to
-          to="#main"
-          label="Skip to main content"
-        />
-      </ClientOnly>
+      <NuxtPage />
 
       <footer data-test="footer">
         <footer-main />
@@ -122,7 +125,7 @@ useHead({
   z-index: 300;
 }
 
-.skip-link {
+.vue-skip-to__link {
   position: absolute;
   transform: translateY(-100%);
   display: inline-block;
@@ -135,7 +138,7 @@ useHead({
   left: 0;
 }
 
-.skip-link:focus {
+.vue-skip-to__link:focus {
   transform: translateY(0%);
 }
 </style>
