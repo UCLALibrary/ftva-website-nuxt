@@ -48,18 +48,24 @@ onMounted(async () => {
 
 </script>
 <template lang="html">
-  <div :class="classes">
-    <!-- site brand bar only shows on desktop -->
-    <site-brand-bar class="brand-bar" />
-    <header-sticky
-      v-if="primaryMenuItems"
-      class="primary"
-      :primary-items="primaryMenuItems"
+  <div>
+    <vue-skip-to
+      to="#main"
+      label="Skip to main content"
     />
-    <slot />
-    <footer data-test="footer">
-      <footer-main />
-    </footer>
+    <div :class="classes">
+      <!-- site brand bar only shows on desktop -->
+      <site-brand-bar class="brand-bar" />
+      <header-sticky
+        v-if="primaryMenuItems"
+        class="primary"
+        :primary-items="primaryMenuItems"
+      />
+      <slot />
+      <footer data-test="footer">
+        <footer-main />
+      </footer>
+    </div>
   </div>
 </template>
 
@@ -99,6 +105,11 @@ onMounted(async () => {
       display: none;
     }
   }
+}
+
+.vue-skip-to {
+  z-index: 300;
+
 }
 
 :deep(.vue-skip-to__link) {
