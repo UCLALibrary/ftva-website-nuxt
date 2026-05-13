@@ -101,20 +101,9 @@ onMounted(async () => {
   }
 }
 
-.vue-skip-to__link {
-  position: absolute;
-  transform: translateY(-100%);
-  display: inline-block;
+:deep(.vue-skip-to__link) {
   background: var(--color-primary-yellow-01);
   color: var(--color-black);
   @include step-0;
-  padding: 4px 16px;
-  transition: transform 0.3s;
-  width: auto;
-  left: 0;
-}
-
-.vue-skip-to__link:focus {
-  transform: translateY(0%);
 }
 </style>
