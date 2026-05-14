@@ -11,6 +11,9 @@ importers:
       '@pinia/nuxt':
         specifier: ^0.5.5
         version: 0.5.5(magicast@0.3.5)(rollup@4.24.0)(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))(webpack-sources@3.3.3)
+      '@vue-a11y/skip-to':
+        specifier: ^3.0.3
+        version: 3.0.3(vue@3.5.12(typescript@5.6.3))
       '@vueuse/core':
         specifier: ^11.1.0
         version: 11.3.0(vue@3.5.12(typescript@5.6.3))
@@ -1487,6 +1490,11 @@ packages:
     peerDependencies:
       vite: ^5.0.0
       vue: ^3.2.25
+
+  '@vue-a11y/skip-to@3.0.3':
+    resolution: {integrity: sha512-m7Sc4rxbehSLZncVIKT1he54zhVa+q+YOFebDQrEATpFMtsrcgnTR2DkH5OVGY33rT3MtZlpQbwYBevwplWP9w==}
+    peerDependencies:
+      vue: ^3.0.0
 
   '@vue-macros/common@1.15.0':
     resolution: {integrity: sha512-yg5VqW7+HRfJGimdKvFYzx8zorHUYo0hzPwuraoC1DWa7HHazbTMoVsHDvk3JHa1SGfSL87fRnzmlvgjEHhszA==}
@@ -7468,6 +7476,10 @@ snapshots:
   '@vitejs/plugin-vue@5.1.4(vite@5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0))(vue@3.5.12(typescript@5.6.3))':
     dependencies:
       vite: 5.4.10(@types/node@18.19.59)(sass@1.80.3)(terser@5.36.0)
+      vue: 3.5.12(typescript@5.6.3)
+
+  '@vue-a11y/skip-to@3.0.3(vue@3.5.12(typescript@5.6.3))':
+    dependencies:
       vue: 3.5.12(typescript@5.6.3)
 
   '@vue-macros/common@1.15.0(rollup@4.24.0)(vue@3.5.12(typescript@5.6.3))':
