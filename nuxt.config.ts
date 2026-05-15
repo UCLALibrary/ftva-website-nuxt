@@ -32,7 +32,7 @@ export default defineNuxtConfig({
           api: 'modern-compiler',
           additionalData: `
             @use "ucla-library-design-tokens/scss/fonts.scss" as *;
-            @use "ucla-library-design-tokens/scss/abstracts/_tokens-ftva" as ftvaTokens;
+            @use "ucla-library-design-tokens/scss/_tokens-ftva" as ftvaTokens;
             @use "ucla-library-design-tokens/scss/app.scss" as *;
           `
         },
