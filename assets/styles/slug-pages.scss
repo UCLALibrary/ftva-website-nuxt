@@ -1,4 +1,6 @@
 /* Shared styles for [slug].vue */
+@use 'ucla-library-design-tokens/scss/app.scss' as *;
+@use 'ucla-library-design-tokens/scss/_tokens-ftva.scss' as ftvaTokens;
 
 .page-detail {
 
