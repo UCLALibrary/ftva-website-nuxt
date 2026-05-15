@@ -201,7 +201,7 @@ const parsedGeneralContentPages = computed(() => {
     return {
       title: obj.title,
       to: uri?.startsWith('/') ? uri : `/${uri}`,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: '200px' }
     }
   })
 })
@@ -218,7 +218,7 @@ const parsedCollectionList = computed(() => {
       title: obj._source?.title,
       text: obj._source?.ftvaHomepageDescription,
       ftvaCollectionType: obj._source?.ftvaCollectionType,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: '(min-width: 1201px) calc((1160px - 40px) / 3), (min-width: 1025px) calc((100vw - 168px) / 3), (min-width: 751px) calc((100vw - 148px) / 2), calc(100vw - 128px)' }
     }
   })
 })
