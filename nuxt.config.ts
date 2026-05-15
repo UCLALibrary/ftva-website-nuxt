@@ -36,7 +36,7 @@ export default defineNuxtConfig({
             if (filename.includes('app-global.scss')) return source
             return `
                         @import "ucla-library-design-tokens/scss/fonts.scss";
-                        @import "ucla-library-design-tokens/scss/abstracts/_tokens-ftva";
+                        @import "ucla-library-design-tokens/scss/_tokens-ftva";
                         @import "ucla-library-design-tokens/scss/app.scss";
                     ${source}`
           },
