@@ -99,10 +99,15 @@ function applyResponsiveImageSizes (block) {
     }
   }
   if (block.typeHandle === 'mediaWithText' && block.mediaWithText?.length > 0) {
+    // need to add sizes data to item if it exists and to coverImage if it exists
     return {
       ...block,
       mediaWithText: block.mediaWithText.map(media => ({
         ...media,
+        item: media.item?.map(image => ({
+          ...image,
+          sizes: SIZES_MEDIA_WITH_TEXT,
+        })),
         coverImage: media.coverImage?.map(image => ({
           ...image,
           sizes: SIZES_MEDIA_WITH_TEXT,
