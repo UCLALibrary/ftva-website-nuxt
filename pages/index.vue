@@ -61,8 +61,7 @@ if (data.value.entry && import.meta.prerender) {
 const page = ref(_get(data.value, 'entry', {}))
 
 watch(data, (newVal, oldVal) => {
-  // eslint-disable-next-line no-console
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
 })
 
@@ -107,7 +106,7 @@ const parsedNowShowing = computed(() => {
       ...item,
       to: `/${item.uri}`,
       title: item.eventTitle || item.title, // prefer eventTitle if it exists
-      image: parseImage(item),
+      image: { ...parseImage(item), sizes: '322px' },
       startDate: item.startDateWithTime || item.startDate,
     }
   })
@@ -123,7 +122,7 @@ const parsedQuickLinks = computed(() => {
       title: item.titleGeneral,
       to: item.urlLink,
       text: item.description,
-      image: item.image[0], // quicklinks are not using parseImage, they have an image field that overrides the image / carousel field in parseImage
+      image: { ...item.image[0], sizes: '365px' }, // quicklinks are not using parseImage, they have an image field that overrides the image / carousel field in parseImage
     }
   })
 })
@@ -139,7 +138,7 @@ const parsedArchiveBlogs = computed(() => {
     blogTitle: obj.featuredArticles[0]?.title,
     blogUri: obj.featuredArticles[0]?.uri,
     blogSummary: obj.featuredArticles[0]?.ftvaHomepageDescription,
-    image: [parseImage(obj?.featuredArticles[0])] // parseImage results must be wrapped in an array for BlockMediaWithText component
+    image: [{ ...parseImage(obj?.featuredArticles[0]), sizes: '(min-width: 1360px) 580px, (min-width: 920px) 43.81vw, (min-width: 760px) calc(27.14vw + 142px), calc(100vw - 48px)' }] // parseImage results must be wrapped in an array for BlockMediaWithText component
   }
 })
 
@@ -151,7 +150,7 @@ const parsedFeaturedCollections = computed(() => {
     return {
       title: item.title,
       to: item.uri,
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '320px' }
     }
   })
 
@@ -193,10 +192,11 @@ function parseFTVACarouselImage(imgObj) {
   if (!imgObj) {
     return null
   }
-
+  const imgsrc = imgObj[0]?.src ? imgObj[0]?.src : imgObj[0]?.url
   return [{
     ...imgObj[0],
-    src: imgObj[0]?.url,
+    src: imgsrc,
+    sizes: '100vw',
     kind: 'image', // This key is expected by the Media component
   }]
 }
