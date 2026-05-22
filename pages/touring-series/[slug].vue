@@ -276,7 +276,7 @@ useHead({
 
   .completed-tour {
     @include ftva-body;
-    color: FtvaTokens.$medium-grey;
+    color: ftvaTokens.$medium-grey;
     margin-bottom: 24px;
   }
 
