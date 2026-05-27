@@ -70,9 +70,21 @@ watch(data, (newVal, oldVal) => {
   additionalResources.value = page.value.ftvaAdditionalResources
 }, { deep: true })
 
+// IMG SIZES
+const HeroImageSizes = '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)'
+const RelatedResourceImageSizes = '150px'
 // IMAGE
 const parsedImage = computed(() => {
-  return page.value.imageCarousel
+  if (page.value.imageCarousel.length > 0) {
+    return page.value.imageCarousel.map((item) => {
+      return {
+        ...item,
+        image: [{ ...item.image[0], sizes: HeroImageSizes }]
+      }
+    })
+  }
+
+  return []
 })
 
 // TRANSFORM DATA FOR CAROUSEL
@@ -86,6 +98,11 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+// Parse FlexibleBlock with helper (sizes for image blocks applied in util when flag is set)
+const parsedFlexibleBlocks = computed(() =>
+  parseFlexibleBlocks(page.value?.blocks || [], { withResponsiveImageSizes: true }),
+)
+
 const parsedAdditionalResources = computed(() => {
   if (additionalResources.value.length === 0) return null
 
@@ -93,7 +110,7 @@ const parsedAdditionalResources = computed(() => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: RelatedResourceImageSizes }
     }
   })
 })
@@ -207,7 +224,7 @@ const pageClasses = computed(() => {
         <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
-            :blocks="page.blocks"
+            :blocks="parsedFlexibleBlocks"
             data-test="flexible-blocks-content"
           />
           <SectionWrapper
