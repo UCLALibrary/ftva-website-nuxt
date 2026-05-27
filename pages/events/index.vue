@@ -301,7 +301,7 @@ const parsedEvents = computed(() => {
       ...obj._source,
       tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 1025px) 284px, (min-width: 750px) calc(100vw - 128px), calc(100vw - 48px)' },
       category: obj._source.eventSeriesTitle ? obj._source.eventSeriesTitle : null
     }
   })
