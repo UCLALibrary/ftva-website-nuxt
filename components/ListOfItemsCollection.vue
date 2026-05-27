@@ -124,7 +124,7 @@ const parsedCollectionResults = computed(() => {
       // ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
-      image: { ...objImage, sizes: '(min-width: 1201px) calc((1160px - 40px) / 3), (min-width: 1025px) calc((100vw - 168px) / 3), (min-width: 751px) calc((100vw - 148px) / 2), calc(100vw - 128px)' },
+      image: { ...objImage, sizes: '(min-width:1201px) 365px, (min-width:1025px) calc(100vw/3 - 168px), (min-width:750px) calc(100vw/2 - 148px), (100vw - 48px)' },
       videoEmbed: obj._source.videoEmbed,
       customDateTime: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
     }
