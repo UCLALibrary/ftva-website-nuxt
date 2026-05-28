@@ -5,6 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVACollectionList from '../gql/queries/FTVACollectionList.gql'
 
+// COMPOSABLES
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('collection-list', async () => {
@@ -58,24 +61,11 @@ watch(data, (newVal, oldVal) => {
 })
 
 // IMG SIZES
-const HeroImageSizes = '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)'
 const CollectionImageSizes = '340px'
 const HearstImageSizes = '(min-width: 1220px) 1160px,(min-width: 750px) calc(100vw - 128px), calc(100vw - 48px)'
 const ResourceImageSizes = '150px'
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  // add sizes here
-  if (page.value.imageCarousel.length > 0) {
-    return page.value.imageCarousel.map((item) => {
-      return {
-        ...item,
-        image: [{ ...item.image[0], sizes: HeroImageSizes }]
-      }
-    })
-  }
-
-  return []
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
