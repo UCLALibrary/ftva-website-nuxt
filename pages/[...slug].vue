@@ -77,7 +77,7 @@ const parsedCarouselData = computed(() => {
 // Parse FlexibleBlock with helper
 const parsedFlexibleBlocks = computed(() => {
   const dataBlocks = page.value?.blocks || []
-  return parseFlexibleBlocks(dataBlocks)
+  return parseFlexibleBlocks(dataBlocks, { withResponsiveImageSizes: true })
 })
 
 // BREADCRUMB OVERRIDES FOR NESTED GC PAGES
