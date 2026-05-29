@@ -422,7 +422,7 @@ const pageClasses = computed(() => {
         </template>
       </SectionWrapper>
     </div>
-  </main>
+  </div>
 </template>
 
 <style lang="scss" scoped>

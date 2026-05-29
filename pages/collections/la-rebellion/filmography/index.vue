@@ -91,12 +91,15 @@ const breadcrumbOverrides = ref([
 </script>
 
 <template>
-  <div class="page-component-wrapper">
+  <main
+    id="main"
+    class="page-component-wrapper"
+  >
     <ListOfItemsCollection
       :page="page"
       :breadcrumbs="breadcrumbOverrides"
     />
-  </div>
+</main>
 </template>
 
 <style scoped>
