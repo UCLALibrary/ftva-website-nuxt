@@ -7,7 +7,6 @@ import BillyWilderTheater from '../gql/queries/BillyWilderTheater.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
-import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 const { $graphql } = useNuxtApp()
 
