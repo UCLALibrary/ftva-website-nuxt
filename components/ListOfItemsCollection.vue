@@ -325,8 +325,7 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main
-    id="main"
+  <div
     :class="pageClasses"
   >
     <div class="one-column">
@@ -421,7 +420,7 @@ const pageClasses = computed(() => {
         </template>
       </SectionWrapper>
     </div>
-  </main>
+  </div>
 </template>
 
 <style lang="scss" scoped>
