@@ -192,7 +192,7 @@ function parseFTVACarouselImage(imgObj) {
   if (!imgObj) {
     return null
   }
-  const imgsrc = imgObj[0]?.src ? imgObj[0]?.src : imgObj[0]?.url
+  const imgsrc = imgObj[0]?.url ? imgObj[0]?.url : imgObj[0]?.src
   return [{
     ...imgObj[0],
     src: imgsrc,
