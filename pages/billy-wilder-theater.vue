@@ -307,7 +307,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .billy-wilder-theater {
   .one-column {
@@ -422,7 +422,7 @@ const pageClasses = computed(() => {
 
   .map-address {
     @include ftva-emphasized-subtitle;
-    color: $accent-blue;
+    color: ftvaTokens.$accent-blue;
   }
 
   .iframe-wrapper {
@@ -454,7 +454,7 @@ const pageClasses = computed(() => {
   .section-subtitle,
   .map-title,
   .map-note {
-    color: $heading-grey;
+    color: ftvaTokens.$heading-grey;
   }
 
   @media #{$medium} {

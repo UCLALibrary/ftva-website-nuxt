@@ -1,4 +1,5 @@
   /* Shared styles for GeneralContent and StoryTelling templates */
+  @use 'ucla-library-design-tokens/scss/_tokens-ftva.scss' as ftvaTokens;
 
   .two-column {
     display: block;
@@ -13,7 +14,7 @@
 
       .flexible-blocks.flexible-content {
         .section-header.section-title {
-          color: $heading-grey;
+          color: ftvaTokens.$heading-grey;
         }
       }
     }

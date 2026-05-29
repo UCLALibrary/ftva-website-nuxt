@@ -620,11 +620,11 @@ const pageClasses = computed(() => {
       padding-left: 2rem;
       line-height: 1.2;
       @include ftva-h4;
-      color: $medium-grey;
+      color: ftvaTokens.$medium-grey;
 
       .search-keywords {
         @include ftva-h3;
-        color: $heading-grey;
+        color: ftvaTokens.$heading-grey;
       }
     }
 
@@ -634,18 +634,18 @@ const pageClasses = computed(() => {
 
       .bottom-row {
         @include ftva-breadcrumb-inactive;
-        color: $medium-grey;
+        color: ftvaTokens.$medium-grey;
 
         .bottom-link {
           @include ftva-button-link;
-          color: $accent-blue;
+          color: ftvaTokens.$accent-blue;
         }
       }
     }
   }
 
   :deep(.ftva.block-call-to-action.theme-light) {
-    background-color: $white;
+    background-color: ftvaTokens.$white;
   }
 
   .two-column {
@@ -730,12 +730,12 @@ const pageClasses = computed(() => {
 
         .no-results-title {
           @include ftva-h4;
-          color: $heading-grey;
+          color: ftvaTokens.$heading-grey;
         }
 
         .no-results-text {
           @include ftva-breadcrumb-inactive;
-          color: $heading-grey;
+          color: ftvaTokens.$heading-grey;
         }
       }
 
@@ -754,7 +754,7 @@ const pageClasses = computed(() => {
 
       .filter-results {
         @include ftva-card-title-1;
-        color: $medium-grey;
+        color: ftvaTokens.$medium-grey;
         margin-bottom: 2rem;
       }
 

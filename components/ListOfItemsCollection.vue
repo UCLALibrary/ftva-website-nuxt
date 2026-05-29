@@ -426,7 +426,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-collections-list-of-items {
   background-color: var(--pale-blue);
@@ -456,7 +456,7 @@ const pageClasses = computed(() => {
     }
 
     :deep(h2.section-header.section-header2.section-title) {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
       text-align: center;
     }
 

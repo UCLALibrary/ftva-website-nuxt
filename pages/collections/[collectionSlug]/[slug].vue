@@ -399,7 +399,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-collection-item-detail {
   position: relative;
@@ -486,7 +486,7 @@ const pageClasses = computed(() => {
 
   .collection-item-subtitle {
     @include ftva-h3;
-    color: $heading-grey;
+    color: ftvaTokens.$heading-grey;
 
     &.synopsis {
       margin-top: var(--space-m);
@@ -537,7 +537,7 @@ const pageClasses = computed(() => {
 
   .credit-table__name {
     font-size: 30px;
-    color: $accent-blue;
+    color: ftvaTokens.$accent-blue;
   }
 
   @media(max-width: 1200px) {
