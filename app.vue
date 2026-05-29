@@ -74,12 +74,12 @@ useHead({
 
       <NuxtPage />
 
-      <footer data-test="footer">
-        <footer-main />
-      </footer>
+      <footer-main data-test="footer"/>
+
     </div>
   </div>
 </template>
+
 <style lang="scss" scoped>
 .layout-default {
   min-height: 100vh;
