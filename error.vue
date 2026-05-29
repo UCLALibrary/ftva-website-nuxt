@@ -30,6 +30,7 @@ useHead({
   <NuxtLayout :is-error="true">
     <main
       id="main"
+      tabindex="-1"
       class="page page-error"
     >
       <SectionWrapper

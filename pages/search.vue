@@ -431,6 +431,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <SectionWrapper
@@ -519,7 +520,7 @@ const pageClasses = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >

@@ -239,6 +239,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <h1 class="screen-reader-text">

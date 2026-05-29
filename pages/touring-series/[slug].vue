@@ -144,6 +144,7 @@ useHead({
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page page-detail page-detail--paleblue page-touring-series-detail"
   >
     <div class="one-column">
