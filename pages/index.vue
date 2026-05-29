@@ -504,7 +504,7 @@ const pageClasses = computed(() => {
   }
 
   :deep(.section-wrapper h2.section-header.section-title) {
-    color: $heading-grey;
+    color: ftvaTokens.$heading-grey;
   }
 
   // Make all images the same in FPB Media With Text
@@ -535,7 +535,7 @@ const pageClasses = computed(() => {
 
       .smart-link.title {
         @include ftva-card-title-1;
-        color: $heading-grey;
+        color: ftvaTokens.$heading-grey;
       }
 
       .card-meta .byline-group {
@@ -545,7 +545,7 @@ const pageClasses = computed(() => {
 
       .card-meta .byline-group .schedule-item.date-created {
         @include ftva-emphasized-subtitle;
-        color: $accent-blue;
+        color: ftvaTokens.$accent-blue;
         margin-bottom: 0px;
 
         /*.start-date {
@@ -645,7 +645,7 @@ const pageClasses = computed(() => {
     :deep(.ftva.card-meta a.title) {
       overflow: initial;
       @include ftva-h5;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
 
       &:hover {
         text-decoration: underline;
@@ -685,7 +685,7 @@ const pageClasses = computed(() => {
         .title {
           margin-top: 0px;
           @include ftva-h5;
-          color: $heading-grey;
+          color: ftvaTokens.$heading-grey;
 
           &:hover {
             text-decoration: underline;

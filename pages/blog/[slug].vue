@@ -252,7 +252,7 @@ const parseBlocks = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 // PAGE STYLES
 .page-article-detail {
@@ -302,7 +302,7 @@ const parseBlocks = computed(() => {
 
   .about-the-author {
     @include ftva-subtitle-2;
-    color: $accent-blue;
+    color: ftvaTokens.$accent-blue;
     padding-bottom: 4px;
   }
 
