@@ -62,7 +62,17 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-const parsedImage = useParsedImageCarousel(page)
+const parsedImage = computed(() => {
+  // If there's a carousel, get the first image in the carousel
+  if (Array.isArray(page.value?.imageCarousel) && page.value.imageCarousel.length > 0) {
+    return page.value.imageCarousel
+  } else if (Array.isArray(page.value?.image)) {
+    // Else if there's an 'Image on Listing or homepage', return it
+    return [{ image: page.value.image }]
+  } else {
+    return []
+  }
+})
 
 const parsedCarouselData = computed(() => {
   if (!Array.isArray(parsedImage.value) || parsedImage.value.length === 0) return []
