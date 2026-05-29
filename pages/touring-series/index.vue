@@ -191,7 +191,11 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main id="main" :class="pageClasses">
+  <main
+    id="main"
+    tabindex="-1"
+    :class="pageClasses"
+  >
     <div class="full-width">
       <SectionWrapper
         id="series-section-title"

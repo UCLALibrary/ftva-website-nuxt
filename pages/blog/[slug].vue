@@ -141,6 +141,7 @@ const parseBlocks = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page page-detail page-detail--paleblue page-article-detail"
   >
     <div class="one-column">

@@ -52,6 +52,7 @@ const pageType = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page-component-wrapper"
   >
     <!-- static div wrapper element is necessary, dynamic component :is element will cause routing issues -->

@@ -213,6 +213,7 @@ const breadcrumbOverrides = ref([
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
