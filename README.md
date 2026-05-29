@@ -7,7 +7,7 @@ Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introdu
 :exclamation: Verify that your development environment runs the Node and PNPM versions referenced in the project's [`actions.yml` file](https://github.com/UCLALibrary/ftva-website-nuxt/blob/main/.github/workflows/setup-workspace/action.yml)
 
 ```bash
-# node
+# node some silly change to trigger a PR
 node -v
 ```
 
