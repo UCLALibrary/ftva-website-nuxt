@@ -6,6 +6,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVACollectionStory from '../gql/queries/FTVACollectionStory.gql'
 
+// COMPOSABLES
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -70,10 +73,10 @@ watch(data, (newVal, oldVal) => {
   additionalResources.value = page.value.ftvaAdditionalResources
 }, { deep: true })
 
+// IMG SIZES
+const RelatedResourceImageSizes = '150px'
 // IMAGE
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // TRANSFORM DATA FOR CAROUSEL
 const parsedCarouselData = computed(() => {
@@ -86,6 +89,11 @@ const parsedCarouselData = computed(() => {
   })
 })
 
+// Parse FlexibleBlock with helper (sizes for image blocks applied in util when flag is set)
+const parsedFlexibleBlocks = computed(() =>
+  parseFlexibleBlocks(page.value?.blocks || [], { withResponsiveImageSizes: true }),
+)
+
 const parsedAdditionalResources = computed(() => {
   if (additionalResources.value.length === 0) return null
 
@@ -93,7 +101,7 @@ const parsedAdditionalResources = computed(() => {
     return {
       title: obj.title,
       to: `/${obj.uri}`,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: RelatedResourceImageSizes }
     }
   })
 })
@@ -207,7 +215,7 @@ const pageClasses = computed(() => {
         <template #primaryMid>
           <FlexibleBlocks
             class="flexible-content"
-            :blocks="page.blocks"
+            :blocks="parsedFlexibleBlocks"
             data-test="flexible-blocks-content"
           />
           <SectionWrapper

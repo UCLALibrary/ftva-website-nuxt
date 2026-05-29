@@ -161,7 +161,7 @@ const parsedEventSeries = computed(() => {
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
       ongoing: obj._source.ongoing,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 750px) 284px, calc(100vw - 48px)' },
       sectionHandle: obj._source.sectionHandle,
     }
   })
@@ -173,7 +173,10 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main id="main" :class="pageClasses">
+  <main
+    id="main"
+    :class="pageClasses"
+  >
     <div class="full-width">
       <SectionWrapper
         id="series-section-title"

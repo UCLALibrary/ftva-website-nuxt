@@ -158,7 +158,7 @@ const parsedFilmmakerListings = computed(() => {
       to: `/${obj._source.to}`,
       title: obj._source.title,
       description: filmmakerDescription,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 750px) 284px, calc(100vw - 48px)' },
     }
   })
 })

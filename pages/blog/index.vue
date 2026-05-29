@@ -110,7 +110,7 @@ const parsedArticles = computed(() => {
       category: parseArticleCategories(obj._source.articleCategories),
       description: obj._source.ftvaHomepageDescription,
       date: obj._source.postDate,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 750px) 365px, calc(100vw - 44px)' },
       sectionHandle: obj._source.sectionHandle,
     }
   })
@@ -152,10 +152,11 @@ const parsedFeaturedArticles = computed(() => {
     return
   }
 
-  return featuredArticles.value.map((obj) => {
+  return featuredArticles.value.map((obj, index) => {
     const parsedTitle = parseRichTextTitle(obj)
+    const sizesFeaturedArticles = index === 0 ? '(min-width: 1360px) 1160px, (min-width: 760px) calc(91.03vw - 60px), (min-width: 680px) calc(100vw - 48px), 574px' : '(min-width: 1360px) 566px, calc(45.52vw - 44px)'
     return {
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: sizesFeaturedArticles },
       to: `/${obj.uri}`,
       title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),
@@ -193,7 +194,10 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main id="main" :class="pageClasses">
+  <main
+    id="main"
+    :class="pageClasses"
+  >
     <SectionWrapper
       ref="scrollElem"
       :level="1"

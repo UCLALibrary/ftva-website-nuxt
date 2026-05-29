@@ -5,6 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVACollectionList from '../gql/queries/FTVACollectionList.gql'
 
+// COMPOSABLES
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('collection-list', async () => {
@@ -57,10 +60,12 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+// IMG SIZES
+const CollectionImageSizes = '340px'
+const HearstImageSizes = '(min-width: 1220px) 1160px,(min-width: 750px) calc(100vw - 128px), calc(100vw - 48px)'
+const ResourceImageSizes = '150px'
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel || []
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -84,7 +89,7 @@ const parsedCollections = computed(() => {
       return {
         ...item,
         to: item.uri.startsWith('/') ? item.uri : `/${item.uri}`,
-        image: parseImage(item)
+        image: { ...parseImage(item), sizes: CollectionImageSizes }
       }
     })
 
@@ -111,7 +116,7 @@ const parsedResources = computed(() => {
       to: obj.uri
         ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
         : '/',
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: ResourceImageSizes }
     }
   })
 
@@ -136,9 +141,13 @@ const parsedAboutCollections = computed(() => {
       to: obj.uri
         ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
         : '/',
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: ResourceImageSizes }
     }
   })
+})
+
+const parsedHearstCollectionImage = computed(() => {
+  return { ...page.value.hearstImage[0], sizes: HearstImageSizes }
 })
 
 useHead({
@@ -269,7 +278,7 @@ const pageClasses = computed(() => {
       data-test="hearst-collection"
     >
       <BlockCardWithImage
-        :image="page.hearstImage[0]"
+        :image="parsedHearstCollectionImage"
         :to="page.hearstUri"
         :card-is-link="true"
         class="is-link"
