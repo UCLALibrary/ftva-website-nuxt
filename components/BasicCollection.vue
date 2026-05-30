@@ -5,8 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVACollectionDetail from '../gql/queries/FTVACollectionDetail.gql'
 
-// COMPOSABLE
+// COMPOSABLES
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 // UTILS
 import removeTags from '~/utils/removeTags'
@@ -63,13 +64,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // DATA PARSING
-const parsedImage = computed(() => {
-  // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel) {
-    return []
-  }
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -128,7 +123,7 @@ const parsedRelatedCollections = computed(() => {
       category: 'collection',
       // Remove image tags inside byline rich text
       bylineOne: item.richText.replace(/<img.*?>/ig, ''),
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return relatedCollections
@@ -164,7 +159,11 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="pageClasses">
+  <main
+    id="main"
+    tabindex="-1"
+    :class="pageClasses"
+  >
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
@@ -280,11 +279,11 @@ const pageClasses = computed(() => {
         :grid-layout="false"
       />
     </SectionWrapper>
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-collection-detail {
   position: relative;

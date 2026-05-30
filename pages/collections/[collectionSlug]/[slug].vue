@@ -175,6 +175,11 @@ const parsedCollectionItemCredits = computed(() => {
   return creditsWithNames.length > 0 ? creditsWithNames : null
 })
 
+// Add sizes data to the FTVA Image
+const parsedFTVAImage = computed(() => {
+  return { ...page.value.ftvaImage[0], sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }
+})
+
 // Entries query returns 4 random articles; main article might be included in the randomized return; to prevent duplication, filter out the main article; use remaining content in the related section.
 const parsedRelatedContent = computed(() => {
   const mainContentId = page.value.id
@@ -183,7 +188,7 @@ const parsedRelatedContent = computed(() => {
 
   return filteredRelatedContent.slice(0, 3).map((obj) => {
     return {
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' },
       title: obj.title,
       to: obj.slug,
       videoEmbed: obj.videoEmbed
@@ -226,6 +231,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="collection-item-header">
@@ -276,7 +282,7 @@ const pageClasses = computed(() => {
         </ResponsiveVideo>
         <ResponsiveImage
           v-else
-          :media="page.ftvaImage[0]"
+          :media="parsedFTVAImage"
           class="resized-aspect-ratio"
         />
       </template>
@@ -316,7 +322,7 @@ const pageClasses = computed(() => {
         #primaryMid
       >
         <h3 class="collection-item-subtitle synopsis">
-          Sypnosis
+          Synopsis
         </h3>
         <RichText
           class="eventDescription"
@@ -393,7 +399,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-collection-item-detail {
   position: relative;
@@ -480,7 +486,7 @@ const pageClasses = computed(() => {
 
   .collection-item-subtitle {
     @include ftva-h3;
-    color: $heading-grey;
+    color: ftvaTokens.$heading-grey;
 
     &.synopsis {
       margin-top: var(--space-m);
@@ -531,7 +537,7 @@ const pageClasses = computed(() => {
 
   .credit-table__name {
     font-size: 30px;
-    color: $accent-blue;
+    color: ftvaTokens.$accent-blue;
   }
 
   @media(max-width: 1200px) {

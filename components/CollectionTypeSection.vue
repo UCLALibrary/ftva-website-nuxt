@@ -201,7 +201,7 @@ const parsedGeneralContentPages = computed(() => {
     return {
       title: obj.title,
       to: uri?.startsWith('/') ? uri : `/${uri}`,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: '200px' }
     }
   })
 })
@@ -218,7 +218,7 @@ const parsedCollectionList = computed(() => {
       title: obj._source?.title,
       text: obj._source?.ftvaHomepageDescription,
       ftvaCollectionType: obj._source?.ftvaCollectionType,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: '(min-width: 1201px) calc((1160px - 40px) / 3), (min-width: 1025px) calc((100vw - 168px) / 3), (min-width: 751px) calc((100vw - 148px) / 2), calc(100vw - 128px)' }
     }
   })
 })
@@ -250,6 +250,7 @@ watch(data, (newVal, oldVal) => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -340,7 +341,7 @@ watch(data, (newVal, oldVal) => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-collection-type {
   position: relative;
@@ -376,7 +377,7 @@ watch(data, (newVal, oldVal) => {
 
     :deep(.section-title) {
       @include ftva-h4;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
       font-size: 48px;
       margin-bottom: 0;
     }
@@ -386,7 +387,7 @@ watch(data, (newVal, oldVal) => {
 
       p {
         @include ftva-body-2;
-        color: $body-grey;
+        color: ftvaTokens.$body-grey;
         text-align: left;
       }
     }

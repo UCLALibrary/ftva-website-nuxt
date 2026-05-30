@@ -2,7 +2,6 @@ import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
 
 function runBillyWilderTests({ withSnapshot = false } = {}) {
   it('Visits the Billy Wilder Theater Page', () => {
@@ -27,10 +26,6 @@ if (isChromatic) {
     describe(`Billy Wilder Theater Page - ${label}`, { viewportWidth, viewportHeight }, () => {
       runBillyWilderTests({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Billy Wilder Theater Page', () => {
-    runBillyWilderTests({ withSnapshot: true })
   })
 } else {
   describe('Billy Wilder Theater Page', () => {

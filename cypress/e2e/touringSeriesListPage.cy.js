@@ -4,7 +4,6 @@ Cypress.on('uncaught:exception', () => { return false })
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
 
 function runTouringSeriesListTests({ withSnapshot = false } = {}) {
   it('Visits the Touring Series List page', () => {
@@ -25,10 +24,6 @@ if (isChromatic) {
     describe(`Touring Series List Page – ${label}`, { viewportWidth, viewportHeight }, () => {
       runTouringSeriesListTests({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Touring Series List Page', () => {
-    runTouringSeriesListTests({ withSnapshot: true })
   })
 } else {
   describe('Touring Series List Page', () => {

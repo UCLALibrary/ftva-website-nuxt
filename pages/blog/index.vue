@@ -108,7 +108,7 @@ const parsedArticles = computed(() => {
       to: `/${obj._source.uri}`,
       title: obj._source.title,
       category: parseArticleCategories(obj._source.articleCategories),
-      description: obj._source.aboutTheAuthor,
+      description: obj._source.ftvaHomepageDescription,
       date: obj._source.postDate,
       image: parseImage(obj),
       sectionHandle: obj._source.sectionHandle,
@@ -193,7 +193,11 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main :class="pageClasses">
+  <main
+    id="main"
+    tabindex="-1"
+    :class="pageClasses"
+  >
     <SectionWrapper
       ref="scrollElem"
       :level="1"
@@ -293,7 +297,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-article-list {
   position: relative;
@@ -417,7 +421,7 @@ const pageClasses = computed(() => {
     :deep(.section-header) {
       font-size: 38px;
       margin-bottom: 48px;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     &:last-of-type {
@@ -501,7 +505,7 @@ const pageClasses = computed(() => {
 
   :deep(.ftva.block-staff-article-item) {
     .ftva-date {
-      color: $subtitle-grey;
+      color: ftvaTokens.$subtitle-grey;
       font-family: "proxima-nova", Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-style: normal;
@@ -549,11 +553,11 @@ const pageClasses = computed(() => {
       margin: 0;
     }
 
-    :deep(.ftva.block-staff-article-item .molecule-no-image) {
-      min-width: 100%;
-      height: auto;
-      margin: 0;
-    }
+    // :deep(.ftva.block-staff-article-item .molecule-no-image) {
+    //   min-width: 100%;
+    //   height: auto;
+    //   margin: 0;
+    // }
 
     :deep(.ftva.block-staff-article-item .meta) {
       height: auto;

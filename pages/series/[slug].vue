@@ -12,6 +12,7 @@ import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScro
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 const { $graphql } = useNuxtApp()
 
@@ -69,13 +70,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel) {
-    return []
-  }
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -106,7 +101,7 @@ const parsedUpcomingEvents = computed(() => {
       ...item,
       tagLabels: parsedTagLabels,
       to: `/${item.to}`,
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1040px) 284px, (min-width: 760px) calc(100vw - 128px), calc(100vw - 48px)' }
     }
   })
 })
@@ -124,7 +119,7 @@ const parsedPastEvents = computed(() => {
       ...item,
       tagLabels: parsedTagLabels,
       to: `/${item.to}`,
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1040px) 284px, (min-width: 760px) calc(100vw - 128px), calc(100vw - 48px)' }
     }
   })
 })
@@ -151,7 +146,7 @@ const parsedOtherSeries = computed(() => {
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
       sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return otherSeries
@@ -329,6 +324,7 @@ useHead({
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page page-detail page-detail--paleblue page-event-series-detail"
   >
     <div class="one-column">
@@ -519,7 +515,7 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
@@ -657,7 +653,7 @@ useHead({
     }
 
     :deep(.section-teaser-list .list-item) {
-      border-bottom: 1px solid $page-blue;
+      border-bottom: 1px solid ftvaTokens.$page-blue;
 
       &:last-child {
         border-bottom: 0;

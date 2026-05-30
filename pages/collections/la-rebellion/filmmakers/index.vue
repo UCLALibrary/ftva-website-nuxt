@@ -213,6 +213,7 @@ const breadcrumbOverrides = ref([
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -269,7 +270,7 @@ const breadcrumbOverrides = ref([
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-filmmakers {
   position: relative;
@@ -281,7 +282,7 @@ const breadcrumbOverrides = ref([
 
     :deep(.section-title) {
       @include ftva-h5;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     :deep(.section-summary) {

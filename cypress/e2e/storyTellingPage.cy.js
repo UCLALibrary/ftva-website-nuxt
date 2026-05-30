@@ -4,7 +4,6 @@ Cypress.on('uncaught:exception', () => { return false })
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
 
 function runStoryTellingTests({ withSnapshot = false } = {}) {
   it('Visits the L.A. Rebellion StoryTelling Page', () => {
@@ -25,10 +24,6 @@ if (isChromatic) {
     describe(`Complex Collection StoryTelling Page – ${label}`, { viewportWidth, viewportHeight }, () => {
       runStoryTellingTests({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Complex Collection StoryTelling Page', () => {
-    runStoryTellingTests({ withSnapshot: true })
   })
 } else {
   describe('Complex Collection StoryTelling Page', () => {

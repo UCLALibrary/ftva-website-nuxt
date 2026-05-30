@@ -8,6 +8,7 @@ import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 // COMPOSABLE
 import removeTags from '~/utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 // UTILS
 import getEventFilterLabels from '~/utils/getEventFilterLabels'
@@ -67,9 +68,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -111,7 +110,7 @@ const parsedFtvaEventSeries = computed(() => {
   const seriesEvents = firstSeries.ftvaEvent.map(({ image, to, ...rest }) => ({
     ...rest,
     to: `/events/${to}`,
-    image: image && image.length > 0 ? image[0] : null,
+    image: image && image.length > 0 ? { ...image[0], sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' } : null,
   }))
 
   const pageId = page.value.id
@@ -171,6 +170,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -339,7 +339,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-event-detail {
   position: relative;

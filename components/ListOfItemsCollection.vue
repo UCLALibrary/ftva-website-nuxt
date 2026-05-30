@@ -124,7 +124,7 @@ const parsedCollectionResults = computed(() => {
       // ...obj._source,
       title: obj._source.title,
       to: `/${obj._source.uri}`,
-      image: objImage,
+      image: { ...objImage, sizes: '(min-width: 1201px) calc((1160px - 40px) / 3), (min-width: 1025px) calc((100vw - 168px) / 3), (min-width: 751px) calc((100vw - 148px) / 2), calc(100vw - 128px)' },
       videoEmbed: obj._source.videoEmbed,
       customDateTime: parseCardItemDate(obj._source) // Overrides SectionTeaserCard's default display of postDate key
     }
@@ -327,6 +327,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -363,9 +364,9 @@ const pageClasses = computed(() => {
           <div class="filter-row">
             <!-- Filter by -->
             <DropdownSingleSelect
-              class="filter-a"
               v-if="searchFilters.length > 0"
               v-model:selected-filters="selectedFilters"
+              class="filter-a"
               :label="searchFilters[0]?.label"
               :options="searchFilters[0]?.options"
               :field-name="fieldNamefromLabel[searchFilters[0]?.label]"
@@ -375,8 +376,8 @@ const pageClasses = computed(() => {
             />
             <!-- Sort by -->
             <DropdownSingleSelect
-              class="filter-b"
               v-model:selected-filters="selectedSortFilters"
+              class="filter-b"
               :label="sortDropdownData?.label"
               :options="sortDropdownData.options"
               :field-name="sortDropdownData.fieldName"
@@ -425,7 +426,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-collections-list-of-items {
   background-color: var(--pale-blue);
@@ -455,7 +456,7 @@ const pageClasses = computed(() => {
     }
 
     :deep(h2.section-header.section-header2.section-title) {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
       text-align: center;
     }
 
@@ -463,41 +464,41 @@ const pageClasses = computed(() => {
       max-width: 964px;
     }
 
-  .search-filters {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 12px;
-    justify-content: flex-start;
-    margin-bottom: 2rem;
-
-    // filter dropdowns
-    :deep(.button-dropdown-modal-wrapper.is-expanded) {
-      z-index: 5;
-    }
-
-    // results pill
-    .total-results {
-      background-color: var(--dark-navy);
-      margin-left: auto; // pins the total results to the right
-      margin-right: 26px;
-      text-align: center;
-
-      @media #{$small} {
-        margin-right: 0px;
-      }
-    }
-
-    .filter-row {
+    .search-filters {
       display: flex;
       align-items: center;
-      gap: 8px;
-    }
+      width: 100%;
+      gap: 12px;
+      justify-content: flex-start;
+      margin-bottom: 2rem;
 
-    .total-results-button {
-      margin-left: auto;
+      // filter dropdowns
+      :deep(.button-dropdown-modal-wrapper.is-expanded) {
+        z-index: 5;
+      }
+
+      // results pill
+      .total-results {
+        background-color: var(--dark-navy);
+        margin-left: auto; // pins the total results to the right
+        margin-right: 26px;
+        text-align: center;
+
+        @media #{$small} {
+          margin-right: 0px;
+        }
+      }
+
+      .filter-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .total-results-button {
+        margin-left: auto;
+      }
     }
-  }
 
     .search-results-list {
       margin: 0 auto;
@@ -509,9 +510,9 @@ const pageClasses = computed(() => {
 
     @media #{$small} {
       .search-filters {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 8px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
       }
 
       /* C goes on top */

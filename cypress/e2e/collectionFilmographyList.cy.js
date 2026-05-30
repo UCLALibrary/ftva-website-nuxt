@@ -2,7 +2,6 @@ import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
 const isChromatic = provider === 'chromatic'
-const isPercy = provider === 'percy'
 
 function runCollectionFilmographyTests({ withSnapshot = false } = {}) {
   it('Visits the `L.A. Rebellion` Filmography', () => {
@@ -13,7 +12,7 @@ function runCollectionFilmographyTests({ withSnapshot = false } = {}) {
     if (withSnapshot) cy.visualSnapshot('collectionFilmographyListPage')
   })
   // ✅ Only define this test locally or CI cypress (not Percy, not Chromatic)
-  if (!isChromatic && !isPercy) {
+  if (!isChromatic) {
     it('Visits the `In The Life` Filmography', () => {
       cy.visit('/collections/in-the-life/episodes')
       cy.getByData('breadcrumb').should('be.visible')
@@ -27,10 +26,6 @@ if (isChromatic) {
     describe(`Collection Filmography List Page - ${label}`, { viewportWidth, viewportHeight }, () => {
       runCollectionFilmographyTests({ withSnapshot: true })
     })
-  })
-} else if (isPercy) {
-  describe('Collection Filmography List Page', () => {
-    runCollectionFilmographyTests({ withSnapshot: true })
   })
 } else {
   describe('Collection Filmography List Page', () => {
