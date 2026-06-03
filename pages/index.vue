@@ -166,12 +166,16 @@ const parsedPreservationData = computed(() => {
   if (page.value.beforeAfterImageCarousel.length === 0)
     return null
 
+  const beforeImageObj = page.value.beforeAfterImageCarousel[0]?.beforeImage[0] || null
+  const afterImageObj = page.value.beforeAfterImageCarousel[0]?.afterImage[0] || null
+  const imageSliderSizes = '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)'
+
   return {
     sectionTitle: page.value.sectionTitle,
     sectionSummary: page.value.richTextSimplified,
     sectionUri: page.value.ftvaRelatedResources,
-    beforeImage: page.value.beforeAfterImageCarousel[0]?.beforeImage[0] || null,
-    afterImage: page.value.beforeAfterImageCarousel[0]?.afterImage[0] || null,
+    beforeImage: { ...beforeImageObj, sizes: imageSliderSizes },
+    afterImage: { ...afterImageObj, sizes: imageSliderSizes },
     caption: page.value.beforeAfterImageCarousel[0]?.caption,
   }
 })
