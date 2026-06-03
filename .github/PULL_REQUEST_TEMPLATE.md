@@ -6,7 +6,11 @@
 
 **Notes**
 
+{add notes about your PR}
+
 **Screenshot**
+
+{add a screenshot if applicable}
 
 ---
 
