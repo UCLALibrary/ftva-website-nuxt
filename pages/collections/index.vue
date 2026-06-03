@@ -169,6 +169,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -321,7 +322,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-explore-collections {
   position: relative;
@@ -381,7 +382,7 @@ const pageClasses = computed(() => {
     }
 
     :deep(.section-title) {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     :deep(.rich-text.section-summary) {
@@ -413,7 +414,7 @@ const pageClasses = computed(() => {
 
   .section-wrapper-hearst {
     :deep(.section-title) {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     .block-highlight {
@@ -451,7 +452,7 @@ const pageClasses = computed(() => {
 
   :deep(.section-wrapper-post-small) {
     .section-title {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     .rich-text {

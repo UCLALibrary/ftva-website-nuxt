@@ -170,6 +170,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -338,7 +339,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-event-detail {
   position: relative;

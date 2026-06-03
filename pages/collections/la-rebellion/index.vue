@@ -140,6 +140,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -236,9 +237,9 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
-@import 'assets/styles/general-pages.scss';
-@import 'assets/styles/page-anchor.scss';
+@use 'assets/styles/slug-pages.scss' as *;
+@use 'assets/styles/general-pages.scss' as *;
+@use 'assets/styles/page-anchor.scss' as *;
 
 .page-storytelling {
   :deep(.card-with-image) {
@@ -264,7 +265,7 @@ const pageClasses = computed(() => {
 
     .section-title {
       @include ftva-h5;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     .block-post-small {

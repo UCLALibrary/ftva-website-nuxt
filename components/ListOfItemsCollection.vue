@@ -325,7 +325,9 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <div
+  <main
+    id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -420,11 +422,11 @@ const pageClasses = computed(() => {
         </template>
       </SectionWrapper>
     </div>
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-collections-list-of-items {
   background-color: var(--pale-blue);
@@ -454,7 +456,7 @@ const pageClasses = computed(() => {
     }
 
     :deep(h2.section-header.section-header2.section-title) {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
       text-align: center;
     }
 

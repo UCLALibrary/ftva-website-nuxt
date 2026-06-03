@@ -324,6 +324,7 @@ useHead({
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page page-detail page-detail--paleblue page-event-series-detail"
   >
     <div class="one-column">
@@ -514,7 +515,7 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
@@ -652,7 +653,7 @@ useHead({
     }
 
     :deep(.section-teaser-list .list-item) {
-      border-bottom: 1px solid $page-blue;
+      border-bottom: 1px solid ftvaTokens.$page-blue;
 
       &:last-child {
         border-bottom: 0;

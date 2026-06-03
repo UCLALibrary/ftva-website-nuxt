@@ -159,7 +159,11 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <div :class="pageClasses">
+  <main
+    id="main"
+    tabindex="-1"
+    :class="pageClasses"
+  >
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"
@@ -275,11 +279,11 @@ const pageClasses = computed(() => {
         :grid-layout="false"
       />
     </SectionWrapper>
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-collection-detail {
   position: relative;

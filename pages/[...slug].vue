@@ -115,6 +115,7 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -217,9 +218,9 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
-@import 'assets/styles/general-pages.scss';
-@import 'assets/styles/page-anchor.scss';
+@use 'assets/styles/slug-pages.scss' as *;
+@use 'assets/styles/general-pages.scss' as *;
+@use 'assets/styles/page-anchor.scss' as *;
 
 .page-general-content {
 
