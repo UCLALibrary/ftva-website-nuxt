@@ -1,12 +1,16 @@
-Connected to [LADI-](https://jira.library.ucla.edu/browse/LADI-)
+**Connected to** [LADI-](https://jira.library.ucla.edu/browse/LADI-)
 
-Deployed on https://deploy-preview-xxx--test-ftva.netlify.app
+**Deployed on** https://deploy-preview-xxx--test-ftva.netlify.app
 
-**Notes:**
+---
 
-**Screenshot:**
+**Notes**
 
-**Checklist:**
+**Screenshot**
+
+---
+
+**Checklist**
 - [ ] I checked this PR in Chrome
 - [ ] I checked this PR in Firefox
 - [ ] I checked this PR in Safari
