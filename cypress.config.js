@@ -14,8 +14,13 @@ export default defineConfig({
       if (process.env.CHROMATIC_PROJECT_TOKEN) {
         installPlugin(on, config)
       } else {
-        // ✅ Register the task Chromatic support expects
         on('task', {
+          // Overwrite the log command so we can log axe-core violations to the console
+          log(message) {
+            console.log(message)
+            return null
+          },
+          // ✅ Register the task Chromatic support expects, prepareArchives
           prepareArchives() {
             // If you don't need it, no-op is fine
             return null
