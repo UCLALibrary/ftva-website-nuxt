@@ -37,7 +37,6 @@ function runArchiveResearchTests({ withSnapshot = false } = {}) {
       })
     })
   })
-})
 }
 
 if (isChromatic) {
