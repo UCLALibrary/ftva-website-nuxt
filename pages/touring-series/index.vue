@@ -168,7 +168,7 @@ const parsedTouringSeries = computed(() => {
       startDate: obj._source.startDate,
       endDate: obj._source.endDate,
       ongoing: obj._source.ongoing,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 750px) 284px, calc(100vw - 48px)' },
       sectionHandle: obj._source.sectionHandle,
     }
   })

@@ -95,6 +95,16 @@ function applyResponsiveImageSizes (block) {
           ...image,
           sizes: SIZES_CARD_WITH_IMAGE,
         })),
+        contentLink: (card.contentLink || []).map(content => ({
+          ...content,
+          imageCarousel: (content.imageCarousel || []).map(imageCarousel => ({
+            ...imageCarousel,
+            image: (imageCarousel.image || []).map(image => ({
+              ...image,
+              sizes: SIZES_CARD_WITH_IMAGE,
+            })),
+          })),
+        })),
       })),
     }
   }
