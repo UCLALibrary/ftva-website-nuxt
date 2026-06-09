@@ -120,9 +120,10 @@ useHead({
   ]
 })
 </script>
-
 <template>
-  <div
+  <main
+    id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -174,7 +175,7 @@ useHead({
       class="flexible-content"
       :blocks="parsedFlexibleBlocks"
     />
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
