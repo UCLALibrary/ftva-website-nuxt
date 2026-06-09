@@ -2,7 +2,8 @@
 // HELPERS
 import _get from 'lodash/get'
 import { parseISO } from 'date-fns'
-import { useElementBounding } from '@vueuse/core'
+
+import { useElementBounding, useWindowSize } from '@vueuse/core'
 
 import FTVAEventList from '../gql/queries/FTVAEventList.gql'
 
@@ -204,7 +205,33 @@ const parsedRemoveSearchFilters = computed(() => {
   // console.log('In parsedFilters SectionRemoveSearchfilter component', removefilters, JSON.stringify(Object.entries(removefilters)))
   return removefilters
 })
+
 const route = useRoute()
+const router = useRouter()
+const { width } = useWindowSize()
+
+watch(
+  () => width.value,
+  (newWidth) => {
+    const isMobile = newWidth < 751
+    const currentView = route.query.view
+
+    if (isMobile && currentView === 'calendar') {
+      // sync internal state BEFORE redirect
+      userViewSelection.value = 'list'
+
+      router.push({
+        path: route.path,
+        query: {
+          ...route.query,
+          view: 'list'
+        }
+      })
+    }
+  },
+  { immediate: true }
+)
+
 // PAGINATION SCROLL HANDLING
 // Element reference for the scroll target
 const resultsSection = ref<HTMLElement>(null)
@@ -274,7 +301,7 @@ const parsedEvents = computed(() => {
       ...obj._source,
       tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
       to: `/${obj._source.uri}`,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 1025px) 284px, (min-width: 750px) calc(100vw - 128px), calc(100vw - 48px)' },
       category: obj._source.eventSeriesTitle ? obj._source.eventSeriesTitle : null
     }
   })
@@ -400,7 +427,7 @@ function applyDateFilterSelectionToRouteURL(data) {
   }
 
   // Use router.push to navigate with query params
-  useRouter().push({
+  router.push({
     path: '/events',
     query: {
       dates: datesParam,
@@ -483,6 +510,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="full-width">
@@ -605,10 +633,10 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang='scss' scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
-  z-index: 1000;
+  z-index: 99;
 }
 
 .page-events {
@@ -803,7 +831,7 @@ const pageClasses = computed(() => {
     }
 
     :deep(.section-teaser-list .list-item) {
-      border-bottom: 1px solid $page-blue;
+      border-bottom: 1px solid ftvaTokens.$page-blue;
 
       &:last-child {
         border-bottom: 0;
@@ -847,7 +875,7 @@ const pageClasses = computed(() => {
         /* For Safari */
         position: sticky;
         top: 65px;
-        z-index: 1000;
+        z-index: 99;
         background-color: var(--pale-blue);
         padding: 20px;
       }

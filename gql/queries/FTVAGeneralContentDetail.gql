@@ -20,6 +20,12 @@ query FTVAGeneralContent($slug: [String!]) {
         creditText
       }
     }
+    # Used for updating breadcrumb titles for nested General Content pages
+    ancestors {
+      id
+      title
+      uri
+    }
       ...AllFtvaFpb
     }
   }

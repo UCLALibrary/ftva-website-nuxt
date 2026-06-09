@@ -8,6 +8,7 @@ import FTVATouringSeriesDetail from '../gql/queries/FTVATouringSeriesDetail.gql'
 // COMPOSABLE
 import removeTags from '~/utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 const { $graphql } = useNuxtApp()
 
@@ -65,13 +66,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel) {
-    return []
-  }
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -111,7 +106,7 @@ const parsedOtherTouringSeries = computed(() => {
       startDate: item.startDate ? item.startDate : null,
       endDate: item.endDate ? item.endDate : null,
       sectionHandle: item.sectionHandle, // 'ftvaTouringSeries'
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return otherSeries
@@ -149,6 +144,7 @@ useHead({
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page page-detail page-detail--paleblue page-touring-series-detail"
   >
     <div class="one-column">
@@ -161,6 +157,7 @@ useHead({
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -177,6 +174,7 @@ useHead({
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
@@ -187,11 +185,11 @@ useHead({
 
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
-        <CardMeta
-          category="Series"
-        >
+        <CardMeta category="Series">
           <template #anyTitle>
-            <h1 class="title-no-link">{{page.title}}</h1>
+            <h1 class="title-no-link">
+              {{ page.title }}
+            </h1>
           </template>
         </CardMeta>
       </template>
@@ -203,9 +201,9 @@ useHead({
         />
 
         <SectionHeader
-        :level="2"
-        class="section-header"
-        data-test="section-header"
+          :level="2"
+          class="section-header"
+          data-test="section-header"
         >
           Tour Dates
         </SectionHeader>
@@ -224,7 +222,10 @@ useHead({
           :start-date="page?.startDate"
           :end-date="page?.endDate"
         />
-        <em v-if="tourHasCompleted" class="completed-tour">This series has completed its tour.</em>
+        <em
+          v-if="tourHasCompleted"
+          class="completed-tour"
+        >This series has completed its tour.</em>
       </template>
     </TwoColLayoutWStickySideBar>
 
@@ -251,7 +252,7 @@ useHead({
 
 <style lang="scss" scoped>
 // TODO Make the table in FPB RichText component responsive
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-touring-series-detail {
   .tour-dates {
@@ -259,6 +260,7 @@ useHead({
       border: 0;
       padding: 0;
     }
+
     :deep(td:first-child) {
       min-width: 100px;
     }
@@ -275,13 +277,13 @@ useHead({
 
   .completed-tour {
     @include ftva-body;
-    color: $medium-grey;
+    color: ftvaTokens.$medium-grey;
     margin-bottom: 24px;
   }
 
   // TODO CardMeta SectionHandle hide time & diamond without changing component
   :deep(.ftva-other-touring-series .start-date::after),
-  :deep(.ftva-other-touring-series .parsed-time){
+  :deep(.ftva-other-touring-series .parsed-time) {
     display: none;
   }
 
@@ -289,6 +291,7 @@ useHead({
     :deep(.two-column .primary-column .sidebar-mobile-top > .block-event-detail) {
       margin-bottom: 0;
     }
+
     :deep(.two-column .primary-column .sidebar-mobile-top) {
       margin-bottom: 24px;
     }

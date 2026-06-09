@@ -2,13 +2,13 @@
 // HELPERS
 import _get from 'lodash/get'
 import removeTags from '~/utils/removeTags'
-import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
 
 // GQL
 import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmmakersDetail.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 const { $graphql } = useNuxtApp()
 
@@ -57,9 +57,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -75,18 +73,7 @@ const parsedCarouselData = computed(() => {
 const parsedAssociatedFilms = computed(() => {
   if (page.value.associatedFilms.length === 0) return []
   return page.value.associatedFilms.map((obj) => {
-    // console.log('obj link', obj.filmLink)
     const newFilmLink = ['/', obj.filmLink?.[0]?.uri].join('')
-    // console.log('newFilmLink', newFilmLink)
-    // console.log('new obj', {
-    //   ...obj,
-    //   filmLink: [
-    //     {
-    //       ...obj.filmLink[0],
-    //       uri: newFilmLink
-    //     }
-    //   ]
-    // })
     return {
       ...obj,
       filmLink: [
@@ -111,11 +98,18 @@ useHead({
 })
 
 // BREADCRUMB OVERRIDES
-// Add value of new breadcrumb title to switch statement in the utility file
+const parseBreadcrumbTitle = computed(() => {
+  if (page?.value.sectionHandle === 'ftvaLARebellionIndividual') {
+    return 'L.A. Rebellion'
+  }
+
+  return null
+})
+
 const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
+    updatedTitle: parseBreadcrumbTitle
   }
 ])
 
@@ -127,6 +121,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -142,6 +137,7 @@ const pageClasses = computed(() => {
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -159,6 +155,7 @@ const pageClasses = computed(() => {
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -245,7 +242,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-filmmaker-detail {
   position: relative;
@@ -289,6 +286,19 @@ const pageClasses = computed(() => {
   .filmography-section-wrapper {
     margin-top: 64px;
     padding-bottom: 80px; // Page bottom spacing: 120px (80px + table's padding)
+
+    .ftva.table-wrapper {
+      background: white;
+      padding: 36px 40px 52px;
+
+      :deep(.ftva.table-component) {
+        max-width: 100%;
+      }
+
+      @media (max-width: 899px) {
+        padding: 12px;
+      }
+    }
   }
 
   // change filmography section title color

@@ -1,3 +1,5 @@
+@use 'ucla-library-design-tokens/scss/app.scss' as *;
+
 .series-listing-pages {
   position: relative;
   background-color: var(--pale-blue);
@@ -94,6 +96,13 @@
         .sizer {
           padding-bottom: 0 !important;
         }
+      }
+
+      .ftva.block-staff-article-item .molecule-no-image {
+        aspect-ratio: 16 / 9;
+        border-radius: 10px 10px 0 0;
+        margin-right: 0;
+        width: 100%;
       }
 
       .meta {

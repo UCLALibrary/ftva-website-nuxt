@@ -5,6 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVA_GENERAL_CONTENT_DETAIL from '../gql/queries/FTVAGeneralContentDetail.gql'
 
+// COMPOSABLES
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
+
 const { $graphql } = useNuxtApp()
 
 const route = useRoute()
@@ -43,6 +46,7 @@ if (data.value.entry && import.meta.prerender) {
   const { indexContent } = useContentIndexer()
   data.value.entry.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title)
   data.value.entry.groupName = 'General Content'
+  data.value.entry.flexibleBlocksRichText = parseFlexibleBlocksRichText(data.value.entry.blocks)
   await indexContent(data.value.entry, path.replaceAll('/', '--'))
 }
 
@@ -57,9 +61,7 @@ watch(data, (newVal, oldVal) => {
 const h2Array = ref([]) // anchor tags
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -75,7 +77,23 @@ const parsedCarouselData = computed(() => {
 // Parse FlexibleBlock with helper
 const parsedFlexibleBlocks = computed(() => {
   const dataBlocks = page.value?.blocks || []
-  return parseFlexibleBlocks(dataBlocks)
+  return parseFlexibleBlocks(dataBlocks, { withResponsiveImageSizes: true })
+})
+
+// BREADCRUMB OVERRIDES FOR NESTED GC PAGES
+// Nested GC pages are nested in Craft and not in Nuxt's folder structure; the pages are files, not folders
+// The current way we override breadcrumbs with special characters is at the folder level or is dependent on referencing folder levels
+// The workaround: Use the `ancestor` field in Craft (added to the template's gql query) to determine if a page is nested; if so, parse the ancestors, give them 'folder/path levels'; use the levels and the ancestors' titles to create the override-group object for the NavBreadcrumb component
+const gcpBreadcrumbOverrides = computed(() => {
+  if (page?.value.ancestors.length === 0)
+    return null
+
+  return page.value.ancestors.map((obj, index) => {
+    return {
+      titleLevel: index + 1,
+      updatedTitle: obj.title
+    }
+  })
 })
 
 const pageClasses = computed(() => {
@@ -97,10 +115,20 @@ onMounted(() => {
 <template lang="html">
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
+      <!-- Nested breadcrumbs -->
       <NavBreadcrumb
+        v-if="gcpBreadcrumbOverrides"
+        :title="page?.title"
+        :override-title-group="gcpBreadcrumbOverrides"
+        data-test="breadcrumb"
+      />
+      <!-- Single breadcrumb -->
+      <NavBreadcrumb
+        v-else
         :title="page?.title"
         data-test="breadcrumb"
       />
@@ -110,6 +138,7 @@ onMounted(() => {
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -130,6 +159,7 @@ onMounted(() => {
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -188,9 +218,9 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
-@import 'assets/styles/general-pages.scss';
-@import 'assets/styles/page-anchor.scss';
+@use 'assets/styles/slug-pages.scss' as *;
+@use 'assets/styles/general-pages.scss' as *;
+@use 'assets/styles/page-anchor.scss' as *;
 
 .page-general-content {
 

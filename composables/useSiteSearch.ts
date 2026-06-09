@@ -6,6 +6,7 @@ export default function useSiteSearch() {
     'nameLast^2',
     'summary^2',
     'richText^2',
+    'flexibleBlocksRichText^2',
     'guestSpeaker^2',
     'introduction^2',
     'eventDescription^2',

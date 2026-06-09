@@ -64,7 +64,15 @@ export default function useMobileInfiniteScroll<T = any>(
     scrollElem,
     async () => {
       if (isMobile.value && hasMore.value && !isLoading.value) {
-        currentPage.value++
+        if (mobileItemList.value.length === 0) {
+          currentPage.value = 1
+          // Initial load
+
+          // console.log('Initial load for mobile infinite scroll...')
+        } else {
+          currentPage.value++
+        }
+
         // eslint-disable-next-line no-console
         console.log(`Loading more items for page ${currentPage.value}...`)
         await searchES()

@@ -13,8 +13,9 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-import '@percy/cypress'
 import 'cypress-axe'
+// cypress/support/e2e.js
+import '@chromatic-com/cypress/support'
 
 // Import commands.js using ES2015 syntax:
 import './commands.ts'

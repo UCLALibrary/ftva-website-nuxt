@@ -113,7 +113,6 @@ const collectionFetchFunction = async (page) => {
 const onResults = (results) => {
   if (results && results.hits && results?.hits?.hits?.length > 0) {
     const newCollectionList = results.hits.hits || []
-    hits.value = results.hits.total?.value
 
     if (isMobile.value) {
       totalPages.value = 0
@@ -127,6 +126,9 @@ const onResults = (results) => {
     totalPages.value = 0
     hasMore.value = false
   }
+
+  // update # of hits displayed in the UI even if no results are found
+  hits.value = results.hits.total?.value || 0
 }
 
 // INFINITE SCROLL
@@ -199,7 +201,7 @@ const parsedGeneralContentPages = computed(() => {
     return {
       title: obj.title,
       to: uri?.startsWith('/') ? uri : `/${uri}`,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: '200px' }
     }
   })
 })
@@ -216,7 +218,7 @@ const parsedCollectionList = computed(() => {
       title: obj._source?.title,
       text: obj._source?.ftvaHomepageDescription,
       ftvaCollectionType: obj._source?.ftvaCollectionType,
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: '(min-width: 1201px) calc((1160px - 40px) / 3), (min-width: 1025px) calc((100vw - 168px) / 3), (min-width: 751px) calc((100vw - 148px) / 2), calc(100vw - 128px)' }
     }
   })
 })
@@ -248,6 +250,7 @@ watch(data, (newVal, oldVal) => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -300,7 +303,9 @@ watch(data, (newVal, oldVal) => {
         >
           <!-- 0 results, 1 result, 2 results, etc. -->
           <h2>
-            {{ parsedCollectionList.length }} {{ parsedCollectionList.length === 1 ? `result` : `results` }} shown
+            {{ hits }} {{ hits === 1 ? `result` :
+              `results`
+            }} shown
           </h2>
         </div>
 
@@ -336,7 +341,7 @@ watch(data, (newVal, oldVal) => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-collection-type {
   position: relative;
@@ -372,7 +377,7 @@ watch(data, (newVal, oldVal) => {
 
     :deep(.section-title) {
       @include ftva-h4;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
       font-size: 48px;
       margin-bottom: 0;
     }
@@ -382,7 +387,7 @@ watch(data, (newVal, oldVal) => {
 
       p {
         @include ftva-body-2;
-        color: $body-grey;
+        color: ftvaTokens.$body-grey;
         text-align: left;
       }
     }
@@ -416,8 +421,20 @@ watch(data, (newVal, oldVal) => {
     }
   }
 
+  :deep(.ftva.section-wrapper.top-level.theme-paleblue * .block-highlight.card) {
+    background: var(--pale-blue);
+  }
+
   :deep(.block-highlight) {
     border-radius: 0;
+
+    &.is-vertical .image-container {
+      overflow: hidden;
+    }
+
+    &.is-vertical.ftva.card {
+      min-height: unset;
+    }
 
     .media,
     &.is-vertical .image-container .molecule-no-image {
@@ -430,6 +447,7 @@ watch(data, (newVal, oldVal) => {
 
     .card-meta {
       padding-left: 0;
+      min-height: unset;
     }
 
     .card-meta.card-meta-items:hover>a.title {

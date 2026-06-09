@@ -1,0 +1,724 @@
+{
+  "took": 10,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 5,
+      "relation": "eq"
+    },
+    "max_score": null,
+    "hits": [
+      {
+        "_index": "apps-dev-ftva-local-parinita-2026-01-22t00-00-41.295z",
+        "_type": "_doc",
+        "_id": "the-pink-cloud-shorts-03-02-24",
+        "_score": null,
+        "_ignored": [
+          "imageCarousel.image.srcset.keyword",
+          "eventDescription.keyword",
+          "ftvaEventScreeningDetails.text.keyword",
+          "image.srcset.keyword",
+          "ftvaEventScreeningDetails.image.srcset.keyword"
+        ],
+        "_source": {
+          "imageCarousel": [
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/pink-cloud.jpg",
+                  "width": 2560,
+                  "alt": null,
+                  "id": "4409699",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/pink-cloud.jpg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/pink-cloud.jpg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/pink-cloud.jpg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/pink-cloud.jpg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/pink-cloud.jpg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1438
+                }
+              ],
+              "creditText": "Credit Text"
+            },
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/pinkcloud-crop.png",
+                  "width": 2560,
+                  "alt": "A woman writing on a window.",
+                  "id": "3131261",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/pinkcloud-crop.png 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/pinkcloud-crop.png 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/pinkcloud-crop.png 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/pinkcloud-crop.png 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/pinkcloud-crop.png 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1920
+                }
+              ],
+              "creditText": "Sundance"
+            }
+          ],
+          "eventSeriesLink": "series/step-up-series",
+          "guestSpeaker": "<p>Q&amp;A with directors Carolina Costa, Mario Furloni, Jorge Camarotti, Lívia Perez, producer Helena Sardinha (Proprio).</p>",
+          "title": "TEST - The Pink Cloud + shorts",
+          "startDateWithTime": "2026-05-15T19:30",
+          "eventDescription": "<p>Admission is free. No advance reservations. Your seat will be assigned to you when you pick up your ticket at the box office. Seats are assigned on a first come, first served basis. The box office opens one hour before the event.</p>\n<p>In this program of shorts from filmmakers in the Brazilian Filmmakers Collective, close attention is paid to the inner thoughts and lives of characters and subjects, exposing the unseen and often unspoken in dynamic and creative ways. </p>\n<p>Ecstasy</p>\n<figure class=\"image--full\"><a href=\"https://www.nytimes.com/2022/01/13/movies/the-pink-cloud-review.html\" target=\"_blank\" rel=\"noreferrer noopener\"><img src=\"https://static.library.ucla.edu/craftassetstest/images/pink-cloud-2.jpg\" alt=\"Pink Cloud 2\" /></a></figure>\n<p>Mexico, 2023</p>\n<p>Nuns are being affected by a black hole, a mausoleum is a place of gathering, and ecstasy is much more than just a release. </p>\n<p>DCP, color, 8 min. Director: Carolina Costa. Writer: Carolina Costa.</p>\n<p>Who Killed Eloá?</p>\n<p>Brazil, 2015</p>\n<p>Looking at the widely broadcast crime of 15-year-old Eloá Pimentel, filmmaker Lívia Perez exposes the biased Brazilian media and brings a critical analysis of the spectacle of violence and television’s approach in cases against women. </p>\n<p>DCP, color, 24 min. Director: Lívia Perez.</p>\n<p>Best Friends on a Summer Hike</p>\n<p>U.S., 2023</p>\n<p>Two friends hike amidst a stunning coastal backdrop, conversations are had, things are felt. </p>\n<p>DCP, color, 8 min. Director: Mario Furloni. Writer: Mario Furloni.</p>\n<p>I Don’t Say Goodbye, I Say See You Soon</p>\n<p>Brazil, 2013</p>\n<p>A young boy with a fascination for trucks searches for clues to help him find his father. One day, his father’s truck appears. </p>\n<p>DCP, color, 16 min. Director: Giuliana Monteiro. Writer: Giuliana Monteiro.</p>\n<p>Próprio</p>\n<p>Brazil/U.S., 2020</p>\n<p>A young man is feeling the pressure and desire to lose his virginity. As he meets up with an older man that he met online, things do not go as expected. </p>\n<p>DCP, color, 14 min. Director: Rafael Thomaseto. Writers: Rachel Ancelevicz, Rafael Thomaseto.</p>\n<p>Kinship</p>\n<p>Canada, 2019</p>\n<p>A single father is struggling to connect with his mute son after the loss of his mother. </p>\n<p>DCP, color, 16 min. Director: Jorge Camarotti. Writer: Jorge Camarotti.</p>\n<p>The Pink Cloud</p>\n<p>Brazil, 2020 </p>\n<p>Imagine being locked for years indoors due to a mysterious cloud that kills upon contact. While that may sound like COVID lockdowns, The Pink Cloud was made prior to the pandemic, and eerily captures isolated life with disquieting accuracy. In luli Gerbase’s debut feature, two casual acquaintances, Giovana and Yago, are locked together in an apartment after an unexplained life threatening pink cloud circles the globe. As time seems to both stop and fast forward through the film, the couple becomes the focus of this lo-fi sci-fi that examines human nature under strict confinement. </p>\n<p>DCP, color, 105 min. Director: Iuli Gerbase. Writer: Iuli Gerbase. With: Renata de Lélis, Eduardo Mendonça.</p>\n<p>Watch a trailer:</p>\n<figure><iframe title=\"YouTube video player\" src=\"https://www.youtube.com/embed/LzcPHVlPdH8?si=CA-raWYMOSTGGTJn\" width=\"560\" height=\"315\" frameborder=\"0\"></iframe></figure>",
+          "startTime": "2026-05-15T19:30:00",
+          "id": "2847949",
+          "ftvaEventTypeFilters": [
+            {
+              "id": "2847996",
+              "title": "Guest speaker"
+            }
+          ],
+          "ftvaEventRegistration": [
+            {
+              "registrationText": "Register",
+              "registrationUrlLink": null
+            }
+          ],
+          "sectionHandle": "ftvaEvent",
+          "slug": "the-pink-cloud-shorts-03-02-24",
+          "introduction": "<p>Luli Gerbase is a writer and director born in Brazil. Her debut feature film, The Pink Cloud, premiered at Sundance in 2021, in the World Dramatic Competition.<br /></p>",
+          "image": [
+            {
+              "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/pinkcloud-crop.png",
+              "width": 2560,
+              "alt": "A woman writing on a window.",
+              "id": "3131261",
+              "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/pinkcloud-crop.png 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/pinkcloud-crop.png 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/pinkcloud-crop.png 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/pinkcloud-crop.png 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/pinkcloud-crop.png 2560w",
+              "focalPoint": [
+                0.5,
+                0.5
+              ],
+              "height": 1920
+            }
+          ],
+          "typeHandle": "ftvaEvent",
+          "ftvaTicketInformation": [
+            {
+              "title": "Admission is free",
+              "uri": "ftva-ticket-information/admission-is-free"
+            },
+            {
+              "title": "Your seat will be assigned to you when you pick up your ticket at the box office",
+              "uri": "ftva-ticket-information/your-seat-will-be-assigned-to-you-when-you-pick-up-your-ticket-at-the-box-office"
+            },
+            {
+              "title": "Seats are assigned on a first come, first served basis",
+              "uri": "ftva-ticket-information/seats-are-assigned-on-a-first-come-first-served-basis"
+            },
+            {
+              "title": "The box office opens one hour before the event",
+              "uri": "ftva-ticket-information/the-box-office-opens-one-hour-before-the-event"
+            }
+          ],
+          "ftvaScreeningFormatFilters": [],
+          "uri": "events/the-pink-cloud-shorts-03-02-24",
+          "sortTitle": "TEST - The Pink Cloud + shorts",
+          "groupName": "Events",
+          "eventSeriesTitle": "TEST Series: The Step Up Movie Series",
+          "acknowledements": "<p>UCLA Film &amp; Television Archive</p>",
+          "postDate": "2024-02-16T08:44:00-08:00",
+          "location": [
+            {
+              "address": [],
+              "campusMapId": null,
+              "publicUrl": "/visit/locations/music-library",
+              "title": "Music Library"
+            },
+            {
+              "address": [],
+              "campusMapId": null,
+              "publicUrl": "https://vidiotsfoundation.org/",
+              "title": "VVidiots"
+            }
+          ],
+          "ftvaEventScreeningDetails": [
+            {
+              "trailer": null,
+              "country": "Carolina Costa",
+              "image": [],
+              "tagLabels": [
+                {
+                  "title": "DCP"
+                }
+              ],
+              "year": "2023",
+              "runtime": "8 min",
+              "language": "fr",
+              "languageInfo": null,
+              "alternateTitle": null,
+              "text": "<p>Nuns are being affected by a black hole, a mausoleum is a place of gathering, and ecstasy is much more than just a release.</p>",
+              "title": "Ecstasy"
+            },
+            {
+              "trailer": "<figure><iframe title=\"YouTube video player\" src=\"https://www.youtube.com/embed/LzcPHVlPdH8?si=CA-raWYMOSTGGTJn\" width=\"560\" height=\"315\" frameborder=\"0\"></iframe></figure>",
+              "country": "Iuli Gerbase",
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/images/_fullscreen/women-7808776_150.jpg",
+                  "width": 2560,
+                  "alt": "Women 7808776 150",
+                  "id": "2983172",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/images/_375xAUTO_crop_center-center_none/women-7808776_150.jpg 375w, https://static.library.ucla.edu/craftassetstest/images/_960xAUTO_crop_center-center_none/women-7808776_150.jpg 960w, https://static.library.ucla.edu/craftassetstest/images/_1280xAUTO_crop_center-center_none/women-7808776_150.jpg 1280w, https://static.library.ucla.edu/craftassetstest/images/_1920xAUTO_crop_center-center_none/women-7808776_150.jpg 1920w, https://static.library.ucla.edu/craftassetstest/images/_2560xAUTO_crop_center-center_none/women-7808776_150.jpg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 2560
+                }
+              ],
+              "tagLabels": [
+                {
+                  "title": "DCP"
+                }
+              ],
+              "year": "2020",
+              "runtime": "105 min",
+              "language": "fr",
+              "languageInfo": null,
+              "alternateTitle": null,
+              "text": "<p>Imagine being locked for years indoors due to a mysterious cloud that kills upon contact. While that may sound like COVID lockdowns, The Pink Cloud was made prior to the pandemic, and eerily captures isolated life with disquieting accuracy. In luli Gerbase’s debut feature, two casual acquaintances, Giovana and Yago, are locked together in an apartment after an unexplained life threatening pink cloud circles the globe. As time seems to both stop and fast forward through the film, the couple becomes the focus of this lo-fi sci-fi that examines human nature under strict confinement.</p>",
+              "title": "The Pink Cloud"
+            },
+            {
+              "trailer": null,
+              "country": null,
+              "image": [],
+              "tagLabels": [],
+              "year": null,
+              "runtime": null,
+              "language": "ar",
+              "languageInfo": null,
+              "alternateTitle": null,
+              "text": null,
+              "title": null
+            }
+          ],
+          "startDate": "2026-05-15T19:30:00"
+        },
+        "sort": [
+          1778873400000
+        ]
+      },
+      {
+        "_index": "apps-dev-ftva-local-parinita-2026-01-22t00-00-41.295z",
+        "_type": "_doc",
+        "_id": "la-région-centrale-03-08-24",
+        "_score": null,
+        "_ignored": [
+          "guestSpeaker.keyword",
+          "acknowledements.keyword",
+          "imageCarousel.image.srcset.keyword",
+          "eventDescription.keyword",
+          "ftvaEventScreeningDetails.text.keyword",
+          "image.srcset.keyword",
+          "ftvaEventScreeningDetails.image.srcset.keyword",
+          "introduction.keyword"
+        ],
+        "_source": {
+          "imageCarousel": [
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/_fullscreen/RégionCentrale2_2024-06-12-211354_egxg.jpeg",
+                  "width": 2560,
+                  "alt": "Région Centrale2",
+                  "id": "3108955",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/_375xAUTO_crop_center-center_none/RégionCentrale2_2024-06-12-211354_egxg.jpeg 375w, https://static.library.ucla.edu/craftassetstest/_960xAUTO_crop_center-center_none/RégionCentrale2_2024-06-12-211354_egxg.jpeg 960w, https://static.library.ucla.edu/craftassetstest/_1280xAUTO_crop_center-center_none/RégionCentrale2_2024-06-12-211354_egxg.jpeg 1280w, https://static.library.ucla.edu/craftassetstest/_1920xAUTO_crop_center-center_none/RégionCentrale2_2024-06-12-211354_egxg.jpeg 1920w, https://static.library.ucla.edu/craftassetstest/_2560xAUTO_crop_center-center_none/RégionCentrale2_2024-06-12-211354_egxg.jpeg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1915
+                }
+              ],
+              "creditText": "Movie Database"
+            },
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/laregioncentrale-crop_0.jpeg",
+                  "width": 2560,
+                  "alt": "Upside down of a rocky landscape.",
+                  "id": "3131255",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1920
+                }
+              ],
+              "creditText": "Michael Snow"
+            },
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/la-region-central-3.jpeg",
+                  "width": 2560,
+                  "alt": null,
+                  "id": "3146002",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/la-region-central-3.jpeg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/la-region-central-3.jpeg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/la-region-central-3.jpeg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/la-region-central-3.jpeg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/la-region-central-3.jpeg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 2909
+                }
+              ],
+              "creditText": "Lab for the Unstable Media"
+            },
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/a-region-centrale-4.jpeg",
+                  "width": 2560,
+                  "alt": null,
+                  "id": "3146001",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/a-region-centrale-4.jpeg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/a-region-centrale-4.jpeg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/a-region-centrale-4.jpeg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/a-region-centrale-4.jpeg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/a-region-centrale-4.jpeg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1718
+                }
+              ],
+              "creditText": "Art Canada Institute"
+            }
+          ],
+          "eventSeriesLink": "series/the-films-of-michael-snow",
+          "guestSpeaker": "<p><strong>Guest Speaker</strong> <strong><em>Graeme Ferguson</em></strong> (October 7, 1929 – May 8, 2021) was a <em>Canadian filmmaker</em> and inventor who co-invented the <a href=\"https://en.wikipedia.org/wiki/IMAX#:~:text=The%20film%20format%20uses%20very,called%20the%2015%2F70%20format.\" target=\"_blank\" rel=\"noreferrer noopener\">IMAX film format</a>.</p>\n<p>He was named a member of the Order of Canada in 1993 and received an honorary doctorate from the University of Bradford <strong>Guest Speaker End</strong><br /></p>",
+          "title": "TEST - La Région Centrale Screening",
+          "startDateWithTime": "2027-03-08T19:30",
+          "eventDescription": "<p><strong>Event Description</strong> -- <em><strong>Event with Introduction, Event Description, Acknowledgments, Guest Speaker, * * * Screening Details and Trailer</strong></em></p>\n<p>Admission is free. No advance reservations. Your seat will be assigned to you when you pick up your ticket at the box office. Seats are assigned on a first come, first served basis. The box office opens one hour before the event.</p>\n<p>La Région Centrale</p>\n<p>Canada, 1971</p>\n<p>The late avant-garde master Michael Snow’s work explores the nature of perception, consciousness, participation, and in many ways is uncategorizable but relation to time is evident. He worked in many mediums and his films playfully and prolifically rethink the parameters while requiring audiences to actively participate in this work. La Région Centrale is a three-hour-long film that calls attention to the mechanics of filmmaking, using a computer-programmed, motorized tripod that rotates the camera 360 degrees in any direction, repeatedly, without dialogue or any other subject beyond the landscape, over the course of a day. The film demands concentration, while its movements become meditative. Rarely screened and if you are willing to engage, the experience is dizzying and technologically sublime. </p>\n<p>Please note, the only soundtrack is a repeating pulse for the duration of the film. </p>\n<p>16mm, color, 180 min. Director: Michael Snow.<strong><br />Event Description END</strong><br /></p>",
+          "startTime": "2027-03-08T19:30:00",
+          "id": "2847944",
+          "ftvaEventTypeFilters": [
+            {
+              "id": "2847996",
+              "title": "Guest speaker"
+            }
+          ],
+          "ftvaEventRegistration": [
+            {
+              "registrationText": "Register for this event",
+              "registrationUrlLink": "http://eventbrite.com"
+            }
+          ],
+          "sectionHandle": "ftvaEvent",
+          "slug": "la-région-centrale-03-08-24",
+          "introduction": "<div><strong>Introduction</strong> <em><strong>UCLA Film &amp; Television Archive</strong> and the <strong>Hammer Museum</strong></em> serving the <em>UCLA community</em> and an international constituency of academic faculty, scholars, students, writers, and professionals, the <a href=\"https://www.cinema.ucla.edu/archive-research-study-center\" target=\"_blank\" rel=\"noreferrer noopener\">Archive Research and Study Center</a> (ARSC) provides a vital access point to UCLA Film &amp; Television Archive's collections. The Billy Wilder Theater, home of UCLA Film &amp; Television Archive's public programs, is among a select handful of venues nationwide able to exhibit an entire century's worth of moving images in their original formats.<strong>Introduction End</strong></div>",
+          "image": [
+            {
+              "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/laregioncentrale-crop_0.jpeg",
+              "width": 2560,
+              "alt": "Upside down of a rocky landscape.",
+              "id": "3131255",
+              "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/laregioncentrale-crop_0.jpeg 2560w",
+              "focalPoint": [
+                0.5,
+                0.5
+              ],
+              "height": 1920
+            }
+          ],
+          "typeHandle": "ftvaEvent",
+          "ftvaTicketInformation": [
+            {
+              "title": "Admission is free",
+              "uri": "ftva-ticket-information/admission-is-free"
+            },
+            {
+              "title": "Your seat will be assigned to you when you pick up your ticket at the box office",
+              "uri": "ftva-ticket-information/your-seat-will-be-assigned-to-you-when-you-pick-up-your-ticket-at-the-box-office"
+            }
+          ],
+          "ftvaScreeningFormatFilters": [],
+          "uri": "events/la-région-centrale-03-08-24",
+          "sortTitle": "TEST - La Région Centrale Screening",
+          "groupName": "Events",
+          "eventSeriesTitle": "TEST - The Films of Michael Snow",
+          "acknowledements": "<p><strong>Acknowledgements/Funders</strong> RichText <strong><em>Special thanks to our community partner</em></strong>: </p>\n<ul><li><a href=\"https://www.lafilmforum.org/\" target=\"_blank\" rel=\"noreferrer noopener\">Los Angeles Filmforum</a></li><li><a href=\"https://www.newfilmmakersla.com/about-us/\" target=\"_blank\" rel=\"noreferrer noopener\">NewFilmmakers Los Angeles</a></li><li><a href=\"https://filmla.com/\" target=\"_blank\" rel=\"noreferrer noopener\">FilmLA: Home<br />The images have only two sizes full width or half width<br /></a></li></ul>\n<p><strong>Acknowledgements/Funders</strong> END</p>",
+          "postDate": "2024-02-16T08:44:00-08:00",
+          "location": [
+            {
+              "address": [
+                {}
+              ],
+              "campusMapId": null,
+              "publicUrl": "https://www.cinema.ucla.edu/billy-wilder-theater",
+              "title": "Billy Wilder Theater"
+            }
+          ],
+          "ftvaEventScreeningDetails": [
+            {
+              "trailer": "<figure><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/uYr_SvIKKuI?si=ihenbmyE91KqyXK5\" title=\"YouTube video player\" frameborder=\"0\"></iframe></figure>",
+              "country": "South Country",
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/_fullscreen/babylamb.jpg",
+                  "width": 2560,
+                  "alt": null,
+                  "id": "3167092",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/_375xAUTO_crop_center-center_none/babylamb.jpg 375w, https://static.library.ucla.edu/craftassetstest/_960xAUTO_crop_center-center_none/babylamb.jpg 960w, https://static.library.ucla.edu/craftassetstest/_1280xAUTO_crop_center-center_none/babylamb.jpg 1280w, https://static.library.ucla.edu/craftassetstest/_1920xAUTO_crop_center-center_none/babylamb.jpg 1920w, https://static.library.ucla.edu/craftassetstest/_2560xAUTO_crop_center-center_none/babylamb.jpg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1441
+                }
+              ],
+              "tagLabels": [
+                {
+                  "title": "IMAX"
+                },
+                {
+                  "title": "Experimental Film"
+                }
+              ],
+              "year": "2025 (Only Year Country Language & Runtime)",
+              "runtime": "190 minutes",
+              "language": "es",
+              "languageInfo": "Spanglish",
+              "alternateTitle": null,
+              "text": "<p><strong>MICHAEL SNOW’S 1970–71 FILM</strong> <em>La Région Centrale</em> is as fine and important a film as I have ever seen. Ordinarily a statement like this means that you should rush out to see the film, but this is not an ordinary film. It is an unimaginable film. Can you imagine a film that is three hours long and only photographs a landscape? You might say “Sure a short version of Warhol’s <em>Empire</em> would do for a start.” But can you imagine a film constantly demanding concentration on the screen lest some of the action be missed, a film without people, in which the camera never stops moving, never moves more than four feet from a central point and never tracks, dollies, or is hand-held? Snow’s film is literally like nothing you have ever seen before. It is such a radical, difficult film that if you are to understand its importance and uniqueness, some preparation may be required.<br /></p>\n<p><em>La Région Centrale</em> is three long hours, composed of seventeen shots of an uninhabited mountainous</p>",
+              "title": "Trailer with Cover image - The Central Regions"
+            },
+            {
+              "trailer": null,
+              "country": "South America",
+              "image": [],
+              "tagLabels": [
+                {
+                  "title": "Guest Speaker"
+                }
+              ],
+              "year": "1971",
+              "runtime": "3 hours",
+              "language": "es",
+              "languageInfo": "Spanish",
+              "alternateTitle": "Sudamérica es súper interesante",
+              "text": "<p>Snow shot <em>La Région Centrale</em> from September 14 to 20, 1970 with his wife <a href=\"https://en.wikipedia.org/wiki/Joyce_Wieland\" title=\"Joyce Wieland\" target=\"_blank\" rel=\"noreferrer noopener\">Joyce Wieland</a>, Abbeloos, and Bernard Goussard. They chartered a helicopter to transport them to the mountain.<sup><a href=\"https://en.wikipedia.org/wiki/La_R%C3%A9gion_Centrale#cite_note-white-grey-room-3\" target=\"_blank\" rel=\"noreferrer noopener\">[3]</a></sup> Snow and his team were shooting for five days, producing sixty hours of footage.<sup><a href=\"https://en.wikipedia.org/wiki/La_R%C3%A9gion_Centrale#cite_note-leitner-discourse-6\" target=\"_blank\" rel=\"noreferrer noopener\">[6]</a></sup> He edited the film during a residency at the <a href=\"https://en.wikipedia.org/wiki/Nova_Scotia_College_of_Art_and_Design\" title=\"Nova Scotia College of Art and Design\" target=\"_blank\" rel=\"noreferrer noopener\">Nova Scotia College of Art and Design</a>.<sup><a href=\"https://en.wikipedia.org/wiki/La_R%C3%A9gion_Centrale#cite_note-langford-aci-1\" target=\"_blank\" rel=\"noreferrer noopener\">[1]</a></sup></p>",
+              "title": "No trailer - Alternate Title - South America is Super Interesting"
+            },
+            {
+              "trailer": "<figure><iframe width=\"560\" height=\"315\" src=\"https://www.youtube.com/embed/nir7aNK5794?si=QZAJFI1fYNGZ96rc\" title=\"YouTube video player\" frameborder=\"0\"></iframe></figure>",
+              "country": "Spain",
+              "image": [],
+              "tagLabels": [
+                {
+                  "title": "Interview"
+                },
+                {
+                  "title": "Film"
+                }
+              ],
+              "year": "1983",
+              "runtime": "30 minutes",
+              "language": "es",
+              "languageInfo": "Spanish",
+              "alternateTitle": null,
+              "text": "<p>Interview and profile of experimental filmmaker Michael Snow from 1983. Includes extracts from 'Back and Forth', 'Wavelength', 'La Region Central', 'So Is This' and gallery piece 'Two Sides To Every Story'. Made for Channel 4 'Visions' and broadcast 19 January 1983. Interview: Simon Field; Director: Keith Griffiths</p>",
+              "title": "Trailer - No Cover image - Michael Snow 1983"
+            },
+            {
+              "trailer": null,
+              "country": null,
+              "image": [],
+              "tagLabels": [],
+              "year": null,
+              "runtime": null,
+              "language": "ar",
+              "languageInfo": null,
+              "alternateTitle": null,
+              "text": null,
+              "title": "Only Screening Title"
+            },
+            {
+              "trailer": null,
+              "country": "France",
+              "image": [],
+              "tagLabels": [
+                {
+                  "title": "Interview"
+                },
+                {
+                  "title": "Film"
+                },
+                {
+                  "title": "IMAX"
+                }
+              ],
+              "year": "1936 (Only Year,Country, Language & Runtime)",
+              "runtime": "45 minutes",
+              "language": "ar",
+              "languageInfo": "Basque",
+              "alternateTitle": null,
+              "text": null,
+              "title": "The Central Region"
+            }
+          ],
+          "startDate": "2027-03-08T19:30:00"
+        },
+        "sort": [
+          1804534200000
+        ]
+      },
+      {
+        "_index": "apps-dev-ftva-local-parinita-2026-01-22t00-00-41.295z",
+        "_type": "_doc",
+        "_id": "test-corpus-callosum-04-08-27",
+        "_score": null,
+        "_ignored": [
+          "imageCarousel.image.srcset.keyword",
+          "eventDescription.keyword",
+          "image.srcset.keyword"
+        ],
+        "_source": {
+          "imageCarousel": [
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/michael-Snow-Corpus-Callosum.jpg",
+                  "width": 2560,
+                  "alt": "Michael Snow Corpus Callosum",
+                  "id": "3203496",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/michael-Snow-Corpus-Callosum.jpg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/michael-Snow-Corpus-Callosum.jpg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/michael-Snow-Corpus-Callosum.jpg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/michael-Snow-Corpus-Callosum.jpg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/michael-Snow-Corpus-Callosum.jpg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1729
+                }
+              ],
+              "creditText": null
+            }
+          ],
+          "eventSeriesLink": "series/the-films-of-michael-snow",
+          "guestSpeaker": "<p>Guest Speaker: <a href=\"https://en.wikipedia.org/wiki/Jacqueline_Anderson\">Jacqueline Anderson</a></p>",
+          "title": "TEST - Corpus Callosum",
+          "startDateWithTime": "2027-04-08T19:30",
+          "eventDescription": "<p><em><strong>*Corpus Callosum</strong></em> is a 2002 experimental Canadian film directed by <a href=\"https://en.wikipedia.org/wiki/Michael_Snow\" title=\"Michael Snow\">Michael Snow</a>. The title is a reference to the part of the brain which was once thought to have been home to the human <a href=\"https://en.wikipedia.org/wiki/Soul\" title=\"Soul\">soul</a>, and which passes messages between the <a href=\"https://en.wikipedia.org/wiki/Cerebral_hemisphere\" title=\"Cerebral hemisphere\">two hemispheres of the brain</a>. </p>\n<p>\"Corpus callosum\" in the film refers to the mysterious space between illusion and reality.<sup><a href=\"https://en.wikipedia.org/wiki/Corpus_Callosum_(film)#cite_note-1\">[1]</a></sup> It won the Independent/Experimental Film and Video Award from the <a href=\"https://en.wikipedia.org/wiki/Los_Angeles_Film_Critics_Association_Awards\" title=\"Los Angeles Film Critics Association Awards\">Los Angeles Film Critics Association Awards</a>. <em>Corpus Callosum</em> is said to be a \"digital self-appraisal of [Snow's] work\",<sup><a href=\"https://en.wikipedia.org/wiki/Corpus_Callosum_(film)#cite_note-2\">[2]</a></sup> showcasing his passion for visual manipulations through editing. Throughout the film, Snow's voice can be heard as he directs the film, adding to the break in the fourth wall which the film attempts to create.</p>",
+          "startTime": "2027-04-08T19:30:00",
+          "id": "3203498",
+          "ftvaEventTypeFilters": [],
+          "ftvaEventRegistration": [
+            {
+              "registrationText": null,
+              "registrationUrlLink": null
+            }
+          ],
+          "sectionHandle": "ftvaEvent",
+          "slug": "test-corpus-callosum-04-08-27",
+          "introduction": "<p><a href=\"https://en.wikipedia.org/wiki/Jacqueline_Anderson\">Jacqueline Anderson</a></p>",
+          "image": [
+            {
+              "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/michael-snow-corpus-callosum-moma-01-720x479.webp",
+              "width": 2560,
+              "alt": "Michael snow corpus callosum moma",
+              "id": "3203497",
+              "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/michael-snow-corpus-callosum-moma-01-720x479.webp 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/michael-snow-corpus-callosum-moma-01-720x479.webp 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/michael-snow-corpus-callosum-moma-01-720x479.webp 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/michael-snow-corpus-callosum-moma-01-720x479.webp 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/michael-snow-corpus-callosum-moma-01-720x479.webp 2560w",
+              "focalPoint": [
+                0.5,
+                0.5
+              ],
+              "height": 1703
+            }
+          ],
+          "typeHandle": "ftvaEvent",
+          "ftvaTicketInformation": [
+            {
+              "title": "Seats are assigned on a first come, first served basis",
+              "uri": "ftva-ticket-information/seats-are-assigned-on-a-first-come-first-served-basis"
+            },
+            {
+              "title": "Outdoor Evevnt",
+              "uri": "ftva-ticket-information/outdoor-evevnt"
+            }
+          ],
+          "ftvaScreeningFormatFilters": [],
+          "uri": "events/test-corpus-callosum-04-08-27",
+          "sortTitle": "TEST - Corpus Callosum",
+          "groupName": "Events",
+          "eventSeriesTitle": "TEST - The Films of Michael Snow",
+          "acknowledements": "<table><tbody><tr><td>Canadian Filmmakers Distribution Centre</td></tr></tbody></table>",
+          "postDate": "2024-08-30T14:29:00-07:00",
+          "location": [
+            {
+              "address": [
+                {}
+              ],
+              "campusMapId": null,
+              "publicUrl": "https://www.cinema.ucla.edu/billy-wilder-theater",
+              "title": "Billy Wilder Theater"
+            }
+          ],
+          "ftvaEventScreeningDetails": [],
+          "startDate": "2027-04-08T19:30:00"
+        },
+        "sort": [
+          1807212600000
+        ]
+      },
+      {
+        "_index": "apps-dev-ftva-local-parinita-2026-01-22t00-00-41.295z",
+        "_type": "_doc",
+        "_id": "wavelength-08-22-24",
+        "_score": null,
+        "_ignored": [
+          "imageCarousel.image.srcset.keyword",
+          "eventDescription.keyword",
+          "image.srcset.keyword",
+          "ftvaEventScreeningDetails.trailer.keyword"
+        ],
+        "_source": {
+          "imageCarousel": [
+            {
+              "image": [
+                {
+                  "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/wavelength.jpg",
+                  "width": 2560,
+                  "alt": "Wavelength",
+                  "id": "3202588",
+                  "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/wavelength.jpg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/wavelength.jpg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/wavelength.jpg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/wavelength.jpg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/wavelength.jpg 2560w",
+                  "focalPoint": [
+                    0.5,
+                    0.5
+                  ],
+                  "height": 1956
+                }
+              ],
+              "creditText": "Michael Snow"
+            }
+          ],
+          "eventSeriesLink": "series/the-films-of-michael-snow",
+          "guestSpeaker": null,
+          "title": "TEST - Wavelength",
+          "startDateWithTime": "2027-09-17T19:30",
+          "eventDescription": "<p>Hailed by the critic Manny Farber in Artforum magazine in 1969 as “a pure, tough 45 minutes that may become the ‘Birth of a Nation’ in Underground film,” provided 20th-century cinema with a visceral metaphor for itself as temporal projection. If it also saddled Mr. Snow with the weight of an unrepeatable masterpiece, it was a burden he bore lightly.</p>",
+          "startTime": "2027-09-17T19:30:00",
+          "id": "3202589",
+          "ftvaEventTypeFilters": [],
+          "ftvaEventRegistration": [
+            {
+              "registrationText": null,
+              "registrationUrlLink": null
+            }
+          ],
+          "sectionHandle": "ftvaEvent",
+          "slug": "wavelength-08-22-24",
+          "introduction": "<p>UCLA &amp; The Hammer</p>",
+          "image": [
+            {
+              "src": "https://static.library.ucla.edu/craftassetstest/FTVA/_fullscreen/web-midres-jpg-72dpi-VARIOUS-ARTISTS-4.jpg",
+              "width": 2560,
+              "alt": null,
+              "id": "3203395",
+              "srcset": "https://static.library.ucla.edu/craftassetstest/FTVA/_375xAUTO_crop_center-center_none/web-midres-jpg-72dpi-VARIOUS-ARTISTS-4.jpg 375w, https://static.library.ucla.edu/craftassetstest/FTVA/_960xAUTO_crop_center-center_none/web-midres-jpg-72dpi-VARIOUS-ARTISTS-4.jpg 960w, https://static.library.ucla.edu/craftassetstest/FTVA/_1280xAUTO_crop_center-center_none/web-midres-jpg-72dpi-VARIOUS-ARTISTS-4.jpg 1280w, https://static.library.ucla.edu/craftassetstest/FTVA/_1920xAUTO_crop_center-center_none/web-midres-jpg-72dpi-VARIOUS-ARTISTS-4.jpg 1920w, https://static.library.ucla.edu/craftassetstest/FTVA/_2560xAUTO_crop_center-center_none/web-midres-jpg-72dpi-VARIOUS-ARTISTS-4.jpg 2560w",
+              "focalPoint": [
+                0.5,
+                0.5
+              ],
+              "height": 3078
+            }
+          ],
+          "typeHandle": "ftvaEvent",
+          "ftvaTicketInformation": [],
+          "ftvaScreeningFormatFilters": [],
+          "uri": "events/wavelength-08-22-24",
+          "sortTitle": "TEST - Wavelength",
+          "groupName": "Events",
+          "eventSeriesTitle": "TEST - The Films of Michael Snow",
+          "acknowledements": null,
+          "postDate": "2024-08-22T11:16:00-07:00",
+          "location": [
+            {
+              "address": [
+                {}
+              ],
+              "campusMapId": null,
+              "publicUrl": "https://www.cinema.ucla.edu/billy-wilder-theater",
+              "title": "Billy Wilder Theater"
+            }
+          ],
+          "ftvaEventScreeningDetails": [
+            {
+              "trailer": "<p>&lt;iframe width=\"560\" height=\"315\" src=\"<a href=\"https://www.youtube.com/embed/963PSjAHo48?si=EWgY_Q7HJ7UTzcVt\">\" title=\"YouTube video player\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share\" referrerpolicy=\"strict-origin-when-cross-origin\" allowfullscreen&gt;&lt;/iframe&gt;</a></p>",
+              "country": null,
+              "image": [],
+              "tagLabels": [],
+              "year": null,
+              "runtime": null,
+              "language": "ar",
+              "languageInfo": null,
+              "alternateTitle": null,
+              "text": null,
+              "title": null
+            }
+          ],
+          "startDate": "2027-09-17T19:30:00"
+        },
+        "sort": [
+          1821209400000
+        ]
+      },
+      {
+        "_index": "apps-dev-ftva-local-parinita-2026-01-22t00-00-41.295z",
+        "_type": "_doc",
+        "_id": "test-no-image-11-10-27",
+        "_score": null,
+        "_ignored": [
+          "eventDescription.keyword"
+        ],
+        "_source": {
+          "imageCarousel": [],
+          "eventSeriesLink": null,
+          "guestSpeaker": "<p>Invisible Man</p>",
+          "title": "TEST - NO IMAGE",
+          "startDateWithTime": "2027-11-10T11:11",
+          "eventDescription": "<p><a href=\"https://photo.stackexchange.com/questions/75858/why-does-it-look-like-nothing-is-on-my-developed-film\">Why does it look like nothing is on my developed film?</a><br /><br />i've recently bought Canon AL-1 with macro lens 35-70. I used some cheap kodak film, with ISO 400. Yesterday I went to some photography studio so they would scan my 35mm film. But when I got it back it was only develeoped and not scanned because it looked like nothing is on the film. Later we checked the film out with the employee and it looked like something is on, but it's really pale and hard to see. I'm still waiting for the CD with my photos.Does anybody know what could be wrong here?</p>",
+          "startTime": "2027-11-10T11:11:00",
+          "id": "3196788",
+          "ftvaEventTypeFilters": [
+            {
+              "id": "2847996",
+              "title": "Guest speaker"
+            }
+          ],
+          "ftvaEventRegistration": [
+            {
+              "registrationText": null,
+              "registrationUrlLink": null
+            }
+          ],
+          "sectionHandle": "ftvaEvent",
+          "slug": "test-no-image-11-10-27",
+          "introduction": null,
+          "image": [],
+          "typeHandle": "ftvaEvent",
+          "ftvaTicketInformation": [],
+          "ftvaScreeningFormatFilters": [],
+          "uri": "events/test-no-image-11-10-27",
+          "sortTitle": "TEST - NO IMAGE",
+          "groupName": "Events",
+          "eventSeriesTitle": null,
+          "acknowledements": null,
+          "postDate": "2024-08-06T21:26:00-07:00",
+          "location": [],
+          "ftvaEventScreeningDetails": [],
+          "startDate": "2027-11-10T11:11:00"
+        },
+        "sort": [
+          1825845060000
+        ]
+      }
+    ]
+  }
+}

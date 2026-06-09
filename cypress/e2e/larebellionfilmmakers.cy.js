@@ -1,7 +1,26 @@
-describe('Filmmakers Detail Page', () => {
+import { viewports } from '../support/viewports'
+
+const provider = Cypress.env('VISUAL_PROVIDER')
+const isChromatic = provider === 'chromatic'
+
+function runFilmmakerDetailTests({ withSnapshot = false } = {}) {
   it('Visits the LA Rebellion Filmmaker Detail page', () => {
     cy.visit('/collections/la-rebellion/filmmakers/test-person')
 
-    cy.percySnapshot('larebellionfilmmakersdetail')
+    if (withSnapshot) {
+      cy.visualSnapshot('larebellionfilmmakersdetail')
+    }
   })
-})
+}
+
+if (isChromatic) {
+  viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
+    describe(`Filmmakers Detail Page - ${label}`, { viewportWidth, viewportHeight }, () => {
+      runFilmmakerDetailTests({ withSnapshot: true })
+    })
+  })
+} else {
+  describe('Filmmakers Detail Page', () => {
+    runFilmmakerDetailTests({ withSnapshot: false })
+  })
+}

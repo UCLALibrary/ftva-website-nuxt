@@ -7,6 +7,7 @@ import FTVAArticleDetail from '../gql/queries/FTVAArticleDetail.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 // UTILS
 import removeTags from '~/utils/removeTags'
@@ -43,6 +44,7 @@ if (data.value.ftvaArticle && import.meta.prerender) {
     // Index the article data using the composable during static build
     data.value.ftvaArticle.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaArticle.title)
     data.value.ftvaArticle.groupName = 'Articles'
+    data.value.ftvaArticle.flexibleBlocksRichText = parseFlexibleBlocksRichText(data.value.ftvaArticle.blocks)
     await indexContent(data.value.ftvaArticle, route.params.slug)
     // console.log('Article indexed successfully during static build')
   } catch (error) {
@@ -62,9 +64,7 @@ watch(data, (newVal, oldVal) => {
 
 // COMPUTED
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -108,7 +108,7 @@ const parsedRecentPosts = computed(() => {
   const recentPostsWImage = ftvaRecentPosts.value.map((item, index) => {
     return {
       ...item,
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return recentPostsWImage.filter(item => !item.to.includes(route.params.slug)).slice(0, 3)
@@ -124,11 +124,24 @@ useHead({
     }
   ]
 })
+const parseBlocks = computed(() => {
+  const blocks = page.value?.blocks || []
+
+  return blocks.filter((block) => {
+    // remove the whole block if infoBlock exists AND is an empty array
+    if (Array.isArray(block.infoBlock) && block.infoBlock.length === 0) {
+      return false
+    }
+    return true
+  })
+})
+
 </script>
 
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page page-detail page-detail--paleblue page-article-detail"
   >
     <div class="one-column">
@@ -143,6 +156,7 @@ useHead({
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -161,6 +175,7 @@ useHead({
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -171,7 +186,6 @@ useHead({
         </FlexibleMediaGalleryNewLightbox>
       </div>
     </div>
-
     <TwoColLayoutWStickySideBar>
       <template #primaryTop>
         <CardMeta
@@ -212,7 +226,7 @@ useHead({
 
         <FlexibleBlocks
           class="flexible-content"
-          :blocks="page.blocks"
+          :blocks="parseBlocks"
         />
       </template>
       <template #sidebarTop />
@@ -239,7 +253,7 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 // PAGE STYLES
 .page-article-detail {
@@ -289,7 +303,7 @@ useHead({
 
   .about-the-author {
     @include ftva-subtitle-2;
-    color: $accent-blue;
+    color: ftvaTokens.$accent-blue;
     padding-bottom: 4px;
   }
 

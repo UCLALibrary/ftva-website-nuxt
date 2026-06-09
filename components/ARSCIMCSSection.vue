@@ -5,6 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVAARSCIMCS from '../gql/queries/FTVAEntryARSCIMCS.gql'
 
+// COMPOSABLES
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
+
 type SectionHandle =
   | 'ftvaArchiveResearchAndStudyCenter'
   | 'ftvaInstructionalMediaCollectionsAndServices'
@@ -69,42 +72,40 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
-// Parse FlexibleBlock with helper
-const parsedFlexibleBlocks = computed(() => {
-  const dataBlocks = page.value?.blocks || []
-  return parseFlexibleBlocks(dataBlocks)
-})
+// Parse FlexibleBlock with helper (sizes for image blocks applied in util when flag is set)
+const parsedFlexibleBlocks = computed(() =>
+  parseFlexibleBlocks(page.value?.blocks || [], { withResponsiveImageSizes: true }),
+)
 
-/** 7) Make a safe, CSS-friendly class from the path */
 const pageClasses = computed(() => {
   const slugClass = props.canonicalPath.slice(1).replaceAll('/', '-')
   return ['page', 'page-detail', 'page-detail--paleblue', slugClass, 'page-bottom-spacer']
 })
 
-/** 5) Always return an array */
-const parsedImage = computed(() => Array.isArray(page.value?.imageCarousel) ? page.value.imageCarousel : [])
-
+// START Handle Hero Image or Carousel
+const parsedImage = useParsedImageCarousel(page)
+// Carousel - formats object with 'credit' and 'item' fields
+// 1 Carousel data types
 interface FtvaImage {
   // adapt to your actual image fields as needed
   [k: string]: unknown
 }
-
 type ParsedCarouselItem = {
   item: Array<FtvaImage & { kind: 'image' }>
   creditText: string
 }
-
-/** 5 & 6) Guard and use consistent prop name 'credit' throughout */
+// 2 Carousel data parsing
 const parsedCarouselData = computed<ParsedCarouselItem[]>(() => {
   if (!Array.isArray(parsedImage.value) || parsedImage.value.length === 0) return []
   return parsedImage.value.map((rawItem) => {
     const firstImage = rawItem?.image?.[0]
     return {
-      item: firstImage ? [{ ...firstImage, kind: 'image' }] : [],
-      creditText: rawItem?.creditText ?? '',
+      item: firstImage ? [{ ...firstImage, kind: 'image', sizes: '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)' }] : [],
+      credit: rawItem?.creditText ?? '',
     }
   })
 })
+// END Handle Hero Image or Carousel
 
 const headTitle = computed(() => page.value?.title || 'Loading ...')
 
@@ -122,6 +123,7 @@ useHead({
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -130,6 +132,7 @@ useHead({
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -146,6 +149,7 @@ useHead({
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -175,28 +179,26 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
-.archive-research-study-center {
-  .one-column {
+.one-column {
 
-    // if the layout has an image or carousel at the top
-    &:has(> .lightbox-container),
-    &:has(> figure) {
-      padding-top: 80px; // to account for the missing pageanchor on this layout
-    }
+  // if the layout has an image or carousel at the top
+  &:has(> .lightbox-container),
+  &:has(> figure) {
+    padding-top: 80px; // to account for the missing pageanchor on this layout
   }
+}
 
-  .flexible-content {
-    :deep(div:last-of-type .section-wrapper3) {
-      margin-bottom: 0;
-    }
+.flexible-content {
+  :deep(div:last-of-type .section-wrapper3) {
+    margin-bottom: 0;
   }
 }
 
 .section-header,
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
-  color: $heading-grey;
+  color: ftvaTokens.$heading-grey;
 }
 
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header) {
@@ -214,12 +216,6 @@ useHead({
 
 :deep(.ftva.flexible-blocks .flexible-block-section-wrapper .section-header .section-title) {
   @include ftva-h4;
-}
-
-.instructional-media-collections-services {
-  :deep(.flexible-block-section-wrapper:last-child) {
-    margin-bottom: 0;
-  }
 }
 
 /* remove max-width from rich-text inside flexible-blocks for ftva */

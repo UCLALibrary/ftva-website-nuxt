@@ -94,7 +94,7 @@ const onResults = (results) => {
       totalPages.value = calculatedTotalPages
     }
   } else {
-    console.log('No results found, setting totalPages to 0 and hasMore to false')
+    // console.log('No results found, setting totalPages to 0 and hasMore to false')
     totalPages.value = 0
     hasMore.value = false
   }
@@ -108,9 +108,9 @@ const parsedArticles = computed(() => {
       to: `/${obj._source.uri}`,
       title: obj._source.title,
       category: parseArticleCategories(obj._source.articleCategories),
-      description: obj._source.aboutTheAuthor,
+      description: obj._source.ftvaHomepageDescription,
       date: obj._source.postDate,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 750px) 365px, calc(100vw - 44px)' },
       sectionHandle: obj._source.sectionHandle,
     }
   })
@@ -152,10 +152,11 @@ const parsedFeaturedArticles = computed(() => {
     return
   }
 
-  return featuredArticles.value.map((obj) => {
+  return featuredArticles.value.map((obj, index) => {
     const parsedTitle = parseRichTextTitle(obj)
+    const sizesFeaturedArticles = index === 0 ? '(min-width: 1360px) 1160px, (min-width: 760px) calc(91.03vw - 60px), (min-width: 680px) calc(100vw - 48px), 574px' : '(min-width: 1360px) 566px, calc(45.52vw - 44px)'
     return {
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: sizesFeaturedArticles },
       to: `/${obj.uri}`,
       title: parsedTitle,
       category: parseArticleCategories(obj.articleCategories),
@@ -193,7 +194,11 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main :class="pageClasses">
+  <main
+    id="main"
+    tabindex="-1"
+    :class="pageClasses"
+  >
     <SectionWrapper
       ref="scrollElem"
       :level="1"
@@ -293,7 +298,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-article-list {
   position: relative;
@@ -367,6 +372,31 @@ const pageClasses = computed(() => {
     top: 0;
   }
 
+  /* this sets the image to fit the featured cards in safari too, this will be component change */
+  :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container) {
+
+    .image {
+      aspect-ratio: 1160/403;
+
+      .sizer {
+        padding-bottom: calc(403/1160 * 100%) !important;
+      }
+    }
+  }
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+
+    aspect-ratio: unset;
+
+    .image {
+      aspect-ratio: 566/330;
+
+      .sizer {
+        padding-bottom: calc(330/566 * 100%) !important;
+      }
+    }
+  }
+
   :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image-container),
   :deep(.ftva.block-highlight.is-vertical:nth-of-type(1) .image) {
     max-height: 400px;
@@ -392,7 +422,7 @@ const pageClasses = computed(() => {
     :deep(.section-header) {
       font-size: 38px;
       margin-bottom: 48px;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     &:last-of-type {
@@ -476,13 +506,18 @@ const pageClasses = computed(() => {
 
   :deep(.ftva.block-staff-article-item) {
     .ftva-date {
-      color: $subtitle-grey;
+      color: ftvaTokens.$subtitle-grey;
       font-family: "proxima-nova", Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-style: normal;
       font-weight: 400;
       text-transform: unset;
     }
+  }
+
+  :deep(.ftva.block-staff-article-item .image) {
+    height: 272px;
+    /* TODO move to component library later and why ? */
   }
 
   @media screen and (max-width: 450px) {
@@ -519,11 +554,11 @@ const pageClasses = computed(() => {
       margin: 0;
     }
 
-    :deep(.ftva.block-staff-article-item .molecule-no-image) {
-      min-width: 100%;
-      height: auto;
-      margin: 0;
-    }
+    // :deep(.ftva.block-staff-article-item .molecule-no-image) {
+    //   min-width: 100%;
+    //   height: auto;
+    //   margin: 0;
+    // }
 
     :deep(.ftva.block-staff-article-item .meta) {
       height: auto;

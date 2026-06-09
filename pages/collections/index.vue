@@ -5,6 +5,9 @@ import _get from 'lodash/get'
 // GQL
 import FTVACollectionList from '../gql/queries/FTVACollectionList.gql'
 
+// COMPOSABLES
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
+
 const { $graphql } = useNuxtApp()
 
 const { data, error } = await useAsyncData('collection-list', async () => {
@@ -57,10 +60,12 @@ watch(data, (newVal, oldVal) => {
   page.value = _get(newVal, 'entry', {})
 })
 
+// IMG SIZES
+const CollectionImageSizes = '340px'
+const HearstImageSizes = '(min-width: 1220px) 1160px,(min-width: 750px) calc(100vw - 128px), calc(100vw - 48px)'
+const ResourceImageSizes = '150px'
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel || []
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -84,7 +89,7 @@ const parsedCollections = computed(() => {
       return {
         ...item,
         to: item.uri.startsWith('/') ? item.uri : `/${item.uri}`,
-        image: parseImage(item)
+        image: { ...parseImage(item), sizes: CollectionImageSizes }
       }
     })
 
@@ -111,7 +116,7 @@ const parsedResources = computed(() => {
       to: obj.uri
         ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
         : '/',
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: ResourceImageSizes }
     }
   })
 
@@ -136,9 +141,13 @@ const parsedAboutCollections = computed(() => {
       to: obj.uri
         ? `/${obj.uri.replace(/^\/?ftva\//i, '')}` // remove leading "ftva/" if present
         : '/',
-      image: parseImage(obj)
+      image: { ...parseImage(obj), sizes: ResourceImageSizes }
     }
   })
+})
+
+const parsedHearstCollectionImage = computed(() => {
+  return { ...page.value.hearstImage[0], sizes: HearstImageSizes }
 })
 
 useHead({
@@ -160,6 +169,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -168,6 +178,7 @@ const pageClasses = computed(() => {
         data-test="page-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -186,6 +197,7 @@ const pageClasses = computed(() => {
           data-test="page-image"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -235,10 +247,27 @@ const pageClasses = computed(() => {
       </template>
 
       <ScrollWrapper>
-        <SectionTeaserCard
-          :items="collection.featuredCollections"
-          :grid-layout="false"
-        />
+        <template
+          v-for="item in collection.featuredCollections"
+          :key="`${item.title}-${item.to}`"
+        >
+          <block-card-with-image
+            class="card"
+            :byline-one="item.bylineOne"
+            :byline-two="item.bylineTwo"
+            :category="item.category"
+            :date-created="item.postDate"
+            :image="item.image"
+            date-format="short"
+            :start-date="item.startDate"
+            :end-date="item.endDate"
+            :title="item.title"
+            :to="item.to"
+            tag="div"
+            :image-aspect-ratio="60"
+            :is-vertical="true"
+          />
+        </template>
       </ScrollWrapper>
       <DividerWayFinder />
     </SectionWrapper>
@@ -250,13 +279,16 @@ const pageClasses = computed(() => {
       data-test="hearst-collection"
     >
       <BlockCardWithImage
-        :image="page.hearstImage[0]"
+        :image="parsedHearstCollectionImage"
         :to="page.hearstUri"
+        :card-is-link="true"
+        class="is-link"
       >
         <template #customDescription>
           <RichText :rich-text-content="page.hearstDescription" />
         </template>
       </BlockCardWithImage>
+
       <DividerWayFinder />
     </SectionWrapper>
 
@@ -290,7 +322,7 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-explore-collections {
   position: relative;
@@ -337,30 +369,52 @@ const pageClasses = computed(() => {
   }
 
   .section-wrapper-featured-collections {
+    :deep(.v-sheet) {
+      background-color: var(--pale-blue);
+    }
+
+    :deep(.card) {
+      width: 320px;
+    }
+
     :deep(.section-header) {
       margin-bottom: 20px;
     }
 
     :deep(.section-title) {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     :deep(.rich-text.section-summary) {
       max-width: 100%;
     }
 
-    .section-teaser-card {
-      background-color: var(--pale-blue);
+    // .section-teaser-card {
+    //   background-color: var(--pale-blue);
 
-      :deep(.card) {
-        width: 320px;
+    //   :deep(.card) {
+    //     width: 320px;
+    //   }
+    // }
+  }
+
+  /* this sets the image to fit the motion-picture, watch listen and telivision cards in safari too, this will be component change */
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+
+    .image {
+      aspect-ratio: 340/224;
+
+      .sizer {
+        padding-bottom: calc(224/340 * 100%) !important;
       }
     }
   }
 
   .section-wrapper-hearst {
     :deep(.section-title) {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     .block-highlight {
@@ -392,9 +446,13 @@ const pageClasses = computed(() => {
     }
   }
 
+  .block-highlight.is-link {
+    cursor: pointer;
+  }
+
   :deep(.section-wrapper-post-small) {
     .section-title {
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     .rich-text {

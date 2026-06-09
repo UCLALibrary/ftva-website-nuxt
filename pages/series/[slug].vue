@@ -7,10 +7,12 @@ import FTVAEventSeriesDetail from '../gql/queries/FTVAEventSeriesDetail.gql'
 
 // UTIL
 import getEventFilterLabels from '~/utils/getEventFilterLabels'
+import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
 import removeTags from '~/utils/removeTags'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 const { $graphql } = useNuxtApp()
 
@@ -68,13 +70,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  // fail gracefully if data does not exist (server-side)
-  if (!page.value.imageCarousel) {
-    return []
-  }
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -93,7 +89,7 @@ const parsedCarouselData = computed(() => {
 
 // Transform Data for Tabbed Section
 const parsedUpcomingEvents = computed(() => {
-  // fail gracefully if data does not exist (server-side)
+  // fail gracefully if data does not exist
   if (!upcomingEvents.value)
     return []
 
@@ -105,13 +101,13 @@ const parsedUpcomingEvents = computed(() => {
       ...item,
       tagLabels: parsedTagLabels,
       to: `/${item.to}`,
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1040px) 284px, (min-width: 760px) calc(100vw - 128px), calc(100vw - 48px)' }
     }
   })
 })
 
 const parsedPastEvents = computed(() => {
-  // fail gracefully if data does not exist (server-side)
+  // fail gracefully if data does not exist
   if (!pastEvents.value)
     return []
 
@@ -123,18 +119,9 @@ const parsedPastEvents = computed(() => {
       ...item,
       tagLabels: parsedTagLabels,
       to: `/${item.to}`,
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1040px) 284px, (min-width: 760px) calc(100vw - 128px), calc(100vw - 48px)' }
     }
   })
-})
-
-// If no Upcoming Events, set starting tab to Past Events
-const parsedInitialTabIndex = computed(() => {
-  if (parsedUpcomingEvents.value.length === 0) {
-    return 1
-  } else {
-    return 0
-  }
 })
 
 // Transform data for Other Series Section
@@ -159,11 +146,168 @@ const parsedOtherSeries = computed(() => {
       endDate: item.endDate ? item.endDate : null,
       ongoing: item.ongoing,
       sectionHandle: item.sectionHandle, // 'ftvaEventSeries'
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
   return otherSeries
 })
+
+const documentsPerPage = 10
+// Initialize from route query if available, otherwise default to 1
+const paginationCurrentPage = computed(() => {
+  return route.query.page ? parseInt(route.query.page) : 1
+})
+// Control v-if to force unmount/remount when page changes
+const showPaginationComponent = ref(true)
+// Determine currentView from route if available
+const currentView = computed(() => {
+  const routeView = route.query.view
+  if (routeView) {
+    return routeView
+  }
+  // otherwise default to 'past' if no upcoming events, otherwise 'current'
+  return parsedUpcomingEvents.value.length === 0 ? 'past' : 'upcoming'
+})
+const lookupTabIndexfromCurrentView = computed(() => {
+  return currentView.value === 'upcoming' ? 0 : 1
+})
+
+// Determine which static array to use based on currentView ('current' = upcoming, 'past' = past events)
+const activeEventsArray = computed(() => {
+  return currentView.value === 'upcoming' ? parsedUpcomingEvents.value : parsedPastEvents.value
+})
+
+// Process results function - standard pattern for useMobileOnlyInfiniteScroll
+// Note: This will reference variables from useMobileOnlyInfiniteScroll, so it's defined as a function
+function onResults(results) {
+  if (results?.hits?.hits?.length > 0) {
+    const newItems = results.hits.hits || []
+
+    if (isMobile.value) {
+      totalPages.value = 0
+      mobileItemList.value.push(...newItems)
+      hasMore.value = currentPage.value < Math.ceil(results.hits.total.value / documentsPerPage)
+    } else {
+      desktopItemList.value = newItems
+      totalPages.value = Math.ceil(results.hits.total.value / documentsPerPage)
+    }
+    noResultsFound.value = false
+  } else {
+    noResultsFound.value = true
+    totalPages.value = 0
+    hasMore.value = false
+  }
+}
+
+// Mock fetch function that returns static data in Elasticsearch format
+// eslint-disable-next-line require-await
+const seriesFetchFunction = async (page) => {
+  const arrayToUse = activeEventsArray.value
+  const startIndex = (page - 1) * documentsPerPage
+  const endIndex = startIndex + documentsPerPage
+  const slicedItems = arrayToUse.slice(startIndex, endIndex)
+
+  // Return in Elasticsearch format
+  return {
+    hits: {
+      hits: slicedItems,
+      total: {
+        value: arrayToUse.length
+      }
+    }
+  }
+}
+
+// INFINITE SCROLL - Using mock functions for static data
+const { isLoading, isMobile, hasMore, desktopItemList, mobileItemList, totalPages, currentPage, currentList, scrollElem, searchES } = useMobileOnlyInfiniteScroll(seriesFetchFunction, onResults)
+const noResultsFound = ref(false)
+
+// PAGINATION SCROLL HANDLING
+// Element reference for the scroll target
+const resultsSection = ref(null)
+// usePaginationScroll composable
+const { scrollTo } = usePaginationScroll()
+
+// Track if component is mounted to prevent hydration mismatch later
+const isMounted = ref(false)
+onMounted(() => {
+  isMounted.value = true
+})
+
+// Computed properties for paginated events (sliced based on currentPage from composable, or full list on mobile)
+const paginatedUpcomingEvents = computed(() => {
+  if (parsedUpcomingEvents.value.length === 0) return []
+  // During SSR and initial render, always use desktop pagination to prevent hydration mismatch
+  // Only use mobile behavior after component is mounted
+  if (isMounted.value && isMobile.value) {
+    return parsedUpcomingEvents.value
+  }
+  // On desktop, show paginated list
+  const startIndex = (currentPage.value - 1) * documentsPerPage
+  const endIndex = startIndex + documentsPerPage
+  return parsedUpcomingEvents.value.slice(startIndex, endIndex)
+})
+
+const paginatedPastEvents = computed(() => {
+  if (parsedPastEvents.value.length === 0) return []
+  // During SSR and initial render, always use desktop pagination to prevent hydration mismatch
+  // Only use mobile behavior after component is mounted
+  if (isMounted.value && isMobile.value) {
+    return parsedPastEvents.value
+  }
+  // On desktop, show paginated list
+  const startIndex = (currentPage.value - 1) * documentsPerPage
+  const endIndex = startIndex + documentsPerPage
+  return parsedPastEvents.value.slice(startIndex, endIndex)
+})
+
+// Computed to determine which paginated array to use for scroll check
+const activePaginatedEvents = computed(() => {
+  return currentView.value === 'upcoming' ? paginatedUpcomingEvents.value : paginatedPastEvents.value
+})
+
+// Computed to determine if pagination should show (prevents hydration mismatch)
+const shouldShowPagination = computed(() => {
+  // During SSR and initial render, always show pagination if conditions are met
+  // Only hide on mobile after component is mounted
+  if (!isMounted.value) {
+    return totalPages.value !== 1 && !noResultsFound.value
+  }
+  return totalPages.value !== 1 && !isMobile.value && !noResultsFound.value
+})
+
+watch(() => route.query, async (newVal, oldVal) => {
+  isLoading.value = false
+  const newPage = route.query.page ? parseInt(route.query.page) : 1
+  const oldPage = (oldVal && oldVal.page) ? parseInt(oldVal.page) : 1
+  currentPage.value = newPage
+
+  // Force SectionPagination to remount when page changes using v-if toggle
+  // This ensures the component is completely destroyed and recreated,
+  // so it will definitely read the new initial-current-page prop value
+  if (newPage !== oldPage || !oldVal) {
+    // Temporarily hide component to force unmount
+    if (shouldShowPagination.value) {
+      showPaginationComponent.value = false
+      // Wait for component to unmount
+      await nextTick()
+      // Show component again to force remount with new props
+      showPaginationComponent.value = true
+      // Wait for component to mount
+      await nextTick()
+    }
+  }
+
+  hasMore.value = true
+  await searchES()
+  // Restore scroll position
+  // Scroll after DOM updates
+  await nextTick()
+  if (!isMobile.value && route.query.page && resultsSection.value && activePaginatedEvents.value.length > 0) {
+    await scrollTo(resultsSection)
+  }
+}, { deep: true, immediate: true })
+// END INFINITE SCROLL
 
 useHead({
   title: page.value ? page.value.title : '... loading',
@@ -180,6 +324,7 @@ useHead({
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page page-detail page-detail--paleblue page-event-series-detail"
   >
     <div class="one-column">
@@ -192,6 +337,7 @@ useHead({
         v-if="parsedImage.length === 1"
         :media="parsedImage[0].image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -208,6 +354,7 @@ useHead({
           v-if="parsedCarouselData && parsedCarouselData.length > 0"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag :label="parsedCarouselData[slotProps.selectionIndex]?.creditText" />
@@ -290,20 +437,23 @@ useHead({
 
     <div class="full-width">
       <SectionWrapper theme="paleblue">
+        <div
+          ref="resultsSection"
+          class="for-pagination-scroll"
+        />
         <TabList
           alignment="left"
-          :initial-tab="parsedInitialTabIndex"
+          :initial-tab="lookupTabIndexfromCurrentView"
         >
           <TabItem
             title="Upcoming Events"
             class="tab-content"
           >
-            <template v-if="parsedUpcomingEvents && parsedUpcomingEvents.length > 0">
-              <!-- :n-shown="10"  this prop does not do anything if theme is ftva-->
+            <template v-if="paginatedUpcomingEvents && paginatedUpcomingEvents.length > 0">
               <SectionTeaserList
-                :items="parsedUpcomingEvents"
+                :items="paginatedUpcomingEvents"
                 component-name="BlockCardThreeColumn"
-                :n-shown="10"
+                :n-shown="paginatedUpcomingEvents.length"
                 class="tabbed-event-list"
               />
             </template>
@@ -318,11 +468,11 @@ useHead({
             title="Past Events"
             class="tab-content"
           >
-            <template v-if="parsedPastEvents && parsedPastEvents.length > 0">
+            <template v-if="paginatedPastEvents && paginatedPastEvents.length > 0">
               <SectionTeaserList
-                :items="parsedPastEvents"
+                :items="paginatedPastEvents"
                 component-name="BlockCardThreeColumn"
-                n-shown="10"
+                :n-shown="paginatedPastEvents.length"
                 class="tabbed-event-list"
               />
             </template>
@@ -333,6 +483,14 @@ useHead({
             </template>
           </TabItem>
         </TabList>
+        <SectionPagination
+          v-if="isMounted && (shouldShowPagination && showPaginationComponent)"
+          class="pagination"
+          :pages="totalPages"
+          :initial-current-page="paginationCurrentPage"
+          :fixed-page-width-mode="true"
+          :fixed-page-width-num="10"
+        />
       </SectionWrapper>
     </div>
 
@@ -357,11 +515,19 @@ useHead({
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 // GENERAL PAGE STYLES / DESKTOP
 .page-event-series-detail {
   position: relative;
+
+  .one-column .resized-aspect-ratio {
+    position: relative;
+  }
+
+  .resized-aspect-ratio {
+    overflow-x: hidden;
+  }
 
   .full-width {
     width: 100%;
@@ -373,13 +539,14 @@ useHead({
     }
   }
 
+  // START TAB SECTION STYLES W PAGINATION
   :deep(.tab-list-body) {
     background: none;
   }
 
   .tab-content {
     min-height: 200px;
-    border-radius: 15px;
+    border-radius: 0px;
     overflow: hidden;
 
     .empty-tab {
@@ -390,15 +557,33 @@ useHead({
     }
   }
 
-  :deep(.lightbox) {
-    overflow: hidden;
+  .tabbed-event-list {
+    border-radius: 0px;
   }
 
-  :deep(.carousel),
-  :deep(.lightbox .media-item) {
-    height: calc(var(--media-width) / 1.984);
+  :deep(.section-pagination) {
+    background-color: white;
+    max-width: unset;
+    padding: 15px 2.5% 60px;
+    justify-content: center;
   }
 
+  @media #{$medium} {
+    :deep(.section-pagination) {
+      padding: 2.5%;
+    }
+  }
+
+  @media #{$small} {
+    .pagination {
+      display: none;
+    }
+  }
+
+  // END TAB SECTION STYLES W PAGINATION
+
+  // TODO New styles for the carousel lightbox
+  // positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
@@ -413,21 +598,38 @@ useHead({
     opacity: 0.7;
   }
 
-  :deep(.responsive-image .media),
-  :deep(.responsive-image) {
-    position: initial;
-    max-height: 500px;
+  /* use .resized-aspect-ratio to only target the hero image and hero carousel */
+  .resized-aspect-ratio {
+
+    &:deep(.responsive-image .media),
+    &:deep(.responsive-image) {
+      position: initial;
+      max-height: 500px;
+    }
   }
 
-  :deep(.responsive-image .sizer) {
-    padding-bottom: 0 !important;
-  }
-
+  /* safari browsers will ignore the aspect ratio above because
+  this image has an explicit height, so we need to set the image height to auto */
   :deep(.block-card-three-column .image-block),
   :deep(.block-card-three-column .image-block .image),
   :deep(.block-highlight .image .media),
   :deep(.block-highlight .image) {
     aspect-ratio: 1.69 / 1;
+    height: auto;
+  }
+
+  @media(min-width: 1025px) {
+
+    :deep(.block-card-three-column .image-block),
+    :deep(.block-card-three-column .image-block .image) {
+      min-height: 213px; // now that we are using auto above, we need to set a minimum height that matches the component default height to prevent aspect-ratio change on large screens
+    }
+  }
+
+  @media(max-width: 1024px) {
+    :deep(.block-card-three-column .image-block .responsive-image .sizer) {
+      padding-bottom: 0 !important; // remove padding-bottom to prevent default responsive image padding-bottom on small screens
+    }
   }
 
   :deep(.block-card-three-column .day) {
@@ -451,7 +653,7 @@ useHead({
     }
 
     :deep(.section-teaser-list .list-item) {
-      border-bottom: 1px solid $page-blue;
+      border-bottom: 1px solid ftvaTokens.$page-blue;
 
       &:last-child {
         border-bottom: 0;
@@ -497,15 +699,6 @@ useHead({
   }
 
   @media #{$medium} {
-
-    :deep(.carousel),
-    :deep(.lightbox .media-item) {
-      height: calc(var(--media-width) / 1.575);
-    }
-
-    :deep(.one-column .responsive-image) {
-      aspect-ratio: 1.69/1;
-    }
 
     :deep(.card-meta .title-no-link) {
       font-size: 34px;

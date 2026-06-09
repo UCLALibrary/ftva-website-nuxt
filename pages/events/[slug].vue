@@ -8,6 +8,7 @@ import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 // COMPOSABLE
 import removeTags from '~/utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
+import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 // UTILS
 import getEventFilterLabels from '~/utils/getEventFilterLabels'
@@ -67,9 +68,7 @@ watch(data, (newVal, oldVal) => {
 })
 
 // Get data for Image or Carousel at top of page
-const parsedImage = computed(() => {
-  return page.value.imageCarousel
-})
+const parsedImage = useParsedImageCarousel(page)
 
 // Transform data for Carousel
 const parsedCarouselData = computed(() => {
@@ -111,7 +110,7 @@ const parsedFtvaEventSeries = computed(() => {
   const seriesEvents = firstSeries.ftvaEvent.map(({ image, to, ...rest }) => ({
     ...rest,
     to: `/events/${to}`,
-    image: image && image.length > 0 ? image[0] : null,
+    image: image && image.length > 0 ? { ...image[0], sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' } : null,
   }))
 
   const pageId = page.value.id
@@ -171,6 +170,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -185,6 +185,7 @@ const pageClasses = computed(() => {
         data-test="single-image"
         :media="parsedImage[0]?.image[0]"
         :aspect-ratio="43.103"
+        class="resized-aspect-ratio"
       >
         <template
           v-if="parsedImage[0]?.creditText"
@@ -202,6 +203,7 @@ const pageClasses = computed(() => {
           data-test="image-carousel"
           :items="parsedCarouselData"
           :inline="true"
+          class="resized-aspect-ratio"
         >
           <template #default="slotProps">
             <BlockTag
@@ -337,20 +339,17 @@ const pageClasses = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/slug-pages.scss';
+@use 'assets/styles/slug-pages.scss' as *;
 
 .page-event-detail {
   position: relative;
 
-  :deep(.lightbox) {
-    overflow: hidden;
+  .resized-aspect-ratio {
+    overflow-x: hidden;
   }
 
-  :deep(.carousel),
-  :deep(.lightbox .media-item) {
-    height: calc(var(--media-width) / 1.984);
-  }
-
+  // TODO New styles for the carousel lightbox
+  // positions the previous next arrows
   :deep(.inline.lightbox .button-prev) {
     left: 0;
     border-top-left-radius: 0;
@@ -437,8 +436,7 @@ const pageClasses = computed(() => {
       margin-top: 25px;
     }
 
-    :deep(.block-screening-detail .rich-text:last-child .parsed-content),
-    :deep(.block-screening-detail:last-of-type dl) {
+    :deep(.block-screening-detail .rich-text:last-child .parsed-content) {
       margin-bottom: 0;
     }
   }

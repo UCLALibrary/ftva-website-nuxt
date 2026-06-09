@@ -1,4 +1,9 @@
-describe('Billy Wilder Theater Page', () => {
+import { viewports } from '../support/viewports'
+
+const provider = Cypress.env('VISUAL_PROVIDER')
+const isChromatic = provider === 'chromatic'
+
+function runBillyWilderTests({ withSnapshot = false } = {}) {
   it('Visits the Billy Wilder Theater Page', () => {
     cy.visit('/billy-wilder-theater')
     cy.getByData('hero-image').should('be.visible')
@@ -9,6 +14,21 @@ describe('Billy Wilder Theater Page', () => {
     cy.getByData('theater-address').should('be.visible')
     cy.getByData('theater-map').should('be.visible')
     cy.getByData('parking-info').should('be.visible')
-    cy.percySnapshot('billyWilderTheaterpage')
+
+    if (withSnapshot) {
+      cy.visualSnapshot('billyWilderTheaterpage')
+    }
   })
-})
+}
+
+if (isChromatic) {
+  viewports.forEach(({ label, viewportWidth, viewportHeight }) => {
+    describe(`Billy Wilder Theater Page - ${label}`, { viewportWidth, viewportHeight }, () => {
+      runBillyWilderTests({ withSnapshot: true })
+    })
+  })
+} else {
+  describe('Billy Wilder Theater Page', () => {
+    runBillyWilderTests({ withSnapshot: false })
+  })
+}

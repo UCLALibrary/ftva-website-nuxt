@@ -3,13 +3,16 @@
 import _get from 'lodash/get'
 import { useWindowSize } from '@vueuse/core'
 import { format } from 'date-fns'
+import IconFtvaDiamond from 'ucla-library-design-tokens/assets/svgs/icon-ftva-diamond.svg'
 
 // GQL
 import FTVAHomepage from '../gql/queries/FTVAHomepage.gql'
 
 // UTILITIES
 import formatEventDates from '@/utils/formatEventDates'
+import formatTimes from '@/utils/formatEventTimes'
 import formatSeriesDates from '@/utils/formatEventSeriesDates'
+import formatHomePageEventDates from '@/utils/formatHomePageEventDates'
 
 const { $graphql } = useNuxtApp()
 
@@ -58,8 +61,7 @@ if (data.value.entry && import.meta.prerender) {
 const page = ref(_get(data.value, 'entry', {}))
 
 watch(data, (newVal, oldVal) => {
-  // eslint-disable-next-line no-console
-  console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
+  // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
 })
 
@@ -104,7 +106,7 @@ const parsedNowShowing = computed(() => {
       ...item,
       to: `/${item.uri}`,
       title: item.eventTitle || item.title, // prefer eventTitle if it exists
-      image: parseImage(item),
+      image: { ...parseImage(item), sizes: '322px' },
       startDate: item.startDateWithTime || item.startDate,
     }
   })
@@ -120,7 +122,7 @@ const parsedQuickLinks = computed(() => {
       title: item.titleGeneral,
       to: item.urlLink,
       text: item.description,
-      image: item.image[0], // quicklinks are not using parseImage, they have an image field that overrides the image / carousel field in parseImage
+      image: { ...item.image[0], sizes: '365px' }, // quicklinks are not using parseImage, they have an image field that overrides the image / carousel field in parseImage
     }
   })
 })
@@ -136,7 +138,7 @@ const parsedArchiveBlogs = computed(() => {
     blogTitle: obj.featuredArticles[0]?.title,
     blogUri: obj.featuredArticles[0]?.uri,
     blogSummary: obj.featuredArticles[0]?.ftvaHomepageDescription,
-    image: [parseImage(obj?.featuredArticles[0])] // parseImage results must be wrapped in an array for BlockMediaWithText component
+    image: [{ ...parseImage(obj?.featuredArticles[0]), sizes: '(min-width: 1360px) 580px, (min-width: 920px) 43.81vw, (min-width: 760px) calc(27.14vw + 142px), calc(100vw - 48px)' }] // parseImage results must be wrapped in an array for BlockMediaWithText component
   }
 })
 
@@ -148,7 +150,7 @@ const parsedFeaturedCollections = computed(() => {
     return {
       title: item.title,
       to: item.uri,
-      image: parseImage(item)
+      image: { ...parseImage(item), sizes: '320px' }
     }
   })
 
@@ -164,18 +166,22 @@ const parsedPreservationData = computed(() => {
   if (page.value.beforeAfterImageCarousel.length === 0)
     return null
 
+  const beforeImageObj = page.value.beforeAfterImageCarousel[0]?.beforeImage[0] || null
+  const afterImageObj = page.value.beforeAfterImageCarousel[0]?.afterImage[0] || null
+  const imageSliderSizes = '(min-width: 1220px) 1160px, (min-width: 760px) calc(90.91vw - 59px), calc(100vw - 48px)'
+
   return {
     sectionTitle: page.value.sectionTitle,
     sectionSummary: page.value.richTextSimplified,
     sectionUri: page.value.ftvaRelatedResources,
-    beforeImage: page.value.beforeAfterImageCarousel[0]?.beforeImage[0] || null,
-    afterImage: page.value.beforeAfterImageCarousel[0]?.afterImage[0] || null,
+    beforeImage: { ...beforeImageObj, sizes: imageSliderSizes },
+    afterImage: { ...afterImageObj, sizes: imageSliderSizes },
     caption: page.value.beforeAfterImageCarousel[0]?.caption,
   }
 })
 
 useHead({
-  title: page.value ? page.value.title : '... loading',
+  title: 'Homepage', // APPS-3581 hardcode homepage title
   meta: [
     {
       hid: 'description',
@@ -190,10 +196,11 @@ function parseFTVACarouselImage(imgObj) {
   if (!imgObj) {
     return null
   }
-
+  const imgsrc = imgObj[0]?.url ? imgObj[0]?.url : imgObj[0]?.src
   return [{
     ...imgObj[0],
-    src: imgObj[0]?.url,
+    src: imgsrc,
+    sizes: '100vw',
     kind: 'image', // This key is expected by the Media component
   }]
 }
@@ -236,6 +243,7 @@ const pageClasses = computed(() => {
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <h1 class="screen-reader-text">
@@ -272,14 +280,54 @@ const pageClasses = computed(() => {
               &#8250;</span>
           </nuxt-link>
         </template>
-        <ScrollWrapper class="homepage-scroll-wrapper">
-          <SectionTeaserCard
-            v-if="parsedNowShowing && parsedNowShowing.length > 0"
-            class="now-showing-items hovered-items"
-            :items="parsedNowShowing"
-            :grid-layout="false"
-            data-test="featured-event-items"
-          />
+        <ScrollWrapper
+          v-if="parsedNowShowing && parsedNowShowing.length > 0"
+          class="homepage-scroll-wrapper now-showing-items"
+        >
+          <template
+            v-for="item in parsedNowShowing"
+            :key="item.id"
+          >
+            <BlockCardWithImage
+              class="card now-showing-item"
+              data-test="featured-event-items"
+              :byline-one="item.bylineOne"
+              :byline-two="item.bylineTwo"
+              :category="item.category"
+              :image="item.image"
+              :title="item.title"
+              :to="item.to"
+              tag="div"
+              :image-aspect-ratio="60"
+              :is-vertical="true"
+            >
+              <template
+                v-if="item.startDate"
+                #customDateTime
+              >
+                <div class="homepage-date-time">
+                  <time
+                    class="start-date"
+                    :datetime="item.startDate"
+                  >
+                    {{ formatHomePageEventDates(item.startDate) }}
+                  </time>
+
+                  <IconFtvaDiamond
+                    class="divider"
+                    aria-hidden="true"
+                  />
+
+                  <time
+                    class="parsed-time"
+                    :datetime="item.startDate"
+                  >
+                    {{ formatTimes(item.startDate, item.endDate) }}
+                  </time>
+                </div>
+              </template>
+            </BlockCardWithImage>
+          </template>
         </ScrollWrapper>
         <DividerWayFinder />
       </SectionWrapper>
@@ -355,14 +403,29 @@ const pageClasses = computed(() => {
               &#8250;</span>
           </nuxt-link>
         </template>
-
-        <ScrollWrapper>
-          <SectionTeaserCard
-            :items="parsedFeaturedCollections.collections"
-            :grid-layout="false"
-            data-test="featured-collection-items"
-            class="hovered-items"
-          />
+        <ScrollWrapper class="homepage-scroll-wrapper no-min-height-scrollwrapper">
+          <template
+            v-for="item in parsedFeaturedCollections.collections"
+            :key="item.id"
+          >
+            <block-card-with-image
+              class="card"
+              data-test="featured-collection-items"
+              :byline-one="item.bylineOne"
+              :byline-two="item.bylineTwo"
+              :category="item.category"
+              :date-created="item.postDate"
+              :image="item.image"
+              date-format="short"
+              :start-date="item.startDate"
+              :end-date="item.endDate"
+              :title="item.title"
+              :to="item.to"
+              tag="div"
+              :image-aspect-ratio="60"
+              :is-vertical="true"
+            />
+          </template>
         </ScrollWrapper>
 
         <DividerWayFinder />
@@ -406,11 +469,17 @@ const pageClasses = computed(() => {
 
 <style lang="scss" scoped>
 .page-home {
+  background-color: var(--pale-blue);
+
   .screen-reader-text {
     @include visually-hidden;
   }
 
-  background-color: var(--pale-blue);
+  .homepage-scroll-wrapper {
+    :deep(.v-sheet) {
+      background-color: transparent;
+    }
+  }
 
   .one-column {
     width: 100%;
@@ -433,75 +502,141 @@ const pageClasses = computed(() => {
     position: relative;
   }
 
-  :deep(.section-wrapper h2.section-header.section-title) {
-    color: $heading-grey;
+  :deep(.ftva.inline.lightbox.homepage .button-prev),
+  :deep(.ftva.inline.lightbox.homepage .button-next) {
+    height: max-content;
+    top: unset;
   }
 
+  :deep(.section-wrapper h2.section-header.section-title) {
+    color: ftvaTokens.$heading-grey;
+  }
+
+  // Make all images the same in FPB Media With Text
+  :deep(.media-with-text .media-item) {
+    aspect-ratio: 4/3;
+  }
+
+  /* this sets the image to fit the Now showing cards in safari too, this will be component change */
+
+  :deep(.ftva.block-highlight.is-vertical .image-container) {
+    aspect-ratio: unset;
+
+    .image {
+      aspect-ratio: 340/224;
+
+      .sizer {
+        padding-bottom: calc(224/340 * 100%) !important;
+      }
+    }
+  }
+
+  // START HomePage specific cardmeta styles
   .now-showing-section {
-    .now-showing-items {
-      background-color: var(--pale-blue);
-      padding-top: 0px;
 
-      // START HomePage specific cardmeta styles
-      :deep(li.block-highlight) {
-        max-width: 340px;
-        flex-direction: column-reverse;
+    :deep(.block-highlight) {
+      max-width: 340px;
+      flex-direction: column-reverse;
 
-        .smart-link.title {
-          @include ftva-card-title-1;
-          color: $heading-grey;
-        }
+      .smart-link.title {
+        @include ftva-card-title-1;
+        color: ftvaTokens.$heading-grey;
+      }
 
-        .date-time {
-          @include ftva-emphasized-subtitle;
-          color: $accent-blue;
-          margin-bottom: 0px;
+      .card-meta .byline-group {
+        position: relative;
+        bottom: unset;
+      }
 
-          .schedule-item.start-date {
-            margin-right: 26px;
-          }
-        }
+      .card-meta .byline-group .schedule-item.date-created {
+        @include ftva-emphasized-subtitle;
+        color: ftvaTokens.$accent-blue;
+        margin-bottom: 0px;
 
-        .card-meta {
-          height: 275px;
-          padding: 40px 30px 25px 30px;
-          position: relative;
-        }
+        /*.start-date {
+          margin-right: 26px;
+        }*/
+      }
 
-        img.media {
-          border-radius: 0 0 10px 10px;
-        }
+      .homepage-date-time {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap; //white-space: nowrap; // 🚨 keeps date/time on one line
+        line-height: 110%; // fixes vertical clipping
 
-        figure.responsive-image>.sizer {
-          padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
-        }
+      }
+
+      .divider {
+        transform: translateY(1px); // 👈 adjust between 0.5px–2px as needed
+      }
+
+      .card-meta {
+        min-height: 275px;
+        padding: 40px 30px 25px 30px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; // 👈 key
+      }
+
+      img.media {
+        border-radius: 0 0 10px 10px;
+      }
+
+      figure.responsive-image>.sizer {
+        padding-bottom: 69% !important; // necessary to overwrite the parsedAspectRatio logic for cardmeta
       }
     }
 
-    .homepage-scroll-wrapper {
-      :deep(.v-sheet) {
-        background-color: transparent;
-      }
-    }
   }
 
   .now-showing-section,
   .featured-collections-section {
-    .hovered-items {
-      :deep(li.block-highlight) {
-        margin-top: 16px;
-        transition: margin-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    // reduce header margin bottom on large screens
+    @media #{$large} {
+      :deep(.section-header) {
+        margin-bottom: 35px;
+      }
+    }
+
+    @media #{$small} {
+      :deep(.section-header) {
+        margin-bottom: 10px;
+      }
+    }
+
+    // special hover animation for these 2 sections specifically
+    .homepage-scroll-wrapper {
+      :deep(.block-highlight) {
+        padding-top: 0px;
+        min-width: unset; //350
+        min-height: unset; // 380
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         &:hover {
-          margin-top: 0px;
+          transform: translateY(-20px);
         }
       }
     }
   }
 
+  // END HomePage specific cardmeta styles
+
   .visit-learn-section {
     :deep(.section-teaser-card) {
       padding-top: 0;
+    }
+
+    :deep(.section-header) {
+      margin-bottom: 10px;
+    }
+
+    @media #{$large} {
+      :deep(.section-header) {
+        margin-bottom: 35px;
+      }
     }
 
     :deep(.block-highlight .media) {
@@ -515,7 +650,7 @@ const pageClasses = computed(() => {
     :deep(.ftva.card-meta a.title) {
       overflow: initial;
       @include ftva-h5;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
 
       &:hover {
         text-decoration: underline;
@@ -555,7 +690,7 @@ const pageClasses = computed(() => {
         .title {
           margin-top: 0px;
           @include ftva-h5;
-          color: $heading-grey;
+          color: ftvaTokens.$heading-grey;
 
           &:hover {
             text-decoration: underline;
@@ -584,17 +719,50 @@ const pageClasses = computed(() => {
   }
 
   .featured-collections-section {
-    .section-teaser-card {
-      background-color: var(--pale-blue);
-      padding-top: 0;
-    }
+
+    background-color: var(--pale-blue);
 
     :deep(.rich-text.section-summary) {
       @include ftva-body-2;
     }
 
-    :deep(.block-highlight .card-meta) {
-      min-height: 0;
+    .no-min-height-scrollwrapper {
+      :deep(.v-slide-group__content) {
+        min-height: unset;
+      }
+    }
+
+    .homepage-scroll-wrapper {
+      :deep(.block-highlight) {
+        padding-top: 0px;
+        min-width: 280px;
+        min-height: 350px;
+
+        .card-meta {
+          min-height: 0;
+        }
+      }
+    }
+  }
+
+  .archive-blog-section {
+    .media-with-text {
+      max-height: unset;
+
+      :deep(.media-item) {
+        min-width: unset;
+        max-width: 100%;
+        flex-basis: 50%;
+        aspect-ratio: 570/375;
+
+        img.media {
+          aspect-ratio: 570/375;
+        }
+
+        .sizer {
+          padding-bottom: calc(375/570 * 100%) !important;
+        }
+      }
     }
   }
 
@@ -615,21 +783,28 @@ const pageClasses = computed(() => {
     }
   }
 
-  // Make all images the same in FPB Media With Text
-  :deep(.media-with-text .media-item) {
-    aspect-ratio: 4/3;
-  }
-
   @media #{$medium} {
+
+    :deep(.ftva.inline.lightbox.homepage .button-prev),
+    :deep(.ftva.inline.lightbox.homepage .button-next) {
+      top: calc(var(--media-height)/1.5);
+    }
+
     :deep(.ftva.section-wrapper div.section-header) {
       margin-bottom: 40px;
     }
   }
 
   @media #{$small} {
-    :deep(.media-with-text .media-item) {
-        min-width: unset;
-        max-width: 100%;
+    .archive-blog-section {
+      :deep(.media-with-text) {
+        margin-top: 16px;
+        max-height: unset;
+
+        .media-item {
+          min-width: unset;
+        }
+      }
     }
 
     .preservation-section {
@@ -639,6 +814,32 @@ const pageClasses = computed(() => {
 
       :deep(.section-header .section-link) {
         margin-bottom: 36px;
+      }
+    }
+
+    .visit-learn-section {
+      :deep(div.section-header:first-of-type) {
+        margin-bottom: var(--space-l);
+      }
+
+      :deep(.quicklink-item-mobile) {
+        height: unset;
+
+        &:not(:last-child) {
+          margin-bottom: 16px;
+        }
+
+        a.block-post-small .title {
+          font-size: 21px;
+        }
+
+        a.block-post-small .author {
+          font-size: 14px;
+        }
+
+        a.block-post-small:after {
+          display: none;
+        }
       }
     }
   }

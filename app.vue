@@ -58,21 +58,28 @@ useHead({
       color="#ffe800"
       :height="3"
     />
+    <vue-skip-to
+      to="#main"
+      label="Skip to main content"
+    />
+
     <div :class="classes">
       <site-brand-bar class="brand-bar" />
       <header-sticky
         v-if="primaryMenuItems"
+        :key="route.query.q"
         class="primary"
         :primary-items="primaryMenuItems"
-        :key="route.query.q"
       />
+
       <NuxtPage />
-      <footer data-test="footer">
-        <footer-main />
-      </footer>
+
+      <footer-main data-test="footer"/>
+
     </div>
   </div>
 </template>
+
 <style lang="scss" scoped>
 .layout-default {
   min-height: 100vh;
@@ -104,6 +111,21 @@ useHead({
     .brand-bar {
       display: none;
     }
+
+    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
+      display: none;
+    }
   }
+}
+
+.vue-skip-to {
+  z-index: 300;
+
+}
+
+:deep(.vue-skip-to__link) {
+  background-color: var(--color-primary-yellow-01);
+  color: var(--color-black);
+  @include step-0;
 }
 </style>

@@ -34,7 +34,7 @@ onMounted(async () => {
   if (!import.meta.dev && layoutCustomProps['is-error']) {
     // console.log('In SSG refresh layout data as state is not maintained after an error response')
     if (isApiLocked.value) {
-      console.log('API is locked, not fetching layout data')
+      // console.log('API is locked, not fetching layout data')
     } else {
       // Fetch layout data only if the API is not locked
       await $layoutData()
@@ -48,18 +48,24 @@ onMounted(async () => {
 
 </script>
 <template lang="html">
-  <div :class="classes">
-    <!-- site brand bar only shows on desktop -->
-    <site-brand-bar class="brand-bar" />
-    <header-sticky
-      v-if="primaryMenuItems"
-      class="primary"
-      :primary-items="primaryMenuItems"
+  <div>
+    <vue-skip-to
+      to="#main"
+      label="Skip to main content"
     />
-    <slot />
-    <footer data-test="footer">
-      <footer-main />
-    </footer>
+    <div :class="classes">
+      <!-- site brand bar only shows on desktop -->
+      <site-brand-bar class="brand-bar" />
+      <header-sticky
+        v-if="primaryMenuItems"
+        class="primary"
+        :primary-items="primaryMenuItems"
+      />
+      <slot />
+      <footer data-test="footer">
+        <footer-main />
+      </footer>
+    </div>
   </div>
 </template>
 
@@ -94,6 +100,21 @@ onMounted(async () => {
     .brand-bar {
       display: none;
     }
+
+    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
+      display: none;
+    }
   }
+}
+
+.vue-skip-to {
+  z-index: 300;
+
+}
+
+:deep(.vue-skip-to__link) {
+  background: var(--color-primary-yellow-01);
+  color: var(--color-black);
+  @include step-0;
 }
 </style>

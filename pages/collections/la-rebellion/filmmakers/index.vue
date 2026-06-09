@@ -4,7 +4,6 @@ import { computed } from 'vue'
 // HELPERS & UTILS
 import _get from 'lodash/get'
 import removeTags from '~/utils/removeTags'
-import parseFieldForBreadcrumbTitleOverride from '~/utils/parseBreadcrumbTitles'
 
 // GQL
 import FTVALARebellionFilmmakersList from '~/gql/queries/FTVALARebellionFilmmakersList.gql'
@@ -159,7 +158,7 @@ const parsedFilmmakerListings = computed(() => {
       to: `/${obj._source.to}`,
       title: obj._source.title,
       description: filmmakerDescription,
-      image: parseImage(obj),
+      image: { ...parseImage(obj), sizes: '(min-width: 750px) 284px, calc(100vw - 48px)' },
     }
   })
 })
@@ -195,11 +194,18 @@ const pageClasses = computed(() => {
 })
 
 // BREADCRUMB OVERRIDES
-// Add value of new breadcrumb title to switch statement in the utility file
+const parseBreadcrumbTitle = computed(() => {
+  if (page?.value.sectionHandle === 'ftvaListingLaRebellionFilmmakers') {
+    return 'L.A. Rebellion'
+  }
+
+  return null
+})
+
 const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: parseFieldForBreadcrumbTitleOverride(page?.value.sectionHandle) || null
+    updatedTitle: parseBreadcrumbTitle
   }
 ])
 </script>
@@ -207,6 +213,7 @@ const breadcrumbOverrides = ref([
 <template>
   <main
     id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -263,7 +270,7 @@ const breadcrumbOverrides = ref([
 </template>
 
 <style lang="scss" scoped>
-@import 'assets/styles/listing-pages.scss';
+@use 'assets/styles/listing-pages.scss' as *;
 
 .page-filmmakers {
   position: relative;
@@ -275,7 +282,7 @@ const breadcrumbOverrides = ref([
 
     :deep(.section-title) {
       @include ftva-h5;
-      color: $heading-grey;
+      color: ftvaTokens.$heading-grey;
     }
 
     :deep(.section-summary) {

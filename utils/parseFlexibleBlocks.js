@@ -1,4 +1,5 @@
 // Helper to parse FlexibleBlocks on the General Content and ARSCIMCS templates. Parses data for InfoBlock and SimpleCards.
+// Optional responsive `sizes` for blocks containing images.
 
 // ***** INFO BLOCK ***** //
 
@@ -27,6 +28,7 @@ function stripCountry(html) {
 
 // For internal and external resources, use titleGeneral as SimpleCard title; otherwise, keep default title
 // For internal resource, check for leading `ftva/` string in uri and remove if it exists
+
 function parseSimpleCard(block) {
   if (!block.cards || block.cards.length === 0)
     return null
@@ -51,10 +53,19 @@ function parseSimpleCard(block) {
         card = { ...card, contentLink: [content] }
       }
 
-      // Check uri for 'ftva/' string and remove
+      // Check card.uri for leading 'ftva/' and remove it
+      // And Check card.contentLink for leading 'ftva/' remove it from the URI stored in contentLink for GeneralContent
       if (content.uri) {
         const uriWithoutLeadingFtvaString = content.uri ? `/${content.uri.replace(/^\/?ftva\//i, '')}` : '/'
-        card = { ...card, uri: uriWithoutLeadingFtvaString }
+        card = {
+          ...card,
+          contentLink: [
+            {
+              ...content,
+              uri: uriWithoutLeadingFtvaString
+            }
+          ]
+        }
       }
     }
 
@@ -66,17 +77,87 @@ function parseSimpleCard(block) {
 
 // ***** FLEXIBLE BLOCKS ***** //
 
-function parseFlexibleBlocks (blocks) {
+const SIZES_CARD_WITH_IMAGE = '322px'
+const SIZES_MEDIA_WITH_TEXT =
+  '(min-width: 1000px) 400px, (min-width: 760px) calc(112.27vw - 140px), calc(112.95vw - 55px)'
+// media gallery shows images at 2 sizes, so we are including sizes data for the larger size
+const SIZES_MEDIA_GALLERY =
+  '(min-width: 1360px) 1160px, (min-width: 760px) calc(91.03vw - 60px), calc(100vw - 48px)'
+
+/** Clone only branches that need `sizes` for ResponsiveImage; avoids mutating CMS data. */
+function applyResponsiveImageSizes (block) {
+  if (block.typeHandle === 'cardWithImage' && block.cardWithImage?.length > 0) {
+    return {
+      ...block,
+      cardWithImage: block.cardWithImage.map(card => ({
+        ...card,
+        image: (card.image || []).map(image => ({
+          ...image,
+          sizes: SIZES_CARD_WITH_IMAGE,
+        })),
+        contentLink: (card.contentLink || []).map(content => ({
+          ...content,
+          imageCarousel: (content.imageCarousel || []).map(imageCarousel => ({
+            ...imageCarousel,
+            image: (imageCarousel.image || []).map(image => ({
+              ...image,
+              sizes: SIZES_CARD_WITH_IMAGE,
+            })),
+          })),
+        })),
+      })),
+    }
+  }
+  if (block.typeHandle === 'mediaWithText' && block.mediaWithText?.length > 0) {
+    // need to add sizes data to item if it exists and to coverImage if it exists
+    return {
+      ...block,
+      mediaWithText: block.mediaWithText.map(media => ({
+        ...media,
+        item: media.item?.map(image => ({
+          ...image,
+          sizes: SIZES_MEDIA_WITH_TEXT,
+        })),
+        coverImage: media.coverImage?.map(image => ({
+          ...image,
+          sizes: SIZES_MEDIA_WITH_TEXT,
+        })),
+      })),
+    }
+  }
+  if (block.typeHandle === 'mediaGallery' && block.mediaGallery?.length > 0) {
+    return {
+      ...block,
+      mediaGallery: block.mediaGallery.map(gallery => ({
+        ...gallery,
+        item: gallery.item?.map(image => ({
+          ...image,
+          sizes: SIZES_MEDIA_GALLERY,
+        })),
+      })),
+    }
+  }
+  return block
+}
+
+/**
+ * @param {unknown[]} blocks
+ * @param {{ withResponsiveImageSizes?: boolean }} [options]
+ */
+function parseFlexibleBlocks (blocks, options = {}) {
+  const { withResponsiveImageSizes = false } = options
   return blocks.map((block) => {
-    if (block.typeHandle === 'infoBlock') {
-      block = parseInfoBlockAddress(block)
+    let newBlock = withResponsiveImageSizes ? applyResponsiveImageSizes(block) : block
+
+    if (newBlock.typeHandle === 'infoBlock') {
+      newBlock = parseInfoBlockAddress(newBlock)
     }
 
-    if (block.typeHandle === 'simpleCards') {
-      block = parseSimpleCard(block)
+    if (newBlock.typeHandle === 'simpleCards') {
+      newBlock = parseSimpleCard(newBlock)
     }
 
-    return block
+    return newBlock
   })
 }
 
