@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 Cypress.on('uncaught:exception', () => { return false })
@@ -23,26 +24,7 @@ function runEventDetailTests({ withSnapshot = false } = {}) {
     cy.visualSnapshot('eventdetailpage')
   })
 
-  // Use Axe-core to check for critical and serious accessibility violations
-  // To prevent cypress from hanging, we set the retries to 0 and put this test at the end of the tests
-  it('has no accessibility violations', {
-    retries: {
-      runMode: 0,
-      openMode: 0,
-    },
-  }, () => {
-    cy.visit('/events/la-région-centrale-03-08-24', { failOnStatusCode: false })
-    cy.injectAxe()
-    // add 'moderate' to the includedImpacts array to check for moderate accessibility violations
-    cy.checkA11y('#main', { includedImpacts: ['critical', 'serious'] }, (violations) => {
-      violations.forEach((violation) => {
-        cy.log(`Accessibility Violation: ${violation.id} ${violation.impact} 
-        Description: ${violation.description} 
-        Help: ${violation.help} ${violation.helpUrl} 
-        HTML hint: ${violation.nodes.length} ${violation.nodes[0].html}`)
-      })
-    })
-  })
+  a11yIt('/events/la-région-centrale-03-08-24')
 }
 
 if (isChromatic) {

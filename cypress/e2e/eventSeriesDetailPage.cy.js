@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -12,27 +13,8 @@ function runEventSeriesDetailTests({ withSnapshot = false } = {}) {
     }
   })
 
-  // TODO: below test is failing, reenable when LADI-5229 is fixed
-  // Use Axe-core to check for critical and serious accessibility violations
-  // To prevent cypress from hanging, we set the retries to 0 and put this test at the end of the tests
-  // it('has no accessibility violations', {
-  //   retries: {
-  //     runMode: 0,
-  //     openMode: 0,
-  //   },
-  // }, () => {
-  //   cy.visit('/series/step-up-series', { failOnStatusCode: false })
-  //   cy.injectAxe()
-  //   // add 'moderate' to the includedImpacts array to check for moderate accessibility violations
-  //   cy.checkA11y('#main', { includedImpacts: ['critical', 'serious'] }, (violations) => {
-  //     violations.forEach((violation) => {
-  //       cy.log(`Accessibility Violation: ${violation.id} ${violation.impact}
-  //       Description: ${violation.description}
-  //       Help: ${violation.help} ${violation.helpUrl}
-  //       HTML hint: ${violation.nodes.length} ${violation.nodes[0].html}`)
-  //     })
-  //   })
-  // })
+  // TODO: reenable when LADI-5229 is fixed
+  a11yIt.skip('/series/step-up-series')
 }
 
 if (isChromatic) {
