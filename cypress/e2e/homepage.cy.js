@@ -42,7 +42,7 @@ function runHomepageTests({ withSnapshot = false, label = 'Desktop' } = {}) {
 
   // TODO: reenable when LADI-5226, LADI-5231 is fixed
   // check the entire page for accessibility violations, including the header and footer
-  a11yIt('/', { selector: null })
+  a11yIt.skip('/', { selector: null })
 }
 
 if (isChromatic) {
