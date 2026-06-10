@@ -248,7 +248,9 @@ watch(data, (newVal, oldVal) => {
 </script>
 
 <template>
-  <div
+  <main
+    id="main"
+    tabindex="-1"
     :class="pageClasses"
   >
     <div class="one-column">
@@ -335,7 +337,7 @@ watch(data, (newVal, oldVal) => {
         />
       </SectionWrapper>
     </div>
-  </div>
+  </main>
 </template>
 
 <style lang="scss" scoped>
