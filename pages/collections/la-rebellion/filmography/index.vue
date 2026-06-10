@@ -100,7 +100,7 @@ const breadcrumbOverrides = ref([
       :page="page"
       :breadcrumbs="breadcrumbOverrides"
     />
-</main>
+  </main>
 </template>
 
 <style scoped>
