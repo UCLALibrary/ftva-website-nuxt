@@ -18,8 +18,6 @@ function runStoryTellingTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('storyTellingPage')
     }
   })
-
-  a11yIt('/collections/la-rebellion')
 }
 
 if (isChromatic) {
@@ -31,5 +29,6 @@ if (isChromatic) {
 } else {
   describe('Complex Collection StoryTelling Page', () => {
     runStoryTellingTests({ withSnapshot: false })
+    a11yIt('/collections/la-rebellion')
   })
 }

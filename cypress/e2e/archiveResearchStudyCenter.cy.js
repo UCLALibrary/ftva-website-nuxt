@@ -22,7 +22,6 @@ function runArchiveResearchTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('imcspage')
     }
   })
-  a11yIt('/archive-research-study-center')
 }
 
 if (isChromatic) {
@@ -34,5 +33,6 @@ if (isChromatic) {
 } else {
   describe('Archive Research Study Center', () => {
     runArchiveResearchTests({ withSnapshot: false })
+    a11yIt('/archive-research-study-center') // do not run a11y tests when running chromatic
   })
 }

@@ -23,8 +23,6 @@ function runEventDetailTests({ withSnapshot = false } = {}) {
     cy.getByData('event-series').should('be.visible')
     cy.visualSnapshot('eventdetailpage')
   })
-
-  a11yIt('/events/la-région-centrale-03-08-24')
 }
 
 if (isChromatic) {
@@ -36,6 +34,7 @@ if (isChromatic) {
 } else {
   describe('Event Detail page', () => {
     runEventDetailTests({ withSnapshot: false })
+    a11yIt('/events/la-région-centrale-03-08-24')
   })
 }
 

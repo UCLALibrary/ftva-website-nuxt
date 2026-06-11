@@ -23,7 +23,6 @@ function runBasicCollectionDetailTest({ withSnapshot = false } = {}) {
     }
   })
 
-  a11yIt('/collections/test-get-used-to-it')
 }
 
 function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Desktop' } = {}) {
@@ -48,7 +47,6 @@ function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Des
     }
   })
 
-  a11yIt('/collections/ktla-newsfilm-collection')
 }
 
 function runAllCollectionDetailTests({ withSnapshot = false, label = 'Desktop' } = {}) {
@@ -69,5 +67,7 @@ if (isChromatic) {
 else {
   describe('Collection Detail Page', () => {
     runAllCollectionDetailTests({ withSnapshot: false })
+    a11yIt('/collections/test-get-used-to-it')
+    a11yIt('/collections/ktla-newsfilm-collection')
   })
 }

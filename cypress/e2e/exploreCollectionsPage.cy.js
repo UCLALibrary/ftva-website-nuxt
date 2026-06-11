@@ -19,9 +19,6 @@ function runExploreCollectionsTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('exploreCollectionsPage')
     }
   })
-
-  // TODO: reenable when LADI-5228 is fixed
-  a11yIt.skip('/collections')
 }
 
 if (isChromatic) {
@@ -33,5 +30,7 @@ if (isChromatic) {
 } else {
   describe('Explore Collections Page', () => {
     runExploreCollectionsTests({ withSnapshot: false })
+    // TODO: reenable when LADI-5228 is fixed
+    a11yIt.skip('/collections')
   })
 }

@@ -30,8 +30,6 @@ function runSearchPageTests({ withSnapshot = false, label = 'Desktop' } = {}) {
       cy.get('a.button-link > span').should('contain', 'UC Library Search')
     })
   }
-
-  a11yIt('/search?q=family')
 }
 
 if (isChromatic) {
@@ -43,5 +41,6 @@ if (isChromatic) {
 } else {
   describe('Search Page', () => {
     runSearchPageTests({ withSnapshot: false })
+    a11yIt('/search?q=family')
   })
 }

@@ -15,8 +15,6 @@ function runCollectionFilmmakersListingTest({ withSnapshot = false } = {}) {
       cy.visualSnapshot('collectionFilmmakersListPage')
     }
   })
-
-  a11yIt('/collections/la-rebellion/filmmakers')
 }
 
 if (isChromatic) {
@@ -28,5 +26,6 @@ if (isChromatic) {
 } else {
   describe('Collection Filmmakers Listing Page', () => {
     runCollectionFilmmakersListingTest({ withSnapshot: false })
+    a11yIt('/collections/la-rebellion/filmmakers')
   })
 }

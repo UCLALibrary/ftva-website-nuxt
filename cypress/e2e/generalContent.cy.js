@@ -12,8 +12,6 @@ function runGeneralContentTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('generalContentPage')
     }
   })
-
-  a11yIt('/about')
 }
 
 if (isChromatic) {
@@ -25,5 +23,6 @@ if (isChromatic) {
 } else {
   describe('General Content Page', () => {
     runGeneralContentTests({ withSnapshot: false })
+    a11yIt('/about')
   })
 }

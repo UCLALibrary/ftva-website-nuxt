@@ -20,8 +20,6 @@ function runBillyWilderTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('billyWilderTheaterpage')
     }
   })
-
-  a11yIt('/billy-wilder-theater')
 }
 
 if (isChromatic) {
@@ -33,5 +31,6 @@ if (isChromatic) {
 } else {
   describe('Billy Wilder Theater Page', () => {
     runBillyWilderTests({ withSnapshot: false })
+    a11yIt('/billy-wilder-theater') // do not run a11y tests when running chromatic
   })
 }

@@ -14,8 +14,6 @@ function runCollectionItemDetailTests({ withSnapshot = false } = {}) {
 
     if (withSnapshot) cy.visualSnapshot('collectionitemdetailpage')
   })
-
-  a11yIt('/collections/ktla-newsfilm-collection/african-american-william-c-taylor-of-the-communist-party-to-run-for-los-angeles-county-supervisor')
 }
 
 if (isChromatic) {
@@ -27,5 +25,6 @@ if (isChromatic) {
 } else {
   describe('Collection Item Detail Page', () => {
     runCollectionItemDetailTests({ withSnapshot: false })
+    a11yIt('/collections/ktla-newsfilm-collection/african-american-william-c-taylor-of-the-communist-party-to-run-for-los-angeles-county-supervisor')
   })
 }

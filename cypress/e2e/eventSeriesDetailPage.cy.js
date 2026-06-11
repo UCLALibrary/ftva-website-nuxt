@@ -12,9 +12,6 @@ function runEventSeriesDetailTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('eventseriesdetailpage')
     }
   })
-
-  // TODO: reenable when LADI-5229 is fixed
-  a11yIt.skip('/series/step-up-series')
 }
 
 if (isChromatic) {
@@ -26,5 +23,7 @@ if (isChromatic) {
 } else {
   describe('Event Series Detail Page', () => {
     runEventSeriesDetailTests({ withSnapshot: false })
+    // TODO: reenable when LADI-5229 is fixed
+    a11yIt.skip('/series/step-up-series')
   })
 }

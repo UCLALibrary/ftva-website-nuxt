@@ -12,8 +12,6 @@ function runFilmmakerDetailTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('larebellionfilmmakersdetail')
     }
   })
-
-  a11yIt('/collections/la-rebellion/filmmakers/test-person')
 }
 
 if (isChromatic) {
@@ -25,5 +23,6 @@ if (isChromatic) {
 } else {
   describe('Filmmakers Detail Page', () => {
     runFilmmakerDetailTests({ withSnapshot: false })
+    a11yIt('/collections/la-rebellion/filmmakers/test-person')
   })
 }

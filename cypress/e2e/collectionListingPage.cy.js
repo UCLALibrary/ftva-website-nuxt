@@ -26,8 +26,6 @@ function runCollectionListingTests({ withSnapshot = false } = {}) {
       cy.getByData('collection-list').find('.card').should('have.length.above', 1)
     })
   }
-
-  a11yIt('collections/motion-picture')
 }
 
 if (isChromatic) {
@@ -39,5 +37,6 @@ if (isChromatic) {
 } else {
   describe('Collection Listing Page', () => {
     runCollectionListingTests({ withSnapshot: false })
+    a11yIt('collections/motion-picture')
   })
 }

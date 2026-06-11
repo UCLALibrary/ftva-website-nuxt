@@ -21,9 +21,6 @@ function runBlogListingTests({ withSnapshot = false, label = 'Desktop' } = {}) {
       cy.visualSnapshot('bloglistpage')
     }
   })
-
-  // TODO: reenable when LADI-5227 is fixed
-  a11yIt.skip('/blog')
 }
 
 function runMobileBehaviorTest() {
@@ -50,5 +47,7 @@ else {
   describe('Blog Listing Page', () => {
     runBlogListingTests({ withSnapshot: false })
     runMobileBehaviorTest()
+    // TODO: reenable when LADI-5227 is fixed
+    a11yIt.skip('/blog')
   })
 }

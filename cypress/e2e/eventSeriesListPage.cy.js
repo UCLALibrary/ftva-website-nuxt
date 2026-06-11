@@ -12,8 +12,6 @@ function runEventSeriesListTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('eventserieslistpage')
     }
   })
-
-  a11yIt('/series')
 }
 
 if (isChromatic) {
@@ -25,5 +23,6 @@ if (isChromatic) {
 } else {
   describe('Event Series List Page', () => {
     runEventSeriesListTests({ withSnapshot: false })
+    a11yIt('/series')
   })
 }

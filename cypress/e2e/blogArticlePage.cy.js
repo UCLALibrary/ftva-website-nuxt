@@ -12,8 +12,6 @@ function runBlogArticleTests({ withSnapshot = false } = {}) {
 
     if (withSnapshot) cy.visualSnapshot('blogarticlepage')
   })
-
-  a11yIt('/blog/test-tom-reeds-for-members-only-black-perspectives-on-local-l-a-tv')
 }
 
 if (isChromatic) {
@@ -25,5 +23,6 @@ if (isChromatic) {
 } else {
   describe('Blog Article Page', () => {
     runBlogArticleTests({ withSnapshot: false })
+    a11yIt('/blog/test-tom-reeds-for-members-only-black-perspectives-on-local-l-a-tv')
   })
 }

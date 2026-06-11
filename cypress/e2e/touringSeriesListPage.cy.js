@@ -18,8 +18,6 @@ function runTouringSeriesListTests({ withSnapshot = false } = {}) {
       cy.visualSnapshot('touringserieslistpage')
     }
   })
-
-  a11yIt('/touring-series')
 }
 
 if (isChromatic) {
@@ -31,5 +29,6 @@ if (isChromatic) {
 } else {
   describe('Touring Series List Page', () => {
     runTouringSeriesListTests({ withSnapshot: false })
+    a11yIt('/touring-series')
   })
 }

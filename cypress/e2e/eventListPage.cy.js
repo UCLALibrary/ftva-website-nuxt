@@ -35,6 +35,7 @@ if (isChromatic) {
     })
     runEventListingTests({ withSnapshot: false })
     runNoSnapshotEventListingTests()
+    a11yIt('/events')
   })
 }
 
@@ -89,5 +90,4 @@ function runNoSnapshotEventListingTests() {
     })
   })
 
-  a11yIt('/events')
 }

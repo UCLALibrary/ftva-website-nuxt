@@ -20,8 +20,6 @@ function runCollectionFilmographyTests({ withSnapshot = false } = {}) {
       cy.getByData('complex-collections-page-title').should('be.visible')
     })
   }
-
-  a11yIt('/collections/la-rebellion/filmography')
 }
 
 if (isChromatic) {
@@ -33,5 +31,6 @@ if (isChromatic) {
 } else {
   describe('Collection Filmography List Page', () => {
     runCollectionFilmographyTests({ withSnapshot: false })
+    a11yIt('/collections/la-rebellion/filmography')
   })
 }
