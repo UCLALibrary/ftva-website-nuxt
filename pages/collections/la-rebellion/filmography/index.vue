@@ -93,13 +93,14 @@ const breadcrumbOverrides = ref([
 <template>
   <main
     id="main"
+    tabindex="-1"
     class="page-component-wrapper"
   >
     <ListOfItemsCollection
       :page="page"
       :breadcrumbs="breadcrumbOverrides"
     />
-</main>
+  </main>
 </template>
 
 <style scoped>

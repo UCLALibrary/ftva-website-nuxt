@@ -159,9 +159,7 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <main
-    id="main"
-    tabindex="-1"
+  <div
     :class="pageClasses"
   >
     <div class="one-column">
@@ -279,7 +277,7 @@ const pageClasses = computed(() => {
         :grid-layout="false"
       />
     </SectionWrapper>
-  </main>
+  </div>
 </template>
 
 <style lang="scss" scoped>
