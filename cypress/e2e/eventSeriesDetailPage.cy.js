@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -22,5 +23,7 @@ if (isChromatic) {
 } else {
   describe('Event Series Detail Page', () => {
     runEventSeriesDetailTests({ withSnapshot: false })
+    // TODO: reenable when LADI-5229 is fixed
+    a11yIt.skip('/series/step-up-series')
   })
 }

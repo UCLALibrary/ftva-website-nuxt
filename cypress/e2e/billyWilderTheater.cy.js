@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -30,5 +31,6 @@ if (isChromatic) {
 } else {
   describe('Billy Wilder Theater Page', () => {
     runBillyWilderTests({ withSnapshot: false })
+    a11yIt('/billy-wilder-theater') // do not run a11y tests when running chromatic
   })
 }

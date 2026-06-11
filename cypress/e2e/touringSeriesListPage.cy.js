@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 Cypress.on('uncaught:exception', () => { return false })
@@ -28,5 +29,6 @@ if (isChromatic) {
 } else {
   describe('Touring Series List Page', () => {
     runTouringSeriesListTests({ withSnapshot: false })
+    a11yIt('/touring-series')
   })
 }

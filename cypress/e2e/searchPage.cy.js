@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -40,5 +41,6 @@ if (isChromatic) {
 } else {
   describe('Search Page', () => {
     runSearchPageTests({ withSnapshot: false })
+    a11yIt('/search?q=family')
   })
 }

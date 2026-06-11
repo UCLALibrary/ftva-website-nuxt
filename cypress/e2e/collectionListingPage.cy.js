@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 Cypress.on('uncaught:exception', () => false)
@@ -36,5 +37,6 @@ if (isChromatic) {
 } else {
   describe('Collection Listing Page', () => {
     runCollectionListingTests({ withSnapshot: false })
+    a11yIt('collections/motion-picture')
   })
 }

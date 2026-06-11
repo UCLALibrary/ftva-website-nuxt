@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 Cypress.on('uncaught:exception', () => false)
@@ -46,5 +47,7 @@ else {
   describe('Blog Listing Page', () => {
     runBlogListingTests({ withSnapshot: false })
     runMobileBehaviorTest()
+    // TODO: reenable when LADI-5227 is fixed
+    a11yIt.skip('/blog')
   })
 }
