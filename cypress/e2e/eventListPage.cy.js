@@ -89,5 +89,4 @@ function runNoSnapshotEventListingTests() {
       cy.get('.list').find('li').should('have.length.below', 8)
     })
   })
-
 }

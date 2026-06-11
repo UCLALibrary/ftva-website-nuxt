@@ -22,7 +22,6 @@ function runBasicCollectionDetailTest({ withSnapshot = false } = {}) {
       cy.visualSnapshot('collectiondetailpage')
     }
   })
-
 }
 
 function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Desktop' } = {}) {
@@ -46,7 +45,6 @@ function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Des
       cy.visualSnapshot('complexcollectionpage')
     }
   })
-
 }
 
 function runAllCollectionDetailTests({ withSnapshot = false, label = 'Desktop' } = {}) {
