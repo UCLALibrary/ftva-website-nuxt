@@ -40,7 +40,7 @@ function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Des
       Separate pages into components
       Minimize the number of very large elements in a story
       */
-      cy.log('Skipping snapshot for List of Items Collection Detail Page in Chromatic due to size limit')
+      /* cy.log('Skipping snapshot for List of Items Collection Detail Page in Chromatic due to size limit') */
 
       cy.visualSnapshot('complexcollectionpage')
     }
