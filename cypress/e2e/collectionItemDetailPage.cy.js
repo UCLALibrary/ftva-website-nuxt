@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -24,5 +25,6 @@ if (isChromatic) {
 } else {
   describe('Collection Item Detail Page', () => {
     runCollectionItemDetailTests({ withSnapshot: false })
+    a11yIt('/collections/ktla-newsfilm-collection/african-american-william-c-taylor-of-the-communist-party-to-run-for-los-angeles-county-supervisor')
   })
 }

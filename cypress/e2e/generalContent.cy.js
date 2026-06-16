@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -22,5 +23,6 @@ if (isChromatic) {
 } else {
   describe('General Content Page', () => {
     runGeneralContentTests({ withSnapshot: false })
+    a11yIt('/about')
   })
 }

@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -32,5 +33,6 @@ if (isChromatic) {
 } else {
   describe('Archive Research Study Center', () => {
     runArchiveResearchTests({ withSnapshot: false })
+    a11yIt('/archive-research-study-center') // do not run a11y tests when running chromatic
   })
 }

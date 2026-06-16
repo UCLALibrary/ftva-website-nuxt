@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 Cypress.on('uncaught:exception', () => { return false })
@@ -33,6 +34,7 @@ if (isChromatic) {
 } else {
   describe('Event Detail page', () => {
     runEventDetailTests({ withSnapshot: false })
+    a11yIt('/events/la-région-centrale-03-08-24')
   })
 }
 

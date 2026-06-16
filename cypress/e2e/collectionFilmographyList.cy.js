@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -30,5 +31,6 @@ if (isChromatic) {
 } else {
   describe('Collection Filmography List Page', () => {
     runCollectionFilmographyTests({ withSnapshot: false })
+    a11yIt('/collections/la-rebellion/filmography')
   })
 }

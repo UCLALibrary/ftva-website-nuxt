@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -22,5 +23,7 @@ if (isChromatic) {
 } else {
   describe('Touring Series Detail Page', () => {
     runTouringSeriesDetailTests({ withSnapshot: false })
+    // TODO: reenable when LADI-5230 is fixed
+    a11yIt.skip('/touring-series/through-indian-eyes-native-american-cinema')
   })
 }

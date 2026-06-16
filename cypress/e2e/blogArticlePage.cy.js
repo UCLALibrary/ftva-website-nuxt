@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -22,5 +23,6 @@ if (isChromatic) {
 } else {
   describe('Blog Article Page', () => {
     runBlogArticleTests({ withSnapshot: false })
+    a11yIt('/blog/test-tom-reeds-for-members-only-black-perspectives-on-local-l-a-tv')
   })
 }

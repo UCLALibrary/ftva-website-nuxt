@@ -3,6 +3,10 @@
 declare namespace Cypress {
   interface Chainable {
     getByData(dataTestAttribute: string): Chainable<JQuery<HTMLElement>>
+    checkCriticalA11y(
+      selector?: string | null,
+      impacts?: string[]
+    ): Chainable<void>
   }
 }
 
@@ -22,6 +26,24 @@ Cypress.Commands.add('visualSnapshot', (name) => {
 
   // else: do nothing locally
 })
+
+// TODO: add moderate to the default impacts when all serious and critical violations are fixed
+const DEFAULT_A11Y_IMPACTS = ['critical', 'serious'] as const
+
+Cypress.Commands.add(
+  'checkCriticalA11y',
+  (selector: string | null = '#main', impacts: string[] = [...DEFAULT_A11Y_IMPACTS]) => {
+    cy.injectAxe()
+    cy.checkA11y(selector, { includedImpacts: impacts }, (violations) => {
+      violations.forEach((violation) => {
+        cy.log(`Accessibility Violation: ${violation.id} ${violation.impact}
+        Description: ${violation.description}
+        Help: ${violation.help} ${violation.helpUrl}
+        HTML hint: ${violation.nodes.length} ${violation.nodes[0].html}`)
+      })
+    })
+  }
+)
 
 // ***********************************************
 // This example commands.js shows you how to

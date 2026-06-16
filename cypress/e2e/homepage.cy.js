@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -49,5 +50,8 @@ if (isChromatic) {
 } else {
   describe('Website Homepage', () => {
     runHomepageTests({ withSnapshot: false })
+    // TODO: reenable when LADI-5226, LADI-5231 is fixed
+    // check the entire page for accessibility violations, including the header and footer
+    a11yIt.skip('/', { selector: null })
   })
 }

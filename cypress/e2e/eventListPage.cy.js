@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 Cypress.on('uncaught:exception', () => { return false })
@@ -34,6 +35,7 @@ if (isChromatic) {
     })
     runEventListingTests({ withSnapshot: false })
     runNoSnapshotEventListingTests()
+    a11yIt('/events')
   })
 }
 

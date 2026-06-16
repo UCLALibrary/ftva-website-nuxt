@@ -1,3 +1,4 @@
+import { a11yIt } from '../support/a11y'
 import { viewports } from '../support/viewports'
 
 const provider = Cypress.env('VISUAL_PROVIDER')
@@ -39,7 +40,7 @@ function runListOfItemsCollectionDetailTest({ withSnapshot = false, label = 'Des
       Separate pages into components
       Minimize the number of very large elements in a story
       */
-      cy.log('Skipping snapshot for List of Items Collection Detail Page in Chromatic due to size limit')
+      /* cy.log('Skipping snapshot for List of Items Collection Detail Page in Chromatic due to size limit') */
 
       cy.visualSnapshot('complexcollectionpage')
     }
@@ -64,5 +65,7 @@ if (isChromatic) {
 else {
   describe('Collection Detail Page', () => {
     runAllCollectionDetailTests({ withSnapshot: false })
+    a11yIt('/collections/test-get-used-to-it')
+    a11yIt('/collections/ktla-newsfilm-collection')
   })
 }
