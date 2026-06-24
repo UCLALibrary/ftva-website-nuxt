@@ -49,7 +49,7 @@ if (isChromatic) {
   })
 } else {
   describe('Website Homepage', () => {
-    runHomepageTests({ withSnapshot: false })x
+    runHomepageTests({ withSnapshot: false })
     // check the entire page for accessibility violations, including the header and footer
     a11yIt('/', { selector: null })
   })
