@@ -279,6 +279,7 @@ const pageClasses = computed(() => {
       data-test="hearst-collection"
     >
       <BlockCardWithImage
+        :tag="'div'"
         :image="parsedHearstCollectionImage"
         :to="page.hearstUri"
         :card-is-link="true"
