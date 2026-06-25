@@ -23,7 +23,6 @@ if (isChromatic) {
 } else {
   describe('Event Series Detail Page', () => {
     runEventSeriesDetailTests({ withSnapshot: false })
-    // TODO: reenable when LADI-5229 is fixed
     a11yIt.skip('/series/step-up-series')
   })
 }
