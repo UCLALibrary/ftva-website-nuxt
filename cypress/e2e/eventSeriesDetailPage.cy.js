@@ -23,6 +23,6 @@ if (isChromatic) {
 } else {
   describe('Event Series Detail Page', () => {
     runEventSeriesDetailTests({ withSnapshot: false })
-    a11yIt.skip('/series/step-up-series')
+    a11yIt('/series/step-up-series')
   })
 }
