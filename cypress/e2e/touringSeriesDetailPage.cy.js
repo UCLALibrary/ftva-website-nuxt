@@ -23,7 +23,6 @@ if (isChromatic) {
 } else {
   describe('Touring Series Detail Page', () => {
     runTouringSeriesDetailTests({ withSnapshot: false })
-    // TODO: reenable when LADI-5230 is fixed
-    a11yIt.skip('/touring-series/through-indian-eyes-native-american-cinema')
+    a11yIt('/touring-series/through-indian-eyes-native-american-cinema')
   })
 }
