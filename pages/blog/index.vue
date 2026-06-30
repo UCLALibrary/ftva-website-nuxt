@@ -231,7 +231,7 @@ const pageClasses = computed(() => {
         {{ isMobile ? 'Featured Blog' : 'Featured Blogs' }}
       </SectionHeader>
 
-      <div class="featured-articles-wrapper">
+      <ul class="featured-articles-wrapper">
         <BlockCardWithImage
           v-for="article, index in parsedFeaturedArticles"
           :key="article.title"
@@ -254,7 +254,7 @@ const pageClasses = computed(() => {
             <RichText :rich-text-content="article.text" />
           </template>
         </BlockCardWithImage>
-      </div>
+      </ul>
     </SectionWrapper>
 
     <SectionWrapper
