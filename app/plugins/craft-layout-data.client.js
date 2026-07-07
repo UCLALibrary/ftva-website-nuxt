@@ -1,5 +1,5 @@
 // GQL
-import FTVALayout from '../gql/queries/FTVALayout.gql'
+import FTVALayout from '../../gql/queries/FTVALayout.gql'
 
 export default defineNuxtPlugin((nuxtApp) => { //
   const { $graphql } = useNuxtApp()
