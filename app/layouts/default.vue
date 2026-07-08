@@ -6,12 +6,12 @@ provideTheme()
 
 const { enabled, state } = usePreviewMode()
 
-const layoutCustomProps = useAttrs()
+
 const globalStore = useGlobalStore()
-const isApiLocked = computed(() => {
-  const host = useRuntimeConfig().public.craftGraphqlURL
-  return host.includes('test')
-})
+// ✅ Fetch + hydrate Pinia (SSR + client)
+useHydrateGlobalStore()
+
+
 
 const classes = ref(['layout',
   'layout-default',])
@@ -23,23 +23,11 @@ const primaryMenuItems = computed(() => {
 })
 
 const isMobile = ref(false)
-watch(globalStore, (newVal, oldVal) => {
-  // console.log('Global store changed', newVal, oldVal)
-})
+
 const { $layoutData } = useNuxtApp()
 // globalstore state is lost when error page is generated , this is hack to repopulate state on client side
 onMounted(async () => {
   // console.log('In default layout', enabled.value, state?.token)
-
-  if (!import.meta.dev && layoutCustomProps['is-error']) {
-    // console.log('In SSG refresh layout data as state is not maintained after an error response')
-    if (isApiLocked.value) {
-      // console.log('API is locked, not fetching layout data')
-    } else {
-      // Fetch layout data only if the API is not locked
-      await $layoutData()
-    }
-  }
 
   classes.value.push({ 'has-scrolled': globalStore.sTop })
   classes.value.push({ 'has-scrolled-past-header': globalStore.sTop >= 150 })
@@ -48,25 +36,21 @@ onMounted(async () => {
 
 </script>
 <template lang="html">
-  <div>
-    <vue-skip-to
-      to="#main"
-      label="Skip to main content"
+
+  <div :class="classes">
+    <!-- site brand bar only shows on desktop -->
+    <site-brand-bar class="brand-bar" />
+    <header-sticky
+      v-if="primaryMenuItems"
+      class="primary"
+      :primary-items="primaryMenuItems"
     />
-    <div :class="classes">
-      <!-- site brand bar only shows on desktop -->
-      <site-brand-bar class="brand-bar" />
-      <header-sticky
-        v-if="primaryMenuItems"
-        class="primary"
-        :primary-items="primaryMenuItems"
-      />
-      <slot />
-      <footer data-test="footer">
-        <footer-main />
-      </footer>
-    </div>
+    <slot />
+    <footer data-test="footer">
+      <footer-main />
+    </footer>
   </div>
+
 </template>
 
 <style lang="scss" scoped>
@@ -105,16 +89,5 @@ onMounted(async () => {
       display: none;
     }
   }
-}
-
-.vue-skip-to {
-  z-index: 300;
-
-}
-
-:deep(.vue-skip-to__link) {
-  background: var(--color-primary-yellow-01);
-  color: var(--color-black);
-  @include step-0;
 }
 </style>

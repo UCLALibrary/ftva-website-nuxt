@@ -1,0 +1,10 @@
+#import "../gql/fragments/MenuItem.gql"
+
+query FooterPrimaryItems {
+  footerPrimary: nodes(navHandle: "ftvaFooterSocials", level: 1) {
+    ...MenuItem
+    children {
+      ...MenuItem
+    }
+  }
+}

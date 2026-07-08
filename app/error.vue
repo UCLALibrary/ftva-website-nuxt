@@ -27,7 +27,7 @@ useHead({
 </script>
 
 <template>
-  <NuxtLayout :is-error="true">
+  <NuxtLayout>
     <main
       id="main"
       tabindex="-1"

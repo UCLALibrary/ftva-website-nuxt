@@ -1,0 +1,7 @@
+#import "../gql/fragments/MenuItem.gql"
+
+query FooterPrimaryItems {
+  footerSock: nodes(navHandle: "footerSockLinks") {
+    ...MenuItem
+  }
+}

@@ -2,9 +2,9 @@
 // GQL
 import FooterPrimaryItems from '../../gql/queries/FooterPrimaryItems.gql'
 import FooterSockItems from '../../gql/queries/FooterSockItems.gql'
-import FooterSponsorItems from '../../gql/queries/FooterSponsorItems.gql'
+import FooterLinkItems from '../../gql/queries/FooterLinkItems.gql'
 import Globals from '../../gql/queries/Globals.gql'
-import HeaderMainMenuItems from '../../gql/queries/HeaderMainMenuItems.gql'
+import HeaderItems from '../../gql/queries/HeaderItems.gql'
 export function useHydrateGlobalStore() {
   const { $graphql } = useNuxtApp()
   const store = useGlobalStore()
@@ -16,7 +16,7 @@ export function useHydrateGlobalStore() {
   })
 
   const header = useAsyncData('global-header', async () => {
-    const data = await $graphql.default.request(HeaderMainMenuItems)
+    const data = await $graphql.default.request(HeaderItems)
     return data
   })
 
@@ -30,16 +30,30 @@ export function useHydrateGlobalStore() {
     return data
   })
 
-  const footerSponsor = useAsyncData('global-footer-links', async () => {
-    const data = await $graphql.default.request(FooterSponsorItems)
+  const footerLinks = useAsyncData('global-footer-links', async () => {
+    const data = await $graphql.default.request(FooterLinkItems)
     return data
   })
+
+  globalStore.header.primary = data?.primary
+      globalStore.footerLinks.nodes = data?.footerLinks
+      globalStore.footerSock.nodes = data?.footerSock
+      globalStore.footerPrimary = {
+        nodes: [
+          {
+            ...data?.footerPrimary[0]
+          },
+          {
+            ...data?.footerPrimary[1]
+          }
+        ]
+      }
 
   // Hydrate Pinia once data arrives (SSR + client).
   // Only set if empty so you don't overwrite client state.
   watchEffect(() => {
     if (header.data.value && Object.keys(store.header || {}).length === 0) {
-      store.header = header.data.value
+      store.header.primary = header?.data?.value?.primary
     }
 
     if (globals.data.value && Object.keys(store.globals || {}).length === 0) {
@@ -56,17 +70,27 @@ export function useHydrateGlobalStore() {
     }
 
     if (footerPrimary.data.value && Object.keys(store.footerPrimary || {}).length === 0) {
-      store.footerPrimary = footerPrimary.data.value
+      store.footerPrimary = {
+        nodes: [
+          {
+            ...footerPrimary?.data?.value?.footerPrimary[0]
+          },
+          {
+            ...footerPrimary?.data?.value?.footerPrimary[1]
+          }
+        ]
+      }
+      footerPrimary.data.value
     }
 
     if (footerSock.data.value && Object.keys(store.footerSock || {}).length === 0) {
-      store.footerSock = footerSock.data.value
+      store.footerSock.nodes = footerSock.data.value.footerSock
     }
 
-    if (footerSponsor.data.value && Object.keys(store.footerSponsor || {}).length === 0) {
-      const craftData = removeEmpties(footerSponsor.data.value?.footerSponsor || [])
-      console.log('meap sponsor data', craftData)
-      store.footerSponsor = craftData[0]
+    if (footerLinks.data.value && Object.keys(store.footerLinks || {}).length === 0) {
+      const craftData = removeEmpties(footerLinks.data.value?.footerLinks || [])
+      console.log('meap links data', craftData)
+      store.footerLinks.nodes = footerLinks.data.value?.footerLinks
     }
   })
 
@@ -75,7 +99,7 @@ export function useHydrateGlobalStore() {
     globals.pending.value ||
     footerPrimary.pending.value ||
     footerSock.pending.value ||
-    footerSponsor.pending.value
+    footerLinks.pending.value
   )
 
   const error = computed(() =>
@@ -83,7 +107,7 @@ export function useHydrateGlobalStore() {
     globals.error.value ||
     footerPrimary.error.value ||
     footerSock.error.value ||
-    footerSponsor.error.value
+    footerLinks.error.value
   )
 
   return { pending, error }
