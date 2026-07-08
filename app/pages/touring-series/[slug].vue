@@ -22,14 +22,14 @@ const { data, error } = await useAsyncData(`touring-events-detail-${route.params
 
 if (error.value) {
   throw createError({
-    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+    ...error.value, statusText: 'Page not found.' + error.value, fatal: true
   })
 }
 
 if (!data.value.ftvaTouringSeries) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
+    status: 404,
+    statusText: 'Page Not Found',
     fatal: true
   })
 }

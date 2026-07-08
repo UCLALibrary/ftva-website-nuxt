@@ -25,14 +25,14 @@ const { data, error } = await useAsyncData('home-page', async () => {
 }) as { data: Ref<{ entry: any } | null>, error: Ref<any> }
 if (error.value) {
   throw createError({
-    statusCode: error.value.statusCode, statusMessage: error.value.statusMessage + error.value, fatal: true
+    status: error.value.statusCode, statusText: error.value.statusMessage + error.value, fatal: true
   })
 }
 
 if (!data.value?.entry) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
+    status: 404,
+    statusText: 'Page Not Found',
     fatal: true
   })
 }

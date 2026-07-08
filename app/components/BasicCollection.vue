@@ -26,14 +26,14 @@ const { data, error } = await useAsyncData(`collections-detail-${route.params.sl
 
 if (error.value) {
   throw createError({
-    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+    ...error.value, statusText: 'Page not found.' + error.value, fatal: true
   })
 }
 
 if (!data.value.ftvaCollection) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
+    status: 404,
+    statusText: 'Page Not Found',
     fatal: true
   })
 }
@@ -159,9 +159,7 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <div
-    :class="pageClasses"
-  >
+  <div :class="pageClasses">
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"

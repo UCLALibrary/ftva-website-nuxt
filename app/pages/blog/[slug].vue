@@ -24,14 +24,14 @@ const { data, error } = await useAsyncData(`blog-${route.params.slug}`, async ()
 }) as { data: Ref<{ ftvaArticle: any } | null>, error: Ref<any> }
 if (error.value) {
   throw createError({
-    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+    ...error.value, statusText: 'Page not found.' + error.value, fatal: true
   })
 }
 
 if (!data.value.ftvaArticle) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
+    status: 404,
+    statusText: 'Page Not Found',
     fatal: true
   })
 }

@@ -7,7 +7,7 @@ import ErrorImage from 'ucla-library-design-tokens/assets/svgs/graphic-ftva-erro
 const { error } = defineProps({
   error: {
     type: Object as () => NuxtError,
-    default: () => ({ statusCode: 500, message: 'An unexpected error occurred' }),
+    default: () => ({ status: 500, message: 'An unexpected error occurred' }),
   },
 })
 

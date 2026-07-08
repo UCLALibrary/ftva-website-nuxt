@@ -22,7 +22,7 @@ const { $graphql } = useNuxtApp()
 const { data, error } = await useAsyncData(props.canonicalPath, async () => {
   if (!props.sectionHandle) {
     // No match → 404
-    throw createError({ statusCode: 404, statusMessage: 'Page Not Found', fatal: true })
+    throw createError({ status: 404, statusText: 'Page Not Found', fatal: true })
   }
   const res = await $graphql.default.request(FTVAARSCIMCS, { section: props.sectionHandle })
   return res
@@ -30,14 +30,14 @@ const { data, error } = await useAsyncData(props.canonicalPath, async () => {
 
 if (error.value) {
   throw createError({
-    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+    ...error.value, statusText: 'Page not found.' + error.value, fatal: true
   })
 }
 
 if (!data.value?.entry) {
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
+    status: 404,
+    statusText: 'Page Not Found',
     fatal: true
   })
 }

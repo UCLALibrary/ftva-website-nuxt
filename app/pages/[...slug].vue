@@ -28,15 +28,15 @@ const { data, error } = await useAsyncData(`general-content-${path.replaceAll('/
 
 if (error.value) {
   throw createError({
-    ...error.value, statusMessage: 'Page not found.' + error.value, fatal: true
+    ...error.value, statusText: 'Page not found.' + error.value, fatal: true
   })
 }
 
 if (!data.value.entry) {
   // console.log('no data')
   throw createError({
-    statusCode: 404,
-    statusMessage: 'Page Not Found',
+    status: 404,
+    statusText: 'Page Not Found',
     fatal: true
   })
 }
