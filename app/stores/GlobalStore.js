@@ -18,7 +18,7 @@ export const useGlobalStore = defineStore('GlobalStore', {
       this.sTop = data
     },
 
-   /* async fetchGlobals() {
+    /* async fetchGlobals() {
       try {
         const data = await $fetch('/api/fetchNitroStorageCraftGlobalData')
         // console.log('Pinia store Global Data object:' + JSON.stringify(data))
@@ -77,12 +77,11 @@ export const useGlobalStore = defineStore('GlobalStore', {
           // console.log('Pinia store footerLinks end:' + JSON.stringify(this.footerLinks))
         }
 
-
       }
       catch (e) {
         throw new Error(`Craft API error, trying to set globals FooterLinksData. ${e}`)
       }
-    },*/
+    }, */
 
     /* Examples of action methods:
     setToken(token) {

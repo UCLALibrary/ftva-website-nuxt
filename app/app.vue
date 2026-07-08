@@ -4,7 +4,6 @@ provideTheme()
 const { enabled, state } = usePreviewMode()
 // console.log('App.vue', enabled.value, state.token)
 
-
 // set title
 useHead({
   titleTemplate: (titleChunk) => {

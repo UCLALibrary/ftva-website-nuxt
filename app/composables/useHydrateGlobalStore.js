@@ -36,18 +36,18 @@ export function useHydrateGlobalStore() {
   })
 
   globalStore.header.primary = data?.primary
-      globalStore.footerLinks.nodes = data?.footerLinks
-      globalStore.footerSock.nodes = data?.footerSock
-      globalStore.footerPrimary = {
-        nodes: [
-          {
-            ...data?.footerPrimary[0]
-          },
-          {
-            ...data?.footerPrimary[1]
-          }
-        ]
+  globalStore.footerLinks.nodes = data?.footerLinks
+  globalStore.footerSock.nodes = data?.footerSock
+  globalStore.footerPrimary = {
+    nodes: [
+      {
+        ...data?.footerPrimary[0]
+      },
+      {
+        ...data?.footerPrimary[1]
       }
+    ]
+  }
 
   // Hydrate Pinia once data arrives (SSR + client).
   // Only set if empty so you don't overwrite client state.
@@ -80,7 +80,6 @@ export function useHydrateGlobalStore() {
           }
         ]
       }
-      footerPrimary.data.value
     }
 
     if (footerSock.data.value && Object.keys(store.footerSock || {}).length === 0) {

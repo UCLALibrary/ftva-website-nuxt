@@ -6,12 +6,9 @@ provideTheme()
 
 const { enabled, state } = usePreviewMode()
 
-
 const globalStore = useGlobalStore()
 // ✅ Fetch + hydrate Pinia (SSR + client)
 useHydrateGlobalStore()
-
-
 
 const classes = ref(['layout',
   'layout-default',])
@@ -24,9 +21,8 @@ const primaryMenuItems = computed(() => {
 
 const isMobile = ref(false)
 
-const { $layoutData } = useNuxtApp()
 // globalstore state is lost when error page is generated , this is hack to repopulate state on client side
-onMounted(async () => {
+onMounted(() => {
   // console.log('In default layout', enabled.value, state?.token)
 
   classes.value.push({ 'has-scrolled': globalStore.sTop })
@@ -36,7 +32,6 @@ onMounted(async () => {
 
 </script>
 <template lang="html">
-
   <div :class="classes">
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar class="brand-bar" />
@@ -50,7 +45,6 @@ onMounted(async () => {
       <footer-main />
     </footer>
   </div>
-
 </template>
 
 <style lang="scss" scoped>
