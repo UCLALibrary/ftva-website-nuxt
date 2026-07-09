@@ -41,7 +41,3 @@ runs:
       env:
         PNPM_HOME: ~/.pnpm-store
       run: pnpm install --frozen-lockfile --strict-peer-dependencies
-
-    - name: Install Global Packages
-      shell: bash
-      run: pnpm add -g gulp prettier typescript
