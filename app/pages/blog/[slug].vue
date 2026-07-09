@@ -10,8 +10,8 @@ import { useContentIndexer } from '~/composables/useContentIndexer'
 import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 // UTILS
-import removeTags from '~/utils/removeTags'
-import { socialList } from '~/utils/socialList'
+import removeTags from '@/utils/removeTags'
+import { socialList } from '@/utils/socialList'
 
 const { $graphql } = useNuxtApp()
 

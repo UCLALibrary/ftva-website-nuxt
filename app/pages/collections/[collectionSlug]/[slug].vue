@@ -9,7 +9,7 @@ import FTVACollectionItem from '../gql/queries/FTVACollectionItem.gql'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 
 // UTILS
-import normalizeTitleForAlphabeticalBrowseBy from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
+import normalizeTitleForAlphabeticalBrowseBy from '@/utils/normalizeTitleForAlphabeticalBrowseBy'
 
 const { $graphql } = useNuxtApp()
 

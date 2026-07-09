@@ -6,12 +6,12 @@ import _get from 'lodash/get'
 import FTVAEventDetail from '../gql/queries/FTVAEventDetail.gql'
 
 // COMPOSABLE
-import removeTags from '~/utils/removeTags'
+import removeTags from '@/utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
 // UTILS
-import getEventFilterLabels from '~/utils/getEventFilterLabels'
+import getEventFilterLabels from '@/utils/getEventFilterLabels'
 
 const { $graphql } = useNuxtApp()
 

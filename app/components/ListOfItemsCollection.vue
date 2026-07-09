@@ -2,8 +2,8 @@
 
 import { computed, ref } from 'vue'
 import { useCollectionAggregator } from '../composables/useCollectionAggregator'
-import config from '~/utils/searchConfig'
-import normalizeTitleForAlphabeticalBrowse from '~/utils/normalizeTitleForAlphabeticalBrowseBy'
+import config from '@/utils/searchConfig'
+import normalizeTitleForAlphabeticalBrowse from '@/utils/normalizeTitleForAlphabeticalBrowseBy'
 import useMobileOnlyInfiniteScroll from '@/composables/useMobileOnlyInfiniteScroll'
 
 const attrs = useAttrs() as {
@@ -325,9 +325,7 @@ const pageClasses = computed(() => {
 </script>
 
 <template>
-  <div
-    :class="pageClasses"
-  >
+  <div :class="pageClasses">
     <div class="one-column">
       <NavBreadcrumb
         data-test="breadcrumb"

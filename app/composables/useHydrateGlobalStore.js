@@ -34,21 +34,6 @@ export function useHydrateGlobalStore() {
     const data = await $graphql.default.request(FooterLinkItems)
     return data
   })
-
-  globalStore.header.primary = data?.primary
-  globalStore.footerLinks.nodes = data?.footerLinks
-  globalStore.footerSock.nodes = data?.footerSock
-  globalStore.footerPrimary = {
-    nodes: [
-      {
-        ...data?.footerPrimary[0]
-      },
-      {
-        ...data?.footerPrimary[1]
-      }
-    ]
-  }
-
   // Hydrate Pinia once data arrives (SSR + client).
   // Only set if empty so you don't overwrite client state.
   watchEffect(() => {

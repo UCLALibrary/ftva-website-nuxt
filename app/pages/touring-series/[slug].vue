@@ -6,7 +6,7 @@ import _get from 'lodash/get'
 import FTVATouringSeriesDetail from '../gql/queries/FTVATouringSeriesDetail.gql'
 
 // COMPOSABLE
-import removeTags from '~/utils/removeTags'
+import removeTags from '@/utils/removeTags'
 import { useContentIndexer } from '~/composables/useContentIndexer'
 import { useParsedImageCarousel } from '~/composables/useParsedImageCarousel'
 
