@@ -3,10 +3,10 @@ import { computed } from 'vue'
 
 // HELPERS & UTILS
 import _get from 'lodash/get'
+import FTVALARebellionFilmmakersList from '../gql/queries/FTVALARebellionFilmmakersList.gql'
 import removeTags from '@/utils/removeTags'
 
 // GQL
-import FTVALARebellionFilmmakersList from '~/gql/queries/FTVALARebellionFilmmakersList.gql'
 
 const { $graphql } = useNuxtApp()
 

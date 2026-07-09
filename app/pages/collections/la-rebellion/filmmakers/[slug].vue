@@ -1,10 +1,10 @@
 <script setup>
 // HELPERS
 import _get from 'lodash/get'
+import FTVALARebellionFilmmakersDetail from '../gql/queries/FTVALARebellionFilmmakersDetail.gql'
 import removeTags from '@/utils/removeTags'
 
 // GQL
-import FTVALARebellionFilmmakersDetail from '~/gql/queries/FTVALARebellionFilmmakersDetail.gql'
 
 // COMPOSABLE
 import { useContentIndexer } from '~/composables/useContentIndexer'
