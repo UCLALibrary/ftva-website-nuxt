@@ -146,7 +146,7 @@ export default defineNuxtConfig({
     {
       autoImports: ['defineStore', 'acceptHMRUpdate'],
     },
-  ], '@nuxtjs/sitemap', '@ucla-library/component-library-nuxt-module', 'nuxt-graphql-request'],
+  ], '@nuxtjs/sitemap', '@ucla-library/component-library-nuxt-module', 'nuxt-graphql-request', '@nuxt/scripts'],
 
   // Transpile Vuetify for proper handling of CSS
   build: {

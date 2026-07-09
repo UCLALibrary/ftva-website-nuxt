@@ -1,5 +1,3 @@
-# import "../gql/fragments/Image.gql"
-
 query FTVAEventList {
   entry(section: ["ftvaListingEvents"]) {
     titleGeneral
