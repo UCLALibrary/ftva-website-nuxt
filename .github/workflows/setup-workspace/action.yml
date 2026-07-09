@@ -29,8 +29,6 @@ runs:
 
     - name: Install dependencies
       shell: bash
-      env:
-        PNPM_HOME: ~/.pnpm-store
       run: pnpm install --frozen-lockfile --strict-peer-dependencies
 
     - name: Install Cypress Binary
