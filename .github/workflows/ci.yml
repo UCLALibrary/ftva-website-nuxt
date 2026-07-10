@@ -120,7 +120,8 @@ jobs:
                 node -e "console.log('commands:', require('fs').existsSync('./cypress/support/commands.ts'))"
                 node -e "console.log('a11y:', require('fs').existsSync('./cypress/support/a11y.ts'))"
                 node -e "console.log('viewports:', require('fs').existsSync('./cypress/support/viewports.ts'))"
-
+            - name: Verify Cypress Installation
+              run: pnpm exec cypress verify
             - uses: cypress-io/github-action@v3
               with:
                   start: pnpm dlx serve .output/public
