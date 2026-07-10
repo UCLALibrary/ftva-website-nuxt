@@ -49,12 +49,7 @@ jobs:
             - name: Set deployment date
               id: set-deploy-date
               run: echo "DEPLOY_DATE=$(date '+%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
-            - name: Cache built static site
-              uses: actions/cache@v3
-              id: cache-nuxt3
-              with:
-                  path: .output/public
-                  key: nuxt3-site-${{ github.sha }}
+
             - name: Sets env vars for PR preview
               run: |
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}-deploy-preview-${{github.event.pull_request.number}}" >> $GITHUB_ENV
@@ -75,7 +70,6 @@ jobs:
                   ${{ runner.os }}-nuxt-build-
 
             - run: pnpm run generate
-              if: steps.cache-nuxt3.outputs.cache-hit != 'true'
               env:
                   CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
                   S3_BUCKET: "https://static.library.ucla.edu/"
@@ -125,6 +119,7 @@ jobs:
             - uses: cypress-io/github-action@v3
               with:
                   start: pnpm dlx serve .output/public
+                  install: false
                   wait-on: http://127.0.0.1:3000
                   wait-on-timeout: 110
               env:
