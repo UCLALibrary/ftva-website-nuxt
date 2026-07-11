@@ -21,7 +21,9 @@ function runEventDetailTests({ withSnapshot = false } = {}) {
     cy.getByData('calendar-dropdown').should('exist')
     cy.getByData('ticket-info').should('be.visible')
     cy.getByData('event-series').should('be.visible')
-    cy.visualSnapshot('eventdetailpage')
+    if (withSnapshot) {
+      cy.visualSnapshot('eventdetailpage')
+    }
   })
 }
 
