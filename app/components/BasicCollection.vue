@@ -222,11 +222,13 @@ const pageClasses = computed(() => {
 
       <!-- Sidebar -->
       <template #sidebarTop>
-        <BlockCallToAction
-          data-test="sidebar-cta"
-          :use-global-data="true"
-          :is-centered="false"
-        />
+        <ClientOnly>
+          <BlockCallToAction
+            data-test="sidebar-cta"
+            :use-global-data="true"
+            :is-centered="false"
+          />
+        </ClientOnly>
       </template>
       <template #primaryMid>
         <RichText
