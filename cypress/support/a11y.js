@@ -7,7 +7,7 @@ function runA11yTest(
   url,
   { selector = '#main', impacts, exclude = [], visitOptions = {} } = {}
 ) {
-  cy.visit(url, { failOnStatusCode: false, ...visitOptions })
+  cy.visit(encodeURI(url), { failOnStatusCode: false, ...visitOptions })
   cy.checkCriticalA11y(selector, impacts, exclude)
 }
 
