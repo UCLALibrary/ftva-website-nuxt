@@ -36,7 +36,7 @@ if (isChromatic) {
 } else {
   describe('Event Detail page', () => {
     runEventDetailTests({ withSnapshot: false })
-    // a11yIt('/events/la-région-centrale-03-08-24')
+    a11yIt('/events/la-région-centrale-03-08-24')
   })
 }
 

@@ -38,21 +38,6 @@ useHead({
       to="#main"
       label="Skip to main content"
     />
-
-    <!--div :class="classes">
-      <site-brand-bar class="brand-bar" />
-      <header-sticky
-        v-if="primaryMenuItems"
-        :key="route.query.q"
-        class="primary"
-        :primary-items="primaryMenuItems"
-      />
-
-      <NuxtPage />
-
-      <footer-main data-test="footer"/>
-
-    </div-->
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
