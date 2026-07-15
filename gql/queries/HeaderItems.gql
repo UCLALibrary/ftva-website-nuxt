@@ -1,0 +1,10 @@
+#import "../gql/fragments/MenuItem.gql"
+
+query HeaderItems {
+  primary: nodes(navHandle: "ftvaPrimaryMenu", level: 1) {
+      ...MenuItem
+      children {
+          ...MenuItem
+      }
+  }
+}

@@ -9,7 +9,7 @@ const isChromatic = provider === 'chromatic'
 function runEventDetailTests({ withSnapshot = false } = {}) {
   it('Visit the Event Detail Page', () => {
     // CarouselImages
-    cy.visit('/events/la-région-centrale-03-08-24', { failOnStatusCode: false })
+    cy.visit(encodeURI('/events/la-région-centrale-03-08-24'), { failOnStatusCode: false })
     cy.getByData('image-carousel').should('exist')
     cy.getByData('text-block').contains('TEST - La Région Centrale Screening')
     cy.getByData('text-block').should('be.visible')
@@ -21,7 +21,9 @@ function runEventDetailTests({ withSnapshot = false } = {}) {
     cy.getByData('calendar-dropdown').should('exist')
     cy.getByData('ticket-info').should('be.visible')
     cy.getByData('event-series').should('be.visible')
-    cy.visualSnapshot('eventdetailpage')
+    if (withSnapshot) {
+      cy.visualSnapshot('eventdetailpage')
+    }
   })
 }
 

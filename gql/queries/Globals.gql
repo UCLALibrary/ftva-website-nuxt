@@ -3,18 +3,10 @@ query Globals {
         dataId: id
         handle
 
-        ... on askALibrarian_GlobalSet {
-            askALibrarianTitle: titleGeneral
-            askALibrarianText: summary
-            buttonUrl {
-                buttonText
-                buttonUrl
+        ... on ftvaViewingInformation_GlobalSet {
+              handle
+              title: titleGeneral
+              text: richTextSimplified
             }
-        }
-
-        ... on libraryAlert_GlobalSet {
-            title: entryTitle
-            text: richTextAlertBox
-        }
     }
 }

@@ -105,10 +105,15 @@ export default defineNuxtConfig({
       esIndexPrefix: import.meta.env.ES_INDEX_PREFIX || '',
       esTempIndex: import.meta.env.ES_INDEX_PREFIX + '-' + new Date().toISOString().toLowerCase().replaceAll(':', '-'),
       esURL: import.meta.env.ES_URL || '',
-      gtm: {
+    },
+  },
+
+  scripts: {
+    registry: {
+      googleTagManager: {
         id: 'GTM-T2SXV2'
       }
-    },
+    }
   },
 
   /*
@@ -146,7 +151,7 @@ export default defineNuxtConfig({
     {
       autoImports: ['defineStore', 'acceptHMRUpdate'],
     },
-  ], 'nuxt-graphql-request', '@nuxtjs/sitemap', '@zadigetvoltaire/nuxt-gtm', '@ucla-library/component-library-nuxt-module'],
+  ], '@nuxtjs/sitemap', '@ucla-library/component-library-nuxt-module', 'nuxt-graphql-request', '@nuxt/scripts'],
 
   // Transpile Vuetify for proper handling of CSS
   build: {

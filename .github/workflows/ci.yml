@@ -49,12 +49,7 @@ jobs:
             - name: Set deployment date
               id: set-deploy-date
               run: echo "DEPLOY_DATE=$(date '+%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
-            - name: Cache built static site
-              uses: actions/cache@v3
-              id: cache-nuxt3
-              with:
-                  path: .output/public
-                  key: nuxt3-site-${{ github.sha }}
+
             - name: Sets env vars for PR preview
               run: |
                   echo "ES_ALIAS=${{secrets.ES_ALIAS_TEST}}-deploy-preview-${{github.event.pull_request.number}}" >> $GITHUB_ENV
@@ -75,7 +70,6 @@ jobs:
                   ${{ runner.os }}-nuxt-build-
 
             - run: pnpm run generate
-              if: steps.cache-nuxt3.outputs.cache-hit != 'true'
               env:
                   CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
                   S3_BUCKET: "https://static.library.ucla.edu/"
@@ -105,22 +99,27 @@ jobs:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
 
-            - name: Cache Cypress
-              uses: actions/cache@v3
-              with:
-                path: ~/.cache/Cypress
-                key: ${{ runner.os }}-cypress-${{ hashFiles('**/pnpm-lock.yaml') }}
-                restore-keys: |
-                  ${{ runner.os }}-cypress-
+            - name: Debug Cypress module resolution
+              run: |
+                echo "PWD=$(pwd)"
+                git rev-parse --short HEAD
 
-            # Install Cypress binary explicitly to ensure it's available
-            - name: Install Cypress
-              run: npx cypress install
+                echo "Support files:"
+                find cypress/support -maxdepth 1 -type f | sort
 
+                echo "E2E files:"
+                find cypress/e2e -maxdepth 1 -type f | sort
+
+                echo "Resolve support imports:"
+                node -e "console.log('commands:', require('fs').existsSync('./cypress/support/commands.ts'))"
+                node -e "console.log('a11y:', require('fs').existsSync('./cypress/support/a11y.ts'))"
+                node -e "console.log('viewports:', require('fs').existsSync('./cypress/support/viewports.ts'))"
+            - name: Verify Cypress Installation
+              run: pnpm exec cypress verify
             - uses: cypress-io/github-action@v3
               with:
                   start: pnpm dlx serve .output/public
-                  install: false # Skip automatic install
+                  install: false
                   wait-on: http://127.0.0.1:3000
                   wait-on-timeout: 110
               env:
@@ -132,6 +131,7 @@ jobs:
                   ES_READ_KEY: ${{ secrets.ES_READ_KEY_TEST }}
                   ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
                   ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
+
             - name: Deploy to Netlify (test)
               if: github.ref_name=='main'
               uses: nwtgck/actions-netlify@v2 #

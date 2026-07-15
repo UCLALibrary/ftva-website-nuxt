@@ -1,5 +1,5 @@
 import { defineNuxtModule, useLogger } from 'nuxt/kit'
-import fetch from 'node-fetch'
+// import fetch from 'node-fetch'
 
 export default defineNuxtModule({
   setup(options, nuxt) {
