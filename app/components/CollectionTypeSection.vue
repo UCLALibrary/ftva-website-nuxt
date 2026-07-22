@@ -301,11 +301,10 @@ watch(data, (newVal, oldVal) => {
           ref="resultsSection"
           class="browse-results"
         >
-          <!-- 0 results, 1 result, 2 results, etc. -->
           <h2>
-            {{ hits }} {{ hits === 1 ? `result` :
-              `results`
-            }} shown
+            {{ hits }} {{ hits === 1 ? `item` :
+              `items`
+            }}
           </h2>
         </div>
 

@@ -182,7 +182,7 @@ watch(() => route.query, async (newVal, oldVal) => {
 
 // Format # of results of BlockTag display
 const totalResultsDisplay = computed(() => {
-  return totalResults.value + ' Video Clip' + (totalResults.value > 1 ? 's' : '')
+  return totalResults.value + ' item' + (totalResults.value === 1 ? '' : 's')
 })
 
 // SORT SETUP - uses static data
