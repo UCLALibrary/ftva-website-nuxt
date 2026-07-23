@@ -51,7 +51,6 @@ query FTVACollectionDetail($slug: [String!]) {
         }
       }
       title
-      richText
       uri
     }
     uri
