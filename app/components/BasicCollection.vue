@@ -121,8 +121,6 @@ const parsedRelatedCollections = computed(() => {
       ...item,
       to: `/${item.uri}`,
       category: 'collection',
-      // Remove image tags inside byline rich text
-      bylineOne: item.richText.replace(/<img.*?>/ig, ''),
       image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
     }
   })
@@ -319,14 +317,8 @@ const pageClasses = computed(() => {
 
   .related-collections-card {
     :deep(.card-meta) {
-
-      .title,
-      .byline-group {
+      .title {
         @include truncate(2);
-      }
-
-      .byline-group {
-        padding-right: 20px;
       }
     }
   }
