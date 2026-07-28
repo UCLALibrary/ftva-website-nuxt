@@ -4,6 +4,12 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   // when using local pnpm link with component library uncomment this line
   vite: {
+    optimizeDeps: {
+      include: [
+        'pinia',
+        '@vue-a11y/skip-to',
+      ],
+    },
     define: {
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: true,
     },
