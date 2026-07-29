@@ -59,7 +59,7 @@ query FTVAArticleDetail($slug: [String!]) {
   ftvaRecentPosts: entries( section: "ftvaArticle", limit: 4, orderBy: "postDate DESC") {
     id
     title
-    to: slug
+    to: uri
     articleCategories {
       title
     }
