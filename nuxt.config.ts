@@ -4,6 +4,8 @@ import svgLoader from 'vite-svg-loader'
 export default defineNuxtConfig({
   // when using local pnpm link with component library uncomment this line
   vite: {
+    // Pre-bundle runtime-discovered dependencies to prevent Vite from
+    // re-optimizing them and triggering full page reloads during development.
     optimizeDeps: {
       include: [
         'pinia',
