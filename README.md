@@ -136,5 +136,3 @@ If a global pnpm is overriding Corepack, remove it:
 
     npm uninstall -g pnpm
     hash -r
-
-jdfhsdkfjsdhkf meaningless change!
