@@ -108,14 +108,6 @@ export default defineNuxtConfig({
     },
   },
 
-  scripts: {
-    registry: {
-      googleTagManager: {
-        id: 'GTM-T2SXV2'
-      }
-    }
-  },
-
   /*
      ** Required charset and viewport meta tags
      */
