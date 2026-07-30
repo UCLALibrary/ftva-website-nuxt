@@ -55,8 +55,8 @@ importers:
         specifier: ^18.17.3
         version: 18.19.130
       '@ucla-library/component-library-nuxt-module':
-        specifier: 1.4.2
-        version: 1.4.2(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))
+        specifier: 1.4.0
+        version: 1.4.0(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))
       axe-core:
         specifier: ^4.11.0
         version: 4.12.1
@@ -2188,8 +2188,8 @@ packages:
       vue: ^3.5.12
       vuetify: 3.7.4
 
-  '@ucla-library/component-library-nuxt-module@1.4.2':
-    resolution: {integrity: sha512-IpXk/0oe9bbCDaMi1SOURtnoetU8LObEjFYkzJkkucc5hjxtmhikLipjRV7AOVASFh6CV+HqoCUK2PxIqWxlRg==}
+  '@ucla-library/component-library-nuxt-module@1.4.0':
+    resolution: {integrity: sha512-1hK0TskaXVf4UXj15FXs9MJ7c4kQW6f39G+n6C3fFJP6C+lXLnXd0EYIyfdDRCVmUJJijwcvwuYaYdgOBkeDjw==}
     engines: {node: ^24.16.0, pnpm: ^11.5.1}
 
   '@ungap/structured-clone@1.3.2':
@@ -8959,7 +8959,7 @@ snapshots:
       - '@vue/composition-api'
       - typescript
 
-  '@ucla-library/component-library-nuxt-module@1.4.2(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))':
+  '@ucla-library/component-library-nuxt-module@1.4.0(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))':
     dependencies:
       '@nuxt/kit': 3.21.8(magicast@0.5.3)
       '@ucla-library-monorepo/ucla-library-website-components': 1.80.0(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))
