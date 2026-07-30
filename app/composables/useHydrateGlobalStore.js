@@ -73,7 +73,6 @@ export function useHydrateGlobalStore() {
 
     if (footerLinks.data.value && Object.keys(store.footerLinks || {}).length === 0) {
       const craftData = removeEmpties(footerLinks.data.value?.footerLinks || [])
-      console.log('meap links data', craftData)
       store.footerLinks.nodes = footerLinks.data.value?.footerLinks
     }
   })
