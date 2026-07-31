@@ -98,20 +98,40 @@ const parsedByline = computed(() => {
   return ''
 })
 
-// Recent Posts: Filter out the current post and then return the first 3 max
+// Most Recent Posts
 const parsedRecentPosts = computed(() => {
-  // fail gracefully if no recent posts
+  // Fail gracefully if recent posts have not loaded
+  // or the current route does not have a slug
   if (!ftvaRecentPosts.value || !route.params.slug)
     return []
 
-  // Transform data
-  const recentPostsWImage = ftvaRecentPosts.value.map((item, index) => {
-    return {
-      ...item,
-      image: { ...parseImage(item), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' }
-    }
-  })
-  return recentPostsWImage.filter(item => !item.to.includes(route.params.slug)).slice(0, 3)
+  return ftvaRecentPosts.value
+    // Transform each post into a smaller object containing
+    // only the data needed by the recent posts component
+    .map(item => ({
+      id: item.id,
+      // Parse the post image and add responsive image sizing
+      image: {
+        ...parseImage(item),
+        sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px',
+      },
+      // Ensure the URL starts at the site root
+      // Without the leading slash, the browser may appends the URL
+      // to the current page path instead
+      to: item.to
+        ? item.to.startsWith('/')
+          ? item.to
+          : `/${item.to}`
+        : '/',
+      title: item.title,
+      postDate: item.postDate,
+    }))
+
+    // Remove the current post from the recent posts list
+    .filter(item => !item.to.includes(route.params.slug))
+
+    // Return no more than the first three posts
+    .slice(0, 3)
 })
 
 useHead({
@@ -242,6 +262,7 @@ const parseBlocks = computed(() => {
           View All Blogs <span style="font-size:1.5em;"> &#8250;</span>
         </nuxt-link>
       </template>
+
       <SectionTeaserCard
         v-if="parsedRecentPosts && parsedRecentPosts.length > 0"
         data-test="recent-posts"
@@ -263,7 +284,7 @@ const parseBlocks = computed(() => {
   :deep(.card-meta.ftvaArticle) {
     .byline-group {
       display: inline-block; // force byline to wrap
-      margin-top: 0px; //override extra space added to byline group by inline-block
+      margin-top: 0px; // override extra space added to byline group by inline-block
       margin-bottom: 0px;
 
       .schedule-item {
