@@ -591,7 +591,7 @@ const pageClasses = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Data loading in progress ...
+                Data Loading in Progress ...
               </p>
             </template>
           </TabItem>
@@ -622,7 +622,7 @@ const pageClasses = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Data loading in progress ...
+                Data Loading in Progress ...
               </p>
             </template>
           </TabItem>
@@ -787,6 +787,8 @@ const pageClasses = computed(() => {
 
     .empty-tab {
       @include ftva-subtitle-1;
+      text-transform: none;
+
       color: var(--subtitle-grey);
       padding: 100px 0;
       text-align: center;
