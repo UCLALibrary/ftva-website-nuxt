@@ -296,7 +296,6 @@ onMounted(async () => {
 
 // COMPUTED EVENTS
 const parsedEvents = computed(() => {
-  // console.log('test: ', currentList.value)
   if (currentList.value.length === 0) return []
   return currentList.value.map((obj) => {
     return {
@@ -428,7 +427,6 @@ function applyDateFilterSelectionToRouteURL(data) {
     }
   }
 
-  // console.log('date params:', datesParam)
   // Use router.push to navigate with query params
   router.push({
     path: '/events',
