@@ -296,7 +296,6 @@ onMounted(async () => {
 
 // COMPUTED EVENTS
 const parsedEvents = computed(() => {
-
   // console.log('test: ', currentList.value)
   if (currentList.value.length === 0) return []
   return currentList.value.map((obj) => {
