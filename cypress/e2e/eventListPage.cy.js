@@ -72,7 +72,6 @@ function runNoSnapshotEventListingTests() {
     // click filter to remove and check list is unfiltered
     cy.intercept('POST', '**/_search', { fixture: 'es/upcoming-events.json' }).as('eventSearchUnfiltered')
 
-    cy.get('.block-remove-search-filter').click()
     cy.wait('@eventSearchUnfiltered')
 
     cy.get('.list').find('li').should('have.length', 5)
