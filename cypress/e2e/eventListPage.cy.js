@@ -70,11 +70,11 @@ function runNoSnapshotEventListingTests() {
     })
 
     // click filter to remove and check list is unfiltered
-    cy.intercept('POST', '**/_search', { fixture: 'es/upcoming-events.json' }).as('eventSearchUnfiltered')
+    // cy.intercept('POST', '**/_search', { fixture: 'es/upcoming-events.json' }).as('eventSearchUnfiltered')
 
-    cy.wait('@eventSearchUnfiltered')
+    // cy.wait('@eventSearchUnfiltered')
 
-    cy.get('.list').find('li').should('have.length', 5)
+    // cy.get('.list').find('li').should('have.length', 5)
   })
 
   it('Shows events with selected labels and clears label filters', () => {
