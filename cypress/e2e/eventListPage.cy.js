@@ -40,20 +40,20 @@ if (isChromatic) {
 }
 
 function runNoSnapshotEventListingTests() {
-  // it('Toggles tab to calendar view', () => {
-  //   // Calendar is visible at 1025px and above
-  //   cy.viewport(1280, 720)
+  it('Toggles tab to calendar view', () => {
+    // Calendar is visible at 1025px and above
+    cy.viewport(1280, 720)
 
-  //   cy.get('.tab-list-header').should('be.visible')
+    cy.get('.tab-list-header').should('be.visible')
 
-  //   cy.get('[data-test="list-view"]').should('be.visible')
+    cy.get('[data-test="list-view"]').should('be.visible')
 
-  //   cy.get('[data-test="tabbed-content"]').should('be.visible')
+    cy.get('[data-test="tabbed-content"]').should('be.visible')
 
-  //   cy.get('#tab-calendar-view').click()
+    cy.get('#tab-calendar-view').click()
 
-  //   cy.get('[data-test="calendar-view"]').should('be.visible')
-  // })
+    cy.get('[data-test="calendar-view"]').should('be.visible')
+  })
 
   it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
@@ -70,13 +70,12 @@ function runNoSnapshotEventListingTests() {
       cy.get('.block-card-three-column').contains('Mother India')
 
       cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
+      cy.wait(1000)
       cy.get('.clear-button').click()
+      // Resolve LADI-5333 (Clicking 'Done' returns empty event list) then re-test
       // cy.get('.select-button').click()
       cy.get('.list').find('li').should('have.length.below', 8)
-
     })
-
-
   })
 
   it('Shows events with selected labels', () => {
