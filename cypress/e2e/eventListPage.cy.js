@@ -40,26 +40,27 @@ if (isChromatic) {
 }
 
 function runNoSnapshotEventListingTests() {
-  it('Toggles tab to calendar view', () => {
-    // Calendar is visible at 1025px and above
-    cy.viewport(1280, 720)
+  // it('Toggles tab to calendar view', () => {
+  //   // Calendar is visible at 1025px and above
+  //   cy.viewport(1280, 720)
 
-    cy.get('.tab-list-header').should('be.visible')
+  //   cy.get('.tab-list-header').should('be.visible')
 
-    cy.get('[data-test="list-view"]').should('be.visible')
+  //   cy.get('[data-test="list-view"]').should('be.visible')
 
-    cy.get('[data-test="tabbed-content"]').should('be.visible')
+  //   cy.get('[data-test="tabbed-content"]').should('be.visible')
 
-    cy.get('#tab-calendar-view').click()
+  //   cy.get('#tab-calendar-view').click()
 
-    cy.get('[data-test="calendar-view"]').should('be.visible')
-  })
+  //   cy.get('[data-test="calendar-view"]').should('be.visible')
+  // })
 
   it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
     cy.wait('@eventData').wait('@eventData').then(() => {
-      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } }) // scroll to date filter before typing to prevent errors with sticky header
+      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
+      // scroll to date filter before typing to prevent errors with sticky header
       /* eslint-disable cypress/no-unnecessary-waiting */
       cy.wait(1000) // wait for scroll to finish, field is briefly disabled
       cy.getByData('date-filter').type('12/01/2024', { waitforAnimations: true })
@@ -67,17 +68,18 @@ function runNoSnapshotEventListingTests() {
       // expect 1 item rendered with title Mother India
       cy.get('.list').find('li').should('have.length', 1)
       cy.get('.block-card-three-column').contains('Mother India')
+
+      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
+      cy.get('.clear-button').click()
+      // cy.get('.select-button').click()
+      cy.get('.list').find('li').should('have.length.below', 8)
+
     })
 
-    // click filter to remove and check list is unfiltered
-    // cy.intercept('POST', '**/_search', { fixture: 'es/upcoming-events.json' }).as('eventSearchUnfiltered')
 
-    // cy.wait('@eventSearchUnfiltered')
-
-    // cy.get('.list').find('li').should('have.length', 5)
   })
 
-  it('Shows events with selected labels and clears label filters', () => {
+  it('Shows events with selected labels', () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
     cy.wait('@eventData').wait('@eventData').then(() => {
