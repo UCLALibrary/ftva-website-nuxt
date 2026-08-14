@@ -181,14 +181,6 @@ const stickyClass = computed(() => {
 
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
-  const datesObj = userDateSelection.value
-
-  if (datesObj && datesObj.length === 2) {
-    removefilters.dates = [`${datesObj[0]},${datesObj[1]}`]
-  }
-  if (datesObj && datesObj.length === 1) {
-    removefilters.dates = [datesObj[0]]
-  }
 
   // console.log('parsedRemoveSearchFilters', removefilters)
   /*
@@ -460,6 +452,37 @@ function applyEventFilterSelectionToRouteURL(data) {
   })
 }
 
+function applyChangesToSearch() {
+  const eventFilters = []
+  desktopItemList.value = []
+  mobileItemList.value = []
+
+  let dateFilters = ''
+  // console.log('applyChangesToSearch allFilters.value', allFilters.value)
+  // separate dates and event filters
+  for (const key in allFilters.value) {
+    if (allFilters.value[key].length > 0) {
+      if (key !== 'dates')
+        eventFilters.push(`${key}:(${allFilters.value[key].join(',')})`)
+      else
+        dateFilters = allFilters.value[key][0]
+    }
+  }
+
+  useRouter().push({
+    path: '/events',
+    query: {
+      dates: dateFilters,
+      filters: eventFilters.join(' AND ')
+    }
+  })
+}
+
+function handleFilterUpdate(updatedFilters) {
+  allFilters.value = updatedFilters
+  // console.log('Filters updated:', allFilters.value)
+}
+
 const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
 })
@@ -521,6 +544,13 @@ const pageClasses = computed(() => {
                 @update-display="applyEventFilterSelectionToRouteURL"
               />
             </div>
+            <section-remove-search-filter
+              v-if="Object.keys(allFilters).length > 0"
+              :filters="allFilters"
+              class="remove-filters"
+              @update:filters="handleFilterUpdate"
+              @remove-selected="applyChangesToSearch"
+            />
           </template>
 
           <TabItem
