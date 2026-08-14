@@ -78,7 +78,7 @@ function runNoSnapshotEventListingTests() {
     })
   })
 
-  it('Shows events with selected labels', () => {
+  it('Shows events with selected labels and clears label filters', () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
     cy.wait('@eventData').wait('@eventData').then(() => {
@@ -87,12 +87,11 @@ function runNoSnapshotEventListingTests() {
       cy.get('.select-button').click()
       // expect fewer than 8 items than match both
       cy.get('.list').find('li').should('have.length.below', 8)
-
-      //
-      cy.getByData('filters-dropdown').click()
-      cy.get('.clear-button').click()
-      // Resolve LADI-5333 (Clicking 'Done' returns empty event list) then re-test
-      // cy.get('.select-button').click()
+      // Guest-speaker filter pill
+      cy.get('.block-remove-search-filter').should('be.visible')
+      // Clear pill
+      cy.wait(1000)
+      cy.get('.block-remove-search-filter').click()
       cy.get('.list').find('li').should('have.length.below', 8)
     })
   })
