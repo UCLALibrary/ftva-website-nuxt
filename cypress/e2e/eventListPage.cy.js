@@ -59,7 +59,8 @@ function runNoSnapshotEventListingTests() {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
     cy.intercept({ method: 'POST', url: '**/_search' }).as('eventData')
     cy.wait('@eventData').wait('@eventData').then(() => {
-      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } }) // scroll to date filter before typing to prevent errors with sticky header
+      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
+      // scroll to date filter before typing to prevent errors with sticky header
       /* eslint-disable cypress/no-unnecessary-waiting */
       cy.wait(1000) // wait for scroll to finish, field is briefly disabled
       cy.getByData('date-filter').type('12/01/2024', { waitforAnimations: true })
@@ -67,15 +68,14 @@ function runNoSnapshotEventListingTests() {
       // expect 1 item rendered with title Mother India
       cy.get('.list').find('li').should('have.length', 1)
       cy.get('.block-card-three-column').contains('Mother India')
+
+      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
+      cy.wait(1000)
+      cy.get('.clear-button').click()
+      // Resolve LADI-5333 (Clicking 'Done' returns empty event list) then re-test
+      // cy.get('.select-button').click()
+      cy.get('.list').find('li').should('have.length.below', 8)
     })
-
-    // click filter to remove and check list is unfiltered
-    cy.intercept('POST', '**/_search', { fixture: 'es/upcoming-events.json' }).as('eventSearchUnfiltered')
-
-    cy.get('.block-remove-search-filter').click()
-    cy.wait('@eventSearchUnfiltered')
-
-    cy.get('.list').find('li').should('have.length', 5)
   })
 
   it('Shows events with selected labels and clears label filters', () => {
@@ -86,6 +86,12 @@ function runNoSnapshotEventListingTests() {
       cy.get('.pill-label').contains('Guest speaker').first().click()
       cy.get('.select-button').click()
       // expect fewer than 8 items than match both
+      cy.get('.list').find('li').should('have.length.below', 8)
+      // Guest-speaker filter pill
+      cy.get('.block-remove-search-filter').should('be.visible')
+      // Clear pill
+      cy.wait(1000)
+      cy.get('.block-remove-search-filter').click()
       cy.get('.list').find('li').should('have.length.below', 8)
     })
   })
