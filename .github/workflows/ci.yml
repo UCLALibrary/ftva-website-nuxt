@@ -69,7 +69,11 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-nuxt-build-
 
-            - run: pnpm run generate
+            - name: Generate Nuxt static site
+              id: nuxt-generate
+              run: |
+                set -o pipefail
+                pnpm run generate 2>&1 | tee nuxt-build.log
               env:
                   CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
                   S3_BUCKET: "https://static.library.ucla.edu/"
@@ -80,6 +84,45 @@ jobs:
                   ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
                   ES_ALIAS: ${{ env.ES_ALIAS }}
                   ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
+            - name: Analyze Nuxt build errors
+              if: always()
+              run: |
+                echo "===== Build error summary ====="
+
+                ES_INDEX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[INDEX-CREATION\]' nuxt-build.log || true)
+                ES_ALIAS_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-UPDATE\]' nuxt-build.log || true)
+                ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
+
+                echo "ES index creation errors: $ES_INDEX_ERRORS"
+                echo "ES alias update errors: $ES_ALIAS_ERRORS"
+                echo "ES alias skipped: $ES_ALIAS_SKIPPED"
+
+                echo
+                echo "Relevant Elasticsearch errors:"
+                grep -E '\[BUILD-(ERROR|WARNING)\]\[ELASTICSEARCH\]' nuxt-build.log || true
+
+            - name: Notify Slack
+              if: always()
+              uses: slackapi/slack-github-action@v4
+              with:
+                webhook: ${{ secrets.LADI_SLACK_WEBHOOK_URL }}
+                webhook-type: incoming-webhook
+                payload: |
+                  text: "FTVA CI Build"
+                  blocks:
+                    - type: section
+                      text:
+                        type: mrkdwn
+                        text: |
+                          *FTVA CI Build*
+
+                          Repository: `${{ github.repository }}`
+                          Branch: `${{ github.ref_name }}`
+                          Nuxt generate status: `${{ steps.nuxt-generate.outcome }}`
+
+                          <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View GitHub Actions run>
+
+
             - name: Deploy to Netlify (preview)
               if: github.ref_name!='main'
               uses: nwtgck/actions-netlify@v3.0 #
@@ -114,6 +157,7 @@ jobs:
                 node -e "console.log('commands:', require('fs').existsSync('./cypress/support/commands.ts'))"
                 node -e "console.log('a11y:', require('fs').existsSync('./cypress/support/a11y.ts'))"
                 node -e "console.log('viewports:', require('fs').existsSync('./cypress/support/viewports.ts'))"
+
             - name: Verify Cypress Installation
               run: pnpm exec cypress verify
             - uses: cypress-io/github-action@v3
@@ -145,3 +189,4 @@ jobs:
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
+

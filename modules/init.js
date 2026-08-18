@@ -78,16 +78,31 @@ export default defineNuxtModule({
               }
             }),
           })
-          const body = await response.text()
-          const testJson = JSON.parse(body)
-          logger.warn('Index created:' + JSON.stringify(testJson))
-          logger.warn('Elastic Search index created succesfully!')
-        } catch (err) {
-          logger.error('Error:', err)
 
-          logger.error('Response body:', body)
-          throw err
-        }
+          const body = await response.text()
+          if (!response.ok) {
+              throw new Error(
+                `Elasticsearch index creation failed with HTTP ${response.status} ${response.statusText}: ${body}`
+              )
+            }
+
+            const testJson = JSON.parse(body)
+
+            logger.warn('Index created:', JSON.stringify(testJson))
+            logger.warn('Elasticsearch index created successfully!')
+          } catch (err) {
+            logger.error(
+              '[BUILD-ERROR][ELASTICSEARCH][INDEX-CREATION]',
+              err
+            )
+
+            logger.error(
+              '[BUILD-ERROR][ELASTICSEARCH][INDEX-CREATION][RESPONSE]',
+              body
+            )
+
+            throw err
+          }
       })
     }
     // console.log('Nuxt module end ')
