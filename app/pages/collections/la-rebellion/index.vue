@@ -53,6 +53,7 @@ if (data.value.entry && import.meta.prerender) {
     ...data.value.entry,
     title: data.value.entry.title,
     titleSort: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title),
+    titleBrowse: normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title), // functions are inconsistent, sometimes it's "titleBrowse" and sometimes it's "titleSort", so we set both
     text: data.value.entry.summary,
     uri: route.path,
     sectionHandle: data.value.entry.sectionHandle,
