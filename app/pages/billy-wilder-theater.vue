@@ -417,7 +417,7 @@ const pageClasses = computed(() => {
 
   .map-note {
     font-size: 16px;
-    text-transform: uppercase;
+    // text-transform: uppercase;
   }
 
   .map-address {
