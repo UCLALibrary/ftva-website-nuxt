@@ -402,11 +402,25 @@ const pageClasses = computed(() => {
 <style lang="scss" scoped>
 @use 'assets/styles/slug-pages.scss' as *;
 
-// unset the aspect ratio on VideoEmbed
+// unset the aspect ratio on VideoEmbed & set to 100% height and width
+:deep(.responsive-video) {
+  .video-embed {
+    height: 100%;
+    width: 100%;
+  }
+}
+
 :deep(.video-embed) {
   .cover-container {
     .cover {
       aspect-ratio: unset;
+    }
+  }
+
+  .video-embed {
+    .video-container {
+      height: 100%;
+      width: 100%;
     }
   }
 }
