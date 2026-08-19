@@ -181,14 +181,7 @@ const stickyClass = computed(() => {
 
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
-  const datesObj = userDateSelection.value
-  // console.log('parsedRemoveSearchFilters', datesObj)
-  if (datesObj && datesObj.length === 2) {
-    removefilters.dates = [`${datesObj[0]},${datesObj[1]}`]
-  }
-  if (datesObj && datesObj.length === 1) {
-    removefilters.dates = [datesObj[0]]
-  }
+
   // console.log('parsedRemoveSearchFilters', removefilters)
   /*
   Sample ftva filters selection data structure
@@ -591,7 +584,7 @@ const pageClasses = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Data loading in progress ...
+                Data Loading in Progress ...
               </p>
             </template>
           </TabItem>
@@ -622,7 +615,7 @@ const pageClasses = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Data loading in progress ...
+                Data Loading in Progress ...
               </p>
             </template>
           </TabItem>
@@ -787,6 +780,8 @@ const pageClasses = computed(() => {
 
     .empty-tab {
       @include ftva-subtitle-1;
+      text-transform: none;
+
       color: var(--subtitle-grey);
       padding: 100px 0;
       text-align: center;
