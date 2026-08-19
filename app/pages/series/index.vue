@@ -217,7 +217,7 @@ const pageClasses = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Data loading in progress ...
+                Data Loading in Progress ...
               </p>
             </template>
           </TabItem>
@@ -241,7 +241,7 @@ const pageClasses = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Data loading in progress ...
+                Data Loading in Progress ...
               </p>
             </template>
           </TabItem>
