@@ -181,14 +181,7 @@ const stickyClass = computed(() => {
 
 const parsedRemoveSearchFilters = computed(() => {
   const removefilters: FilterItem = {}
-  const datesObj = userDateSelection.value
-  // console.log('parsedRemoveSearchFilters', datesObj)
-  if (datesObj && datesObj.length === 2) {
-    removefilters.dates = [`${datesObj[0]},${datesObj[1]}`]
-  }
-  if (datesObj && datesObj.length === 1) {
-    removefilters.dates = [datesObj[0]]
-  }
+
   // console.log('parsedRemoveSearchFilters', removefilters)
   /*
   Sample ftva filters selection data structure
