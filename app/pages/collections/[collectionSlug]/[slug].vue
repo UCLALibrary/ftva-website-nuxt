@@ -268,9 +268,10 @@ const pageClasses = computed(() => {
       class="two-col-layout__body"
     >
       <template #primaryTop>
+        <!-- Tech Debt Ticket: Responsive Video Aspect Ratio wont' work until videoemebd aspect ratio is removed -->
         <ResponsiveVideo
           v-if="page.videoEmbed"
-          :aspect-ratio="56.9"
+          :aspect-ratio="75.03"
           :controls="true"
         >
           <template #default>
@@ -283,7 +284,7 @@ const pageClasses = computed(() => {
         <ResponsiveImage
           v-else
           :media="parsedFTVAImage"
-          class="resized-aspect-ratio"
+          :aspect-ratio="75.03"
         />
       </template>
 
@@ -400,6 +401,15 @@ const pageClasses = computed(() => {
 
 <style lang="scss" scoped>
 @use 'assets/styles/slug-pages.scss' as *;
+
+// unset the aspect ratio on VideoEmbed
+:deep(.video-embed) {
+  .cover-container {
+    .cover {
+      aspect-ratio: unset;
+    }
+  }
+}
 
 .page-collection-item-detail {
   position: relative;
