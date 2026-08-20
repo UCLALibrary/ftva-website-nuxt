@@ -20,6 +20,7 @@ const primaryMenuItems = computed(() => {
 })
 
 const isMobile = ref(false)
+const { refresh } = useAlerts()
 
 // globalstore state is lost when error page is generated , this is hack to repopulate state on client side
 onMounted(() => {
@@ -28,6 +29,7 @@ onMounted(() => {
   classes.value.push({ 'has-scrolled': globalStore.sTop })
   classes.value.push({ 'has-scrolled-past-header': globalStore.sTop >= 150 })
   isMobile.value = globalStore.winWidth <= 1024
+  refresh()
 })
 
 </script>
@@ -40,6 +42,19 @@ onMounted(() => {
       class="primary"
       :primary-items="primaryMenuItems"
     />
+    <!-- Add this to the right place for dismissible alerts-->
+    <!--SectionWrapper
+      class="
+      section-alert"
+      theme="divider"
+    >
+      <site-notification-alert
+        v-if="
+          globalStore.globals.dismissibleAlert"
+        class="dismissible-alert"
+        v-bind="globalStore.globals.dismissibleAlert"
+      />
+    </SectionWrapper-->
     <slot />
     <footer data-test="footer">
       <footer-main />
@@ -72,6 +87,18 @@ onMounted(() => {
   .primary {
     position: sticky;
     will-change: top;
+  }
+
+  .section-alert {
+    height: 0;
+    position: relative;
+
+    .dismissible-alert {
+      position: absolute;
+      z-index: 100;
+      top: 32px;
+      right: var(--unit-gutter);
+    }
   }
 
   @media #{$small} {
