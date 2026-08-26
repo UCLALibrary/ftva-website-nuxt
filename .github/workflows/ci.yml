@@ -85,17 +85,28 @@ jobs:
                   ES_ALIAS: ${{ env.ES_ALIAS }}
                   ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
             - name: Analyze Nuxt build errors
+              id: analyze-nuxt
               if: always()
               run: |
                 echo "===== Build error summary ====="
 
                 ES_INDEX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[INDEX-CREATION\]' nuxt-build.log || true)
+                ES_INDEX_CHECK_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[INDEX-CHECK\]' nuxt-build.log || true)
+                ES_ALIAS_READ_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-READ\]' nuxt-build.log || true)
                 ES_ALIAS_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-UPDATE\]' nuxt-build.log || true)
                 ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
 
                 echo "ES index creation errors: $ES_INDEX_ERRORS"
+                echo "ES index check errors: $ES_INDEX_CHECK_ERRORS"
+                echo "ES alias read errors: $ES_ALIAS_READ_ERRORS"
                 echo "ES alias update errors: $ES_ALIAS_ERRORS"
                 echo "ES alias skipped: $ES_ALIAS_SKIPPED"
+
+                echo "es_index_errors=$ES_INDEX_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_index_check_errors=$ES_INDEX_CHECK_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_alias_read_errors=$ES_ALIAS_READ_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_alias_errors=$ES_ALIAS_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_alias_skipped=$ES_ALIAS_SKIPPED" >> "$GITHUB_OUTPUT"
 
                 echo
                 echo "Relevant Elasticsearch errors:"
@@ -108,17 +119,25 @@ jobs:
                 webhook: ${{ secrets.LADI_SLACK_WEBHOOK_URL }}
                 webhook-type: incoming-webhook
                 payload: |
-                  text: "FTVA CI Build"
+                  text: "FTVA Nuxt Generate"
                   blocks:
                     - type: section
                       text:
                         type: mrkdwn
                         text: |
-                          *FTVA CI Build*
+                          *FTVA Nuxt Generate*
 
                           Repository: `${{ github.repository }}`
-                          Branch: `${{ github.ref_name }}`
+                          PR: #${{ github.event.pull_request.number }}
+                          PR branch: `${{ github.head_ref || github.ref_name }}`
                           Nuxt generate status: `${{ steps.nuxt-generate.outcome }}`
+
+                          *Elasticsearch*
+                          Index creation errors: `${{ steps.analyze-nuxt.outputs.es_index_errors }}`
+                          Index check errors: `${{ steps.analyze-nuxt.outputs.es_index_check_errors }}`
+                          Alias read errors: `${{ steps.analyze-nuxt.outputs.es_alias_read_errors }}`
+                          Alias update errors: `${{ steps.analyze-nuxt.outputs.es_alias_errors }}`
+                          Alias skipped: `${{ steps.analyze-nuxt.outputs.es_alias_skipped }}`
 
                           <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View GitHub Actions run>
 

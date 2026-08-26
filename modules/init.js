@@ -12,6 +12,7 @@ export default defineNuxtModule({
 
         const esLibraryIndexTemp = nuxt.options.runtimeConfig.public.esTempIndex
         logger.warn('Index named:' + esLibraryIndexTemp)
+        let body = ''
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/flattened.html
         try {
           const response = await fetch(`${nuxt.options.runtimeConfig.public.esURL}/${esLibraryIndexTemp}`, {
@@ -79,7 +80,7 @@ export default defineNuxtModule({
             }),
           })
 
-          const body = await response.text()
+          body = await response.text()
           if (!response.ok) {
             throw new Error(
                 `Elasticsearch index creation failed with HTTP ${response.status} ${response.statusText}: ${body}`
