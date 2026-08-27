@@ -39,7 +39,7 @@ onMounted(() => {
     <site-brand-bar
       class="brand-bar"
       role="banner"
-      aria-labelledby="Site Logo"
+      aria-label="Site Logo"
     />
     <header-sticky
       v-if="primaryMenuItems"
