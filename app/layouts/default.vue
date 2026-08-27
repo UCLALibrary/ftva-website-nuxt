@@ -36,7 +36,11 @@ onMounted(() => {
 <template lang="html">
   <div :class="classes">
     <!-- site brand bar only shows on desktop -->
-    <site-brand-bar class="brand-bar" />
+    <site-brand-bar
+      class="brand-bar"
+      role="banner"
+      aria-labelledby="Site Logo"
+    />
     <header-sticky
       v-if="primaryMenuItems"
       class="primary"
