@@ -229,7 +229,6 @@ const pageClasses = computed(() => {
               {{ page?.title }}
             </h1>
           </template>
-
           <template
             v-if="series?.[0]?.to && series?.[0]?.title"
             #linkedcategoryslot
@@ -238,7 +237,6 @@ const pageClasses = computed(() => {
               {{ series[0]?.title }}
             </NuxtLink>
           </template>
-
         </CardMeta>
       </template>
 
