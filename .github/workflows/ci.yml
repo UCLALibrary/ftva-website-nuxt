@@ -112,6 +112,13 @@ jobs:
                 echo "Relevant Elasticsearch errors:"
                 grep -E '\[BUILD-(ERROR|WARNING)\]\[ELASTICSEARCH\]' nuxt-build.log || true
 
+            - name: Debug Nuxt data errors
+              if: always()
+              run: |
+                echo "===== Possible Craft/API/Data Errors ====="
+
+                grep -i -E '4[0-9]{2}|5[0-9]{2}|error|failed|fetch|craft|graphql' nuxt-build.log || true
+
             - name: Notify Slack
               if: always()
               uses: slackapi/slack-github-action@v4
