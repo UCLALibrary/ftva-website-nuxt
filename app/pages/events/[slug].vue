@@ -55,7 +55,6 @@ if (data.value.ftvaEvent && import.meta.prerender) {
       data.value.ftvaEvent.eventSeriesTitle = eventSeriesTitles[0] || null
       data.value.ftvaEvent.eventSeriesLink = data.value.ftvaEventSeries[0]?.to || null
     }
-    console.log('Indexing event during static build:', data.value.ftvaEvent)
     await indexContent(data.value.ftvaEvent, route.params.slug)
     // console.log('Event indexed successfully during static build')
   } catch (error) {
@@ -132,7 +131,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   if (page?.value.ftvaEventScreeningDetails.length === 0) {
     return null
   }
-  console.log('parsedFTVAEventScreeningDetails', page?.value.ftvaEventScreeningDetails)
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
       ...obj,
