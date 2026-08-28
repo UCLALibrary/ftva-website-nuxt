@@ -8,41 +8,42 @@ export default function useSiteSearch() {
     'richText^2',
     'flexibleBlocksRichText^2',
     'guestSpeaker^2',
+    'eventSeriesTitles^2',
     'introduction^2',
     'eventDescription^2',
     'acknowledements^2',
     'aboutTheAuthor^2',
     'ftvaCollectionType^2',
     'sectionHandle^2',
-    'groupName^2',
+    'groupName^2'
   ]
   async function aggregationsQuery() {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-        headers: {
-          Authorization: `ApiKey ${config.public.esReadKey}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            bool: {
-              must: {
-                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-              }
-            }
-          },
-          aggs: {
-            'Filter Results': {
-              terms: {
-                field: 'groupName.keyword',
-                size: 100
-              }
+      headers: {
+        Authorization: `ApiKey ${config.public.esReadKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          bool: {
+            must: {
+              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
             }
           }
-        })
+        },
+        aggs: {
+          'Filter Results': {
+            terms: {
+              field: 'groupName.keyword',
+              size: 100
+            }
+          }
+        }
       })
+    })
     const data = await response.json()
     return data.aggregations
   }
@@ -50,38 +51,38 @@ export default function useSiteSearch() {
   async function fetchAggregationForKeyword(keyword = '*',) {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-        headers: {
-          Authorization: `ApiKey ${config.public.esReadKey}`,
-          'Content-Type': 'application/json',
+      headers: {
+        Authorization: `ApiKey ${config.public.esReadKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          bool: {
+            must: [{
+              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
+            },
+            {
+              multi_match: {
+                query: keyword,
+                fields: [...searchFields],
+                type: 'best_fields',
+              },
+            },
+            ]
+          }
         },
-        method: 'POST',
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            bool: {
-              must: [{
-                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-              },
-              {
-                multi_match: {
-                  query: keyword,
-                  fields: [...searchFields],
-                  type: 'best_fields',
-                },
-              },
-              ]
-            }
-          },
-          aggs: {
-            'Filter Results': {
-              terms: {
-                field: 'groupName.keyword',
-                size: 100
-              }
+        aggs: {
+          'Filter Results': {
+            terms: {
+              field: 'groupName.keyword',
+              size: 100
             }
           }
-        })
+        }
       })
+    })
     const data = await response.json()
     return data.aggregations
   }

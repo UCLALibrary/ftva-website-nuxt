@@ -47,9 +47,15 @@ if (data.value.ftvaEvent && import.meta.prerender) {
     data.value.ftvaEvent.groupName = 'Events'
     // Add the event series title and link data if available
     if (data.value.ftvaEventSeries) {
-      data.value.ftvaEvent.eventSeriesTitle = data.value.ftvaEventSeries[0]?.title || null
+      const eventSeriesTitles = data.value.ftvaEventSeries
+        .map(series => series?.title)
+        .filter(Boolean)
+
+      data.value.ftvaEvent.eventSeriesTitles = eventSeriesTitles
+      data.value.ftvaEvent.eventSeriesTitle = eventSeriesTitles[0] || null
       data.value.ftvaEvent.eventSeriesLink = data.value.ftvaEventSeries[0]?.to || null
     }
+    console.log('Indexing event during static build:', data.value.ftvaEvent)
     await indexContent(data.value.ftvaEvent, route.params.slug)
     // console.log('Event indexed successfully during static build')
   } catch (error) {
@@ -126,7 +132,7 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   if (page?.value.ftvaEventScreeningDetails.length === 0) {
     return null
   }
-
+  console.log('parsedFTVAEventScreeningDetails', page?.value.ftvaEventScreeningDetails)
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
       ...obj,
