@@ -97,8 +97,24 @@ jobs:
                 ES_ALIAS_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-UPDATE\]' nuxt-build.log || true)
                 ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
 
-                # Count 5xx errors from Nuxt/Nitro prerender failures.
-                SERVER_ERRORS=$(grep -c '\[5[0-9][0-9]\]' nuxt-build.log || true)
+                FAILED_5XX_ROUTES=$(awk '
+                  /\[error\] \[request error\] \[fatal\] \[GET\] http:\/\/localhost\// {
+                    route = $0
+                    sub(/^.*http:\/\/localhost\//, "", route)
+                    current_route = "/" route
+                  }
+
+                  current_route != "" && /\[5[0-9][0-9]\]/ {
+                    match($0, /\[[5][0-9][0-9]\]/)
+                    status = substr($0, RSTART + 1, 3)
+
+                    print status "|" current_route
+
+                    current_route = ""
+                  }
+                ' nuxt-build.log || true)
+
+                SERVER_ERRORS=$(printf '%s\n' "$FAILED_5XX_ROUTES" | grep -c '.' || true)
 
                 echo "ES index creation errors: $ES_INDEX_ERRORS"
                 echo "ES index check errors: $ES_INDEX_CHECK_ERRORS"
@@ -107,12 +123,27 @@ jobs:
                 echo "ES alias skipped: $ES_ALIAS_SKIPPED"
                 echo "5xx errors: $SERVER_ERRORS"
 
+                echo
+                echo "===== Failed 5xx routes ====="
+
+                if [ -n "$FAILED_5XX_ROUTES" ]; then
+                  printf '%s\n' "$FAILED_5XX_ROUTES"
+                else
+                  echo "None"
+                fi
+
                 echo "es_index_errors=$ES_INDEX_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_index_check_errors=$ES_INDEX_CHECK_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_alias_read_errors=$ES_ALIAS_READ_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_alias_errors=$ES_ALIAS_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_alias_skipped=$ES_ALIAS_SKIPPED" >> "$GITHUB_OUTPUT"
                 echo "server_errors=$SERVER_ERRORS" >> "$GITHUB_OUTPUT"
+
+                {
+                  echo "failed_5xx_routes<<EOF"
+                  printf '%s\n' "$FAILED_5XX_ROUTES"
+                  echo "EOF"
+                } >> "$GITHUB_OUTPUT"
 
                 if [ "$SERVER_ERRORS" -gt 0 ] || \
                   [ "$ES_INDEX_ERRORS" -gt 0 ] || \
@@ -131,10 +162,6 @@ jobs:
                 echo
                 echo "Relevant Elasticsearch messages:"
                 grep -E '\[BUILD-(ERROR|WARNING)\]\[ELASTICSEARCH\]' nuxt-build.log || true
-
-                echo
-                echo "Relevant 5xx errors:"
-                grep '\[5[0-9][0-9]\]' nuxt-build.log || true
 
 
 
@@ -160,6 +187,9 @@ jobs:
 
                           *Nuxt / Data*
                           • 5xx errors: `${{ steps.analyze-nuxt.outputs.server_errors }}`
+
+                          *Failed 5xx routes:*
+                          ${{ steps.analyze-nuxt.outputs.failed_5xx_routes }}
 
                           *Elasticsearch*
                           • Index creation errors: `${{ steps.analyze-nuxt.outputs.es_index_errors }}`
