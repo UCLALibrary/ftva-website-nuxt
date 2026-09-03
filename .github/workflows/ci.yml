@@ -161,10 +161,7 @@ jobs:
                           Nuxt generate status: `${{ steps.nuxt-generate.outcome }}`
 
                           *Nuxt / Data*
-                          • 5xx prerender errors: `${{ steps.analyze-nuxt.outputs.server_errors }}`
-
-                          *Failed 5xx routes:*
-                          ${{ steps.analyze-nuxt.outputs.failed_5xx_routes }}
+                          • 5xx prerender errors: `${{ steps.analyze-nuxt.outputs.prerender_5xx_errors }}`
 
                           *Elasticsearch*
                           • Index creation errors: `${{ steps.analyze-nuxt.outputs.es_index_errors }}`
