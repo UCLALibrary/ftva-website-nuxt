@@ -64,6 +64,10 @@ export default defineNuxtConfig({
           route.skip = true
         } */
         // console.log('prerender:generate', route)
+        console.log(
+          '[PRERENDER-DEBUG]',
+          JSON.stringify(route, null, 2)
+        )
       },
       async 'prerender:routes'(routes) {
         const allRoutes = []
