@@ -69,7 +69,11 @@ jobs:
                 restore-keys: |
                   ${{ runner.os }}-nuxt-build-
 
-            - run: pnpm run generate
+            - name: Generate Nuxt static site
+              id: nuxt-generate
+              run: |
+                set -o pipefail
+                pnpm run generate 2>&1 | tee nuxt-build.log
               env:
                   CRAFT_ENDPOINT: ${{ secrets.CRAFT_ENDPOINT_TEST }}
                   S3_BUCKET: "https://static.library.ucla.edu/"
@@ -80,6 +84,104 @@ jobs:
                   ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_TEST }}
                   ES_ALIAS: ${{ env.ES_ALIAS }}
                   ES_INDEX_PREFIX: ${{secrets.ES_INDEX_PREFIX_TEST}}
+
+            - name: Analyze Nuxt build errors
+              id: analyze-nuxt
+              if: always()
+              run: |
+                echo "===== Build error summary ====="
+
+                ES_INDEX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[INDEX-CREATION\]' nuxt-build.log || true)
+                ES_INDEX_CHECK_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[INDEX-CHECK\]' nuxt-build.log || true)
+                ES_ALIAS_READ_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-READ\]' nuxt-build.log || true)
+                ES_ALIAS_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-UPDATE\]' nuxt-build.log || true)
+                ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
+
+                PRERENDER_5XX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
+                PRERENDER_5XX_DETAILS=$(grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
+                PRERENDER_404_WARNINGS=$(grep -c '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true)
+
+                echo "ES index creation errors: $ES_INDEX_ERRORS"
+                echo "ES index check errors: $ES_INDEX_CHECK_ERRORS"
+                echo "ES alias read errors: $ES_ALIAS_READ_ERRORS"
+                echo "ES alias update errors: $ES_ALIAS_ERRORS"
+                echo "ES alias skipped: $ES_ALIAS_SKIPPED"
+                echo "Prerender 5xx errors: $PRERENDER_5XX_ERRORS"
+                echo "Prerender 404 warnings: $PRERENDER_404_WARNINGS"
+
+                echo "es_index_errors=$ES_INDEX_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_index_check_errors=$ES_INDEX_CHECK_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_alias_read_errors=$ES_ALIAS_READ_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_alias_errors=$ES_ALIAS_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "es_alias_skipped=$ES_ALIAS_SKIPPED" >> "$GITHUB_OUTPUT"
+                echo "prerender_5xx_errors=$PRERENDER_5XX_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "prerender_404_warnings=$PRERENDER_404_WARNINGS" >> "$GITHUB_OUTPUT"
+                {
+                  echo "prerender_5xx_details<<EOF"
+                  printf '%s\n' "$PRERENDER_5XX_DETAILS"
+                  echo "EOF"
+                } >> "$GITHUB_OUTPUT"
+
+                echo
+                echo "===== Failed 5xx routes ====="
+                grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true
+
+                echo
+                echo "===== 404 warnings ====="
+                grep '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true
+
+                echo
+                echo "===== Relevant Elasticsearch messages ====="
+                grep -E '\[BUILD-(ERROR|WARNING)\]\[ELASTICSEARCH\]' nuxt-build.log || true
+
+                if [ "$PRERENDER_5XX_ERRORS" -gt 0 ] || \
+                  [ "$ES_INDEX_ERRORS" -gt 0 ] || \
+                  [ "$ES_INDEX_CHECK_ERRORS" -gt 0 ] || \
+                  [ "$ES_ALIAS_READ_ERRORS" -gt 0 ] || \
+                  [ "$ES_ALIAS_ERRORS" -gt 0 ]; then
+                  echo "should_notify_slack=true" >> "$GITHUB_OUTPUT"
+                  echo "Slack notification: YES"
+                else
+                  echo "should_notify_slack=false" >> "$GITHUB_OUTPUT"
+                  echo "Slack notification: NO"
+                fi
+
+            - name: Notify Slack
+              if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
+              uses: slackapi/slack-github-action@v4
+              with:
+                webhook: ${{ secrets.LADI_SLACK_WEBHOOK_URL }}
+                webhook-type: incoming-webhook
+                payload: |
+                  text: "FTVA Nuxt Generate"
+                  blocks:
+                    - type: section
+                      text:
+                        type: mrkdwn
+                        text: |
+                          ⚠️ FTVA Nuxt Generate completed with warnings
+
+                          Repository: `${{ github.repository }}`
+                          PR: #${{ github.event.pull_request.number }}
+                          PR branch: `${{ github.head_ref || github.ref_name }}`
+                          Nuxt generate status: `${{ steps.nuxt-generate.outcome }}`
+
+                          *Nuxt / Data*
+                          • 5xx prerender errors: `${{ steps.analyze-nuxt.outputs.prerender_5xx_errors }}`
+
+                          *Failed 5xx routes:*
+                          ${{ steps.analyze-nuxt.outputs.prerender_5xx_details }}
+
+                          *Elasticsearch*
+                          • Index creation errors: `${{ steps.analyze-nuxt.outputs.es_index_errors }}`
+                          • Index check errors: `${{ steps.analyze-nuxt.outputs.es_index_check_errors }}`
+                          • Alias read errors: `${{ steps.analyze-nuxt.outputs.es_alias_read_errors }}`
+                          • Alias update errors: `${{ steps.analyze-nuxt.outputs.es_alias_errors }}`
+                          • Alias skipped: `${{ steps.analyze-nuxt.outputs.es_alias_skipped }}`
+
+                          <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View GitHub Actions run>
+
+
             - name: Deploy to Netlify (preview)
               if: github.ref_name!='main'
               uses: nwtgck/actions-netlify@v3.0 #
@@ -114,6 +216,7 @@ jobs:
                 node -e "console.log('commands:', require('fs').existsSync('./cypress/support/commands.ts'))"
                 node -e "console.log('a11y:', require('fs').existsSync('./cypress/support/a11y.ts'))"
                 node -e "console.log('viewports:', require('fs').existsSync('./cypress/support/viewports.ts'))"
+
             - name: Verify Cypress Installation
               run: pnpm exec cypress verify
             - uses: cypress-io/github-action@v3
@@ -145,3 +248,4 @@ jobs:
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
+

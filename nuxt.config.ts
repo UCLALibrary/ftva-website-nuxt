@@ -64,6 +64,34 @@ export default defineNuxtConfig({
           route.skip = true
         } */
         // console.log('prerender:generate', route)
+        if (!route.error) {
+          return
+        }
+
+        const statusCode = route.error.statusCode || 500
+
+        if (statusCode === 404) {
+          console.warn(
+            '[BUILD-WARNING][PRERENDER][404]',
+            JSON.stringify({
+              route: route.route,
+              statusCode,
+              statusMessage: route.error.statusMessage || ''
+            })
+          )
+          return
+        }
+
+        if (statusCode >= 500) {
+          console.error(
+            '[BUILD-ERROR][PRERENDER][5XX]',
+            JSON.stringify({
+              route: route.route,
+              statusCode,
+              statusMessage: route.error.statusMessage || ''
+            })
+          )
+        }
       },
       async 'prerender:routes'(routes) {
         const allRoutes = []
@@ -91,6 +119,15 @@ export default defineNuxtConfig({
 
         if (allRoutes.length) {
           for (const route of allRoutes) {
+            if (
+              route === undefined ||
+              route === '/undefined' ||
+              route === '/ftva' ||
+              route.startsWith('/ftva-')
+            ) {
+              continue
+            }
+
             routes.add(route)
           }
         }
