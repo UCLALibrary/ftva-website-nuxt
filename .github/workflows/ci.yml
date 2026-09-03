@@ -97,83 +97,48 @@ jobs:
                 ES_ALIAS_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-UPDATE\]' nuxt-build.log || true)
                 ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
 
-                FAILED_5XX_ROUTES=$(awk '
-                  /\[log\] \[nitro\][[:space:]]+├─ \// {
-                    route = $0
-                    sub(/^.*├─ /, "", route)
-                    sub(/ \([0-9]+ms\).*$/, "", route)
-                    next
-                  }
-
-                  route != "" && /^[[:space:]]*[│|└][[:space:]]*└──[[:space:]]*\[5[0-9][0-9]\]/ {
-                    match($0, /\[5[0-9][0-9]\]/)
-                    status = substr($0, RSTART + 1, 3)
-                    print status "|" route
-                    route = ""
-                    next
-                  }
-
-                  route != "" && /^[[:space:]]*[│|└][[:space:]]*└──[[:space:]]*\[4[0-9][0-9]\]/ {
-                    # A 4xx belongs to the immediately preceding Nitro route.
-                    # Clear it so a later 5xx cannot be attributed to this route.
-                    route = ""
-                    next
-                  }
-
-                  # Any unrelated line breaks the route/status pair.
-                  route = ""
-                ' nuxt-build.log || true)
-
-                SERVER_ERRORS=$(printf '%s\n' "$FAILED_5XX_ROUTES" | grep -c '.' || true)
+                PRERENDER_5XX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
+                PRERENDER_404_WARNINGS=$(grep -c '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true)
 
                 echo "ES index creation errors: $ES_INDEX_ERRORS"
                 echo "ES index check errors: $ES_INDEX_CHECK_ERRORS"
                 echo "ES alias read errors: $ES_ALIAS_READ_ERRORS"
                 echo "ES alias update errors: $ES_ALIAS_ERRORS"
                 echo "ES alias skipped: $ES_ALIAS_SKIPPED"
-                echo "5xx errors: $SERVER_ERRORS"
-
-                echo
-                echo "===== Failed 5xx routes ====="
-
-                if [ -n "$FAILED_5XX_ROUTES" ]; then
-                  printf '%s\n' "$FAILED_5XX_ROUTES"
-                else
-                  echo "None"
-                fi
+                echo "Prerender 5xx errors: $PRERENDER_5XX_ERRORS"
+                echo "Prerender 404 warnings: $PRERENDER_404_WARNINGS"
 
                 echo "es_index_errors=$ES_INDEX_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_index_check_errors=$ES_INDEX_CHECK_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_alias_read_errors=$ES_ALIAS_READ_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_alias_errors=$ES_ALIAS_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "es_alias_skipped=$ES_ALIAS_SKIPPED" >> "$GITHUB_OUTPUT"
-                echo "server_errors=$SERVER_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "prerender_5xx_errors=$PRERENDER_5XX_ERRORS" >> "$GITHUB_OUTPUT"
+                echo "prerender_404_warnings=$PRERENDER_404_WARNINGS" >> "$GITHUB_OUTPUT"
 
-                {
-                  echo "failed_5xx_routes<<EOF"
-                  printf '%s\n' "$FAILED_5XX_ROUTES"
-                  echo "EOF"
-                } >> "$GITHUB_OUTPUT"
+                echo
+                echo "===== Failed 5xx routes ====="
+                grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true
 
-                if [ "$SERVER_ERRORS" -gt 0 ] || \
+                echo
+                echo "===== 404 warnings ====="
+                grep '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true
+
+                echo
+                echo "===== Relevant Elasticsearch messages ====="
+                grep -E '\[BUILD-(ERROR|WARNING)\]\[ELASTICSEARCH\]' nuxt-build.log || true
+
+                if [ "$PRERENDER_5XX_ERRORS" -gt 0 ] || \
                   [ "$ES_INDEX_ERRORS" -gt 0 ] || \
                   [ "$ES_INDEX_CHECK_ERRORS" -gt 0 ] || \
                   [ "$ES_ALIAS_READ_ERRORS" -gt 0 ] || \
-                  [ "$ES_ALIAS_ERRORS" -gt 0 ] || \
-                  [ "$ES_ALIAS_SKIPPED" -gt 0 ]; then
-
+                  [ "$ES_ALIAS_ERRORS" -gt 0 ]; then
                   echo "should_notify_slack=true" >> "$GITHUB_OUTPUT"
                   echo "Slack notification: YES"
                 else
                   echo "should_notify_slack=false" >> "$GITHUB_OUTPUT"
                   echo "Slack notification: NO"
                 fi
-
-                echo
-                echo "Relevant Elasticsearch messages:"
-                grep -E '\[BUILD-(ERROR|WARNING)\]\[ELASTICSEARCH\]' nuxt-build.log || true
-
-
 
             - name: Notify Slack
               if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'

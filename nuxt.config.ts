@@ -64,10 +64,34 @@ export default defineNuxtConfig({
           route.skip = true
         } */
         // console.log('prerender:generate', route)
-        console.log(
-          '[PRERENDER-DEBUG]',
-          JSON.stringify(route, null, 2)
-        )
+        if (!route.error) {
+          return
+        }
+
+        const statusCode = route.error.statusCode || 500
+
+        if (statusCode === 404) {
+          console.warn(
+            '[BUILD-WARNING][PRERENDER][404]',
+            JSON.stringify({
+              route: route.route,
+              statusCode,
+              statusMessage: route.error.statusMessage || ''
+            })
+          )
+          return
+        }
+
+        if (statusCode >= 500) {
+          console.error(
+            '[BUILD-ERROR][PRERENDER][5XX]',
+            JSON.stringify({
+              route: route.route,
+              statusCode,
+              statusMessage: route.error.statusMessage || ''
+            })
+          )
+        }
       },
       async 'prerender:routes'(routes) {
         const allRoutes = []
