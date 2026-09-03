@@ -383,8 +383,6 @@ const parsedInitialDates = computed(() => {
 
 // This is event handler which is invoked by datefilter component selections
 function applyDateFilterSelectionToRouteURL(data) {
-  desktopItemList.value = []
-  mobileItemList.value = []
   // console.log('Data from Date filters', data)
 
   // Function to format date to yyyy-MM-dd
@@ -433,8 +431,6 @@ function applyDateFilterSelectionToRouteURL(data) {
 // This is event handler which is invoked by dropdownfilters component selections
 function applyEventFilterSelectionToRouteURL(data) {
   // Use router.push to navigate with query params
-  desktopItemList.value = []
-  mobileItemList.value = []
 
   const eventFilters = []
   for (const key in data) {
@@ -454,8 +450,6 @@ function applyEventFilterSelectionToRouteURL(data) {
 
 function applyChangesToSearch() {
   const eventFilters = []
-  desktopItemList.value = []
-  mobileItemList.value = []
 
   let dateFilters = ''
   // console.log('applyChangesToSearch allFilters.value', allFilters.value)
