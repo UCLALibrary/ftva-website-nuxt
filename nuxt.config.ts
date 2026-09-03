@@ -93,9 +93,9 @@ export default defineNuxtConfig({
           for (const route of allRoutes) {
             if (
               route === undefined ||
-              route === 'undefined' ||
-              route === 'ftva' ||
-              route.startsWith('ftva-')
+              route === '/undefined' ||
+              route === '/ftva' ||
+              route.startsWith('/ftva-')
             ) {
               continue
             }
