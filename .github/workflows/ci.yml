@@ -98,20 +98,30 @@ jobs:
                 ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
 
                 FAILED_5XX_ROUTES=$(awk '
-                  /\[nitro\].*├─ \// {
+                  /\[log\] \[nitro\][[:space:]]+├─ \// {
                     route = $0
                     sub(/^.*├─ /, "", route)
                     sub(/ \([0-9]+ms\).*$/, "", route)
-
-                    # The status is printed on the next line.
-                    if (getline status_line) {
-                      if (status_line ~ /└── \[5[0-9][0-9]\]/) {
-                        match(status_line, /\[5[0-9][0-9]\]/)
-                        status = substr(status_line, RSTART + 1, 3)
-                        print status "|" route
-                      }
-                    }
+                    next
                   }
+
+                  route != "" && /^[[:space:]]*[│|└][[:space:]]*└──[[:space:]]*\[5[0-9][0-9]\]/ {
+                    match($0, /\[5[0-9][0-9]\]/)
+                    status = substr($0, RSTART + 1, 3)
+                    print status "|" route
+                    route = ""
+                    next
+                  }
+
+                  route != "" && /^[[:space:]]*[│|└][[:space:]]*└──[[:space:]]*\[4[0-9][0-9]\]/ {
+                    # A 4xx belongs to the immediately preceding Nitro route.
+                    # Clear it so a later 5xx cannot be attributed to this route.
+                    route = ""
+                    next
+                  }
+
+                  # Any unrelated line breaks the route/status pair.
+                  route = ""
                 ' nuxt-build.log || true)
 
                 SERVER_ERRORS=$(printf '%s\n' "$FAILED_5XX_ROUTES" | grep -c '.' || true)
@@ -186,7 +196,7 @@ jobs:
                           Nuxt generate status: `${{ steps.nuxt-generate.outcome }}`
 
                           *Nuxt / Data*
-                          • 5xx errors: `${{ steps.analyze-nuxt.outputs.server_errors }}`
+                          • 5xx prerender errors: `${{ steps.analyze-nuxt.outputs.server_errors }}`
 
                           *Failed 5xx routes:*
                           ${{ steps.analyze-nuxt.outputs.failed_5xx_routes }}
