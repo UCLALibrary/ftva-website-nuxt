@@ -98,6 +98,7 @@ jobs:
                 ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
 
                 PRERENDER_5XX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
+                PRERENDER_5XX_DETAILS=$(grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
                 PRERENDER_404_WARNINGS=$(grep -c '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true)
 
                 echo "ES index creation errors: $ES_INDEX_ERRORS"
@@ -115,6 +116,11 @@ jobs:
                 echo "es_alias_skipped=$ES_ALIAS_SKIPPED" >> "$GITHUB_OUTPUT"
                 echo "prerender_5xx_errors=$PRERENDER_5XX_ERRORS" >> "$GITHUB_OUTPUT"
                 echo "prerender_404_warnings=$PRERENDER_404_WARNINGS" >> "$GITHUB_OUTPUT"
+                {
+                  echo "prerender_5xx_details<<EOF"
+                  printf '%s\n' "$PRERENDER_5XX_DETAILS"
+                  echo "EOF"
+                } >> "$GITHUB_OUTPUT"
 
                 echo
                 echo "===== Failed 5xx routes ====="
@@ -162,6 +168,9 @@ jobs:
 
                           *Nuxt / Data*
                           • 5xx prerender errors: `${{ steps.analyze-nuxt.outputs.prerender_5xx_errors }}`
+
+                          *Failed 5xx routes:*
+                          ${{ steps.analyze-nuxt.outputs.prerender_5xx_details }}
 
                           *Elasticsearch*
                           • Index creation errors: `${{ steps.analyze-nuxt.outputs.es_index_errors }}`
