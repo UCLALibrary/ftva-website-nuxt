@@ -15,6 +15,7 @@ export default function useSiteSearch() {
     'ftvaCollectionType^2',
     'sectionHandle^2',
     'groupName^2',
+    'screeningTitles^2',
   ]
   async function aggregationsQuery() {
     const response = await fetch(
