@@ -68,14 +68,17 @@ function runNoSnapshotEventListingTests() {
       // expect 1 item rendered with title Mother India
       cy.get('.list').find('li').should('have.length', 1)
       cy.get('.block-card-three-column').contains('Mother India')
-
-      cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
-      cy.wait(1000)
-      cy.get('.clear-button').click()
-      // Resolve LADI-5333 (Clicking 'Done' returns empty event list) then re-test
-      // cy.get('.select-button').click()
-      cy.get('.list').find('li').should('have.length.below', 8)
     })
+
+    cy.intercept('POST', '**/_search', { fixture: 'es/upcoming-events.json' }).as('eventSearchUnfiltered')
+
+    cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
+    cy.wait(1000)
+    cy.get('.clear-button').click()
+    cy.get('.select-button').click()
+
+    cy.wait('@eventSearchUnfiltered')
+    cy.get('.list').find('li').should('have.length', 5)
   })
 
   it('Shows events with selected labels and clears label filters', () => {
