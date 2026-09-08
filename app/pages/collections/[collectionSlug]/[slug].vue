@@ -22,31 +22,11 @@ const debugKtlaDemonstrators =
 
 // DATA
 const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
-  if (debugKtlaDemonstrators) {
-    console.log('[KTLA-DEBUG] Starting GraphQL request', {
-      route: route.path,
-      collectionSlug,
-      slug
-    })
-  }
+
   const data: any = await $graphql.default.request(FTVACollectionItem, { slug, collectionSlug })
-  if (debugKtlaDemonstrators) {
-    console.log('[KTLA-DEBUG] GraphQL request completed', {
-      hasEntry: !!data?.entry,
-      entryId: data?.entry?.id,
-      entrySlug: data?.entry?.slug
-    })
-  }
   return data
 })
-if (debugKtlaDemonstrators) {
-  console.log('[KTLA-DEBUG] useAsyncData completed', {
-    hasData: !!data.value,
-    hasEntry: !!data.value?.entry,
-    hasError: !!error.value,
-    error: error.value?.message || null
-  })
-}
+
 
 if (error.value) {
   throw createError({
@@ -76,14 +56,6 @@ if (data.value.entry && import.meta.prerender) {
     // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX COLLECTION ITEM during static build:', error)
   }
-}
-if (debugKtlaDemonstrators) {
-  console.log('[KTLA-DEBUG] esindexing completed', {
-    hasData: !!data.value,
-    hasEntry: !!data.value?.entry,
-    hasError: !!error.value,
-    error: error.value?.message || null
-  })
 }
 
 const page = ref(_get(data.value, 'entry', {}))
