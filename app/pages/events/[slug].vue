@@ -229,7 +229,10 @@ const pageClasses = computed(() => {
               {{ page?.title }}
             </h1>
           </template>
-          <template #linkedcategoryslot>
+          <template
+            v-if="series?.[0]?.to && series?.[0]?.title"
+            #linkedcategoryslot
+          >
             <NuxtLink :to="`/${series[0]?.to}`">
               {{ series[0]?.title }}
             </NuxtLink>
