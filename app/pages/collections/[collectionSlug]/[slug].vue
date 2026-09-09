@@ -16,17 +16,12 @@ const { $graphql } = useNuxtApp()
 const route = useRoute()
 
 const { collectionSlug, slug } = route.params
-const debugKtlaDemonstrators =
-  String(collectionSlug).startsWith('ktla') &&
-  String(slug).includes('demonstrators')
 
 // DATA
 const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
-
-  const data: any = await $graphql.default.request(FTVACollectionItem, { slug, collectionSlug })
+  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug })
   return data
 })
-
 
 if (error.value) {
   throw createError({

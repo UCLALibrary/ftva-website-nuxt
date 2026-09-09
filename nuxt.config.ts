@@ -128,7 +128,12 @@ export default defineNuxtConfig({
               continue
             }
 
-            routes.add(route)
+            const prerenderRoute =
+  route.includes('demonstrators-from-center-de-ni')
+    ? route.normalize('NFC')
+    : route
+
+            routes.add(prerenderRoute)
           }
         }
         // eslint-disable-next-line no-console
