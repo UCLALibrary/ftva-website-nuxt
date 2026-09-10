@@ -518,12 +518,16 @@ const pageClasses = computed(() => {
       >
         <TabList
           :key="parseViewSelection"
-          :class="[stickyClass, { 'no-filters': userViewSelection === 'calendar' }]"
+          :class="[stickyClass, {
+            'no-filters':
+              userViewSelection === 'calendar'
+              || $route.query.view === 'calendar',
+          },]"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
           <template
-            v-if="userViewSelection === 'list'"
+            v-if="$route.query.view !== 'calendar'"
             #filters
           >
             <div class="filters-wrapper">
