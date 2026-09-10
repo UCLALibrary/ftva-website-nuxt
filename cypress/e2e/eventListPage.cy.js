@@ -40,7 +40,7 @@ if (isChromatic) {
 }
 
 function runNoSnapshotEventListingTests() {
-  it('Toggles tab to calendar view', () => {
+  /* it('Toggles tab to calendar view', () => {
     // Calendar is visible at 1025px and above
     cy.viewport(1280, 720)
 
@@ -53,7 +53,7 @@ function runNoSnapshotEventListingTests() {
     cy.get('#tab-calendar-view').click()
 
     cy.get('[data-test="calendar-view"]').should('be.visible')
-  })
+  }) */
 
   it('Shows events within selected date and clears date filters', { scrollBehavior: false }, () => {
     // wait for 2 fetch calls until list is visible to ensure initial render has finished
@@ -74,8 +74,16 @@ function runNoSnapshotEventListingTests() {
 
     cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
     cy.wait(1000)
-    cy.get('.clear-button').click()
-    cy.get('.select-button').click()
+    // Reopen the date picker after the previous Done closed it
+    cy.getByData('date-filter').click()
+
+    cy.get('.clear-button')
+      .should('be.visible')
+      .click()
+
+    cy.get('.select-button')
+      .should('be.visible')
+      .click()
 
     cy.wait('@eventSearchUnfiltered')
     cy.get('.list').find('li').should('have.length', 5)

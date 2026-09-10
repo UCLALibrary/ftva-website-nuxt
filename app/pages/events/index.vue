@@ -523,7 +523,7 @@ const pageClasses = computed(() => {
           :initial-tab="parseViewSelection"
         >
           <template
-            v-if="$route.query.view === 'list'"
+            v-if="userViewSelection === 'list'"
             #filters
           >
             <div class="filters-wrapper">
