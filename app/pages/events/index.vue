@@ -130,7 +130,7 @@ const eventFetchFunction = async () => {
   } else {
     //  Calendar View code
     const { paginatedSearchFilters } = useCalendarSearchFilter()
-    results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+    results = await paginatedSearchFilters('ftvaEvent', 'startDate', 'asc')
   }
   return results
 }
@@ -481,13 +481,13 @@ const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
 })
 
-const parseFirstEventMonth = computed(() => {
+/* const parseFirstEventMonth = computed(() => {
   if (parsedEvents.value && parsedEvents.value.length > 0) {
     // console.log("parseFirstEventMonth", parsedEvents.value[0].startDate, typeof parsedEvents.value[0].startDate)
     return [new Date(parsedEvents.value[0].startDate)]
   }
   return null
-})
+}) */
 
 const pageClasses = computed(() => {
   return ['page', 'page-events', 'page-bottom-spacer']
@@ -518,11 +518,14 @@ const pageClasses = computed(() => {
       >
         <TabList
           :key="parseViewSelection"
-          :class="stickyClass"
+          :class="[stickyClass, { 'no-filters': userViewSelection === 'calendar' }]"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
-          <template #filters>
+          <template
+            v-if="$route.query.view === 'list'"
+            #filters
+          >
             <div class="filters-wrapper">
               <date-filter
                 :key="dateListDateFilter"
@@ -590,10 +593,7 @@ const pageClasses = computed(() => {
           >
             <template v-if="!isMobile && parsedEvents && parsedEvents.length > 0">
               <div style="display: flex;justify-content: center;">
-                <base-calendar
-                  :events="parsedEvents"
-                  :first-event-month="parseFirstEventMonth"
-                />
+                <base-calendar :events="parsedEvents" />
               </div>
               <br>
               <br>
@@ -678,6 +678,15 @@ const pageClasses = computed(() => {
 
     .filters {
       flex-basis: 65%;
+    }
+
+    &.no-filters {
+
+      justify-content: flex-end;
+
+      .filters {
+        display: none;
+      }
     }
   }
 
