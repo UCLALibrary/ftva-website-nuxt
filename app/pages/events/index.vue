@@ -113,7 +113,11 @@ interface FilterGroup {
 const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
 const userDateSelection = ref<string[]>([])
 const allFilters = ref<FilterItem>({})
-const userViewSelection = ref<string>('list')
+const route = useRoute()
+const router = useRouter()
+const userViewSelection = ref<string>(
+  (route.query.view as string) || 'list'
+)
 
 // "STATE"
 const documentsPerPage = 10
@@ -130,7 +134,7 @@ const eventFetchFunction = async () => {
   } else {
     //  Calendar View code
     const { paginatedSearchFilters } = useCalendarSearchFilter()
-    results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
+    results = await paginatedSearchFilters('ftvaEvent', 'startDate', 'asc')
   }
   return results
 }
@@ -199,8 +203,6 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 
-const route = useRoute()
-const router = useRouter()
 const { width } = useWindowSize()
 
 watch(
@@ -481,13 +483,13 @@ const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
 })
 
-const parseFirstEventMonth = computed(() => {
+/* const parseFirstEventMonth = computed(() => {
   if (parsedEvents.value && parsedEvents.value.length > 0) {
     // console.log("parseFirstEventMonth", parsedEvents.value[0].startDate, typeof parsedEvents.value[0].startDate)
     return [new Date(parsedEvents.value[0].startDate)]
   }
   return null
-})
+}) */
 
 const pageClasses = computed(() => {
   return ['page', 'page-events', 'page-bottom-spacer']
@@ -522,7 +524,10 @@ const pageClasses = computed(() => {
           alignment="right"
           :initial-tab="parseViewSelection"
         >
-          <template #filters>
+          <template
+            v-if="$route.query.view !== 'calendar'"
+            #filters
+          >
             <div class="filters-wrapper">
               <date-filter
                 :key="dateListDateFilter"
@@ -590,10 +595,7 @@ const pageClasses = computed(() => {
           >
             <template v-if="!isMobile && parsedEvents && parsedEvents.length > 0">
               <div style="display: flex;justify-content: center;">
-                <base-calendar
-                  :events="parsedEvents"
-                  :first-event-month="parseFirstEventMonth"
-                />
+                <base-calendar :events="parsedEvents" />
               </div>
               <br>
               <br>
@@ -679,6 +681,19 @@ const pageClasses = computed(() => {
     .filters {
       flex-basis: 65%;
     }
+
+    .tab-list-header {
+      margin-left: auto;
+    }
+
+    /*&.no-filters {
+
+      justify-content: flex-end;
+
+      .filters {
+        display: none;
+      }
+    }*/
   }
 
   :deep(.tab-list) {
