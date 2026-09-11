@@ -203,7 +203,6 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 
-
 const { width } = useWindowSize()
 
 watch(
