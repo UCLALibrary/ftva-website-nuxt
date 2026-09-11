@@ -1,5 +1,4 @@
 import { defineNuxtModule, useLogger } from 'nuxt/kit'
-// import fetch from 'node-fetch'
 
 export default defineNuxtModule({
   setup(options, nuxt) {
@@ -74,7 +73,7 @@ export default defineNuxtModule({
         }
         logger.warn('Indices associated with alias:', indicesToDelete)
       } catch (err) {
-        logger.error('Error fetching alias indices:', err)
+        logger.error('[BUILD-ERROR][ELASTICSEARCH][ALIAS-READ]:', err)
         await deleteIndices(indicesToDelete, esUrl, headers, tempIndex)
         return
       }
@@ -84,6 +83,7 @@ export default defineNuxtModule({
 
         if (!tempExists) {
           logger.warn(
+            '[BUILD-WARNING][ELASTICSEARCH][ALIAS-SKIPPED]',
             `Temp index "${tempIndex}" does not exist. Leaving alias "${alias}" unchanged.`
           )
           return
@@ -117,13 +117,13 @@ export default defineNuxtModule({
         const updateAliasBody = await updateAliasResponse.json()
 
         if (updateAliasBody.status && updateAliasBody.status !== 200) {
-          logger.error('Error updating alias:', updateAliasBody)
+          logger.error('[BUILD-ERROR][ELASTICSEARCH][ALIAS-UPDATE]', updateAliasBody)
           await deleteIndices(indicesToDelete, esUrl, headers, tempIndex)
           return
         }
         logger.warn('Alias updated:', updateAliasBody)
       } catch (err) {
-        logger.error('Error updating alias:', err)
+        logger.error('[BUILD-ERROR][ELASTICSEARCH][ALIAS-UPDATE]', err)
         await deleteIndices(indicesToDelete, esUrl, headers, tempIndex)
         return
       }
