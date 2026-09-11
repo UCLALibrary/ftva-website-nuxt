@@ -113,7 +113,11 @@ interface FilterGroup {
 const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
 const userDateSelection = ref<string[]>([])
 const allFilters = ref<FilterItem>({})
-const userViewSelection = ref<string>('list')
+const route = useRoute()
+const router = useRouter()
+const userViewSelection = ref<string>(
+  (route.query.view as string) || 'list'
+)
 
 // "STATE"
 const documentsPerPage = 10
@@ -199,8 +203,7 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 
-const route = useRoute()
-const router = useRouter()
+
 const { width } = useWindowSize()
 
 watch(
@@ -518,11 +521,7 @@ const pageClasses = computed(() => {
       >
         <TabList
           :key="parseViewSelection"
-          :class="[stickyClass, {
-            'no-filters':
-              userViewSelection === 'calendar'
-              || $route.query.view === 'calendar',
-          },]"
+          :class="stickyClass"
           alignment="right"
           :initial-tab="parseViewSelection"
         >
@@ -684,14 +683,18 @@ const pageClasses = computed(() => {
       flex-basis: 65%;
     }
 
-    &.no-filters {
+    .tab-list-header {
+      margin-left: auto;
+    }
+
+    /*&.no-filters {
 
       justify-content: flex-end;
 
       .filters {
         display: none;
       }
-    }
+    }*/
   }
 
   :deep(.tab-list) {
