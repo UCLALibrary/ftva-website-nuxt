@@ -35,11 +35,11 @@ onMounted(() => {
 </script>
 <template lang="html">
   <div :class="classes">
-      <SiteNotificationBanner
-        class="site-notification-banner"
-        v-if="globalStore.globals.bannerAlert"
-        :text="globalStore.globals.bannerAlert.text"
-      />
+    <SiteNotificationBanner
+      class="site-notification-banner"
+      v-if="globalStore.globals.bannerAlert"
+      :text="globalStore.globals.bannerAlert.text"
+    />
 
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar
