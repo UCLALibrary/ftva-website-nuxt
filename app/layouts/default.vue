@@ -35,6 +35,11 @@ onMounted(() => {
 </script>
 <template lang="html">
   <div :class="classes">
+    <site-notification-banner
+      v-if="globalStore.globals.bannerAlert"
+      class="site-notification-banner"
+      :text="globalStore.globals.bannerAlert.text"
+    />
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar
       class="brand-bar"
@@ -47,7 +52,7 @@ onMounted(() => {
       :primary-items="primaryMenuItems"
     />
     <!-- Add this to the right place for dismissible alerts-->
-    <!--SectionWrapper
+    <SectionWrapper
       class="
       section-alert"
       theme="divider"
@@ -58,7 +63,7 @@ onMounted(() => {
         class="dismissible-alert"
         v-bind="globalStore.globals.dismissibleAlert"
       />
-    </SectionWrapper-->
+    </SectionWrapper>
     <slot />
     <footer data-test="footer">
       <footer-main />
@@ -76,12 +81,17 @@ onMounted(() => {
   justify-content: space-between;
   align-content: center;
   align-items: center;
+  flex: 1 1 auto;
 
   :deep(>*) {
     width: 100%;
   }
 
-  flex: 1 1 auto;
+  .site-notification-banner {
+    position: relative;
+    z-index: 101;
+    flex: 0 0 auto;
+  }
 
   .brand-bar {
     width: 100%;
@@ -108,6 +118,41 @@ onMounted(() => {
   @media #{$small} {
     .brand-bar {
       display: none;
+    }
+
+    .primary {
+      position: relative;
+      top: auto;
+      z-index: 100;
+    }
+
+    // Keep the mobile nav background inside HeaderSticky
+    :deep(.ftva.nav-primary.primary .nav-background-fill) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+    }
+
+    // Keep the mobile site title inside the same 64px header
+    :deep(.ftva.nav-primary.primary .item-top-mobile) {
+      position: absolute;
+      top: 0;
+      left: 18px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+    }
+
+    // Keep search + hamburger inside that same header row
+    :deep(.ftva.nav-primary.primary .more-menu) {
+      position: absolute;
+      top: 0;
+      right: 18px;
+      height: 64px;
+      display: flex;
+      align-items: center;
     }
 
     :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
