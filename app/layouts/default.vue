@@ -52,7 +52,7 @@ onMounted(() => {
       :primary-items="primaryMenuItems"
     />
     <!-- Add this to the right place for dismissible alerts-->
-    <!-- <SectionWrapper
+    <SectionWrapper
       class="
       section-alert"
       theme="divider"
@@ -63,7 +63,7 @@ onMounted(() => {
         class="dismissible-alert"
         v-bind="globalStore.globals.dismissibleAlert"
       />
-      </SectionWrapper> -->
+    </SectionWrapper>
     <slot />
     <footer data-test="footer">
       <footer-main />
