@@ -8,3 +8,6 @@ engineStrict: true
 minimumReleaseAgeExclude:
   - '@ucla-library-monorepo/ucla-library-website-components'
   - '@ucla-library/component-library-nuxt-module'
+overrides:
+  '@ucla-library/component-library-nuxt-module': link:../ucla-library-website-components/packages/component-library-nuxt-module
+  component-library-nuxt-module: link:../../../../ucla-library-website-components/packages/component-library-nuxt-module
