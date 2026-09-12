@@ -12,6 +12,7 @@ export default defineNuxtModule({
 
         const esLibraryIndexTemp = nuxt.options.runtimeConfig.public.esTempIndex
         logger.warn('Index named:' + esLibraryIndexTemp)
+        let body = ''
         // https://www.elastic.co/guide/en/elasticsearch/reference/current/flattened.html
         try {
           const response = await fetch(`${nuxt.options.runtimeConfig.public.esURL}/${esLibraryIndexTemp}`, {
@@ -78,14 +79,29 @@ export default defineNuxtModule({
               }
             }),
           })
-          const body = await response.text()
-          const testJson = JSON.parse(body)
-          logger.warn('Index created:' + JSON.stringify(testJson))
-          logger.warn('Elastic Search index created succesfully!')
-        } catch (err) {
-          logger.error('Error:', err)
 
-          logger.error('Response body:', body)
+          body = await response.text()
+          if (!response.ok) {
+            throw new Error(
+                `Elasticsearch index creation failed with HTTP ${response.status} ${response.statusText}: ${body}`
+            )
+          }
+
+          const testJson = JSON.parse(body)
+
+          logger.warn('Index created:', JSON.stringify(testJson))
+          logger.warn('Elasticsearch index created successfully!')
+        } catch (err) {
+          logger.error(
+            '[BUILD-ERROR][ELASTICSEARCH][INDEX-CREATION]',
+            err
+          )
+
+          logger.error(
+            '[BUILD-ERROR][ELASTICSEARCH][INDEX-CREATION][RESPONSE]',
+            body
+          )
+
           throw err
         }
       })
