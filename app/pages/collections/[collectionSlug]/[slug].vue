@@ -19,7 +19,7 @@ const { collectionSlug, slug } = route.params
 
 // DATA
 const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
-  const data: any = await $graphql.default.request(FTVACollectionItem, { slug, collectionSlug })
+  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug })
   return data
 })
 
@@ -120,10 +120,14 @@ function isNonNull(value: any): boolean {
 }
 
 // Loop through array of objects, return values for a target/specified key as an array list
-function getObjectValue(arr: {}[], key: string): string[] {
-  if (arr.length === 0) return
+function getObjectValue(arr: {}[] = [], key: string): string[] {
+  if (arr.length === 0) return []
 
-  const keysList = arr.filter(obj => Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== null)
+  const keysList = arr.filter(
+    obj =>
+      Object.prototype.hasOwnProperty.call(obj, key) &&
+      obj[key] !== null
+  )
 
   return keysList.map(obj => obj[key])
 }
@@ -135,7 +139,7 @@ interface Individual {
   uri?: string;
 }
 
-function getLinkedIndividual(arr: Individual[]) {
+function getLinkedIndividual(arr: Individual[] = []) {
   const parsedPersonObj = arr.map((personObj) => {
     const firstname = personObj.nameFirst
     const lastname = personObj.nameLast
@@ -159,7 +163,7 @@ function getLinkedIndividual(arr: Individual[]) {
 }
 
 const parsedCollectionItemCredits = computed(() => {
-  const individuals = page.value.associatedIndividuals
+  const individuals = page.value.associatedIndividuals ?? []
 
   if (individuals.length === 0) {
     return null
@@ -219,7 +223,7 @@ useHead({
 const breadcrumbOverrides = ref([
   {
     titleLevel: 2,
-    updatedTitle: page?.value.ftvaAssociatedCollections[0]?.title || null
+    updatedTitle: page?.value.ftvaAssociatedCollections?.[0]?.title || null
   }
 ])
 
@@ -295,11 +299,11 @@ const pageClasses = computed(() => {
           <!-- slot name must match field name in parsed metadata, case sensitive -->
           <template #definition-Director>
             <NuxtLink
-              :key="parsedMetadataList.Director[0].name"
-              :to="`/${parsedMetadataList.Director[0].uri}`"
+              :key="parsedMetadataList.Director?.[0]?.name"
+              :to="`/${parsedMetadataList.Director?.[0]?.uri}`"
               class="director-link"
             >
-              {{ parsedMetadataList.Director[0].name }}
+              {{ parsedMetadataList.Director?.[0]?.name }}
             </NuxtLink>
           </template>
           <template
@@ -424,6 +428,7 @@ const pageClasses = computed(() => {
     }
   }
 }
+
 // END unset the aspect ratio on VideoEmbed
 
 .page-collection-item-detail {
