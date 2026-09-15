@@ -483,14 +483,6 @@ const parseViewSelection = computed(() => {
   return userViewSelection.value === 'list' ? 0 : 1
 })
 
-/* const parseFirstEventMonth = computed(() => {
-  if (parsedEvents.value && parsedEvents.value.length > 0) {
-    // console.log("parseFirstEventMonth", parsedEvents.value[0].startDate, typeof parsedEvents.value[0].startDate)
-    return [new Date(parsedEvents.value[0].startDate)]
-  }
-  return null
-}) */
-
 const pageClasses = computed(() => {
   return ['page', 'page-events', 'page-bottom-spacer']
 })
@@ -685,15 +677,6 @@ const pageClasses = computed(() => {
     .tab-list-header {
       margin-left: auto;
     }
-
-    /*&.no-filters {
-
-      justify-content: flex-end;
-
-      .filters {
-        display: none;
-      }
-    }*/
   }
 
   :deep(.tab-list) {
