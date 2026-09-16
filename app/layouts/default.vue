@@ -129,9 +129,9 @@ onMounted(() => {
     }
 
     .primary {
-      position: relative;
+      position: sticky;
       top: auto;
-      z-index: 100;
+      z-index: 102;
     }
 
     // Keep the mobile nav background inside HeaderSticky
