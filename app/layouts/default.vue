@@ -104,23 +104,24 @@ onMounted(() => {
   .primary {
     position: sticky;
     will-change: top;
+    z-index: 101;
   }
 
-.section-alert {
-  height: 0;
-
-  .alert-positioner {
+  .section-alert {
     height: 0;
-    position: relative;
-  }
 
-  .dismissible-alert {
-    position: absolute;
-    z-index: 100;
-    top: 32px;
-    right: 0;
+    .alert-positioner {
+      height: 0;
+      position: relative;
+    }
+
+    .dismissible-alert {
+      position: absolute;
+      z-index: 100;
+      top: 32px;
+      right: 0;
+    }
   }
-}
 
   @media #{$small} {
     .brand-bar {
