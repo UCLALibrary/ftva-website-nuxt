@@ -52,18 +52,20 @@ onMounted(() => {
       :primary-items="primaryMenuItems"
     />
     <!-- Add this to the right place for dismissible alerts-->
-    <!-- <SectionWrapper
-      class="
-      section-alert"
+    <SectionWrapper
+      class="section-alert"
       theme="divider"
     >
-      <site-notification-alert
-        v-if="
-          globalStore.globals.dismissibleAlert"
-        class="dismissible-alert"
-        v-bind="globalStore.globals.dismissibleAlert"
-      />
-    </SectionWrapper> -->
+      <div class="one-column">
+        <div class="alert-positioner">
+          <site-notification-alert
+            v-if="globalStore.globals.dismissibleAlert"
+            class="dismissible-alert"
+            v-bind="globalStore.globals.dismissibleAlert"
+          />
+        </div>
+      </div>
+    </SectionWrapper>
     <slot />
     <footer data-test="footer">
       <footer-main />
@@ -104,17 +106,21 @@ onMounted(() => {
     will-change: top;
   }
 
-  .section-alert {
+.section-alert {
+  height: 0;
+
+  .alert-positioner {
     height: 0;
     position: relative;
-
-    .dismissible-alert {
-      position: absolute;
-      z-index: 100;
-      top: 32px;
-      right: var(--unit-gutter);
-    }
   }
+
+  .dismissible-alert {
+    position: absolute;
+    z-index: 100;
+    top: 32px;
+    right: 0;
+  }
+}
 
   @media #{$small} {
     .brand-bar {
