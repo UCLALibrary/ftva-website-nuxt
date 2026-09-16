@@ -130,7 +130,7 @@ onMounted(() => {
 
     .primary {
       position: sticky;
-      top: auto;
+      top: 0;
       z-index: 102;
     }
 
