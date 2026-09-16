@@ -121,11 +121,11 @@ onMounted(() => {
       display: none;
     }
 
-    .primary {
-      position: relative;
-      top: auto;
-      z-index: 100;
-    }
+  .primary {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
     // Keep the mobile nav background inside HeaderSticky
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
