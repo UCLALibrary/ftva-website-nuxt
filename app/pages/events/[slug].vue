@@ -63,7 +63,7 @@ if (data.value.ftvaEvent && import.meta.prerender) {
 
     // LADI-5361 Add the individual screening descriptions as well
     const screeningDescriptions = screeningDetails
-      .map(({ description }) => description)
+      .map(({ text }) => text)
       .filter(Boolean)
 
     if (screeningDescriptions.length > 0) {
