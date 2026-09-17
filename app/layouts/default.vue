@@ -121,36 +121,12 @@ onMounted(() => {
       display: none;
     }
 
-  .primary {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-
-    // Keep the mobile nav background inside HeaderSticky
-    :deep(.ftva.nav-primary.primary .nav-background-fill) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 64px;
-    }
-
-    // Keep the mobile site title inside the same 64px header
+    // Keep the mobile site title inside the header row,
+    // below the site notification banner
     :deep(.ftva.nav-primary.primary .item-top-mobile) {
       position: absolute;
       top: 0;
       left: 18px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-    }
-
-    // Keep search + hamburger inside that same header row
-    :deep(.ftva.nav-primary.primary .more-menu) {
-      position: absolute;
-      top: 0;
-      right: 18px;
       height: 64px;
       display: flex;
       align-items: center;
