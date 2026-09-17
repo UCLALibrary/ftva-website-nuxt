@@ -35,6 +35,11 @@ onMounted(() => {
 </script>
 <template lang="html">
   <div :class="classes">
+    <site-notification-banner
+      v-if="globalStore.globals.bannerAlert"
+      class="site-notification-banner"
+      :text="globalStore.globals.bannerAlert.text"
+    />
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar
       class="brand-bar"
@@ -47,7 +52,7 @@ onMounted(() => {
       :primary-items="primaryMenuItems"
     />
     <!-- Add this to the right place for dismissible alerts-->
-    <!--SectionWrapper
+    <!-- <SectionWrapper
       class="
       section-alert"
       theme="divider"
@@ -58,7 +63,7 @@ onMounted(() => {
         class="dismissible-alert"
         v-bind="globalStore.globals.dismissibleAlert"
       />
-    </SectionWrapper-->
+    </SectionWrapper> -->
     <slot />
     <footer data-test="footer">
       <footer-main />
@@ -82,6 +87,12 @@ onMounted(() => {
   }
 
   flex: 1 1 auto;
+
+  .site-notification-banner {
+    position: relative;
+    z-index: 101;
+    flex: 0 0 auto;
+  }
 
   .brand-bar {
     width: 100%;
@@ -108,6 +119,17 @@ onMounted(() => {
   @media #{$small} {
     .brand-bar {
       display: none;
+    }
+
+    // Keep the mobile site title inside the header row,
+    // below the site notification banner
+    :deep(.ftva.nav-primary.primary .item-top-mobile) {
+      position: absolute;
+      top: 0;
+      left: 18px;
+      height: 64px;
+      display: flex;
+      align-items: center;
     }
 
     :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
