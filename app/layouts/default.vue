@@ -19,6 +19,19 @@ const primaryMenuItems = computed(() => {
   return globalStore && (globalStore.header && globalStore.header.primary) ? globalStore.header.primary : null
 })
 
+const parsedSiteNotificationBanner = computed(() => {
+  const banner = globalStore.globals.bannerAlert
+
+  if (!banner) {
+    return null
+  }
+
+  return {
+    ...banner,
+    text: banner.text?.trim() ?? '',
+  }
+})
+
 const isMobile = ref(false)
 const { refresh } = useAlerts()
 
@@ -36,9 +49,9 @@ onMounted(() => {
 <template lang="html">
   <div :class="classes">
     <site-notification-banner
-      v-if="globalStore.globals.bannerAlert"
+      v-if="parsedSiteNotificationBanner"
       class="site-notification-banner"
-      :text="globalStore.globals.bannerAlert.text"
+      :text="parsedSiteNotificationBanner.text"
     />
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar
@@ -64,6 +77,7 @@ onMounted(() => {
         v-bind="globalStore.globals.dismissibleAlert"
       />
     </SectionWrapper> -->
+    <h1>globalStore: <pre>{{globalStore.globals.bannerAlert?.text?.trim() }}</pre></h1>
     <slot />
     <footer data-test="footer">
       <footer-main />
@@ -117,12 +131,31 @@ onMounted(() => {
   }
 
   @media #{$small} {
+
+    // &:has(.is-opened-mobile) {
+    //   .site-notification-banner {
+    //     display: none;
+    //   }
+    // }
+
     .brand-bar {
       display: none;
     }
 
-    // Keep the mobile site title inside the header row,
-    // below the site notification banner
+    .primary {
+      position: relative;
+      top: auto;
+      z-index: 100;
+    }
+
+    :deep(.ftva.nav-primary.primary .nav-background-fill) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+    }
+
     :deep(.ftva.nav-primary.primary .item-top-mobile) {
       position: absolute;
       top: 0;
@@ -132,9 +165,14 @@ onMounted(() => {
       align-items: center;
     }
 
-    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
-      display: none;
+  //   :deep(.ftva.nav-primary.primary .more-menu) {
+  //     position: absolute;
+  //     top: 0;
+  //     right: 18px;
+  //     height: 64px;
+  //     display: flex;
+  //     align-items: center;
+  //   }
     }
-  }
 }
 </style>
