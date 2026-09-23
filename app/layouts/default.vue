@@ -53,17 +53,20 @@ onMounted(() => {
       class="site-notification-banner"
       :text="parsedSiteNotificationBanner.text"
     />
+
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar
       class="brand-bar"
       role="banner"
       aria-label="Site Logo"
     />
+
     <header-sticky
       v-if="primaryMenuItems"
       class="primary"
       :primary-items="primaryMenuItems"
     />
+
     <!-- Add this to the right place for dismissible alerts-->
     <!-- <SectionWrapper
       class="
@@ -77,8 +80,9 @@ onMounted(() => {
         v-bind="globalStore.globals.dismissibleAlert"
       />
     </SectionWrapper> -->
-    <h1>globalStore: <pre>{{globalStore.globals.bannerAlert?.text?.trim() }}</pre></h1>
+
     <slot />
+
     <footer data-test="footer">
       <footer-main />
     </footer>
@@ -131,12 +135,11 @@ onMounted(() => {
   }
 
   @media #{$small} {
-
-    // &:has(.is-opened-mobile) {
-    //   .site-notification-banner {
-    //     display: none;
-    //   }
-    // }
+    &:has(.menu.is-opened-mobile) {
+      .site-notification-banner {
+        display: none;
+      }
+    }
 
     .brand-bar {
       display: none;
@@ -164,15 +167,6 @@ onMounted(() => {
       display: flex;
       align-items: center;
     }
-
-  //   :deep(.ftva.nav-primary.primary .more-menu) {
-  //     position: absolute;
-  //     top: 0;
-  //     right: 18px;
-  //     height: 64px;
-  //     display: flex;
-  //     align-items: center;
-  //   }
-    }
+  }
 }
 </style>
