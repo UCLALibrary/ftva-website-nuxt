@@ -19,6 +19,19 @@ const primaryMenuItems = computed(() => {
   return globalStore && (globalStore.header && globalStore.header.primary) ? globalStore.header.primary : null
 })
 
+  const parsedSiteNotificationBanner = computed(() => {
+    const banner = globalStore.globals.bannerAlert
+
+    if (!banner) {
+      return null
+    }
+
+    return {
+      ...banner,
+      text: banner.text?.trim() ?? '',
+    }
+  })
+
 const isMobile = ref(false)
 const { refresh } = useAlerts()
 
@@ -33,24 +46,28 @@ onMounted(() => {
 })
 
 </script>
+
 <template lang="html">
   <div :class="classes">
     <site-notification-banner
-      v-if="globalStore.globals.bannerAlert"
+      v-if="parsedSiteNotificationBanner"
       class="site-notification-banner"
-      :text="globalStore.globals.bannerAlert.text"
+      :text="parsedSiteNotificationBanner.text"
     />
+
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar
       class="brand-bar"
       role="banner"
       aria-label="Site Logo"
     />
+
     <header-sticky
       v-if="primaryMenuItems"
       class="primary"
       :primary-items="primaryMenuItems"
     />
+
     <!-- Add this to the right place for dismissible alerts-->
     <SectionWrapper
       class="section-alert"
@@ -66,7 +83,9 @@ onMounted(() => {
         </div>
       </div>
     </SectionWrapper>
+
     <slot />
+
     <footer data-test="footer">
       <footer-main />
     </footer>
