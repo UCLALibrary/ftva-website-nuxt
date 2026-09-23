@@ -44,8 +44,8 @@ onMounted(() => {
   isMobile.value = globalStore.winWidth <= 1024
   refresh()
 })
-
 </script>
+
 <template lang="html">
   <div :class="classes">
     <site-notification-banner
