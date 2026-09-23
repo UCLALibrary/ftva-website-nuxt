@@ -123,7 +123,6 @@ onMounted(() => {
   .primary {
     position: sticky;
     will-change: top;
-    z-index: 101;
   }
 
   .section-alert {
@@ -143,6 +142,12 @@ onMounted(() => {
   }
 
   @media #{$small} {
+    &:has(.menu.is-opened-mobile) {
+      .site-notification-banner {
+        display: none;
+      }
+    }
+
     .brand-bar {
       display: none;
     }
@@ -150,10 +155,9 @@ onMounted(() => {
     .primary {
       position: sticky;
       top: 0;
-      z-index: 102;
+      z-index: 100;
     }
 
-    // Keep the mobile nav background inside HeaderSticky
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
       position: absolute;
       top: 0;
@@ -162,7 +166,6 @@ onMounted(() => {
       height: 64px;
     }
 
-    // Keep the mobile site title inside the same 64px header
     :deep(.ftva.nav-primary.primary .item-top-mobile) {
       position: absolute;
       top: 0;
@@ -170,20 +173,6 @@ onMounted(() => {
       height: 64px;
       display: flex;
       align-items: center;
-    }
-
-    // Keep search + hamburger inside that same header row
-    :deep(.ftva.nav-primary.primary .more-menu) {
-      position: absolute;
-      top: 0;
-      right: 18px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-    }
-
-    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
-      display: none;
     }
   }
 }
