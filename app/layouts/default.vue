@@ -146,8 +146,8 @@ onMounted(() => {
     }
 
     .primary {
-      position: relative;
-      top: auto;
+      position: sticky;
+      top: 0;
       z-index: 100;
     }
 
