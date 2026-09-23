@@ -52,12 +52,22 @@ if (data.value.ftvaEvent && import.meta.prerender) {
     }
 
     // LADI-5318 Add the individual screening titles so events can be searchable by them
-    const screeningTitles = (data.value.ftvaEvent.ftvaEventScreeningDetails || [])
+    const screeningDetails = data.value.ftvaEvent.ftvaEventScreeningDetails || []
+    const screeningTitles = screeningDetails
       .flatMap(({ title, alternateTitle }) => [title, alternateTitle])
       .filter(Boolean)
 
     if (screeningTitles.length > 0) {
       data.value.ftvaEvent.screeningTitles = screeningTitles
+    }
+
+    // LADI-5361 Add the individual screening descriptions as well
+    const screeningDescriptions = screeningDetails
+      .map(({ text }) => text)
+      .filter(Boolean)
+
+    if (screeningDescriptions.length > 0) {
+      data.value.ftvaEvent.screeningDescriptions = screeningDescriptions
     }
 
     await indexContent(data.value.ftvaEvent, route.params.slug)
