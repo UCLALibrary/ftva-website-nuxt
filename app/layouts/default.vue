@@ -19,6 +19,19 @@ const primaryMenuItems = computed(() => {
   return globalStore && (globalStore.header && globalStore.header.primary) ? globalStore.header.primary : null
 })
 
+const parsedSiteNotificationBanner = computed(() => {
+  const banner = globalStore.globals.bannerAlert
+
+  if (!banner) {
+    return null
+  }
+
+  return {
+    ...banner,
+    text: banner.text?.trim() ?? '',
+  }
+})
+
 const isMobile = ref(false)
 const { refresh } = useAlerts()
 
@@ -31,23 +44,31 @@ onMounted(() => {
   isMobile.value = globalStore.winWidth <= 1024
   refresh()
 })
-
 </script>
+
 <template lang="html">
   <div :class="classes">
+    <site-notification-banner
+      v-if="parsedSiteNotificationBanner"
+      class="site-notification-banner"
+      :text="parsedSiteNotificationBanner.text"
+    />
+
     <!-- site brand bar only shows on desktop -->
     <site-brand-bar
       class="brand-bar"
       role="banner"
       aria-label="Site Logo"
     />
+
     <header-sticky
       v-if="primaryMenuItems"
       class="primary"
       :primary-items="primaryMenuItems"
     />
+
     <!-- Add this to the right place for dismissible alerts-->
-    <!--SectionWrapper
+    <!-- <SectionWrapper
       class="
       section-alert"
       theme="divider"
@@ -58,8 +79,10 @@ onMounted(() => {
         class="dismissible-alert"
         v-bind="globalStore.globals.dismissibleAlert"
       />
-    </SectionWrapper-->
+    </SectionWrapper> -->
+
     <slot />
+
     <footer data-test="footer">
       <footer-main />
     </footer>
@@ -82,6 +105,12 @@ onMounted(() => {
   }
 
   flex: 1 1 auto;
+
+  .site-notification-banner {
+    position: relative;
+    z-index: 101;
+    flex: 0 0 auto;
+  }
 
   .brand-bar {
     width: 100%;
@@ -106,8 +135,37 @@ onMounted(() => {
   }
 
   @media #{$small} {
+    &:has(.menu.is-opened-mobile) {
+      .site-notification-banner {
+        display: none;
+      }
+    }
+
     .brand-bar {
       display: none;
+    }
+
+    .primary {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    :deep(.ftva.nav-primary.primary .nav-background-fill) {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+    }
+
+    :deep(.ftva.nav-primary.primary .item-top-mobile) {
+      position: absolute;
+      top: 0;
+      left: 18px;
+      height: 64px;
+      display: flex;
+      align-items: center;
     }
 
     :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
