@@ -74,8 +74,16 @@ function runNoSnapshotEventListingTests() {
 
     cy.getByData('date-filter').scrollIntoView({ offset: { top: -150, left: 0 } })
     cy.wait(1000)
-    cy.get('.clear-button').click()
-    cy.get('.select-button').click()
+    // Reopen the date picker after the previous Done closed it
+    cy.getByData('date-filter').click()
+
+    cy.get('.clear-button')
+      .should('be.visible')
+      .click()
+
+    cy.get('.select-button')
+      .should('be.visible')
+      .click()
 
     cy.wait('@eventSearchUnfiltered')
     cy.get('.list').find('li').should('have.length', 5)

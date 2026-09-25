@@ -50,6 +50,26 @@ if (data.value.ftvaEvent && import.meta.prerender) {
       data.value.ftvaEvent.eventSeriesTitle = data.value.ftvaEventSeries[0]?.title || null
       data.value.ftvaEvent.eventSeriesLink = data.value.ftvaEventSeries[0]?.to || null
     }
+
+    // LADI-5318 Add the individual screening titles so events can be searchable by them
+    const screeningDetails = data.value.ftvaEvent.ftvaEventScreeningDetails || []
+    const screeningTitles = screeningDetails
+      .flatMap(({ title, alternateTitle }) => [title, alternateTitle])
+      .filter(Boolean)
+
+    if (screeningTitles.length > 0) {
+      data.value.ftvaEvent.screeningTitles = screeningTitles
+    }
+
+    // LADI-5361 Add the individual screening descriptions as well
+    const screeningDescriptions = screeningDetails
+      .map(({ text }) => text)
+      .filter(Boolean)
+
+    if (screeningDescriptions.length > 0) {
+      data.value.ftvaEvent.screeningDescriptions = screeningDescriptions
+    }
+
     await indexContent(data.value.ftvaEvent, route.params.slug)
     // console.log('Event indexed successfully during static build')
   } catch (error) {
@@ -126,7 +146,6 @@ const parsedFTVAEventScreeningDetails = computed(() => {
   if (page?.value.ftvaEventScreeningDetails.length === 0) {
     return null
   }
-
   return page?.value.ftvaEventScreeningDetails?.map((obj) => {
     return {
       ...obj,
