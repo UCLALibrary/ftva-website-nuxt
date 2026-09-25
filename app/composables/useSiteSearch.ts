@@ -16,6 +16,7 @@ export default function useSiteSearch() {
     'sectionHandle^2',
     'groupName^2',
     'screeningTitles^2',
+    'screeningDescriptions',
   ]
   async function aggregationsQuery() {
     const response = await fetch(

@@ -7,13 +7,19 @@ run-name: >
       && format('release {0}', github.ref_name)
       || github.event_name == 'schedule'
       && 'latest tag (scheduled)'
-      || 'latest tag (manual)' }}
+      || format('tag {0} (manual)', inputs.ref) }}
 
 on:
   release:
     types: [published]
+
   workflow_dispatch:
-    inputs: {}
+    inputs:
+      ref:
+        description: "Tag to deploy (example: 2.2.1)"
+        required: true
+        type: string
+
   schedule:
     - cron: '0 17 * * *'  # 09:00 America/Los_Angeles (PST, UTC-8)
     - cron: '0 23 * * *'  # 15:00 America/Los_Angeles (PST, UTC-8)
@@ -30,29 +36,36 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Step 2: Discover latest tag for schedule/manual builds
-      - name: Get Latest Tag (schedule/manual)
-        if: ${{ github.event_name != 'release' }}
+      # Step 2: Discover latest tag for scheduled builds
+      - name: Get Latest Tag (schedule)
+        if: ${{ github.event_name == 'schedule' }}
         run: |
           LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
           echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
           echo "CURRENT_REF=$LATEST_TAG" >> $GITHUB_ENV
           echo "Latest tag is: $LATEST_TAG"
 
-      # Step 3: For release builds, CURRENT_REF = release tag
+      # Step 3: For manual builds, CURRENT_REF = manually selected tag
+      - name: Set CURRENT_REF for manual build
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "CURRENT_REF=${{ inputs.ref }}" >> $GITHUB_ENV
+          echo "Manual tag ref: ${{ inputs.ref }}"
+
+      # Step 4: For release builds, CURRENT_REF = release tag
       - name: Set CURRENT_REF for release
         if: ${{ github.event_name == 'release' }}
         run: |
           echo "CURRENT_REF=${GITHUB_REF_NAME}" >> $GITHUB_ENV
           echo "Release tag ref: ${GITHUB_REF_NAME}"
 
-      # Step 4: Checkout the ref we want and install deps (handled by composite)
+      # Step 5: Checkout the ref we want and install deps (handled by composite)
       - name: Set up workspace (checkout ref + install deps)
         uses: ./.github/workflows/setup-workspace
         with:
           ref: ${{ env.CURRENT_REF }}
 
-      # Step 5: Capture real ref for labeling + caching
+      # Step 6: Capture real ref for labeling + caching
       - name: Capture current ref info
         run: |
           echo "CURRENT_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
@@ -63,7 +76,7 @@ jobs:
           echo "Commit: $(git rev-parse HEAD)"
           echo "Short:  $(git rev-parse --short HEAD)"
 
-      # Step 6: Cache build
+      # Step 7: Cache build
       - name: Cache built static site
         id: cache-nuxt3
         uses: actions/cache@v3
@@ -71,7 +84,7 @@ jobs:
           path: .output/public
           key: nuxt3-site-${{ env.CURRENT_SHORT_SHA || github.sha }}
 
-      # Step 7: Build Nuxt site
+      # Step 8: Build Nuxt site
       - name: Generate Nuxt static site
         run: pnpm run generate
         env:
@@ -84,7 +97,7 @@ jobs:
           ES_ALIAS: ${{ secrets.ES_ALIAS_PROD }}
           ES_INDEX_PREFIX: ${{ secrets.ES_INDEX_PREFIX_PROD }}
 
-      # Step 8: Deploy
+      # Step 9: Deploy
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v2
         with:

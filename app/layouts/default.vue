@@ -31,6 +31,18 @@ const primaryMenuItems = computed(() => {
       text: banner.text?.trim() ?? '',
     }
   })
+const parsedSiteNotificationBanner = computed(() => {
+  const banner = globalStore.globals.bannerAlert
+
+  if (!banner) {
+    return null
+  }
+
+  return {
+    ...banner,
+    text: banner.text?.trim() ?? '',
+  }
+})
 
 const isMobile = ref(false)
 const { refresh } = useAlerts()
@@ -44,7 +56,6 @@ onMounted(() => {
   isMobile.value = globalStore.winWidth <= 1024
   refresh()
 })
-
 </script>
 
 <template lang="html">
@@ -83,6 +94,18 @@ onMounted(() => {
         </div>
       </div>
     </SectionWrapper>
+    <!-- <SectionWrapper
+      class="
+      section-alert"
+      theme="divider"
+    >
+      <site-notification-alert
+        v-if="
+          globalStore.globals.dismissibleAlert"
+        class="dismissible-alert"
+        v-bind="globalStore.globals.dismissibleAlert"
+      />
+    </SectionWrapper> -->
 
     <slot />
 
@@ -173,6 +196,10 @@ onMounted(() => {
       height: 64px;
       display: flex;
       align-items: center;
+    }
+
+    :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
+      display: none;
     }
   }
 }
