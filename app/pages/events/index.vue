@@ -113,7 +113,13 @@ interface FilterGroup {
 const userFilterSelection = ref<FilterItem>({ 'ftvaEventTypeFilters.title.keyword': [], 'ftvaScreeningFormatFilters.title.keyword': [] })
 const userDateSelection = ref<string[]>([])
 const allFilters = ref<FilterItem>({})
-const userViewSelection = ref<string>('list')
+const calendarEvents = ref([])
+const calendarMonth = ref(new Date())
+const route = useRoute()
+const router = useRouter()
+const userViewSelection = ref<string>(
+  (route.query.view as string) || 'list'
+)
 
 // "STATE"
 const documentsPerPage = 10
@@ -122,17 +128,18 @@ const noResultsFound = ref<boolean>(false)
 const eventFetchFunction = async () => {
   const page = currentPage.value
   const size = 10
-  let results: any = {}
 
-  if (userViewSelection.value === 'list') {
-    const { paginatedSearchFilters } = useListSearchFilter()
-    results = await paginatedSearchFilters(page, size, 'ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-  } else {
-    //  Calendar View code
-    const { paginatedSearchFilters } = useCalendarSearchFilter()
-    results = await paginatedSearchFilters('ftvaEvent', userFilterSelection.value, userDateSelection.value, 'startDate', 'asc')
-  }
-  return results
+  const { paginatedSearchFilters } = useListSearchFilter()
+
+  return await paginatedSearchFilters(
+    page,
+    size,
+    'ftvaEvent',
+    userFilterSelection.value,
+    userDateSelection.value,
+    'startDate',
+    'asc',
+  )
 }
 
 const onResults = (results) => {
@@ -206,8 +213,6 @@ const parsedRemoveSearchFilters = computed(() => {
   return removefilters
 })
 
-const route = useRoute()
-const router = useRouter()
 const { width } = useWindowSize()
 
 watch(
@@ -257,12 +262,17 @@ watch(() => route.query, async (newVal, oldVal) => {
 
   isMobile.value ? mobileItemList.value = [] : desktopItemList.value = []
   hasMore.value = true
-  await searchES()
-  // Restore scroll position
-  // // Scroll after DOM updates
-  await nextTick()
-  if (!isMobile.value && route.query.page && resultsSection.value && parsedEvents.value.length > 0) {
-    await scrollTo(resultsSection)
+  if (userViewSelection.value === 'calendar') {
+    await fetchCalendarMonth(calendarMonth.value)
+  }
+  else {
+    await searchES()
+    // Restore scroll position
+    // // Scroll after DOM updates
+    await nextTick()
+    if (!isMobile.value && route.query.page && resultsSection.value && parsedEvents.value.length > 0) {
+      await scrollTo(resultsSection)
+    }
   }
 }, { deep: true, immediate: true })
 
@@ -292,19 +302,29 @@ onMounted(async () => {
   if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
   dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
 })
+function parseEventResults(results) {
+  if (!results?.length) return []
 
-// COMPUTED EVENTS
-const parsedEvents = computed(() => {
-  if (currentList.value.length === 0) return []
-  return currentList.value.map((obj) => {
+  return results.map((obj) => {
     return {
       ...obj._source,
-      tagLabels: addHighlightState(getEventFilterLabels(obj._source)),
+      tagLabels: addHighlightState(
+        getEventFilterLabels(obj._source)
+      ),
       to: `/${obj._source.uri}`,
-      image: { ...parseImage(obj), sizes: '(min-width: 1025px) 284px, (min-width: 750px) calc(100vw - 128px), calc(100vw - 48px)' },
-      category: obj._source.eventSeriesTitle ? obj._source.eventSeriesTitle : null
+      image: {
+        ...parseImage(obj),
+        sizes: '(min-width: 1025px) 284px, (min-width: 750px) calc(100vw - 48px), calc(100vw - 48px)',
+      },
+      category: obj._source.eventSeriesTitle
+        ? obj._source.eventSeriesTitle
+        : null,
     }
   })
+}
+// COMPUTED EVENTS
+const parsedEvents = computed(() => {
+  return parseEventResults(currentList.value)
 })
 
 function parseDateFromURL(datesParam: string): string[] {
@@ -312,6 +332,9 @@ function parseDateFromURL(datesParam: string): string[] {
   if (datesParam === '') return []
   return datesParam?.split(',')
 }
+const parsedCalendarEvents = computed(() => {
+  return parseEventResults(calendarEvents.value)
+})
 
 function addHighlightState(tagLabels) {
   // if userFilterSelection.value is an empty object for initial page load, then just return tagLabels array back
@@ -501,6 +524,41 @@ const parseFirstEventMonth = computed(() => {
   }
   return null
 })
+function formatDate(date: Date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  return `${year}-${month}-${day}`
+}
+async function fetchCalendarMonth(date: Date) {
+  const startDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    1,
+  )
+
+  const endDate = new Date(
+    date.getFullYear(),
+    date.getMonth() + 1,
+    1,
+  )
+
+  const { paginatedSearchFilters } = useCalendarSearchFilter()
+
+  const results = await paginatedSearchFilters(
+    'ftvaEvent',
+    [
+      formatDate(startDate),
+      formatDate(endDate),
+    ],
+    'startDate',
+    'asc',
+  )
+
+  calendarEvents.value = results?.hits?.hits || []
+  calendarMonth.value = startDate
+}
 
 const pageClasses = computed(() => {
   return ['page', 'page-events', 'page-bottom-spacer']
@@ -535,7 +593,10 @@ const pageClasses = computed(() => {
           alignment="right"
           :initial-tab="parseViewSelection"
         >
-          <template #filters>
+          <template
+            v-if="$route.query.view !== 'calendar'"
+            #filters
+          >
             <div class="filters-wrapper">
               <date-filter
                 :key="dateListDateFilter"
@@ -591,7 +652,7 @@ const pageClasses = computed(() => {
                 v-else
                 class="empty-tab"
               >
-                Data loading in progress ...
+                Data Loading in Progress ...
               </p>
             </template>
           </TabItem>
@@ -601,11 +662,12 @@ const pageClasses = computed(() => {
             class="tab-content"
             data-test="calendar-view"
           >
-            <template v-if="!isMobile && parsedEvents && parsedEvents.length > 0">
+            <template v-if="!isMobile">
               <div style="display: flex;justify-content: center;">
                 <base-calendar
-                  :events="parsedEvents"
-                  :first-event-month="parseFirstEventMonth"
+                  :events="parsedCalendarEvents"
+                  :first-event-month="[calendarMonth]"
+                  @month-change="fetchCalendarMonth"
                 />
               </div>
               <br>
@@ -691,6 +753,10 @@ const pageClasses = computed(() => {
 
     .filters {
       flex-basis: 65%;
+    }
+
+    .tab-list-header {
+      margin-left: auto;
     }
   }
 
@@ -787,6 +853,7 @@ const pageClasses = computed(() => {
 
     .empty-tab {
       @include ftva-subtitle-1;
+      text-transform: none;
       color: var(--subtitle-grey);
       padding: 100px 0;
       text-align: center;

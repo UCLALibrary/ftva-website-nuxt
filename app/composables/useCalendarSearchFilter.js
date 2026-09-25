@@ -4,7 +4,6 @@ export default function useCalendarSearchFilter() {
 
 async function paginatedSearchFilters(
   sectionHandle,
-  filters,
   dates,
   sort,
   orderBy,
@@ -29,13 +28,12 @@ async function paginatedSearchFilters(
           },
           method: 'POST',
           body: JSON.stringify({
-            size: 2000,
+            size: 500,
             _source: [...source],
             query: {
               bool: {
                 filter: [
                   ...parseSectionHandle(sectionHandle),
-                  ...parseFilterQuery(filters),
                   parseDateRange(dates)
                 ]
               },
@@ -56,58 +54,14 @@ function getFirstDayOfTheCurrentMonth() {
   return `${year}-${month}-${day}`
 }
 function parseDateRange(dates) {
-  const dateObj = { range: { startDate: {} } }
-
-  if (!dates || dates.length === 0) {
-    dateObj.range.startDate.gte = getFirstDayOfTheCurrentMonth()
-    return dateObj // Always return upcoming events when no date filter selected
+  return {
+    range: {
+      startDate: {
+        gte: dates[0],
+        lt: dates[1],
+      },
+    },
   }
-
-  dateObj.range.startDate = {}
-
-  if (dates.length === 2) {
-    dateObj.range.startDate.gte = dates[0]
-    dateObj.range.startDate.lte = dates[1]
-  } else {
-    dateObj.range.startDate.gte = dates[0]
-    dateObj.range.startDate.lte = dates[0] // This is needed for exact date match
-  }
-
-  // dateObj.range.startDate.format = 'yyyy-MM-dd' // TODO will decide the date format later
-
-  return dateObj
-}
-
-function parseFilterQuery(filters) {
-  if (!filters || filters.length === 0) return []
-  const boolQuery = []
-  /* Example structure to return for ES
-    [
-      {
-        "term": {
-          "locations.title.keyword":"Powell"
-        }
-      }
-    ]
-  */
-  for (const key in filters) {
-    // console.log(key)
-    if (Array.isArray(filters[key]) && filters[key].length > 0) {
-      const filterObj = {
-        terms: {}
-      }
-      filterObj.terms[key] = filters[key]
-      boolQuery.push(filterObj)
-    } else if (!Array.isArray(filters[key]) && filters[key] !== '') {
-      const filterObj = {
-        term: {}
-      }
-      filterObj.term[key] = filters[key]
-      boolQuery.push(filterObj)
-    }
-  }
-  // console.log("bool query:"+JSON.stringify(boolQuery))
-  return boolQuery
 }
 
 function parseSectionHandle(sectionHandle) {
