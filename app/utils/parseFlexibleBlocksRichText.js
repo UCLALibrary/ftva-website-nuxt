@@ -1,4 +1,4 @@
-import { convert } from 'html-to-text'
+import stripHtmlFromField from './stripHtmlFromField'
 
 // Helper to parse FlexibleBlocks on the General Content and Blog templates.
 // Parses RichText blocks into plain text for indexing/search.
@@ -13,11 +13,7 @@ function parseFlexibleBlocksRichText(blocks = []) {
     return []
   }
 
-  return richTextBlocks.map(block =>
-    convert(block.richText || '', {
-      wordwrap: false
-    })
-  )
+  return richTextBlocks.map(block => stripHtmlFromField(block.richText || ''))
 }
 
 export default parseFlexibleBlocksRichText

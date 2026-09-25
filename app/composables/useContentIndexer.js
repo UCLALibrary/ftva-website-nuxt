@@ -1,3 +1,5 @@
+import stripHtmlFromField from '@/utils/stripHtmlFromField'
+
 export function useContentIndexer() {
   const esIndex = useRuntimeConfig().public.esTempIndex
   const esURL = useRuntimeConfig().public.esURL
@@ -7,6 +9,13 @@ export function useContentIndexer() {
   async function indexContent(data, slug) {
     try {
       if (data && slug && esIndex) {
+        const searchableData = {
+          ...data,
+          richText: stripHtmlFromField(data.richText),
+          flexibleBlocksRichText: stripHtmlFromField(data.flexibleBlocksRichText),
+          screeningDescriptions: stripHtmlFromField(data.screeningDescriptions),
+        }
+
         // console.log('this is the elasticsearch plugin: ', JSON.stringify(Object.keys(data).length), slug)
 
         // console.log(`Requesting URL: ${esURL}/${esIndex}/_doc/${slug}`)
@@ -28,7 +37,7 @@ export function useContentIndexer() {
           const updateUrl = `${esURL}/${esIndex}/_update/${slug}`
           // console.log('ES update url', updateUrl)
           const postBody = {
-            doc: data
+            doc: searchableData
           }
           // console.log('postBody', JSON.stringify(postBody))
           const updateResponse = await fetch(
@@ -54,7 +63,7 @@ export function useContentIndexer() {
                         'Content-Type': 'application/json',
                       },
                       method: 'POST',
-                      body: JSON.stringify(data),
+                      body: JSON.stringify(searchableData),
                     }
           )
 
