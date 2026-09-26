@@ -19,18 +19,6 @@ const primaryMenuItems = computed(() => {
   return globalStore && (globalStore.header && globalStore.header.primary) ? globalStore.header.primary : null
 })
 
-  const parsedSiteNotificationBanner = computed(() => {
-    const banner = globalStore.globals.bannerAlert
-
-    if (!banner) {
-      return null
-    }
-
-    return {
-      ...banner,
-      text: banner.text?.trim() ?? '',
-    }
-  })
 const parsedSiteNotificationBanner = computed(() => {
   const banner = globalStore.globals.bannerAlert
 
@@ -146,6 +134,7 @@ onMounted(() => {
   .primary {
     position: sticky;
     will-change: top;
+    z-index: 101;
   }
 
   .section-alert {
@@ -161,6 +150,10 @@ onMounted(() => {
       z-index: 100;
       top: 32px;
       right: 0;
+
+      :deep(.button-dismiss:hover .hover .label) {
+        color: white;
+      }
     }
   }
 
@@ -179,6 +172,12 @@ onMounted(() => {
       position: sticky;
       top: 0;
       z-index: 100;
+    }
+
+    .section-alert {
+      .dismissible-alert {
+        right: var(--unit-gutter);
+      }
     }
 
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
