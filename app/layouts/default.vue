@@ -151,7 +151,9 @@ onMounted(() => {
       top: 32px;
       right: 0;
 
-      :deep(.button-dismiss:hover .hover .label) {
+      :deep(.button-dismiss:hover .hover .label),
+      :deep(.button-dismiss:focus .hover .label),
+      :deep(.button-dismiss:focus-visible .hover .label) {
         color: white;
       }
     }
