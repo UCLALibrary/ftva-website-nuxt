@@ -8,3 +8,5 @@ engineStrict: true
 minimumReleaseAgeExclude:
   - '@ucla-library-monorepo/ucla-library-website-components'
   - '@ucla-library/component-library-nuxt-module'
+overrides:
+  '@ucla-library-monorepo/ucla-library-website-components': 1.90.0
