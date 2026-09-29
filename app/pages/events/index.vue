@@ -289,19 +289,27 @@ async function setFilters() {
 }
 
 onMounted(async () => {
-  await setFilters()
-  const { allEvents } = useDateFilterQuery()
-  /* const testFilters = {
-    'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
-    'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
-  } */
+  if (route.query.view !== 'calendar') {
+    await setFilters()
+    const { allEvents } = useDateFilterQuery()
+    /* const testFilters = {
+      'ftvaEventTypeFilters.title.keyword': ['Guest speaker', '35mm'],
+      'ftvaScreeningFormatFilters.title.keyword': ['DCP', 'Film'],
+    } */
 
-  // Logic to fetch all events startDates formated for DateFilter
-  const esOutput = await allEvents('ftvaEvent', ['startDate'])
-  // console.log(esOutput.hits.total.value)
-  if (esOutput.hits.total.value === 0) dateListDateFilter.value = []
-  dateListDateFilter.value = esOutput.hits.hits.map(event => event.fields.formatted_date[0])
+    // Logic to fetch all events startDates formated for DateFilter
+    const esOutput = await allEvents('ftvaEvent', ['startDate'])
+    // console.log(esOutput.hits.total.value)
+    if (esOutput.hits.total.value === 0) {
+      dateListDateFilter.value = []
+    } else {
+      dateListDateFilter.value = esOutput.hits.hits
+        .map((event: { fields?: { formatted_date?: string[] } }) => event.fields?.formatted_date?.[0])
+        .filter((date): date is string => typeof date === 'string')
+    }
+  }
 })
+
 function parseEventResults(results) {
   if (!results?.length) return []
 
