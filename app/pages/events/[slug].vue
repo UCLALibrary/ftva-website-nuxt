@@ -19,7 +19,9 @@ const route = useRoute()
 
 // DATA
 const { data, error } = await useAsyncData(`events-detail-${route.params.slug}`, async () => {
+  console.log('Fetching event data for slug:', route.params.slug)
   const data = await $graphql.default.request(FTVAEventDetail, { slug: route.params.slug })
+  console.log('Fetched event data:', data)
   return data
 })
 

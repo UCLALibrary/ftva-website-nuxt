@@ -192,6 +192,7 @@ const pageClasses = computed(() => {
       >
         <template #block-info-top>
           <RichText
+            v-if="parsedAdmissions.description"
             :rich-text-content="parsedAdmissions.description"
             data-test="admissions-intro"
           />
@@ -213,6 +214,7 @@ const pageClasses = computed(() => {
           </template>
           <template #block-info-mid>
             <RichText
+              v-if="block.text"
               :rich-text-content="block.text"
               data-test="admissions-info"
             />
@@ -282,6 +284,7 @@ const pageClasses = computed(() => {
           </template>
           <template #block-info-mid>
             <RichText
+              v-if="block.text"
               :rich-text-content="block.text"
               data-test="parking-info"
             />
@@ -299,6 +302,7 @@ const pageClasses = computed(() => {
       </SectionHeader>
 
       <RichText
+        v-if="page.description"
         :rich-text-content="page.description"
         data-test="page-description"
       />

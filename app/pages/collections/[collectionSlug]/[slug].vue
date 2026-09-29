@@ -329,6 +329,7 @@ const pageClasses = computed(() => {
           Synopsis
         </h3>
         <RichText
+          v-if="page?.richText"
           class="eventDescription"
           :rich-text-content="page?.richText"
         />

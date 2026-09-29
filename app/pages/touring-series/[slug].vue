@@ -16,7 +16,9 @@ const route = useRoute()
 
 // GQL DATA
 const { data, error } = await useAsyncData(`touring-events-detail-${route.params.slug}`, async () => {
+  console.log('Fetching touring series data for slug:', route.params.slug)
   const data = await $graphql.default.request(FTVATouringSeriesDetail, { slug: route.params.slug })
+  console.log('Fetched touring series data:', data)
   return data
 })
 
@@ -208,7 +210,7 @@ useHead({
           Tour Dates
         </SectionHeader>
         <RichText
-          v-if="page?.richText"
+          v-if="page?.richTextDefaultWithTable"
           class="tour-dates"
           :rich-text-content="page?.richTextDefaultWithTable"
         />
