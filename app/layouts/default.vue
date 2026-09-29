@@ -171,17 +171,17 @@ onMounted(() => {
     .primary {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 102;
+    }
+
+    .site-notification-banner {
+      z-index: 101;
     }
 
     .section-alert {
       .dismissible-alert {
         right: var(--unit-gutter);
       }
-    }
-
-    .site-notification-banner {
-      z-index: 101;
     }
 
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
