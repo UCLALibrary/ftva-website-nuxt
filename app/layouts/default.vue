@@ -180,6 +180,10 @@ onMounted(() => {
       }
     }
 
+    .site-notification-banner {
+      z-index: 101;
+    }
+
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
       position: absolute;
       top: 0;
