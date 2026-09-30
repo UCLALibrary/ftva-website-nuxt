@@ -250,8 +250,14 @@ const pageClasses = computed(() => {
             </NuxtLink>
           </template>
 
-          <template #customDescription>
-            <RichText :rich-text-content="article.text" />
+          <template
+            v-if="article.text"
+            #customDescription
+          >
+            <RichText
+              v-if="article.text"
+              :rich-text-content="article.text"
+            />
           </template>
         </BlockCardWithImage>
       </ul>
