@@ -1,56 +1,107 @@
-name: Regenerate static site when craft data is updated.
+name: Production Site Build
+
+# This controls how the run is labeled in the GitHub UI
+run-name: >
+  Production Build -
+  ${{ github.event_name == 'release'
+      && format('release {0}', github.ref_name)
+      || github.event_name == 'schedule'
+      && 'latest tag (scheduled)'
+      || format('tag {0} (manual)', inputs.ref) }}
 
 on:
+  release:
+    types: [published]
+
   workflow_dispatch:
     inputs:
-      environment:
-        description: 'Environment(test/prod)'
+      ref:
+        description: "Tag to deploy (example: 2.2.1)"
         required: true
-        type: choice
-        options:
-          - test
-          - prod
-        default: 'test'
+        type: string
 
-concurrency:
-  group: deploy-${{ github.event.inputs.environment }}
-  cancel-in-progress: true
+  schedule:
+    - cron: '0 17 * * *'  # 09:00 America/Los_Angeles (PST, UTC-8)
+    - cron: '0 23 * * *'  # 15:00 America/Los_Angeles (PST, UTC-8)
 
 jobs:
-  nuxt-deploy:
+  nuxt-prod:
     name: Netlify deploy
     runs-on: ubuntu-latest
 
     steps:
 
-      - uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+      # Step 1: Always checkout repo so local actions and tags are available
+      - name: Checkout repo (for local actions and tags)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - uses: ./.github/workflows/setup-workspace
+      # Step 2: Discover latest tag for scheduled builds
+      - name: Get Latest Tag (schedule)
+        if: ${{ github.event_name == 'schedule' }}
+        run: |
+          LATEST_TAG=$(git describe --tags "$(git rev-list --tags --max-count=1)")
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "CURRENT_REF=$LATEST_TAG" >> $GITHUB_ENV
+          echo "Latest tag is: $LATEST_TAG"
 
+      # Step 3: For manual builds, CURRENT_REF = manually selected tag
+      - name: Set CURRENT_REF for manual build
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo "CURRENT_REF=${{ inputs.ref }}" >> $GITHUB_ENV
+          echo "Manual tag ref: ${{ inputs.ref }}"
+
+      # Step 4: For release builds, CURRENT_REF = release tag
+      - name: Set CURRENT_REF for release
+        if: ${{ github.event_name == 'release' }}
+        run: |
+          echo "CURRENT_REF=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          echo "Release tag ref: ${GITHUB_REF_NAME}"
+
+      # Step 5: Checkout the ref we want and install deps
+      - name: Set up workspace (checkout ref + install deps)
+        uses: ./.github/workflows/setup-workspace
+        with:
+          ref: ${{ env.CURRENT_REF }}
+
+      # Step 6: Capture real ref for labeling + caching
+      - name: Capture current ref info
+        run: |
+          echo "CURRENT_SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
+          echo "CURRENT_SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "CURRENT_REF=$(git describe --tags --always)" >> $GITHUB_ENV
+
+          echo "Building ref: $(git describe --tags --always)"
+          echo "Commit: $(git rev-parse HEAD)"
+          echo "Short:  $(git rev-parse --short HEAD)"
+
+      # Step 7: Cache build
       - name: Cache built static site
-        uses: actions/cache@v3
         id: cache-nuxt3
+        uses: actions/cache@v3
         with:
           path: .output/public
-          key: nuxt3-site-${{ github.sha }}
+          key: nuxt3-site-${{ env.CURRENT_SHORT_SHA || github.sha }}
 
-      # Generate Nuxt site and save the complete build output
+      # Step 8: Build Nuxt site
       - name: Generate Nuxt static site
         id: nuxt-generate
         run: |
           set -o pipefail
           pnpm run generate 2>&1 | tee nuxt-build.log
         env:
-          CRAFT_ENDPOINT: "${{ github.event.inputs.environment == 'test' && secrets.CRAFT_ENDPOINT_TEST || secrets.CRAFT_PROD_ENDPOINT }}"
+          CRAFT_ENDPOINT: ${{ secrets.CRAFT_PROD_ENDPOINT }}
           S3_BUCKET: "https://static.library.ucla.edu/"
-          SITEMAP_HOST: "${{ github.event.inputs.environment == 'test' && 'https://test-ftva.library.ucla.edu' || 'https://cinema.ucla.edu' }}"
+          SITEMAP_HOST: "https://cinema.ucla.edu"
           ES_URL: ${{ secrets.ES_URL }}
-          ES_READ_KEY: "${{ github.event.inputs.environment == 'test' && secrets.ES_READ_KEY_TEST || secrets.ES_READ_KEY_PROD }}"
-          ES_WRITE_KEY: "${{ github.event.inputs.environment == 'test' && secrets.ES_WRITE_KEY_TEST || secrets.ES_WRITE_KEY_PROD }}"
-          ES_ALIAS: "${{ github.event.inputs.environment == 'test' && secrets.ES_ALIAS_TEST || secrets.ES_ALIAS_PROD }}"
-          ES_INDEX_PREFIX: "${{ github.event.inputs.environment == 'test' && secrets.ES_INDEX_PREFIX_TEST || secrets.ES_INDEX_PREFIX_PROD }}"
+          ES_READ_KEY: ${{ secrets.ES_READ_KEY_PROD }}
+          ES_WRITE_KEY: ${{ secrets.ES_WRITE_KEY_PROD }}
+          ES_ALIAS: ${{ secrets.ES_ALIAS_PROD }}
+          ES_INDEX_PREFIX: ${{ secrets.ES_INDEX_PREFIX_PROD }}
 
-      # Analyze Nuxt/Nitro and Elasticsearch build errors
+      # Step 9: Analyze Nuxt build errors
       - name: Analyze Nuxt build errors
         id: analyze-nuxt
         if: always()
@@ -65,7 +116,6 @@ jobs:
 
           PRERENDER_5XX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
 
-          # Extract route + error message from each 5xx prerender log entry
           PRERENDER_5XX_DETAILS=$(
             grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log |
             sed -E 's/.*\[5XX\] //' |
@@ -121,11 +171,10 @@ jobs:
             echo "Slack notification: NO"
           fi
 
-      # Create Slack JSON payload outside the Slack action YAML
+      # Step 10: Create Slack payload
       - name: Create Slack payload
         if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
         env:
-          ENVIRONMENT: ${{ github.event.inputs.environment }}
           FAILED_5XX_ROUTES: ${{ steps.analyze-nuxt.outputs.prerender_5xx_details }}
           PRERENDER_5XX_COUNT: ${{ steps.analyze-nuxt.outputs.prerender_5xx_errors }}
           ES_INDEX_ERRORS: ${{ steps.analyze-nuxt.outputs.es_index_errors }}
@@ -136,8 +185,8 @@ jobs:
         run: |
           jq -n \
             --arg repository "${{ github.repository }}" \
-            --arg environment "$ENVIRONMENT" \
-            --arg sha "${{ github.sha }}" \
+            --arg ref "${{ env.CURRENT_REF }}" \
+            --arg sha "${{ env.CURRENT_SHORT_SHA }}" \
             --arg status "${{ steps.nuxt-generate.outcome }}" \
             --arg count "$PRERENDER_5XX_COUNT" \
             --arg routes "$FAILED_5XX_ROUTES" \
@@ -148,16 +197,16 @@ jobs:
             --arg es_skipped "$ES_ALIAS_SKIPPED" \
             --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             '{
-              text: "FTVA Static Site Regeneration",
+              text: "FTVA Production Build",
               blocks: [
                 {
                   type: "section",
                   text: {
                     type: "mrkdwn",
                     text:
-                      "⚠️ FTVA Static Site Regeneration completed with warnings\n\n" +
+                      "⚠️ FTVA Production Build completed with warnings\n\n" +
                       "Repository: `" + $repository + "`\n" +
-                      "Environment: `" + $environment + "`\n" +
+                      "Ref: `" + $ref + "`\n" +
                       "Commit: `" + $sha + "`\n" +
                       "Nuxt generate status: `" + $status + "`\n\n" +
                       "*Nuxt / Data*\n" +
@@ -176,7 +225,7 @@ jobs:
               ]
             }' > slack-payload.json
 
-      # Notify Slack when relevant errors are found
+      # Step 11: Notify Slack
       - name: Notify Slack
         if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
         uses: slackapi/slack-github-action@v4
@@ -185,16 +234,16 @@ jobs:
           webhook-type: incoming-webhook
           payload-file-path: ./slack-payload.json
 
-      # Existing Netlify deployment
-      - name: Deploy to Netlify on release
+      # Step 12: Deploy
+      - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v2
         with:
           production-deploy: true
-          deploy-message: https://github.com/UCLALibrary/ftva-website-nuxt/commit/${{ github.sha }}
+          deploy-message: "Build from ${{ env.CURRENT_REF }} (commit ${{ env.CURRENT_SHORT_SHA }})"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           publish-dir: .output/public
           fails-without-credentials: true
           github-deployment-environment: production
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: "${{ github.event.inputs.environment == 'test' && secrets.NETLIFY_TEST_FTVA_SITE_ID || secrets.NETLIFY_PROD_FTVA_SITE_ID }}"
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_PROD_FTVA_SITE_ID }}
