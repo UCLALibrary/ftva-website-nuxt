@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       # Step 1: Always checkout repo so local actions and tags are available
       - name: Checkout repo (for local actions and tags)
         uses: actions/checkout@v4
@@ -59,7 +60,7 @@ jobs:
           echo "CURRENT_REF=${GITHUB_REF_NAME}" >> $GITHUB_ENV
           echo "Release tag ref: ${GITHUB_REF_NAME}"
 
-      # Step 5: Checkout the ref we want and install deps (handled by composite)
+      # Step 5: Checkout the ref we want and install deps
       - name: Set up workspace (checkout ref + install deps)
         uses: ./.github/workflows/setup-workspace
         with:
@@ -86,7 +87,10 @@ jobs:
 
       # Step 8: Build Nuxt site
       - name: Generate Nuxt static site
-        run: pnpm run generate
+        id: nuxt-generate
+        run: |
+          set -o pipefail
+          pnpm run generate 2>&1 | tee nuxt-build.log
         env:
           CRAFT_ENDPOINT: ${{ secrets.CRAFT_PROD_ENDPOINT }}
           S3_BUCKET: "https://static.library.ucla.edu/"
@@ -97,7 +101,140 @@ jobs:
           ES_ALIAS: ${{ secrets.ES_ALIAS_PROD }}
           ES_INDEX_PREFIX: ${{ secrets.ES_INDEX_PREFIX_PROD }}
 
-      # Step 9: Deploy
+      # Step 9: Analyze Nuxt build errors
+      - name: Analyze Nuxt build errors
+        id: analyze-nuxt
+        if: always()
+        run: |
+          echo "===== Build error summary ====="
+
+          ES_INDEX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[INDEX-CREATION\]' nuxt-build.log || true)
+          ES_INDEX_CHECK_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[INDEX-CHECK\]' nuxt-build.log || true)
+          ES_ALIAS_READ_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-READ\]' nuxt-build.log || true)
+          ES_ALIAS_ERRORS=$(grep -c '\[BUILD-ERROR\]\[ELASTICSEARCH\]\[ALIAS-UPDATE\]' nuxt-build.log || true)
+          ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
+
+          PRERENDER_5XX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
+
+          PRERENDER_5XX_DETAILS=$(
+            grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log |
+            sed -E 's/.*\[5XX\] //' |
+            jq -r '"\(.route) | \(.message // .statusMessage // "")"' ||
+            true
+          )
+
+          PRERENDER_404_WARNINGS=$(grep -c '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true)
+
+          echo "ES index creation errors: $ES_INDEX_ERRORS"
+          echo "ES index check errors: $ES_INDEX_CHECK_ERRORS"
+          echo "ES alias read errors: $ES_ALIAS_READ_ERRORS"
+          echo "ES alias update errors: $ES_ALIAS_ERRORS"
+          echo "ES alias skipped: $ES_ALIAS_SKIPPED"
+          echo "Prerender 5xx errors: $PRERENDER_5XX_ERRORS"
+          echo "Prerender 404 warnings: $PRERENDER_404_WARNINGS"
+
+          echo "es_index_errors=$ES_INDEX_ERRORS" >> "$GITHUB_OUTPUT"
+          echo "es_index_check_errors=$ES_INDEX_CHECK_ERRORS" >> "$GITHUB_OUTPUT"
+          echo "es_alias_read_errors=$ES_ALIAS_READ_ERRORS" >> "$GITHUB_OUTPUT"
+          echo "es_alias_errors=$ES_ALIAS_ERRORS" >> "$GITHUB_OUTPUT"
+          echo "es_alias_skipped=$ES_ALIAS_SKIPPED" >> "$GITHUB_OUTPUT"
+          echo "prerender_5xx_errors=$PRERENDER_5XX_ERRORS" >> "$GITHUB_OUTPUT"
+          echo "prerender_404_warnings=$PRERENDER_404_WARNINGS" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "prerender_5xx_details<<EOF"
+            printf '%s\n' "$PRERENDER_5XX_DETAILS"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          echo
+          echo "===== Failed 5xx routes ====="
+          printf '%s\n' "$PRERENDER_5XX_DETAILS"
+
+          echo
+          echo "===== 404 warnings ====="
+          grep '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true
+
+          echo
+          echo "===== Relevant Elasticsearch messages ====="
+          grep -E '\[BUILD-(ERROR|WARNING)\]\[ELASTICSEARCH\]' nuxt-build.log || true
+
+          if [ "$PRERENDER_5XX_ERRORS" -gt 0 ] ||
+             [ "$ES_INDEX_ERRORS" -gt 0 ] ||
+             [ "$ES_INDEX_CHECK_ERRORS" -gt 0 ] ||
+             [ "$ES_ALIAS_READ_ERRORS" -gt 0 ] ||
+             [ "$ES_ALIAS_ERRORS" -gt 0 ]; then
+            echo "should_notify_slack=true" >> "$GITHUB_OUTPUT"
+            echo "Slack notification: YES"
+          else
+            echo "should_notify_slack=false" >> "$GITHUB_OUTPUT"
+            echo "Slack notification: NO"
+          fi
+
+      # Step 10: Create Slack payload
+      - name: Create Slack payload
+        if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
+        env:
+          FAILED_5XX_ROUTES: ${{ steps.analyze-nuxt.outputs.prerender_5xx_details }}
+          PRERENDER_5XX_COUNT: ${{ steps.analyze-nuxt.outputs.prerender_5xx_errors }}
+          ES_INDEX_ERRORS: ${{ steps.analyze-nuxt.outputs.es_index_errors }}
+          ES_INDEX_CHECK_ERRORS: ${{ steps.analyze-nuxt.outputs.es_index_check_errors }}
+          ES_ALIAS_READ_ERRORS: ${{ steps.analyze-nuxt.outputs.es_alias_read_errors }}
+          ES_ALIAS_ERRORS: ${{ steps.analyze-nuxt.outputs.es_alias_errors }}
+          ES_ALIAS_SKIPPED: ${{ steps.analyze-nuxt.outputs.es_alias_skipped }}
+        run: |
+          jq -n \
+            --arg repository "${{ github.repository }}" \
+            --arg ref "${{ env.CURRENT_REF }}" \
+            --arg sha "${{ env.CURRENT_SHORT_SHA }}" \
+            --arg status "${{ steps.nuxt-generate.outcome }}" \
+            --arg count "$PRERENDER_5XX_COUNT" \
+            --arg routes "$FAILED_5XX_ROUTES" \
+            --arg es_index "$ES_INDEX_ERRORS" \
+            --arg es_check "$ES_INDEX_CHECK_ERRORS" \
+            --arg es_alias_read "$ES_ALIAS_READ_ERRORS" \
+            --arg es_alias "$ES_ALIAS_ERRORS" \
+            --arg es_skipped "$ES_ALIAS_SKIPPED" \
+            --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            '{
+              text: "FTVA Production Build",
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text:
+                      "⚠️ FTVA Production Build completed with warnings\n\n" +
+                      "Repository: `" + $repository + "`\n" +
+                      "Ref: `" + $ref + "`\n" +
+                      "Commit: `" + $sha + "`\n" +
+                      "Nuxt generate status: `" + $status + "`\n\n" +
+                      "*Nuxt / Data*\n" +
+                      "• 5xx prerender errors: `" + $count + "`\n\n" +
+                      "*Failed 5xx routes:*\n" +
+                      $routes + "\n\n" +
+                      "*Elasticsearch*\n" +
+                      "• Index creation errors: `" + $es_index + "`\n" +
+                      "• Index check errors: `" + $es_check + "`\n" +
+                      "• Alias read errors: `" + $es_alias_read + "`\n" +
+                      "• Alias update errors: `" + $es_alias + "`\n" +
+                      "• Alias skipped: `" + $es_skipped + "`\n\n" +
+                      "<" + $run_url + "|View GitHub Actions run>"
+                  }
+                }
+              ]
+            }' > slack-payload.json
+
+      # Step 11: Notify Slack
+      - name: Notify Slack
+        if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
+        uses: slackapi/slack-github-action@v4
+        with:
+          webhook: ${{ secrets.LADI_SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload-file-path: ./slack-payload.json
+
+      # Step 12: Deploy
       - name: Deploy to Netlify
         uses: nwtgck/actions-netlify@v2
         with:

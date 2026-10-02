@@ -98,7 +98,12 @@ jobs:
                 ES_ALIAS_SKIPPED=$(grep -c '\[BUILD-WARNING\]\[ELASTICSEARCH\]\[ALIAS-SKIPPED\]' nuxt-build.log || true)
 
                 PRERENDER_5XX_ERRORS=$(grep -c '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
-                PRERENDER_5XX_DETAILS=$(grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log || true)
+                PRERENDER_5XX_DETAILS=$(
+                  grep '\[BUILD-ERROR\]\[PRERENDER\]\[5XX\]' nuxt-build.log |
+                  sed 's/.*\[5XX\] //' |
+                  jq -r '"\(.route) | \(.message // .statusMessage // "")"' ||
+                  true
+                )
                 PRERENDER_404_WARNINGS=$(grep -c '\[BUILD-WARNING\]\[PRERENDER\]\[404\]' nuxt-build.log || true)
 
                 echo "ES index creation errors: $ES_INDEX_ERRORS"
@@ -146,41 +151,72 @@ jobs:
                   echo "Slack notification: NO"
                 fi
 
+            - name: Create Slack payload
+              if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
+              env:
+                FAILED_5XX_ROUTES: ${{ steps.analyze-nuxt.outputs.prerender_5xx_details }}
+                PRERENDER_5XX_COUNT: ${{ steps.analyze-nuxt.outputs.prerender_5xx_errors }}
+                ES_INDEX_ERRORS: ${{ steps.analyze-nuxt.outputs.es_index_errors }}
+                ES_INDEX_CHECK_ERRORS: ${{ steps.analyze-nuxt.outputs.es_index_check_errors }}
+                ES_ALIAS_READ_ERRORS: ${{ steps.analyze-nuxt.outputs.es_alias_read_errors }}
+                ES_ALIAS_ERRORS: ${{ steps.analyze-nuxt.outputs.es_alias_errors }}
+                ES_ALIAS_SKIPPED: ${{ steps.analyze-nuxt.outputs.es_alias_skipped }}
+              run: |
+                {
+                  echo '{'
+                  echo '  "text": "FTVA Nuxt Generate",'
+                  echo '  "blocks": ['
+
+                  jq -n \
+                    --arg repository "${{ github.repository }}" \
+                    --arg pr "#${{ github.event.pull_request.number }}" \
+                    --arg branch "${{ github.head_ref || github.ref_name }}" \
+                    --arg status "${{ steps.nuxt-generate.outcome }}" \
+                    --arg count "$PRERENDER_5XX_COUNT" \
+                    --arg routes "$FAILED_5XX_ROUTES" \
+                    --arg es_index "$ES_INDEX_ERRORS" \
+                    --arg es_check "$ES_INDEX_CHECK_ERRORS" \
+                    --arg es_alias_read "$ES_ALIAS_READ_ERRORS" \
+                    --arg es_alias "$ES_ALIAS_ERRORS" \
+                    --arg es_skipped "$ES_ALIAS_SKIPPED" \
+                    --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+                    '{
+                      type: "section",
+                      text: {
+                        type: "mrkdwn",
+                        text:
+                          "⚠️ FTVA Nuxt Generate completed with warnings\n\n" +
+                          "Repository: `" + $repository + "`\n" +
+                          "PR: " + $pr + "\n" +
+                          "PR branch: `" + $branch + "`\n" +
+                          "Nuxt generate status: `" + $status + "`\n\n" +
+                          "*Nuxt / Data*\n" +
+                          "• 5xx prerender errors: `" + $count + "`\n\n" +
+                          "*Failed 5xx routes:*\n" +
+                          $routes + "\n\n" +
+                          "*Elasticsearch*\n" +
+                          "• Index creation errors: `" + $es_index + "`\n" +
+                          "• Index check errors: `" + $es_check + "`\n" +
+                          "• Alias read errors: `" + $es_alias_read + "`\n" +
+                          "• Alias update errors: `" + $es_alias + "`\n" +
+                          "• Alias skipped: `" + $es_skipped + "`\n\n" +
+                          "<" + $run_url + "|View GitHub Actions run>"
+                      }
+                    }' > slack-block.json
+
+                  cat slack-block.json
+                  echo
+                  echo '  ]'
+                  echo '}'
+                } > slack-payload.json
+
             - name: Notify Slack
               if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
               uses: slackapi/slack-github-action@v4
               with:
                 webhook: ${{ secrets.LADI_SLACK_WEBHOOK_URL }}
                 webhook-type: incoming-webhook
-                payload: |
-                  text: "FTVA Nuxt Generate"
-                  blocks:
-                    - type: section
-                      text:
-                        type: mrkdwn
-                        text: |
-                          ⚠️ FTVA Nuxt Generate completed with warnings
-
-                          Repository: `${{ github.repository }}`
-                          PR: #${{ github.event.pull_request.number }}
-                          PR branch: `${{ github.head_ref || github.ref_name }}`
-                          Nuxt generate status: `${{ steps.nuxt-generate.outcome }}`
-
-                          *Nuxt / Data*
-                          • 5xx prerender errors: `${{ steps.analyze-nuxt.outputs.prerender_5xx_errors }}`
-
-                          *Failed 5xx routes:*
-                          ${{ steps.analyze-nuxt.outputs.prerender_5xx_details }}
-
-                          *Elasticsearch*
-                          • Index creation errors: `${{ steps.analyze-nuxt.outputs.es_index_errors }}`
-                          • Index check errors: `${{ steps.analyze-nuxt.outputs.es_index_check_errors }}`
-                          • Alias read errors: `${{ steps.analyze-nuxt.outputs.es_alias_read_errors }}`
-                          • Alias update errors: `${{ steps.analyze-nuxt.outputs.es_alias_errors }}`
-                          • Alias skipped: `${{ steps.analyze-nuxt.outputs.es_alias_skipped }}`
-
-                          <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View GitHub Actions run>
-
+                payload-file-path: ./slack-payload.js
 
             - name: Deploy to Netlify (preview)
               if: github.ref_name!='main'
