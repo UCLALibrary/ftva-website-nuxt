@@ -203,7 +203,7 @@ jobs:
                   type: "section",
                   text: {
                     type: "mrkdwn",
-                    text:
+                    text: (
                       "⚠️ FTVA Production Build completed with warnings\n\n" +
                       "Repository: `" + $repository + "`\n" +
                       "Ref: `" + $ref + "`\n" +
@@ -220,6 +220,7 @@ jobs:
                       "• Alias update errors: `" + $es_alias + "`\n" +
                       "• Alias skipped: `" + $es_skipped + "`\n\n" +
                       "<" + $run_url + "|View GitHub Actions run>"
+                    )
                   }
                 }
               ]
