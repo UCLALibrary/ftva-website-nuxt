@@ -121,7 +121,7 @@ jobs:
             echo "Slack notification: NO"
           fi
 
-      # Create Slack JSON payload outside the Slack action YAML
+        # Create Slack JSON payload outside the Slack action YAML
       - name: Create Slack payload
         if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
         env:
@@ -154,7 +154,7 @@ jobs:
                   type: "section",
                   text: {
                     type: "mrkdwn",
-                    text:
+                    text: (
                       "⚠️ FTVA Static Site Regeneration completed with warnings\n\n" +
                       "Repository: `" + $repository + "`\n" +
                       "Environment: `" + $environment + "`\n" +
@@ -171,6 +171,7 @@ jobs:
                       "• Alias update errors: `" + $es_alias + "`\n" +
                       "• Alias skipped: `" + $es_skipped + "`\n\n" +
                       "<" + $run_url + "|View GitHub Actions run>"
+                    )
                   }
                 }
               ]

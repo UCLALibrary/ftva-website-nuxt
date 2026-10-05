@@ -162,53 +162,48 @@ jobs:
                 ES_ALIAS_ERRORS: ${{ steps.analyze-nuxt.outputs.es_alias_errors }}
                 ES_ALIAS_SKIPPED: ${{ steps.analyze-nuxt.outputs.es_alias_skipped }}
               run: |
-                {
-                  echo '{'
-                  echo '  "text": "FTVA Nuxt Generate",'
-                  echo '  "blocks": ['
-
-                  jq -n \
-                    --arg repository "${{ github.repository }}" \
-                    --arg pr "#${{ github.event.pull_request.number }}" \
-                    --arg branch "${{ github.head_ref || github.ref_name }}" \
-                    --arg status "${{ steps.nuxt-generate.outcome }}" \
-                    --arg count "$PRERENDER_5XX_COUNT" \
-                    --arg routes "$FAILED_5XX_ROUTES" \
-                    --arg es_index "$ES_INDEX_ERRORS" \
-                    --arg es_check "$ES_INDEX_CHECK_ERRORS" \
-                    --arg es_alias_read "$ES_ALIAS_READ_ERRORS" \
-                    --arg es_alias "$ES_ALIAS_ERRORS" \
-                    --arg es_skipped "$ES_ALIAS_SKIPPED" \
-                    --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-                    '{
-                      type: "section",
-                      text: {
-                        type: "mrkdwn",
-                        text:
-                          "⚠️ FTVA Nuxt Generate completed with warnings\n\n" +
-                          "Repository: `" + $repository + "`\n" +
-                          "PR: " + $pr + "\n" +
-                          "PR branch: `" + $branch + "`\n" +
-                          "Nuxt generate status: `" + $status + "`\n\n" +
-                          "*Nuxt / Data*\n" +
-                          "• 5xx prerender errors: `" + $count + "`\n\n" +
-                          "*Failed 5xx routes:*\n" +
-                          $routes + "\n\n" +
-                          "*Elasticsearch*\n" +
-                          "• Index creation errors: `" + $es_index + "`\n" +
-                          "• Index check errors: `" + $es_check + "`\n" +
-                          "• Alias read errors: `" + $es_alias_read + "`\n" +
-                          "• Alias update errors: `" + $es_alias + "`\n" +
-                          "• Alias skipped: `" + $es_skipped + "`\n\n" +
-                          "<" + $run_url + "|View GitHub Actions run>"
+                jq -n \
+                  --arg repository "${{ github.repository }}" \
+                  --arg ref "${{ env.CURRENT_REF }}" \
+                  --arg sha "${{ env.CURRENT_SHORT_SHA }}" \
+                  --arg status "${{ steps.nuxt-generate.outcome }}" \
+                  --arg count "$PRERENDER_5XX_COUNT" \
+                  --arg routes "$FAILED_5XX_ROUTES" \
+                  --arg es_index "$ES_INDEX_ERRORS" \
+                  --arg es_check "$ES_INDEX_CHECK_ERRORS" \
+                  --arg es_alias_read "$ES_ALIAS_READ_ERRORS" \
+                  --arg es_alias "$ES_ALIAS_ERRORS" \
+                  --arg es_skipped "$ES_ALIAS_SKIPPED" \
+                  --arg run_url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+                  '{
+                    text: "FTVA Production Build",
+                    blocks: [
+                      {
+                        type: "section",
+                        text: {
+                          type: "mrkdwn",
+                          text: (
+                            "⚠️ FTVA Production Build completed with warnings\n\n" +
+                            "Repository: `" + $repository + "`\n" +
+                            "Ref: `" + $ref + "`\n" +
+                            "Commit: `" + $sha + "`\n" +
+                            "Nuxt generate status: `" + $status + "`\n\n" +
+                            "*Nuxt / Data*\n" +
+                            "• 5xx prerender errors: `" + $count + "`\n\n" +
+                            "*Failed 5xx routes:*\n" +
+                            $routes + "\n\n" +
+                            "*Elasticsearch*\n" +
+                            "• Index creation errors: `" + $es_index + "`\n" +
+                            "• Index check errors: `" + $es_check + "`\n" +
+                            "• Alias read errors: `" + $es_alias_read + "`\n" +
+                            "• Alias update errors: `" + $es_alias + "`\n" +
+                            "• Alias skipped: `" + $es_skipped + "`\n\n" +
+                            "<" + $run_url + "|View GitHub Actions run>"
+                          )
+                        }
                       }
-                    }' > slack-block.json
-
-                  cat slack-block.json
-                  echo
-                  echo '  ]'
-                  echo '}'
-                } > slack-payload.json
+                    ]
+                  }' > slack-payload.json
 
             - name: Notify Slack
               if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
