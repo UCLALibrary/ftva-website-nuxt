@@ -88,7 +88,8 @@ export default defineNuxtConfig({
             JSON.stringify({
               route: route.route,
               statusCode,
-              statusMessage: route.error.statusMessage || ''
+              statusMessage: route.error.statusMessage || '',
+              message: route.error.message || ''
             })
           )
         }
@@ -129,9 +130,9 @@ export default defineNuxtConfig({
             }
 
             const prerenderRoute =
-  route.includes('demonstrators-from-center-de-ni')
-    ? route.normalize('NFC')
-    : route
+              route.includes('demonstrators-from-center-de-ni')
+                ? route.normalize('NFC')
+                : route
 
             routes.add(prerenderRoute)
           }
@@ -161,7 +162,8 @@ export default defineNuxtConfig({
   scripts: {
     registry: {
       googleTagManager: {
-        id: 'GTM-T2SXV2'
+        id: 'GTM-T2SXV2',
+        trigger: 'onNuxtReady'
       }
     }
   },

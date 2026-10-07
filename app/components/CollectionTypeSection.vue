@@ -270,6 +270,7 @@ watch(data, (newVal, oldVal) => {
       >
         <template v-if="showPageSummary">
           <RichText
+            v-if="page.summary"
             :rich-text-content="page.summary"
             data-test="page-description"
           />

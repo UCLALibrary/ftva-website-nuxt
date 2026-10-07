@@ -25,7 +25,7 @@ async function allEvents(
           },
           method: 'POST',
           body: JSON.stringify({
-            size: 2000,
+            size: 3000,
             _source: [...source],
             query: {
               bool: {
