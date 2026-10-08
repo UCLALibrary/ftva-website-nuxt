@@ -70,7 +70,8 @@ if (data.value.ftvaEvent && import.meta.prerender) {
       data.value.ftvaEvent.screeningDescriptions = screeningDescriptions
     }
 
-    await indexContent(data.value.ftvaEvent, route.params.slug)
+    const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final slashes in path
+    await indexContent(data.value.ftvaEvent, path.replaceAll('/', '--'))
     // console.log('Event indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console

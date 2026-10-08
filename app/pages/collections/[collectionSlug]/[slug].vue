@@ -46,7 +46,8 @@ if (data.value.entry && import.meta.prerender) {
     data.value.entry.titleBrowse = normalizeTitleForAlphabeticalBrowseBy(data.value.entry.title)
     data.value.entry.groupName = 'Collections'
     // Index the data using the composable during static build
-    await indexContent(data.value.entry, slug)
+    const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final slashes in path
+    await indexContent(data.value.entry, path.replaceAll('/', '--'))
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('FAILED TO INDEX COLLECTION ITEM during static build:', error)

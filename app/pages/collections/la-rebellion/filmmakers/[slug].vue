@@ -42,7 +42,8 @@ if (data.value.ftvaLARebellionIndividual && import.meta.prerender) {
     // Index the event data using the composable during static build
     data.value.ftvaLARebellionIndividual.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaLARebellionIndividual.title)
     data.value.ftvaLARebellionIndividual.groupName = 'Collections'
-    await indexContent(data.value.ftvaLARebellionIndividual, route.params.slug)
+    const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final slashes in path
+    await indexContent(data.value.ftvaLARebellionIndividual, path.replaceAll('/', '--'))
     // console.log('Event indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
