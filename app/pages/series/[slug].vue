@@ -46,9 +46,7 @@ if (data.value.ftvaEventSeries && import.meta.prerender) {
     // Index the event series data using the composable during static build
     data.value.ftvaEventSeries.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaEventSeries.title)
     data.value.ftvaEventSeries.groupName = 'Series'
-
-    const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final slashes
-    await indexContent(data.value.ftvaEventSeries, path.replaceAll('/', '--'))
+    await indexContent(data.value.ftvaEventSeries, route.params.slug.toString() + '-series')
     // console.log('Event series indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
