@@ -21,30 +21,30 @@ export default function useSiteSearch() {
   async function aggregationsQuery() {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-        headers: {
-          Authorization: `ApiKey ${config.public.esReadKey}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            bool: {
-              must: {
-                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-              }
-            }
-          },
-          aggs: {
-            'Filter Results': {
-              terms: {
-                field: 'groupName.keyword',
-                size: 100
-              }
+      headers: {
+        Authorization: `ApiKey ${config.public.esReadKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          bool: {
+            must: {
+              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
             }
           }
-        })
+        },
+        aggs: {
+          'Filter Results': {
+            terms: {
+              field: 'groupName.keyword',
+              size: 100
+            }
+          }
+        }
       })
+    })
     const data = await response.json()
     return data.aggregations
   }
@@ -52,38 +52,38 @@ export default function useSiteSearch() {
   async function fetchAggregationForKeyword(keyword = '*',) {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-        headers: {
-          Authorization: `ApiKey ${config.public.esReadKey}`,
-          'Content-Type': 'application/json',
+      headers: {
+        Authorization: `ApiKey ${config.public.esReadKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          bool: {
+            must: [{
+              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
+            },
+            {
+              multi_match: {
+                query: keyword,
+                fields: [...searchFields],
+                type: 'best_fields',
+              },
+            },
+            ]
+          }
         },
-        method: 'POST',
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            bool: {
-              must: [{
-                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-              },
-              {
-                multi_match: {
-                  query: keyword,
-                  fields: [...searchFields],
-                  type: 'best_fields',
-                },
-              },
-              ]
-            }
-          },
-          aggs: {
-            'Filter Results': {
-              terms: {
-                field: 'groupName.keyword',
-                size: 100
-              }
+        aggs: {
+          'Filter Results': {
+            terms: {
+              field: 'groupName.keyword',
+              size: 100
             }
           }
-        })
+        }
       })
+    })
     const data = await response.json()
     return data.aggregations
   }
@@ -150,24 +150,52 @@ export default function useSiteSearch() {
     }
     return data
   }
+  // allow Elasticsearch _script sort options in addition to regular field-based sorting
+  type SortOption = {
+    order: string
+  } | {
+    type: 'number'
+    script: {
+      source: string
+      params: { missing: number }
+    }
+    order: string
+  }
   interface ParseQueryType {
-    sort: {
-      [key: string]: {
-        order: string
-      }
-    }[]
+    sort: Record<string, SortOption>[]
   }
   function parseSort(sortField, orderBy = 'asc') {
     if (!sortField || sortField === '') return {}
     const parseQuery: ParseQueryType = { sort: [] }
-    /**
-       * { "_score": "desc" },
-       */
-    /* parseQuery.sort[0] = {}
-    parseQuery.sort[0]._score = {
-      order: 'desc'
-    } */
+
     parseQuery.sort[0] = {}
+    // if we are sorting by date, we need to use a script to handle different date fields for different section handles
+    if (sortField === 'postDate') {
+      parseQuery.sort[0]._script = {
+        type: 'number',
+        script: {
+          source: `
+            String dateField = 'postDate';
+            String sectionHandle = doc['sectionHandle.keyword'].value;
+            if (sectionHandle == 'ftvaEvent' ||
+                sectionHandle == 'ftvaEventSeries' ||
+                sectionHandle == 'ftvaTouringSeries') {
+              dateField = 'startDate';
+            }
+            if (doc[dateField].size() == 0) return params.missing;
+            return doc[dateField].value.toEpochMilli();
+          `,
+          params: {
+            // Keep missing dates last regardless of sort direction.
+            missing: orderBy === 'asc' ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER,
+          },
+        },
+        order: orderBy,
+      }
+      return parseQuery
+    }
+
+    // for all other sort fields, we can use the standard field-based sorting
     parseQuery.sort[0][sortField] = {
       order: orderBy
     }
@@ -176,23 +204,6 @@ export default function useSiteSearch() {
   }
 
   function parseShouldQuery(keyword: string, searchFields: any) {
-    /*
-    {
-                  multi_match: {
-                    query: keyword,
-                    fields: [...searchFields],
-                    fuzziness: "AUTO"
-                  }
-                },
-                {
-                  match_phrase: {
-                    title: {
-                      query: keyword,
-                      boost: 3
-                    }
-                  }
-                }
-    */
     if (keyword === '*') return [{ match_all: {} }]
     else
       return [
