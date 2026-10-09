@@ -68,6 +68,20 @@ onMounted(() => {
     />
 
     <!-- Add this to the right place for dismissible alerts-->
+    <SectionWrapper
+      class="section-alert"
+      theme="divider"
+    >
+      <div class="one-column">
+        <div class="alert-positioner">
+          <site-notification-alert
+            v-if="globalStore.globals.dismissibleAlert"
+            class="dismissible-alert"
+            v-bind="globalStore.globals.dismissibleAlert"
+          />
+        </div>
+      </div>
+    </SectionWrapper>
     <!-- <SectionWrapper
       class="
       section-alert"
@@ -120,17 +134,28 @@ onMounted(() => {
   .primary {
     position: sticky;
     will-change: top;
+    z-index: 101;
   }
 
   .section-alert {
     height: 0;
-    position: relative;
+
+    .alert-positioner {
+      height: 0;
+      position: relative;
+    }
 
     .dismissible-alert {
       position: absolute;
       z-index: 100;
       top: 32px;
-      right: var(--unit-gutter);
+      right: 0;
+
+      :deep(.button-dismiss:hover .hover .label),
+      :deep(.button-dismiss:focus .hover .label),
+      :deep(.button-dismiss:focus-visible .hover .label) {
+        color: white;
+      }
     }
   }
 
@@ -148,7 +173,17 @@ onMounted(() => {
     .primary {
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 102;
+    }
+
+    .site-notification-banner {
+      z-index: 101;
+    }
+
+    .section-alert {
+      .dismissible-alert {
+        right: var(--unit-gutter);
+      }
     }
 
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
