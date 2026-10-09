@@ -190,7 +190,10 @@ const pageClasses = computed(() => {
             />
           </template>
         </CardMeta>
-        <RichText :rich-text-content="page?.richText" />
+        <RichText
+          v-if="page?.richText"
+          :rich-text-content="page?.richText"
+        />
       </template>
     </TwoColLayoutWStickySideBar>
 
@@ -223,7 +226,10 @@ const pageClasses = computed(() => {
                 {{ item.titleGeneral }}
               </SmartLink>
             </h1>
-            <RichText :rich-text-content="item.description" />
+            <RichText
+              v-if="item.description"
+              :rich-text-content="item.description"
+            />
           </template>
           <template #column3>
             <p class="subtitle">

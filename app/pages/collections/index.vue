@@ -286,7 +286,7 @@ const pageClasses = computed(() => {
         class="is-link"
       >
         <template #customDescription>
-          <RichText :rich-text-content="page.hearstDescription" />
+          <RichText v-if="page.hearstDescription" :rich-text-content="page.hearstDescription" />
         </template>
       </BlockCardWithImage>
 

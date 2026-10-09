@@ -208,7 +208,7 @@ useHead({
           Tour Dates
         </SectionHeader>
         <RichText
-          v-if="page?.richText"
+          v-if="page?.richTextDefaultWithTable"
           class="tour-dates"
           :rich-text-content="page?.richTextDefaultWithTable"
         />
