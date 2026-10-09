@@ -45,7 +45,8 @@ if (data.value.ftvaArticle && import.meta.prerender) {
     data.value.ftvaArticle.titleSort = normalizeTitleForAlphabeticalBrowseBy(data.value.ftvaArticle.title)
     data.value.ftvaArticle.groupName = 'Articles'
     data.value.ftvaArticle.flexibleBlocksRichText = parseFlexibleBlocksRichText(data.value.ftvaArticle.blocks)
-    await indexContent(data.value.ftvaArticle, route.params.slug)
+
+    await indexContent(data.value.ftvaArticle, route.params.slug.toString() + '-blog')
     // console.log('Article indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
