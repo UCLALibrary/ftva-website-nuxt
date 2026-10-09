@@ -70,8 +70,6 @@ if (data.value.ftvaEvent && import.meta.prerender) {
       data.value.ftvaEvent.screeningDescriptions = screeningDescriptions
     }
 
-    // const path = route.path.replace(/^\/|\/$/g, '') // trim initial and/or final slashes in path
-    // const docID = route.params.slug + '-events'
     await indexContent(data.value.ftvaEvent, route.params.slug.toString() + '-events')
     // console.log('Event indexed successfully during static build')
   } catch (error) {
