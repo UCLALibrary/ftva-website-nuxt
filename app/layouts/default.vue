@@ -168,12 +168,6 @@ onMounted(() => {
       z-index: 101;
     }
 
-    .section-alert {
-      .dismissible-alert {
-        right: var(--unit-gutter);
-      }
-    }
-
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
       position: absolute;
       top: 0;
