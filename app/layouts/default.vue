@@ -82,18 +82,6 @@ onMounted(() => {
         </div>
       </div>
     </SectionWrapper>
-    <!-- <SectionWrapper
-      class="
-      section-alert"
-      theme="divider"
-    >
-      <site-notification-alert
-        v-if="
-          globalStore.globals.dismissibleAlert"
-        class="dismissible-alert"
-        v-bind="globalStore.globals.dismissibleAlert"
-      />
-    </SectionWrapper> -->
 
     <slot />
 
