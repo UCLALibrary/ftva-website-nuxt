@@ -407,32 +407,6 @@ const pageClasses = computed(() => {
 <style lang="scss" scoped>
 @use 'assets/styles/slug-pages.scss' as *;
 
-// START unset the aspect ratio on VideoEmbed & set to 100% height and width
-// Once Tech Debt Ticket LADI-5347 is complete these style can hopefully be removed
-:deep(.responsive-video) {
-  .video-embed {
-    height: 100%;
-    width: 100%;
-  }
-}
-
-:deep(.video-embed) {
-  .cover-container {
-    .cover {
-      aspect-ratio: unset;
-    }
-  }
-
-  .video-embed {
-    .video-container {
-      height: 100%;
-      width: 100%;
-    }
-  }
-}
-
-// END unset the aspect ratio on VideoEmbed
-
 .page-collection-item-detail {
   position: relative;
 
