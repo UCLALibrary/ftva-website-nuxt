@@ -281,6 +281,7 @@ const pageClasses = computed(() => {
             <VideoEmbed
               :trailer="page.videoEmbed"
               :poster-image="page.ftvaImage[0]"
+              :aspect-ratio="75.03"
             />
           </template>
         </ResponsiveVideo>
