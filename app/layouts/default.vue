@@ -132,16 +132,18 @@ onMounted(() => {
       position: relative;
       height: 0;
       width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      box-sizing: border-box;
     }
 
     .dismissible-alert {
       position: absolute;
       z-index: 100;
       top: 32px;
-      right: 0;
+
+      // Align with the right edge of the centered content area
+      right: max(
+        var(--unit-gutter),
+        calc((100vw - var(--max-width)) / 2)
+      );
 
       :deep(.button-dismiss:hover .hover .label),
       :deep(.button-dismiss:focus .hover .label),
