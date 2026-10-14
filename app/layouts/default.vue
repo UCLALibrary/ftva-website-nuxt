@@ -147,7 +147,8 @@ onMounted(() => {
     }
   }
 
-  @media #{$small} {
+  // FTVA mobile navigation breakpoint
+  @media (max-width: 850px) {
     &:has(.menu.is-opened-mobile) {
       .site-notification-banner {
         display: none;
@@ -159,13 +160,8 @@ onMounted(() => {
     }
 
     .primary {
-      position: sticky;
       top: 0;
       z-index: 102;
-    }
-
-    .site-notification-banner {
-      z-index: 101;
     }
 
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
@@ -184,7 +180,9 @@ onMounted(() => {
       display: flex;
       align-items: center;
     }
+  }
 
+  @media #{$small} {
     :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
       display: none;
     }
