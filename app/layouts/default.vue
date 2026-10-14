@@ -151,7 +151,6 @@ onMounted(() => {
     }
   }
 
-
   @media (max-width: 1200px) {
     .alert-positioner {
       padding-right: var(--unit-gutter);
