@@ -128,6 +128,12 @@ onMounted(() => {
   .section-alert {
     height: 0;
 
+    // .one-column {
+    //   width: 100%;
+    //   max-width: var(--max-width);
+    //   margin: 0 auto;
+    // }
+
     .alert-positioner {
       height: 0;
       position: relative;
