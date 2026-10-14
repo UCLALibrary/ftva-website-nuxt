@@ -128,15 +128,13 @@ onMounted(() => {
   .section-alert {
     height: 0;
 
-    // .one-column {
-    //   width: 100%;
-    //   max-width: var(--max-width);
-    //   margin: 0 auto;
-    // }
-
     .alert-positioner {
-      height: 0;
       position: relative;
+      height: 0;
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      box-sizing: border-box;
     }
 
     .dismissible-alert {
@@ -150,6 +148,18 @@ onMounted(() => {
       :deep(.button-dismiss:focus-visible .hover .label) {
         color: white;
       }
+    }
+  }
+
+
+  @media (max-width: 1200px) {
+    .alert-positioner {
+      padding-right: var(--unit-gutter);
+      padding-left: var(--unit-gutter);
+    }
+
+    .dismissible-alert {
+      right: var(--unit-gutter);
     }
   }
 
