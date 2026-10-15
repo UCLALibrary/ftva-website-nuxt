@@ -128,9 +128,21 @@ onMounted(() => {
   .section-alert {
     height: 0;
 
+    // Prevent SectionWrapper padding from shifting the alert
+    padding-left: 0;
+    padding-right: 0;
+
+    .one-column {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+
     .alert-positioner {
       height: 0;
       position: relative;
+      padding-left: 0;
+      padding-right: 0;
     }
 
     .dismissible-alert {
@@ -144,17 +156,6 @@ onMounted(() => {
       :deep(.button-dismiss:focus-visible .hover .label) {
         color: white;
       }
-    }
-  }
-
-  @media (max-width: 1200px) {
-    .alert-positioner {
-      padding-right: var(--unit-gutter);
-      padding-left: var(--unit-gutter);
-    }
-
-    .dismissible-alert {
-      right: var(--unit-gutter);
     }
   }
 
