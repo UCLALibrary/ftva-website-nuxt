@@ -393,11 +393,11 @@ watch(data, (newVal, oldVal) => {
     }
   }
 
-:deep(.section-teaser-card.ftva) {
-  > li {
-    flex-basis: calc((100% - 40px) / 3);
+  :deep(.section-teaser-card.ftva) {
+    > li {
+      flex-basis: calc((100% - 40px) / 3);
+    }
   }
-}
 
   .browse-heading {
     font-size: 16px;
