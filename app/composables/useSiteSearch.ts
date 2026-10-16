@@ -21,30 +21,30 @@ export default function useSiteSearch() {
   async function aggregationsQuery() {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-        headers: {
-          Authorization: `ApiKey ${config.public.esReadKey}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            bool: {
-              must: {
-                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-              }
-            }
-          },
-          aggs: {
-            'Filter Results': {
-              terms: {
-                field: 'groupName.keyword',
-                size: 100
-              }
+      headers: {
+        Authorization: `ApiKey ${config.public.esReadKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          bool: {
+            must: {
+              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
             }
           }
-        })
+        },
+        aggs: {
+          'Filter Results': {
+            terms: {
+              field: 'groupName.keyword',
+              size: 100
+            }
+          }
+        }
       })
+    })
     const data = await response.json()
     return data.aggregations
   }
@@ -52,38 +52,38 @@ export default function useSiteSearch() {
   async function fetchAggregationForKeyword(keyword = '*',) {
     const response = await fetch(
       `${config.public.esURL}/${config.public.esAlias}/_search`, {
-        headers: {
-          Authorization: `ApiKey ${config.public.esReadKey}`,
-          'Content-Type': 'application/json',
+      headers: {
+        Authorization: `ApiKey ${config.public.esReadKey}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        size: 0,
+        query: {
+          bool: {
+            must: [{
+              wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
+            },
+            {
+              multi_match: {
+                query: keyword,
+                fields: [...searchFields],
+                type: 'best_fields',
+              },
+            },
+            ]
+          }
         },
-        method: 'POST',
-        body: JSON.stringify({
-          size: 0,
-          query: {
-            bool: {
-              must: [{
-                wildcard: { 'sectionHandle.keyword': { value: 'ftva*' } }
-              },
-              {
-                multi_match: {
-                  query: keyword,
-                  fields: [...searchFields],
-                  type: 'best_fields',
-                },
-              },
-              ]
-            }
-          },
-          aggs: {
-            'Filter Results': {
-              terms: {
-                field: 'groupName.keyword',
-                size: 100
-              }
+        aggs: {
+          'Filter Results': {
+            terms: {
+              field: 'groupName.keyword',
+              size: 100
             }
           }
-        })
+        }
       })
+    })
     const data = await response.json()
     return data.aggregations
   }
@@ -98,7 +98,7 @@ export default function useSiteSearch() {
     sort,
     orderBy,
   ) {
-    console.log('paginatedSiteSearchQuery', keyword, currentPage, documentsPerPage, queryFilters)
+    // console.log('paginatedSiteSearchQuery', keyword, currentPage, documentsPerPage, queryFilters)
     if (!config.public.esReadKey || !config.public.esURL || !config.public.esAlias)
       return
     const response = await fetch(
@@ -144,7 +144,7 @@ export default function useSiteSearch() {
 
     let data = await response.json()
     if (data?.hits?.total.value === 0) {
-      console.log('No results found, performing fuzzy search on all fields')
+      // console.log('No results found, performing fuzzy search on all fields')
       data = performFuzzySearchOnAllFields(keyword, ['*'], queryFilters, currentPage = 1,
         documentsPerPage = 10, sort, orderBy)
     }
@@ -176,14 +176,19 @@ export default function useSiteSearch() {
         script: {
           source: `
             String dateField = 'postDate';
-            String sectionHandle = doc['sectionHandle.keyword'].value;
+            String sectionHandle = '';
+            if (doc.containsKey('sectionHandle.keyword') && doc['sectionHandle.keyword'].size() > 0) {
+              sectionHandle = doc['sectionHandle.keyword'].value;
+            }
             if (sectionHandle == 'ftvaEvent' ||
                 sectionHandle == 'ftvaEventSeries' ||
                 sectionHandle == 'ftvaTouringSeries') {
               dateField = 'startDate';
             }
-            if (doc[dateField].size() == 0) return params.missing;
-            return doc[dateField].value.toEpochMilli();
+            if (!doc.containsKey(dateField) || doc[dateField].size() == 0) {
+              return params.missing;
+            }
+            return doc[dateField].value.toInstant().toEpochMilli();
           `,
           params: {
             // Keep missing dates last regardless of sort direction.
