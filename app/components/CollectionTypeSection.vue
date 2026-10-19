@@ -341,6 +341,7 @@ watch(data, (newVal, oldVal) => {
 </template>
 
 <style lang="scss" scoped>
+@use 'ucla-library-design-tokens/scss/app.scss' as *;
 @use 'assets/styles/listing-pages.scss' as *;
 
 .page-collection-type {
@@ -426,6 +427,18 @@ watch(data, (newVal, oldVal) => {
       text-align: left;
       margin-bottom: 18px;
       padding-left: 0;
+    }
+
+    @media #{$small} {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      width: 100%;
+
+      .letter {
+        text-align: center;
+        width: auto;
+        padding-right: 0;
+      }
     }
   }
 
