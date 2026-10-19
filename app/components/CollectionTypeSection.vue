@@ -394,8 +394,10 @@ watch(data, (newVal, oldVal) => {
   }
 
   :deep(.section-teaser-card.ftva) {
-    > li {
-      flex-basis: calc((100% - 40px) / 3);
+    @media only screen and (min-width: 1025px) {
+      > li {
+        flex-basis: calc((100% - 40px) / 3);
+      }
     }
   }
 
