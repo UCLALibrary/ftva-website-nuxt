@@ -68,11 +68,8 @@ onMounted(() => {
     />
 
     <!-- Add this to the right place for dismissible alerts-->
-    <SectionWrapper
-      class="section-alert"
-      theme="divider"
-    >
-      <div class="one-column">
+    <div class="one-column">
+      <SectionWrapper id="section-alert">
         <div class="alert-positioner">
           <site-notification-alert
             v-if="globalStore.globals.dismissibleAlert"
@@ -80,8 +77,8 @@ onMounted(() => {
             v-bind="globalStore.globals.dismissibleAlert"
           />
         </div>
-      </div>
-    </SectionWrapper>
+      </SectionWrapper>
+    </div>
 
     <slot />
 
@@ -122,45 +119,47 @@ onMounted(() => {
   .primary {
     position: sticky;
     will-change: top;
-    z-index: 101;
+    z-index: 100;
   }
 
-  .section-alert {
+  #section-alert {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    @media (min-width: 1201px) {
+      padding-right: 0px;
+      margin-right: 0px;
+    }
+  }
+
+  .one-column {
+    height: 0px;
+    max-width: var(--max-width);
+  }
+
+  .alert-positioner {
     height: 0;
-
-    // Prevent SectionWrapper padding from shifting the alert
-    padding-left: 0;
-    padding-right: 0;
-
-    .one-column {
-      width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-    }
-
-    .alert-positioner {
-      height: 0;
-      position: relative;
-      padding-left: 0;
-      padding-right: 0;
-    }
-
-    .dismissible-alert {
-      position: absolute;
-      z-index: 100;
-      top: 32px;
-      right: 0;
-
-      :deep(.button-dismiss:hover .hover .label),
-      :deep(.button-dismiss:focus .hover .label),
-      :deep(.button-dismiss:focus-visible .hover .label) {
-        color: white;
-      }
-    }
+    position: relative;
   }
 
-  // FTVA mobile navigation breakpoint
-  @media (max-width: 850px) {
+  .dismissible-alert {
+    position: absolute;
+    z-index: 99;
+    top: 32px;
+    right: 0;
+
+    // tech debt start
+    :deep(.button-dismiss:hover .hover .label),
+    :deep(.button-dismiss:focus .hover .label),
+    :deep(.button-dismiss:focus-visible .hover .label) {
+      color: white;
+    }
+    // tech debt end
+  }
+
+  @media #{$small} {
     &:has(.menu.is-opened-mobile) {
       .site-notification-banner {
         display: none;
@@ -173,7 +172,7 @@ onMounted(() => {
 
     .primary {
       top: 0;
-      z-index: 102;
+      z-index: 100;
     }
 
     :deep(.ftva.nav-primary.primary .nav-background-fill) {
@@ -192,15 +191,16 @@ onMounted(() => {
       display: flex;
       align-items: center;
     }
-  }
 
-  @media #{$small} {
-    // Align the alert with the Series and Touring Series mobile content
-    &:has(.series-listing-pages) {
-      .section-alert .dismissible-alert {
-        right: 14px;
-      }
-    }
+    // }
+
+    // @media #{$small} {
+    //   // Align the alert with the Series and Touring Series mobile content
+    //   &:has(.series-listing-pages) {
+    //     .section-alert .dismissible-alert {
+    //       right: 14px;
+    //     }
+    //   }
 
     :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
       display: none;
