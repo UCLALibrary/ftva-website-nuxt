@@ -171,6 +171,7 @@ onMounted(() => {
     }
 
     .primary {
+      position: sticky;
       top: 0;
       z-index: 100;
     }
@@ -191,16 +192,6 @@ onMounted(() => {
       display: flex;
       align-items: center;
     }
-
-    // }
-
-    // @media #{$small} {
-    //   // Align the alert with the Series and Touring Series mobile content
-    //   &:has(.series-listing-pages) {
-    //     .section-alert .dismissible-alert {
-    //       right: 14px;
-    //     }
-    //   }
 
     :deep(.header-sticky .nav-menu-item .sub-menu-item:has([href="/events/?view=calendar"])) {
       display: none;
