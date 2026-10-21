@@ -67,19 +67,18 @@ onMounted(() => {
       :primary-items="primaryMenuItems"
     />
 
-    <!-- Add this to the right place for dismissible alerts-->
-    <!-- <SectionWrapper
-      class="
-      section-alert"
-      theme="divider"
-    >
-      <site-notification-alert
-        v-if="
-          globalStore.globals.dismissibleAlert"
-        class="dismissible-alert"
-        v-bind="globalStore.globals.dismissibleAlert"
-      />
-    </SectionWrapper> -->
+    <!-- dismissible alerts col -->
+    <div class="one-column">
+      <SectionWrapper id="section-alert">
+        <div class="alert-positioner">
+          <site-notification-alert
+            v-if="globalStore.globals.dismissibleAlert"
+            class="dismissible-alert"
+            v-bind="globalStore.globals.dismissibleAlert"
+          />
+        </div>
+      </SectionWrapper>
+    </div>
 
     <slot />
 
@@ -120,17 +119,41 @@ onMounted(() => {
   .primary {
     position: sticky;
     will-change: top;
+    z-index: 100;
   }
 
-  .section-alert {
+  #section-alert {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+
+    @media (min-width: 1201px) {
+      padding-right: 0px;
+      margin-right: 0px;
+    }
+  }
+
+  .one-column {
+    height: 0px;
+    max-width: var(--max-width);
+  }
+
+  .alert-positioner {
     height: 0;
     position: relative;
+  }
 
-    .dismissible-alert {
-      position: absolute;
-      z-index: 100;
-      top: 32px;
-      right: var(--unit-gutter);
+  .dismissible-alert {
+    position: absolute;
+    z-index: 99;
+    top: 32px;
+    right: 0;
+
+    :deep(.button-dismiss:hover .hover .label),
+    :deep(.button-dismiss:focus .hover .label),
+    :deep(.button-dismiss:focus-visible .hover .label) {
+      color: white;
     }
   }
 
