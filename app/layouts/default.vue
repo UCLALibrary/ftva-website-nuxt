@@ -67,7 +67,7 @@ onMounted(() => {
       :primary-items="primaryMenuItems"
     />
 
-    <!-- Add this to the right place for dismissible alerts-->
+    <!-- dismissible alerts column -->
     <div class="one-column">
       <SectionWrapper id="section-alert">
         <div class="alert-positioner">
