@@ -150,13 +150,11 @@ onMounted(() => {
     top: 32px;
     right: 0;
 
-    // tech debt start
     :deep(.button-dismiss:hover .hover .label),
     :deep(.button-dismiss:focus .hover .label),
     :deep(.button-dismiss:focus-visible .hover .label) {
       color: white;
     }
-    // tech debt end
   }
 
   @media #{$small} {
