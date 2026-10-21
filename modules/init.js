@@ -66,13 +66,13 @@ export default defineNuxtModule({
                       type: 'custom',
                       tokenizer: 'standard',
                       char_filter: ['remove_hyphen'],
-                      filter: ['stemmer', 'lowercase', 'stop', 'asciifolding'],
+                      filter: ['lowercase', 'asciifolding', 'stop', 'stemmer'],
                     },
                     default_search: {
                       type: 'custom',
                       tokenizer: 'standard',
                       char_filter: ['remove_hyphen'],
-                      filter: ['stemmer', 'lowercase', 'stop', 'asciifolding'],
+                      filter: ['lowercase', 'asciifolding', 'stop', 'stemmer'],
                     }
                   },
                 }
