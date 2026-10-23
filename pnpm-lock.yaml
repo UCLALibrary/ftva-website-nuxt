@@ -46,8 +46,8 @@ importers:
         specifier: ^18.17.3
         version: 18.19.130
       '@ucla-library/component-library-nuxt-module':
-        specifier: 1.5.8
-        version: 1.5.8(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))
+        specifier: 1.6.0
+        version: 1.6.0(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))
       '@unhead/vue':
         specifier: ^2.1.15
         version: 2.1.15(vue@3.5.39(typescript@7.0.2))
@@ -2290,15 +2290,15 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.91.6':
-    resolution: {integrity: sha512-3aqMrTlh3bxZliKZIL/AwQ5uROJj1qRyGEHXOyGMgj6iEB2mEvRLfttbt3JGLowr4M4KMh6bxMtfIeYdZLMSZg==}
+  '@ucla-library-monorepo/ucla-library-website-components@1.93.0':
+    resolution: {integrity: sha512-3CsTk0jsuDCEriPQQOphH87ueahKXjhFzBgAHdAAIM4jbry1dwbbhM4vADF0bxx7Xbjf+S1NZsJYJKmrAGffUw==}
     engines: {node: ^24.16.0, pnpm: ^11.5.1}
     peerDependencies:
       vue: ^3.5.12
       vuetify: 3.7.4
 
-  '@ucla-library/component-library-nuxt-module@1.5.8':
-    resolution: {integrity: sha512-5Nt+s8qffeUsl2bP1MRKrMFi1MMixbNvHq9BBziOHYOoKfzx+ivdmQA7fa9TbTJp+Spw+b/Ntqn6ueK0f/M9Tg==}
+  '@ucla-library/component-library-nuxt-module@1.6.0':
+    resolution: {integrity: sha512-s0QUBQSN+LquEdTpFYkMYNKQO2JcCSe8q/tzZ12J70PZ0m7EKATIJOMw8kHALZ9/EzFdeAG2T0UweMoGpEHXbw==}
     engines: {node: ^24.16.0, pnpm: ^11.5.1}
 
   '@ungap/structured-clone@1.3.2':
@@ -9197,7 +9197,7 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@ucla-library-monorepo/ucla-library-website-components@1.91.6(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))':
+  '@ucla-library-monorepo/ucla-library-website-components@1.93.0(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))':
     dependencies:
       '@vuepic/vue-datepicker': 8.8.1(vue@3.5.39(typescript@7.0.2))
       '@vueuse/components': 11.3.0(vue@3.5.39(typescript@7.0.2))
@@ -9213,10 +9213,10 @@ snapshots:
       - '@vue/composition-api'
       - typescript
 
-  '@ucla-library/component-library-nuxt-module@1.5.8(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))':
+  '@ucla-library/component-library-nuxt-module@1.6.0(magicast@0.5.3)(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))':
     dependencies:
       '@nuxt/kit': 3.21.8(magicast@0.5.3)
-      '@ucla-library-monorepo/ucla-library-website-components': 1.91.6(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))
+      '@ucla-library-monorepo/ucla-library-website-components': 1.93.0(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2))(vuetify@3.7.4(typescript@7.0.2)(vue@3.5.39(typescript@7.0.2)))
     transitivePeerDependencies:
       - '@vue/composition-api'
       - magicast
