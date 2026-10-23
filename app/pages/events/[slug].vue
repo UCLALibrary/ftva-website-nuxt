@@ -70,7 +70,7 @@ if (data.value.ftvaEvent && import.meta.prerender) {
       data.value.ftvaEvent.screeningDescriptions = screeningDescriptions
     }
 
-    await indexContent(data.value.ftvaEvent, route.params.slug)
+    await indexContent(data.value.ftvaEvent, route.params.slug.toString() + '-events')
     // console.log('Event indexed successfully during static build')
   } catch (error) {
     // eslint-disable-next-line no-console
