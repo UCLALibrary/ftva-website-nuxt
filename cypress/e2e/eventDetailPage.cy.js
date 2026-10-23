@@ -19,6 +19,7 @@ function runEventDetailTests({ withSnapshot = false } = {}) {
     cy.get('.block-event-detail.ftva').scrollIntoView()
     cy.get('.block-event-detail.ftva').should('be.visible')
     cy.getByData('calendar-dropdown').should('exist')
+    cy.getByData('share-button').should('exist')
     cy.getByData('ticket-info').should('be.visible')
     cy.getByData('event-series').should('be.visible')
     if (withSnapshot) {

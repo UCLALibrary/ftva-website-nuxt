@@ -275,6 +275,12 @@ const pageClasses = computed(() => {
           :is-event="true"
           :debug-mode-enabled="false"
         />
+        <ButtonDropdown
+          data-test="share-button"
+          button-title="Share"
+          :has-icon="true"
+          :dropdown-list="socialList.dropdownList"
+        />
       </template>
 
       <template #primaryMid>
@@ -399,10 +405,11 @@ const pageClasses = computed(() => {
 
     .button-dropdown {
       margin-top: 30px;
+      position: static;
     }
 
     .block-info {
-      margin-top: 48px;
+      margin-top: 30px;
     }
 
     :deep(.card-meta.intro) {
