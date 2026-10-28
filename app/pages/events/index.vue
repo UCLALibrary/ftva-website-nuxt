@@ -706,7 +706,7 @@ const pageClasses = computed(() => {
 @use 'assets/styles/listing-pages.scss' as *;
 
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
-  z-index: 99;
+  z-index: 97; // must be below  the sticky header elements at 100, dropdown menus at 99, and dismissible alert at 98
 }
 
 .page-events {
@@ -950,7 +950,7 @@ const pageClasses = computed(() => {
         /* For Safari */
         position: sticky;
         top: 65px;
-        z-index: 99;
+        z-index: 97; // must be below the sticky header elements at 100, dropdown menus at 99, and dismissible alert at 98
         background-color: var(--pale-blue);
         padding: 20px;
       }
