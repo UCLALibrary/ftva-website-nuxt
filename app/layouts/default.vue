@@ -146,7 +146,7 @@ onMounted(() => {
 
   .dismissible-alert {
     position: absolute;
-    z-index: 99;
+    z-index: 98; // must be below the sticky header elements at 100 and dropdown menus at 99
     top: 32px;
     right: 0;
 

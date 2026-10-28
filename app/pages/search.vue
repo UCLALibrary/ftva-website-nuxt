@@ -520,7 +520,7 @@ const pageClasses = computed(() => {
           v-show="!noResultsFound
             &&
             totalResults > 0
-          "
+            "
           ref="el"
           class="results"
         >
@@ -607,7 +607,7 @@ const pageClasses = computed(() => {
 }
 
 :deep(.button-dropdown-modal-wrapper.is-expanded) {
-  z-index: 99;
+  z-index: 99; // must be below the sticky header elements at 100
 }
 
 .search-page {
