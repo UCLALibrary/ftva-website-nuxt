@@ -150,6 +150,12 @@ onMounted(() => {
     top: 32px;
     right: 0;
 
+    &.is-closed {
+      :deep(.message) {
+        pointer-events: none; // allow clicks to pass through to the underlying content
+      }
+    }
+
     :deep(.button-dismiss:hover .hover .label),
     :deep(.button-dismiss:focus .hover .label),
     :deep(.button-dismiss:focus-visible .hover .label) {
