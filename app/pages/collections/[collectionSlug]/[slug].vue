@@ -65,9 +65,6 @@ if (data.value.entry && import.meta.prerender) {
 const page = ref(_get(data.value, 'entry', {}))
 const relatedContent = ref(_get(data.value, 'entries', {}))
 
-console.log('page: ', page.value)
-console.log('related: ', relatedContent.value)
-
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
   page.value = _get(newVal, 'entry', {})
