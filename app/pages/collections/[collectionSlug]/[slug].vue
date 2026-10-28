@@ -194,7 +194,7 @@ const parsedRelatedContent = computed(() => {
     return {
       image: { ...parseImage(obj), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' },
       title: obj.title,
-      to: obj.slug,
+      to: `/${obj.uri}`,
       videoEmbed: obj.videoEmbed
     }
   })
