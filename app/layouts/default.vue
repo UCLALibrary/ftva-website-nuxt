@@ -152,7 +152,7 @@ onMounted(() => {
 
     &.is-closed {
       :deep(.message) {
-        pointer-events: none; // allow clicks to pass through to the underlying content
+        display: none; // allow clicks to pass through to the underlying content
       }
     }
 
