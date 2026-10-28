@@ -17,20 +17,18 @@ const route = useRoute()
 
 const { collectionSlug, slug } = route.params
 
-let collectionItemParentCollectionType: string
-
-switch (collectionSlug) {
-  case 'la-rebellion':
-  case 'in-the-life':
-    collectionItemParentCollectionType = 'ftvaCollectionStory'
-    break
-  default:
-    collectionItemParentCollectionType = 'ftvaCollection'
-    break
-}
+const collectionItemParentCollectionType = computed(() => {
+  switch (collectionSlug) {
+    case 'la-rebellion':
+    case 'in-the-life':
+      return 'ftvaCollectionStory'
+    default:
+      return 'ftvaCollection'
+  }
+})
 
 const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
-  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug, collectionItemParentCollectionType })
+  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug, collectionItemParentCollectionType: collectionItemParentCollectionType.value })
   return data
 })
 
