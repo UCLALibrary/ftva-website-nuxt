@@ -17,9 +17,20 @@ const route = useRoute()
 
 const { collectionSlug, slug } = route.params
 
-// DATA
+let collectionItemParentCollectionType: string
+
+switch (collectionSlug) {
+  case 'la-rebellion':
+  case 'in-the-life':
+    collectionItemParentCollectionType = 'ftvaCollectionStory'
+    break
+  default:
+    collectionItemParentCollectionType = 'ftvaCollection'
+    break
+}
+
 const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
-  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug })
+  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug, collectionItemParentCollectionType })
   return data
 })
 
@@ -55,6 +66,9 @@ if (data.value.entry && import.meta.prerender) {
 
 const page = ref(_get(data.value, 'entry', {}))
 const relatedContent = ref(_get(data.value, 'entries', {}))
+
+console.log('page: ', page.value)
+console.log('related: ', relatedContent.value)
 
 watch(data, (newVal, oldVal) => {
   // console.log('In watch preview enabled, newVal, oldVal', newVal, oldVal)
