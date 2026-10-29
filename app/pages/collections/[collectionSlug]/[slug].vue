@@ -17,9 +17,18 @@ const route = useRoute()
 
 const { collectionSlug, slug } = route.params
 
-// DATA
+const collectionItemParentCollectionType = computed(() => {
+  switch (collectionSlug) {
+    case 'la-rebellion':
+    case 'in-the-life':
+      return 'ftvaCollectionStory'
+    default:
+      return 'ftvaCollection'
+  }
+})
+
 const { data, error } = await useAsyncData(`collection-item-${slug}`, async () => {
-  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug })
+  const data: any = await $graphql.default.request(FTVACollectionItem, { slug: String(slug).normalize('NFD'), collectionSlug, collectionItemParentCollectionType: collectionItemParentCollectionType.value })
   return data
 })
 
@@ -194,7 +203,7 @@ const parsedRelatedContent = computed(() => {
     return {
       image: { ...parseImage(obj), sizes: '(min-width: 1380px) 365px, (min-width: 1100px) calc(24.23vw + 35px), 274px' },
       title: obj.title,
-      to: obj.slug,
+      to: `/${obj.uri}`,
       videoEmbed: obj.videoEmbed
     }
   })

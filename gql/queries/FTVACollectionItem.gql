@@ -1,6 +1,6 @@
 #import "../gql/fragments/Image.gql"
 
-query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
+query FTVACollectionItem($collectionSlug: [String!], $slug: [String!], $collectionItemParentCollectionType: [String!]) {
   entry(section: "ftvaItemInCollection", slug:$slug ) {
     id
     title
@@ -68,7 +68,7 @@ query FTVACollectionItem($collectionSlug: [String!], $slug: [String!]) {
       }
     }
   }
-  entries(section: "ftvaItemInCollection", relatedToEntries:{section:"ftvaCollection", slug:$collectionSlug}, orderBy: "random()", limit: 4) {
+  entries(section: "ftvaItemInCollection", relatedToEntries:{section:$collectionItemParentCollectionType, slug:$collectionSlug}, orderBy: "random()", limit: 4) {
     id
     title
     slug
