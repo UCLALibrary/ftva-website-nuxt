@@ -211,7 +211,7 @@ jobs:
               with:
                 webhook: ${{ secrets.LADI_SLACK_WEBHOOK_URL }}
                 webhook-type: incoming-webhook
-                payload-file-path: ./slack-payload.js
+                payload-file-path: ./slack-payload.json
 
             - name: Deploy to Netlify (preview)
               if: github.ref_name!='main'
@@ -279,4 +279,12 @@ jobs:
               env:
                   NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
                   NETLIFY_SITE_ID: ${{ secrets.NETLIFY_TEST_FTVA_SITE_ID }}
+
+            - name: Notify Slack
+              if: steps.analyze-nuxt.outputs.should_notify_slack == 'true'
+              uses: slackapi/slack-github-action@v4
+              with:
+                webhook: ${{ secrets.LADI_SLACK_WEBHOOK_URL }}
+                webhook-type: incoming-webhook
+                payload-file-path: ./slack-payload.json
 
