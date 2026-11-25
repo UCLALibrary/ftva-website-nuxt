@@ -93,6 +93,7 @@ useHead({
                 class="link"
                 to="/contact"
               >
+                <!-- eslint-disable-next-line vue/html-closing-bracket-newline -->
                 contact us</nuxt-link>.
             </p>
           </RichText>
@@ -112,6 +113,11 @@ useHead({
       text-align: center;
       max-width: 580px;
       margin-top: -20px; //bump content 20px up
+
+      :deep(.svg__graphic-ftva-error-no-signal) {
+        display: block;
+        width: 100%;
+      }
 
       h1 {
         @include ftva-h2;
