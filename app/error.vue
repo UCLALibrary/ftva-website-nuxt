@@ -2,7 +2,7 @@
 import type { NuxtError } from '#app'
 
 // IMAGE
-import ErrorImage from 'ucla-library-design-tokens/assets/svgs/graphic-ftva-error-no-signal.svg'
+import ErrorImage from 'ucla-library-design-tokens/assets/svgs/graphic-ftva-error-no-signal.svg?url'
 
 const { error } = defineProps({
   error: {
@@ -70,7 +70,7 @@ useHead({
         <divider-way-finder v-if="isDevelopment" />
 
         <div class="user-error-display">
-          <ErrorImage />
+          <img :src="ErrorImage">
           <h1
             v-if="error?.statusCode === 404"
             class="error-title"
@@ -86,16 +86,18 @@ useHead({
               class="blue-accent"
             >{{ error?.statusCode }}</span> An error occurred
           </h1>
-
-          <p class="body-text">
-            We can’t find the page you're looking for. Please try using the navigation or search above. If you need
-            further assistance, please <nuxt-link
-              class="link"
-              to="/contact"
-            >
-              contact us
-            </nuxt-link>.
-          </p>
+          <RichText>
+            <p class="body-text">
+              We can’t find the page you're looking for. Please try using the navigation or search above. If you need
+              further assistance, please <nuxt-link
+                class="link"
+                to="/contact"
+              >
+                <!-- eslint-disable-next-line vue/html-closing-bracket-newline -->
+                contact us
+              </nuxt-link>.
+            </p>
+          </RichText>
         </div>
       </SectionWrapper>
     </main>
@@ -124,18 +126,14 @@ useHead({
         font-weight: 700
       }
 
+      .rich-text {
+        padding-right: 0;
+      }
+
       p.body-text {
         @include ftva-body-2;
         font-size: 18px;
-        color: var(--dark-navy);
-        padding-top: 8px;
-      }
-
-      .link {
-        &:hover {
-          color: ftvaTokens.$accent-blue;
-          text-decoration: underline;
-        }
+        letter-spacing: 0;
       }
     }
   }
