@@ -2,7 +2,7 @@
 import type { NuxtError } from '#app'
 
 // IMAGE
-import ErrorImage from 'ucla-library-design-tokens/assets/svgs/graphic-ftva-error-no-signal.svg'
+import ErrorImage from 'ucla-library-design-tokens/assets/svgs/graphic-ftva-error-no-signal.svg?url'
 
 const { error } = defineProps({
   error: {
@@ -70,7 +70,7 @@ useHead({
         <divider-way-finder v-if="isDevelopment" />
 
         <div class="user-error-display">
-          <ErrorImage />
+          <img :src="ErrorImage">
           <h1
             v-if="error?.statusCode === 404"
             class="error-title"
@@ -94,7 +94,8 @@ useHead({
                 to="/contact"
               >
                 <!-- eslint-disable-next-line vue/html-closing-bracket-newline -->
-                contact us</nuxt-link>.
+                contact us
+              </nuxt-link>.
             </p>
           </RichText>
         </div>
@@ -113,11 +114,6 @@ useHead({
       text-align: center;
       max-width: 580px;
       margin-top: -20px; //bump content 20px up
-
-      :deep(.svg__graphic-ftva-error-no-signal) {
-        display: block;
-        width: 100%;
-      }
 
       h1 {
         @include ftva-h2;
